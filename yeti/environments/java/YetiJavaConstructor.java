@@ -102,7 +102,7 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 			//e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			// should never happen
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return this.lastCallResult;
 	}

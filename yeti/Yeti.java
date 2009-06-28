@@ -59,6 +59,7 @@ public class Yeti {
 
 		// getting the module(s) to test
 		YetiModule mod=YetiModule.allModules.get("yeti.test.YetiTest");
+		//YetiModule mod=YetiModule.allModules.get("java.lang.String");
 		
 		// creating the engine object
 		engine= new YetiEngine(strategy,testManager);

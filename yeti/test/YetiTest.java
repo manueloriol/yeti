@@ -64,6 +64,5 @@ public class YetiTest<T extends YetiRoutine> {
 	public String toString(){
 		return "a YetiTest";
 	}
-	
 
 }

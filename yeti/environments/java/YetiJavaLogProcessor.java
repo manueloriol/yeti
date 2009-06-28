@@ -36,20 +36,21 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	}
 
 	/**
-	 * Generates a String[] that a test case for each cell.
+	 * Generates a Vector<String> that a test case for each cell.
 	 * 
 	 * @see yeti.YetiLogProcessor#processLogs()
 	 */
 	@Override
-	public Vector<String> processLogs() {
-		// TODO modify htis to make it actually work as advertised
-		// At the moment simply returns the logs and aggregated results
+	public Vector<String> processLogs() {		
+		Vector<String> tmp = YetiJavaLogProcessor.sliceStatically(this.getCurrentLog());
+		Vector<String> result = new Vector<String>();
+		int i = 0;
+		for (String tc: tmp) {
+			i++;
+			result.add("public static void test_"+i+"() {\n"+tc+"\n}");
+		}
 		
-		
-		//this.newSerieOfLog();
-		//this.appendToCurrentLog("number of routine calls: "+this.numberOfCalls+" number of non-unique errors: "+this.numberOfErrors );
-		//this.newSerieOfLog();
-		return YetiJavaLogProcessor.sliceStatically(this.getCurrentLog());
+		return result;
 	}
 	
 	/**
@@ -149,6 +150,14 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		
 	}
 	
+	/**
+	 * Slices the code of the test case statically and conervatively.
+	 * 
+	 * Does not make any assumption on command-query separation.
+	 * 
+	 * @param log the log to slice
+	 * @return a vector with all generated test cases.
+	 */
 	public static Vector<String> sliceStatically(String log){
 		Vector<String> testCases = new Vector<String>();
 		

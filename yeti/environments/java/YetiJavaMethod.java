@@ -209,10 +209,10 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			YetiLog.printYetiLog(log, this);
 		} catch (IllegalArgumentException e) {
 			// should never happen
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			// should never happen
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			
 			// if we are here, we found a bug.
