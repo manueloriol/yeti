@@ -29,8 +29,8 @@ public class Yeti {
 	 * Main method of Yeti. Arguments are numerous. Here is a list of the current ones:
 	 * 
 	 * -java : for calling it on Java
-	 * -timeout=X : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn | 3s )
-	 * -nTest : for calling Yeti to attempt that many method calls
+	 * -time=Xs / -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn | 3s )
+	 * -nTest=X : for calling Yeti to attempt X method calls
 	 * -testModules=M1:M2:...:Mn : for testing one or several modules
 	 * 
 	 * @param args the arguments of the program
@@ -39,6 +39,13 @@ public class Yeti {
 	public static void main(String[] args) {
 		
 		YetiEngine engine;
+		boolean isJava = false;
+		boolean isTimeout = false;
+		int timeOutSec=0;
+		int timeOutMin=0;
+		boolean isNTests = false;
+		
+		
 		
 		//test of options to set up the YetiProperties
 		if (args[0].equals("-java")) {
