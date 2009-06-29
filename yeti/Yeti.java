@@ -141,6 +141,10 @@ public class Yeti {
 		
 		
 	}
+	
+	/**
+	 * This is a simple help printing utility function.
+	 */
 	public static void printHelp() {
 		System.out.println("Yeti Usage:\n java yeti [-java|-Java] [[-time=Xs|-time=Xmn]|[-nTests=X]][-testModules=M1:M2:...:Mn][-help|-h]");
 		System.out.println("\t-java, -Java : for calling it on Java.");
