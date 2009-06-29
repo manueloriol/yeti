@@ -1,5 +1,7 @@
 package yeti.environments;
 
+import yeti.YetiLogProcessor;
+
 
 /**
  * Class that represents the properties of a language for this session. 
@@ -23,4 +25,11 @@ public abstract class YetiProgrammingLanguageProperties {
 	 * @return the initialiser for this language and this session.
 	 */
 	public abstract YetiInitializer getInitializer();
+
+	/**
+	 * Returns the log processor for this session and this language
+	 * 
+	 * @return the log processor for this language and this session.
+	 */
+	public abstract YetiLogProcessor getLogProcessor();
 }

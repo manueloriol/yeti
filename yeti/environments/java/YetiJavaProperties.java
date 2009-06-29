@@ -1,5 +1,6 @@
 package yeti.environments.java;
 
+import yeti.YetiLogProcessor;
 import yeti.environments.YetiInitializer;
 import yeti.environments.YetiProgrammingLanguageProperties;
 import yeti.environments.YetiTestManager;
@@ -23,6 +24,10 @@ public class YetiJavaProperties extends YetiProgrammingLanguageProperties {
 	 */
 	private YetiJavaTestManager jtm=new YetiJavaTestManager();
 	
+	/**
+	 * The Java logProcessor.
+	 */
+	private YetiJavaLogProcessor jlp=new YetiJavaLogProcessor();
 	
 	/* (non-Javadoc)
 	 * 
@@ -44,6 +49,16 @@ public class YetiJavaProperties extends YetiProgrammingLanguageProperties {
 	@Override
 	public YetiTestManager getTestManager() {
 		return jtm;
+	}
+
+	/* (non-Javadoc)
+	 * Returns the log processor
+	 * 
+	 * @see yeti.environments.YetiProgrammingLanguageProperties#getTestManager()
+	 */
+	@Override
+	public YetiLogProcessor getLogProcessor() {
+		return jlp;
 	}
 
 }

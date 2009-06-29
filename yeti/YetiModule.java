@@ -13,7 +13,7 @@ import java.util.HashMap;
  * @date Jun 22, 2009
  *
  */
-public abstract class YetiModule {
+public class YetiModule {
 	
 	/**
 	 * The name of the module
@@ -31,6 +31,16 @@ public abstract class YetiModule {
 	 */
 	public HashMap <String, YetiRoutine> routinesInModule =new HashMap<String,YetiRoutine>();
 	
+	/**
+	 * A simple Constructor.
+	 * 
+	 * @param moduleName takes the name of the module as a parameter.
+	 */
+	public YetiModule(String moduleName) {
+		super();
+		this.moduleName = moduleName;
+	}
+
 	/**
 	 * Add a routine to the list of routine in module.
 	 * 
@@ -56,7 +66,7 @@ public abstract class YetiModule {
 	 * 
 	 * @param module the module to add.
 	 */
-	public void addModuleToAllModules(YetiModule module){
+	public static void addModuleToAllModules(YetiModule module){
 		allModules.put(module.getModuleName(),module);
 	}
 	
@@ -90,4 +100,15 @@ public abstract class YetiModule {
 	public void setModuleName(String name){
 		moduleName=name;
 	}
+	
+	public static YetiModule combineModules(YetiModule []modules) {
+		YetiModule result = new YetiModule(YetiName.getFreshNameFrom("__yeti_test_module").value);
+		for (YetiModule mod0: modules) {
+			for (YetiRoutine rout0: mod0.routinesInModule.values())
+				result.addRoutineInModule(rout0);
+		}
+		YetiModule.addModuleToAllModules(result);
+		return result;
+	}
+	
 }

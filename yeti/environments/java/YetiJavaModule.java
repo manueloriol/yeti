@@ -21,7 +21,7 @@ public class YetiJavaModule extends YetiModule {
 	 * @param className the name of the class of this module.
 	 */
 	public YetiJavaModule(String className){
-		this.moduleName=className;
+		super(className);
 	}
 
 	
