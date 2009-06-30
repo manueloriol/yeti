@@ -87,6 +87,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	 * @param c the class to add.
 	 * @return the class that was added.
 	 */
+	@SuppressWarnings("unchecked")
 	public Class addDefinition(Class c) {
 		// we add the type to the types
 		YetiType type=new YetiJavaSpecificType(c.getName());
@@ -136,6 +137,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	 * @param c the class to add.
 	 * @param mod the module in which ad it.
 	 */
+	@SuppressWarnings("unchecked")
 	private void addMethods(Class c, YetiModule mod) {
 		
 		// we add all methods
@@ -193,6 +195,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	 * @param type the type of the instance created.
 	 * @param mod teh module to which add the class.
 	 */
+	@SuppressWarnings("unchecked")
 	private void addConstructors(Class c, YetiType type, YetiModule mod) {
 		Constructor[]constructors = c.getConstructors();
 		for (Constructor m: constructors){
@@ -226,6 +229,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	 * @param c the class to make a module from.
 	 * @return The module created.
 	 */
+	@SuppressWarnings("unchecked")
 	public YetiModule makeModuleFromClass(Class c){
 		YetiModule mod=new YetiJavaModule(c.getName());
 		
@@ -265,6 +269,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	 * @param name the name of the class.
 	 * @return the class read.
 	 */
+	@SuppressWarnings("unchecked")
 	public Class readClass(File file,String name){
 		Class c;
 		try {

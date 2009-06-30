@@ -17,7 +17,7 @@ public class YetiLog {
 	 * example of classes to debug:	
 	 * <code>public static String []enabledDebugClasses={"yeti.YetiType", "yeti.environments.java.YetiJavaMethod"};</code>
 	 */
-//	public static String []enabledDebugClasses={"yeti.YetiType", "yeti.environments.java.YetiJavaMethod"};
+	//public static String []enabledDebugClasses={"yeti.YetiType", "yeti.environments.java.YetiJavaMethod"};
 	public static String []enabledDebugClasses={};
 	
 	/**
@@ -26,6 +26,7 @@ public class YetiLog {
 	 * @param message the debugging message to use.
 	 * @param objectInWhichCalled the caller or the class of the caller in case it is in a static method.
 	 */
+	@SuppressWarnings("unchecked")
 	public static void printDebugLog(String message, Object objectInWhichCalled){
 		String className;
 		
@@ -60,6 +61,7 @@ public class YetiLog {
 	 * @param objectInWhichCalled the caller or the class of the caller in case it is in a static method.
 	 * @param isTemporary print the message anyway if true.
 	 */
+		@SuppressWarnings("unchecked")
 		public static void printDebugLog(String message, Object objectInWhichCalled, boolean isTemporary) {
 		if (isTemporary)
 			if (objectInWhichCalled instanceof Class)

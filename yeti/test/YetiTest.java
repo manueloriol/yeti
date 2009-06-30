@@ -17,10 +17,12 @@ public class YetiTest<T extends YetiRoutine> {
 	public YetiTest(){
 		System.out.println("YetiTest constructor called");
 	}
+	@SuppressWarnings("unchecked")
 	public YetiTest(YetiTest yt){
 		System.out.println("YetiTest(YetiTest yt) constructor called");
 	}
 
+	@SuppressWarnings("unchecked")
 	public YetiTest(YetiTest yt, YetiTest yt2){
 		System.out.println("YetiTest(YetiTest yt, YetiTest yt2) constructor called");
 	}

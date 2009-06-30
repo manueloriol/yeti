@@ -161,6 +161,8 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	public static Vector<String> sliceStatically(String log){
 		Vector<String> testCases = new Vector<String>();
 		
+//		testCases.add(log);
+//		return testCases;
 		// we split the lines of code
 		String []linesOfTest = log.split("\n");
 		

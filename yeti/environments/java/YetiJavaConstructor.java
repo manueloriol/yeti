@@ -23,6 +23,7 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 	/**
 	 * The actual constructor.  
 	 */
+	@SuppressWarnings("unchecked")
 	private Constructor c;
 	
 	
@@ -40,6 +41,7 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 	 * @param originatingModule the module in which it was defined.
 	 * @param c the constructor itself.
 	 */
+	@SuppressWarnings("unchecked")
 	public YetiJavaConstructor(YetiName name, YetiType[] openSlots, YetiType returnType, YetiModule originatingModule, Constructor c) {
 		super(name, openSlots, returnType, originatingModule);
 		this.c=c;
