@@ -146,7 +146,7 @@ public class Yeti {
 	 * This is a simple help printing utility function.
 	 */
 	public static void printHelp() {
-		System.out.println("Yeti Usage:\n java yeti [-java|-Java] [[-time=Xs|-time=Xmn]|[-nTests=X]][-testModules=M1:M2:...:Mn][-help|-h]");
+		System.out.println("Yeti Usage:\n java yeti.Yeti [-java|-Java] [[-time=Xs|-time=Xmn]|[-nTests=X]][-testModules=M1:M2:...:Mn][-help|-h]");
 		System.out.println("\t-java, -Java : for calling it on Java.");
 		System.out.println("\t-time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn | 3s ).");
 		System.out.println("\t-nTests=X : for calling Yeti to attempt X method calls.");

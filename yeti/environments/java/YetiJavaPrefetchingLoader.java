@@ -37,7 +37,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	public YetiJavaPrefetchingLoader(String path) {
 		super();
 		
-		this.classpaths = path.split(":");
+		this.classpaths = path.split(System.getProperty("path.separator"));
 		yetiLoader = this;
 	}
 
