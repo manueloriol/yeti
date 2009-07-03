@@ -134,9 +134,10 @@ public class Yeti {
 			return;
 		}
 		// presents the logs
-		for (String log: YetiLog.proc.processLogs()) {
-			System.out.println(log);
-		}
+		if (YetiLog.proc!=null)
+			for (String log: YetiLog.proc.processLogs()) {
+				System.out.println(log);
+			}
 		
 		
 		
