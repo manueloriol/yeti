@@ -219,7 +219,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			// we first print the log
 			YetiLog.printYetiLog(log+");", this);
 			// then print the exception
-			if (e.getCause() instanceof RuntimeException)			
+			if (e.getCause() instanceof RuntimeException || e.getCause() instanceof Error)			
 				YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
 			else
 				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);

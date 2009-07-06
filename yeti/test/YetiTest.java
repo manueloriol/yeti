@@ -42,10 +42,12 @@ public class YetiTest<T extends YetiRoutine> {
 	}
 
 	public void printChar(char c){
+		assert c!='m';
 		System.out.println(c);
 	}
 
 	public void printInt(int a){
+		assert a!=1;
 		System.out.println((int)(1/a));
 	}
 	public T genT(Vector<String> t){
