@@ -13,6 +13,8 @@ import yeti.environments.YetiTestManager;
  *
  */
 public class YetiJavaProperties extends YetiProgrammingLanguageProperties {
+	
+
 
 	/**
 	 * The Java intialiser.
@@ -37,7 +39,7 @@ public class YetiJavaProperties extends YetiProgrammingLanguageProperties {
 	 */
 	@Override
 	public YetiInitializer getInitializer() {
-
+		
 		return jinit;
 	}
 

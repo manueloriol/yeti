@@ -11,7 +11,28 @@ import yeti.YetiLogProcessor;
  *
  */
 public abstract class YetiProgrammingLanguageProperties {
+	/**
+	 * Should we get the logs rather than the test case
+	 */
+	private boolean isRawLog = false;
+	
+	/**
+	 * Returns if it is a raw log (unprocessed)
+	 * 
+	 * @return true if this is raw logs, false otherwise.
+	 */
+	public boolean isRawLog() {
+		return isRawLog;
+	}
 
+	/**
+	 * Sets it as rawLogs
+	 * 
+	 * @param isRawLog true if it is going to be a raw log
+	 */
+	public void setRawLog(boolean isRawLog) {
+		this.isRawLog = isRawLog;
+	}
 	/**
 	 * Returns the test manager for this language.
 	 * 

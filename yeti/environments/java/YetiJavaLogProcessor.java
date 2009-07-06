@@ -1,6 +1,7 @@
 package yeti.environments.java;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Vector;
 
 import yeti.YetiLog;
@@ -20,7 +21,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	 * A constructor for the YetiJavaLogProcessor.
 	 */
 	public YetiJavaLogProcessor() {	
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -34,6 +35,19 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		// super.appendToCurrentLog(newLog);
 		super.appendToCurrentLog(newLog+" // time:"+(new Date()).getTime());
 	}
+
+	/* 
+	 * A nicer printer for Yeti and Java
+	 * 
+	 * (non-Javadoc)
+	 * @see yeti.YetiLogProcessor#appendFailureToCurrentLog(java.lang.String)
+	 */
+	public void appendFailureToCurrentLog(String newLog){
+		String log = this.getCurrentLog();
+		log=log+"\n"+newLog;
+		this.setCurrentLog(log);
+		this.numberOfErrors++;
+	}	
 
 	/**
 	 * Generates a Vector<String> that a test case for each cell.
@@ -49,10 +63,10 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			i++;
 			result.add("public static void test_"+i+"() {\n"+tc+"\n}");
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Generates the kill value for this line.
 	 * 
@@ -62,7 +76,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	public static String kill(String loc){
 		boolean isAssignment = (loc.indexOf("=")>0);
 		int indexOfSpace = loc.indexOf(" ");
-		
+
 
 		YetiLog.printDebugLog("loc: "+loc, YetiJavaLogProcessor.class);
 		if (isAssignment){
@@ -73,7 +87,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Generates the vector of variables that are used by this line of code.
 	 * 
@@ -82,7 +96,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	 * list of values that matter.
 	 */
 	public static Vector<String> gen(String loc){
-		
+
 		boolean isAssignment = (loc.indexOf("=")>0);
 		boolean isCreation = (loc.indexOf("new ")>0);
 		boolean isMethodCall = (loc.indexOf("(")>0);
@@ -91,12 +105,12 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		// if this is a comment we return no gen
 		if (isComment)
 			return new Vector<String>();
-		
+
 		// we initialize the values
 		String localLoc = loc;
 		Vector<String> valuesThatMatter = new Vector<String>();
 		YetiLog.printDebugLog("loc: "+loc, YetiJavaLogProcessor.class);
-		
+
 		// if it is not a creation method but it is a method call
 		if (!isCreation&&isMethodCall) {
 			String target;
@@ -106,7 +120,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			else
 				target = loc.substring(0,loc.lastIndexOf('.'));
 			YetiLog.printDebugLog("target: "+target, YetiJavaLogProcessor.class);
-			
+
 			// we add it to the values that matter
 			valuesThatMatter.add(target);
 		}
@@ -125,7 +139,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		// we return the result
 		return valuesThatMatter;
 	}
-	
+
 	/**
 	 * Checks whether the line contains kills or gen that matter for the variables
 	 * 
@@ -136,7 +150,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	public static boolean containsKillsOrGens(String loc, Vector<String> varNames){
 		Vector<String> gen0 = gen(loc);
 		String kill0=kill(loc);
-		
+
 		// we iterate through all names
 		for (String var: varNames) {
 			if (kill0!=null)
@@ -144,12 +158,12 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			for (String geni: gen0) {
 				if (geni.equals(var)) return true;
 			}
-			
+
 		}
 		return false;
-		
+
 	}
-	
+
 	/**
 	 * Slices the code of the test case statically and conervatively.
 	 * 
@@ -160,30 +174,50 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	 */
 	public static Vector<String> sliceStatically(String log){
 		Vector<String> testCases = new Vector<String>();
-		
-//		testCases.add(log);
-//		return testCases;
+
 		// we split the lines of code
 		String []linesOfTest = log.split("\n");
-		
+
 		// we make the list of errors
-		Vector<Integer> listOfErrors= new Vector<Integer>();
+		HashMap<String,Integer> listOfErrors= new HashMap<String,Integer>();
 		// we look for all errors up
 		for (int i = 0; i<linesOfTest.length; i++){
+			String exceptionTrace="";
 			if (linesOfTest[i].startsWith("/**BUG FOUND:")){
-				listOfErrors.add(i-1);
+				// we aggregate the results and give some output
+				int k=i+1;
+				// the exception starts with a comment
+				if (linesOfTest[k].startsWith("/**")) {
+					// will be used to filter the yeti exception stack
+					boolean isInYetiExceptions=false;
+
+					// we continue until the end of the exception trace
+					while (!linesOfTest[k].contains("**/")){
+						// if we arrive to the reflexive call, we cut
+						if (!isInYetiExceptions&&linesOfTest[k].contains("sun.reflect.")) {
+							isInYetiExceptions=true;
+						}
+						if (!isInYetiExceptions)
+							exceptionTrace=exceptionTrace+"\n"+linesOfTest[k++];
+						else
+							k++;
+					}
+				}
+				// we add the error if it is unique
+				if (!listOfErrors.containsKey(exceptionTrace))
+					listOfErrors.put(exceptionTrace,i-1);
 			}
 		}
-		
+
 		// for each error:
-		for(int i: listOfErrors){
+		for(int i: listOfErrors.values()){
 			int finalLength = 0;
 			String currentTestCase = linesOfTest[i]+"\n"+linesOfTest[i+1];
 			Vector<String> variables = gen(linesOfTest[i]);
 			boolean ignoreNext = false;
 			// for all lines previously executed:
 			for (int j = i-1; j>=0 ; j--){
-				// if there is an error, we the call
+				// if there is an error, we ignore the call
 				if (ignoreNext) {
 					ignoreNext = false;
 					continue;
@@ -192,10 +226,10 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 					ignoreNext=true;
 					continue;
 				}
-				
+
 				// if there is no active variable we stop here
 				if (variables.isEmpty()) break;
-				
+
 				// if the line contains meaningful kills or gen 
 				// then we include it in the trace
 				// Note we cannot take an aggressive stance on command-query 
@@ -217,16 +251,38 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 				}
 			}
 			// we aggregate the results and give some output
+			String exceptionTrace="";
+			int k=i+2;
+			// the exception starts with a comment
+			if (linesOfTest[k].startsWith("/**")) {
+				// will be used to filter the yeti exception stack
+				boolean isInYetiExceptions=false;
+
+				// we continue until the end of the exception trace
+				while (!linesOfTest[k].contains("**/")){
+					// if we arrive to the reflexive call, we cut
+					if (!isInYetiExceptions&&linesOfTest[k].contains("sun.reflect.")) {
+						isInYetiExceptions=true;
+					}
+					if (!isInYetiExceptions)
+						exceptionTrace=exceptionTrace+"\n"+linesOfTest[k++];
+					else
+						k++;
+				}
+				// we add the comment at the end
+				exceptionTrace=exceptionTrace+"\n"+linesOfTest[k++];				
+			}
+			currentTestCase=currentTestCase+exceptionTrace;
 			currentTestCase=currentTestCase+"\n/** original locs: "+i+" minimal locs: "+finalLength+"**/";
 			testCases.add(currentTestCase);
 		}
-		
+
 		YetiLog.printDebugLog("Number of Errors: "+listOfErrors.size()+" Number of test cases: "+testCases.size(), YetiJavaLogProcessor.class);
 		//testCases.add("Number of Errors: "+listOfErrors.size()+" Number of test cases: "+testCases.size());
-		
+
 		return testCases;
-		
+
 	}
-	
+
 
 }

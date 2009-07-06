@@ -1,5 +1,9 @@
 package yeti;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+
 /**
  * Class that manages logging in Yeti. 
  * The generated test cases are also part of the logging mechanism. 
@@ -77,7 +81,7 @@ public class YetiLog {
 	 * @param objectInWhichCalled object in which the method was called
 	 */
 	public static void printYetiLog(String message, Object objectInWhichCalled){
-		if (YetiLog.proc==null)
+		if (Yeti.pl.isRawLog())
 			System.err.println("YETI LOG: "+message);
 		else
 			proc.appendToCurrentLog(message);
@@ -90,12 +94,18 @@ public class YetiLog {
 	 * @param objectInWhichCalled the object in which this was called.
 	 */
 	public static void printYetiThrowable(Throwable t, Object objectInWhichCalled){
-		if (YetiLog.proc==null){
+		if (Yeti.pl.isRawLog()){
 			System.err.println("YETI EXCEPTION - START ");
-			System.err.println(t.getMessage());
+			t.printStackTrace(System.err);
 			System.err.println("YETI EXCEPTION - END ");
-		} else
-			proc.appendFailureToCurrentLog(t.getMessage());
+		} else {
+			proc.appendFailureToCurrentLog("/**YETI EXCEPTION - START ");
+			OutputStream os=new ByteArrayOutputStream();
+			t.printStackTrace(new PrintStream(os));
+			proc.appendFailureToCurrentLog(os.toString());
+			proc.appendFailureToCurrentLog("YETI EXCEPTION - END**/ ");
+			YetiLog.printDebugLog(os.toString(), YetiLog.class);
+		}
 	}
 
 	

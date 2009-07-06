@@ -28,10 +28,11 @@ public class Yeti {
 	 * Main method of Yeti. Arguments are numerous. Here is a list of the current ones:
 	 * 
 	 * -java, -Java : for calling it on Java.
-	 * -time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn | 3s ).
+	 * -time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).
 	 * -nTests=X : for calling Yeti to attempt X method calls.
 	 * -testModules=M1:M2:...:Mn : for testing one or several modules.
 	 * -help, -h: prints the help out.
+	 * -rawlog: prints the logs directly instead of processing them at the end. 
 	 * 
 	 * @param args the arguments of the program
 	 */
@@ -42,6 +43,7 @@ public class Yeti {
 		boolean isTimeout = false;
 		int timeOutSec=0;
 		boolean isNTests = false;
+		boolean isRawLog = false;
 		int nTests=0;
 		String []modulesToTest=null;
 		
@@ -84,6 +86,12 @@ public class Yeti {
 				modulesToTest=s1.split(":");
 				continue;
 			}
+			// we want to have only logs in standard form
+			if (s0.equals("-rawlog")) {
+				isRawLog = true;
+				continue;	
+			}
+			
 			System.out.println("Yeti could not understand option: "+s0);
 			Yeti.printHelp();
 			return;
@@ -94,6 +102,11 @@ public class Yeti {
 		if (isJava) {
 			pl=new YetiJavaProperties();
 		};
+		
+		//if it is raw logs, then set it		
+		if (isRawLog) {
+			pl.setRawLog(isRawLog);
+		}
 		
 		// initializing Yeti
 		try {
@@ -147,12 +160,13 @@ public class Yeti {
 	 * This is a simple help printing utility function.
 	 */
 	public static void printHelp() {
-		System.out.println("Yeti Usage:\n java yeti.Yeti [-java|-Java] [[-time=Xs|-time=Xmn]|[-nTests=X]][-testModules=M1:M2:...:Mn][-help|-h]");
+		System.out.println("Yeti Usage:\n java yeti.Yeti [-java|-Java] [[-time=Xs|-time=Xmn]|[-nTests=X]][-testModules=M1:M2:...:Mn][-help|-h][-rawlog]");
 		System.out.println("\t-java, -Java : for calling it on Java.");
-		System.out.println("\t-time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn | 3s ).");
+		System.out.println("\t-time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).");
 		System.out.println("\t-nTests=X : for calling Yeti to attempt X method calls.");
 		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules.");
 		System.out.println("\t-help, -h: prints the help out.");
+		System.out.println("\t-rawlog: prints the logs directly instead of processing them at the end.");
 	}
 
 }

@@ -58,6 +58,15 @@ public abstract class YetiLogProcessor {
 		this.numberOfErrors++;
 	}	
 	/**
+	 * Simple setter for the current logs.
+	 * 
+	 * @param currentLog the logs to set.
+	 */
+	public void setCurrentLog(String currentLog) {
+		this.currentLog = currentLog;
+	}
+
+	/**
 	 * Adds the currentLog to the logs and reinitializes currentLog.
 	 */
 	public void newSerieOfLog(){
