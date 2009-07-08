@@ -124,10 +124,16 @@ public class Yeti {
 
 		// getting the module(s) to test
 		YetiModule mod=null;
+		
 		if (modulesToTest.length==1)
 			mod=YetiModule.allModules.get(modulesToTest[0]);
-		else
-			mod=YetiModule.allModules.get(modulesToTest[0]);
+		else {
+			YetiModule []modules=new YetiModule[modulesToTest.length];
+			for (int i = 0; i<modulesToTest.length; i++ ) {
+				modules[i]=YetiModule.allModules.get(modulesToTest[i]);
+			}
+			mod = YetiModule.combineModules(modules);
+		}
 			
 		// creating the engine object
 		engine= new YetiEngine(strategy,testManager);
