@@ -1,6 +1,3 @@
-/**
- * 
- */
 package yeti;
 
 import java.util.HashMap;
@@ -101,6 +98,12 @@ public class YetiModule {
 		moduleName=name;
 	}
 	
+	/**
+	 * Method used to to combine two modules into one.
+	 * 
+	 * @param modules the array of modules to combine.
+	 * @return a module that combined all modules.
+	 */
 	public static YetiModule combineModules(YetiModule []modules) {
 		YetiModule result = new YetiModule(YetiName.getFreshNameFrom("__yeti_test_module").value);
 		for (YetiModule mod0: modules) {

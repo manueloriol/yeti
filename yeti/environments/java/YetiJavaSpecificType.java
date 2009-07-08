@@ -80,8 +80,7 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	public static byte __yetiValue_createRandomByte(){
 		double d=Math.random();
-		//TODO check the correct formula
-		return new Byte((byte) Math.floor(256*d)).byteValue();
+		return new Byte((byte) Math.floor(257*d)).byteValue();
 	}
 	
 	/**
@@ -91,8 +90,7 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	public static short __yetiValue_createRandomShort(){
 		double d=Math.random();
-		//TODO check the correct formula
-		return new Short((short) Math.floor(21474*d)).shortValue();
+		return new Short((short) (Math.floor(65535*d)-32767)).shortValue();
 	}
 
 	/**
@@ -102,8 +100,8 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	public static int __yetiValue_createRandomInt(){
 		double d=Math.random();
-		//TODO check the correct formula
-		return new Integer((int) Math.floor(2147483647*d)).intValue();
+		double d2=Math.random()*2-1.0d;
+		return new Integer((int) Math.floor(2147483647*d*d2)).intValue();
 	}
 	
 	/**
@@ -112,9 +110,8 @@ public class YetiJavaSpecificType extends YetiType {
 	 * @return a random long.
 	 */
 	public static long __yetiValue_createRandomLong(){
-		double d=Math.random();
-		//TODO check the correct formula
-		return new Long((long) Math.floor(2147483647*d)).longValue();
+		Double d=new Double(YetiJavaSpecificType.__yetiValue_createRandomDouble());
+		return d.longValue();
 	}
 	
 	/**
@@ -124,8 +121,7 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	public static char __yetiValue_createRandomChar(){
 		double d=Math.random();
-		//TODO check the correct formula
-		return new Character((char)Math.floor(256*d)).charValue();
+		return new Character((char)Math.floor(0xFFFF*d)).charValue();
 	}
 
 	/**
@@ -134,8 +130,8 @@ public class YetiJavaSpecificType extends YetiType {
 	 * @return a random float.
 	 */
 	public static float __yetiValue_createRandomFloat(){
-		//TODO return a better value!
-		return new Float((float)Math.random()).floatValue();
+		int i = (int) Math.floor(11*Math.random());
+		return new Float((float)Math.random()*(10^i)).floatValue();
 	}
 
 	/**
@@ -144,12 +140,12 @@ public class YetiJavaSpecificType extends YetiType {
 	 * @return a random double.
 	 */
 	public static double __yetiValue_createRandomDouble(){
-		//TODO return a better value!
-		return new Double(Math.random()).doubleValue();
+		int i = (int) Math.floor(15*Math.random());
+		return new Double(Math.random()*(10^i)).doubleValue();
 	}
 	
 	/**
-	 * Constructor taht creates an empty type.
+	 * Constructor that creates an empty type.
 	 * 
 	 */
 	public YetiJavaSpecificType(String name) {

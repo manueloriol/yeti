@@ -90,6 +90,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	 */
 	@SuppressWarnings("unchecked")
 	public Class addDefinition(Class c) {
+
 		// we add the type to the types
 		YetiType type=new YetiJavaSpecificType(c.getName());
 		YetiType.allTypes.put(type.getName(), type);

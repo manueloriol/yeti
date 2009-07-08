@@ -21,7 +21,7 @@ import yeti.YetiVariable;
  *
  */
 public class YetiJavaMethod extends YetiJavaRoutine {
-	
+
 	/**
 	 * a list of methods not to test. Typically will contain wait, notify, notifyAll
 	 */
@@ -31,17 +31,17 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 	 * Result of the last call.
 	 */
 	public YetiVariable lastCallResult=null;
-	
+
 	/**
 	 * The actual method to call.
 	 */
 	protected Method m;
-	
+
 	/**
 	 * Checks whether this method is a static method or not. 
 	 */
 	public boolean isStatic = false;
-	
+
 	/**
 	 * Constructor to define a Java method. By default the method is non-static.
 	 * 
@@ -56,7 +56,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		isStatic = Modifier.isStatic((m.getModifiers()));
 		this.m=m;
 	}
-	
+
 	/**
 	 * Constructor to define a Java method
 	 * 
@@ -72,8 +72,8 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		this.m=m;
 		this.isStatic=isStatic;
 	}
-	
-	
+
+
 	/**
 	 * A method to initialize the set of methods not to add.
 	 */
@@ -83,11 +83,11 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		methodsNotToAdd.put("notify", null);
 		methodsNotToAdd.put("notifyAll", null);
 	}
-	
+
 	/**
 	 * Checks whether the method corresponds to a method not to test.
 	 * 
-	 * @param methodName teh name of the method.
+	 * @param methodName the name of the method.
 	 * @return <code>true</code> if the method should not be tested. <code>false</code> Otherwise.
 	 */
 	public static boolean isMethodNotToAdd(String methodName){
@@ -115,7 +115,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		int length = 0;
 		String prefix;
 		boolean isValue= false;
-		
+
 		// if the method is static, we need to adjust the arguments
 		// there is no target in the open slots.
 		if (isStatic){
@@ -125,10 +125,10 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			length = arg.length-1;
 			prefix = arg[0].getIdentity().toString();
 		}
-		
+
 		Object []initargs=new Object[length];
 		String log = null;
-		
+
 		// we start generating the log as well as the identifier to use to store the 
 		// result if there is one.
 		YetiIdentifier id=null;
@@ -146,7 +146,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			// otherwise
 			log = prefix + "."+m.getName()+"(";
 		}
-		
+
 		// we adjust the number of arguments according 
 		// to the fact that they are static or not.
 		int offset=1;
@@ -166,14 +166,14 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			}
 		}
 		try {
-			
+
 			// we  make the call
 			if (target!=null)
 				YetiLog.printDebugLog("trying to call "+m.getName()+" on a "+target.getClass().getName(), this);
 			else 
 				YetiLog.printDebugLog("trying to call statically "+m.getName()+" of "+m.getDeclaringClass().getName(), this);				
 			Object o = m.invoke(target,initargs);
-			
+
 			// if the reurn type is void, we look it up
 			if (returnType==null)
 				returnType=YetiType.allTypes.get(m.getReturnType().getName());
@@ -184,25 +184,76 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			// if this is a value, we print it directly
 			if (isValue)
 				// we escape the values
-				// TODO check that this is sufficient
 				if (o instanceof Character){
 					String value;
+					// in case we have space characters
 					switch (((Character)o).charValue()){
+
+					case '\r': {
+						value = "\r"; 
+						break;
+					}
+
+					case ' ': {
+						value = " "; 
+						break;
+					}
+
+					case '\f': {
+						value = "\f"; 
+						break;
+					}
 					case '\t': {
-							value = "\t"; 
-							break;
-						}
+						value = "\t"; 
+						break;
+					}
 					case '\n': {
-							value = "\n";
-							break;
-						}
-					default : 
-						value = ""+(((Character)o).charValue());
-					
+						value = "\n";
+						break;
+					}
+					default :{
+						// if this is not a standard charcter from the old time ISO set
+						int i = ((Character)o).charValue();
+						if (!(i<128 && Character.isLetter(i))) {
+							value = "\\u";
+							String value0="";
+							// we have to reconstruct the correct value
+							char hexDigit[] = {
+									'0', '1', '2', '3', '4', '5', '6', '7',
+									'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+							};
+							// we iterate 4 times (only)
+							for (int j = 0;j<4;j++){
+								value0 = hexDigit[i & 0x0f]+value0;
+								i = i>>4;
+							}
+							value = value+value0;
+						} else
+							// otherwise, we simply show it as is
+							value = ""+((Character)o).charValue();
+					}
+
 					}
 					log=log+"'"+value+"'"+";";
 				} else
-					log=log+o.toString()+";";
+					// just in case we have a NaN value we are able to make it again...
+					// we also add the correct modifier to indicate Longs, floats, and double
+					if (o instanceof Float) {
+						if (((Float)o).isNaN()) {
+							log = log+"0.0/0.0f;";
+						} else
+							log = log+o.toString()+"f;";
+					} else
+						if (o instanceof Double) {
+							if (((Double)o).isNaN()) {
+								log = log+"0.0/0.0d;";
+							} else
+								log = log+o.toString()+"d;";
+						} else
+							if (o instanceof Long) {
+								log = log+o.toString()+"L;";
+							} else
+								log=log+o.toString()+";";
 			else
 				log=log+");";
 			// finally we print the log.
@@ -214,7 +265,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			// should never happen
 			//e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			
+
 			// if we are here, we found a bug.
 			// we first print the log
 			YetiLog.printYetiLog(log+");", this);
@@ -230,7 +281,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			YetiLog.printYetiLog(log+");", this);
 			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
 			YetiLog.printYetiThrowable(e.getCause(), this);
-	
+
 		}
 		return this.lastCallResult;
 	}
