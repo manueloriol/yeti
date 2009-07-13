@@ -50,6 +50,16 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	}	
 
 	/**
+	 * The number of errors in last Logs processed.
+	 */
+	private static int lastLogTotalSize=0;
+	
+	/**
+	 * The number of non-unique bugs in last logs.
+	 */
+	private static int lastNumberOfNonUniqueBugs=0;
+	
+	/**
 	 * Generates a Vector<String> that a test case for each cell.
 	 * 
 	 * @see yeti.YetiLogProcessor#processLogs()
@@ -61,12 +71,13 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		int i = 0;
 		for (String tc: tmp) {
 			i++;
-			result.add("public static void test_"+i+"() {\n"+tc+"\n}");
+			result.add("public static void test_"+i+"() throws Exception {\n"+tc+"\n}");
 		}
-
+		result.add("/** Non-Unique bugs: "+lastNumberOfNonUniqueBugs+", Unique Bugs: "+result.size()+", Logs size (locs): "+lastLogTotalSize+"**/");
 		return result;
 	}
 
+	
 	/**
 	 * Generates the kill value for this line.
 	 * 
@@ -177,22 +188,32 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 
 		// we split the lines of code
 		String []linesOfTest = log.split("\n");
+		
+		// for logging purposes
+		lastLogTotalSize=linesOfTest.length;
+
+		// for logging purposes, we want to know how many errors we found
+		int numberOfErrorsParsed = 0;
 
 		// we make the list of errors
 		HashMap<String,Integer> listOfErrors= new HashMap<String,Integer>();
 		// we look for all errors up
 		for (int i = 0; i<linesOfTest.length; i++){
 			String exceptionTrace="";
-			if (linesOfTest[i].startsWith("/**BUG FOUND:")){
+			if (linesOfTest[i].startsWith("/**BUG")||linesOfTest[i].startsWith("/**POSSIBLE BUG")){
 				// we aggregate the results and give some output
 				int k=i+1;
+				
+				// logging purposes
+				numberOfErrorsParsed++;
+				
 				// the exception starts with a comment
 				if (linesOfTest[k].startsWith("/**")) {
 					// will be used to filter the yeti exception stack
 					boolean isInYetiExceptions=false;
 
 					// we continue until the end of the exception trace
-					while (!linesOfTest[k].contains("**/")){
+					while (k<linesOfTest.length && !linesOfTest[k].contains("**/")){
 						// if we arrive to the reflexive call, we cut
 						if (!isInYetiExceptions&&linesOfTest[k].contains("sun.reflect.")) {
 							isInYetiExceptions=true;
@@ -209,6 +230,9 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			}
 		}
 
+		// for logging purposes:
+		lastNumberOfNonUniqueBugs=numberOfErrorsParsed;
+		
 		// for each error:
 		for(int i: listOfErrors.values()){
 			int finalLength = 0;
@@ -222,7 +246,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 					ignoreNext = false;
 					continue;
 				}
-				if (linesOfTest[j].startsWith("/**BUG FOUND:")) {
+				if (linesOfTest[j].startsWith("/**BUG")||linesOfTest[i].startsWith("/**POSSIBLE BUG")) {
 					ignoreNext=true;
 					continue;
 				}
@@ -259,7 +283,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 				boolean isInYetiExceptions=false;
 
 				// we continue until the end of the exception trace
-				while (!linesOfTest[k].contains("**/")){
+				while (k<linesOfTest.length &&!linesOfTest[k].contains("**/")){
 					// if we arrive to the reflexive call, we cut
 					if (!isInYetiExceptions&&linesOfTest[k].contains("sun.reflect.")) {
 						isInYetiExceptions=true;

@@ -11,7 +11,36 @@ import yeti.YetiStrategy;
  *
  */
 public abstract class YetiTestManager {
+	/**
+	 * The standard timeout for a method execution.
+	 */
+	protected int timeoutInMilliseconds;
+
 	
+	
+	/**
+	 * Simple getter for the timeout in this TestManager
+	 * 
+	 * 
+	 * @return the timeout in milliseconds
+	 */
+	public int getTimeoutInMilliseconds() {
+		return timeoutInMilliseconds;
+	}
+
+
+
+	/**
+	 * Simple setter for the timeout in this test manager.
+	 * 
+	 * @param timeoutInMilliseconds the new value of the timeout in milliseconds.
+	 */
+	public void setTimeoutInMilliseconds(int timeoutInMilliseconds) {
+		this.timeoutInMilliseconds = timeoutInMilliseconds;
+	}
+
+
+
 	/**
 	 * Makes the next call according to the module targeted and the strategy of the program.
 	 * 
@@ -19,5 +48,12 @@ public abstract class YetiTestManager {
 	 * @param strategy the strategy being used.
 	 */
 	public abstract void makeNextCall(YetiModule mod, YetiStrategy strategy);
+	
+	/**
+	 * Stop the testing. Especially useful in multithreaded environment.
+	 * 
+	 */
+	public void stopTesting() {};
+	
 
 }

@@ -16,6 +16,9 @@ public class YetiLog {
 	
 	public static YetiLogProcessor proc = null;
 	
+	public static long numberOfCalls =0;
+	public static long numberOfErrors =0;
+	
 	/**
 	 * The array of classes on which the debug messages should be shown. 
 	 * example of classes to debug:	
@@ -81,6 +84,7 @@ public class YetiLog {
 	 * @param objectInWhichCalled object in which the method was called
 	 */
 	public static void printYetiLog(String message, Object objectInWhichCalled){
+		numberOfCalls++;
 		if (Yeti.pl.isRawLog())
 			System.err.println("YETI LOG: "+message);
 		else
@@ -94,14 +98,22 @@ public class YetiLog {
 	 * @param objectInWhichCalled the object in which this was called.
 	 */
 	public static void printYetiThrowable(Throwable t, Object objectInWhichCalled){
+		numberOfErrors++;
 		if (Yeti.pl.isRawLog()){
 			System.err.println("YETI EXCEPTION - START ");
-			t.printStackTrace(System.err);
+			if (t!=null) 
+				t.printStackTrace(System.err);
+			else 
+				System.err.println("Thread killed by Yeti!");
 			System.err.println("YETI EXCEPTION - END ");
 		} else {
 			proc.appendFailureToCurrentLog("/**YETI EXCEPTION - START ");
 			OutputStream os=new ByteArrayOutputStream();
-			t.printStackTrace(new PrintStream(os));
+			PrintStream ps = new PrintStream(os);
+			if (t!=null) 
+				t.printStackTrace(ps);
+			else 
+				ps.println("Thread killed by Yeti!");
 			proc.appendFailureToCurrentLog(os.toString());
 			proc.appendFailureToCurrentLog("YETI EXCEPTION - END**/ ");
 			YetiLog.printDebugLog(os.toString(), YetiLog.class);

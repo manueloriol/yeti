@@ -64,7 +64,10 @@ public class YetiTest<T extends YetiRoutine> {
 	public int genInt(){
 		return 0;
 	}
-	
+
+//	public int genIntFake(){
+//		while (true) {}
+//	}
 	public String toString(){
 		return "a YetiTest";
 	}

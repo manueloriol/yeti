@@ -263,15 +263,20 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			//e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			// should never happen
-			//e.printStackTrace();
+			// e.printStackTrace();
 		} catch (InvocationTargetException e) {
 
 			// if we are here, we found a bug.
 			// we first print the log
 			YetiLog.printYetiLog(log+");", this);
 			// then print the exception
-			if (e.getCause() instanceof RuntimeException || e.getCause() instanceof Error)			
-				YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
+			if (e.getCause() instanceof RuntimeException || e.getCause() instanceof Error) {
+				if (e.getCause() instanceof ThreadDeath) {
+					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
+				} else {
+					YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
+				}
+			}
 			else
 				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
 			YetiLog.printYetiThrowable(e.getCause(), this);
@@ -281,7 +286,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			YetiLog.printYetiLog(log+");", this);
 			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
 			YetiLog.printYetiThrowable(e.getCause(), this);
-
+			
 		}
 		return this.lastCallResult;
 	}

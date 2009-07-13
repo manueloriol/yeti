@@ -55,6 +55,7 @@ public class YetiEngine {
 			while (new Date().getTime()<endTime){
 				manager.makeNextCall(mod, strategy);
 			}
+			manager.stopTesting();
 
 		}
 
@@ -74,7 +75,7 @@ public class YetiEngine {
 			while (new Date().getTime()<endTime){
 				manager.makeNextCall(mod, strategy);
 			}
-
+			manager.stopTesting();
 		}
 
 		
@@ -93,6 +94,7 @@ public class YetiEngine {
 			while (nTests-->0){
 				manager.makeNextCall(mod, strategy);
 			}
+			manager.stopTesting();
 		}
 
 

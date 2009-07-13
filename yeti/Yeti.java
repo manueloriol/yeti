@@ -1,6 +1,8 @@
 package yeti;
 
 
+import java.util.Date;
+
 import yeti.environments.YetiProgrammingLanguageProperties;
 import yeti.environments.YetiTestManager;
 import yeti.environments.java.YetiJavaProperties;
@@ -33,6 +35,8 @@ public class Yeti {
 	 * -testModules=M1:M2:...:Mn : for testing one or several modules.
 	 * -help, -h: prints the help out.
 	 * -rawlog: prints the logs directly instead of processing them at the end. 
+	 * -ms_calltimeout=X : sets the timeout (in milliseconds) for a method call to X. Note that too 
+	 * low values may result in blocking Yeti (use at least 30ms for good performances).
 	 * 
 	 * @param args the arguments of the program
 	 */
@@ -46,6 +50,7 @@ public class Yeti {
 		boolean isRawLog = false;
 		int nTests=0;
 		String []modulesToTest=null;
+		int callsTimeOut=75;
 		
 		// we parse all arguments of the program
 		for (String s0: args) {
@@ -74,6 +79,18 @@ public class Yeti {
 					continue;	
 				}				
 			}
+			// if testing for time value
+			if (s0.startsWith("-ms_calltimeout=")) {
+				int size = s0.length();
+				// if the time value is in seconds
+				callsTimeOut=(Integer.parseInt(s0.substring(16, size)));
+				if (callsTimeOut<=0) {
+					Yeti.printHelp();
+					return;
+				}
+				continue;
+			}
+
 			// if it is for a number of tests
 			if (s0.startsWith("-nTests=")) {
 				isNTests=true;
@@ -101,7 +118,9 @@ public class Yeti {
 		//test of options to set up the YetiProperties
 		if (isJava) {
 			pl=new YetiJavaProperties();
-		};
+		}
+
+
 		
 		//if it is raw logs, then set it		
 		if (isRawLog) {
@@ -118,6 +137,11 @@ public class Yeti {
 		
 		// create a YetiTestManager and 
 		YetiTestManager testManager = pl.getTestManager(); 
+	
+		//sets the calls timeout
+		if (!(callsTimeOut<=0)) {
+			testManager.setTimeoutInMilliseconds(callsTimeOut);
+		}
 		
 		// We set the strategy
 		strategy= new YetiRandomStrategy(testManager);
@@ -141,6 +165,8 @@ public class Yeti {
 		// Creating the log processor
 		YetiLog.proc=pl.getLogProcessor();
 		
+		// logging purposes:
+		long startTestingTime = new Date().getTime();
 		// depending of the options launch the testing
 		if (isNTests)
 			// if iit is the number of states
@@ -152,13 +178,33 @@ public class Yeti {
 			printHelp();
 			return;
 		}
+		// logging purposes:
+		long endTestingTime = new Date().getTime();
+	
+		// for logging purposes
+		if (isTimeout) {
+			System.out.println("\n/** Testing Session finished, time: "+(endTestingTime-startTestingTime)+"ms **/");
+		}
+
+		boolean isProcessed = false;
+		String aggregationProcessing = "";
 		// presents the logs
-		if (YetiLog.proc!=null)
+		System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");
+		if (!Yeti.pl.isRawLog()) {
+			isProcessed = true;
 			for (String log: YetiLog.proc.processLogs()) {
 				System.out.println(log);
 			}
+			// logging purposes: (slightly wrong because of printing)
+			long endProcessingTime = new Date().getTime();
+			aggregationProcessing = "/** Processing time: "+(endProcessingTime-endTestingTime)+"ms **/";
+		}
+		if (isProcessed) {
+			System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");
+			System.out.println(aggregationProcessing);			
+		}
 		
-		
+
 		
 	}
 	
@@ -173,6 +219,7 @@ public class Yeti {
 		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules.");
 		System.out.println("\t-help, -h: prints the help out.");
 		System.out.println("\t-rawlog: prints the logs directly instead of processing them at the end.");
+		System.out.println("\t-ms_calltimeout=X : sets the timeout (in milliseconds) for a method call to X.Note that too low values may result in blocking Yeti (use at least 30ms for good performances)");
 	}
 
 }

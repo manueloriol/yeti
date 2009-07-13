@@ -103,10 +103,33 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 			// ignored!
 			//e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			// should never happen
-			//e.printStackTrace();
+
+			// if we are here, we found a bug.
+			// we first print the log
+			YetiLog.printYetiLog(log+");", this);
+			// then print the exception
+			if (e.getCause() instanceof RuntimeException || e.getCause() instanceof Error) {
+				if (e.getCause() instanceof ThreadDeath) {
+					YetiLog.printYetiLog("/** POSSIBLE BUG FOUND: TIMEOUT **/", this);
+				} else {
+					YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
+				}
+			}
+			else
+				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
+			YetiLog.printYetiThrowable(e.getCause(), this);
+		} catch (Error e){
+			// if we are here there was a serious error
+			// we print it
+			YetiLog.printYetiLog(log+");", this);
+			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
+			YetiLog.printYetiThrowable(e.getCause(), this);
+			
 		}
-		return this.lastCallResult;
-	}
+		return this.lastCallResult;	
+			
+			
+			
+		}
 
 }
