@@ -3,7 +3,7 @@ package yeti;
 import java.util.Vector;
 
 /**
- * Class that represents a processor for logs comming from Yeti.
+ * Class that represents a processor for logs coming from Yeti.
  * 
  * @author Manuel Oriol (manuel@cs.york.ac.uk)
  * @date Jun 22, 2009
@@ -39,7 +39,7 @@ public abstract class YetiLogProcessor {
 	}
 	
 	/**
-	 * Add the parrameter at the end of the currentLog.
+	 * Add the parameter at the end of the currentLog.
 	 * 
 	 * @param newLog the log to add.
 	 */
@@ -49,7 +49,7 @@ public abstract class YetiLogProcessor {
 	}
 	
 	/**
-	 * Add the parrameter at the end of the currentLog.
+	 * Add the parameter at the end of the currentLog.
 	 * 
 	 * @param newLog the log to add.
 	 */
