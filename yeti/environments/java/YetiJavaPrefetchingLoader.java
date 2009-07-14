@@ -69,7 +69,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	/** TODO QuickFix
 		if (name.startsWith("java.") || name.startsWith("javax.")||
 				name.startsWith("sun.")) {**/
-			// we load it from whithin the standard loader
+			// we load it from within the standard loader
 			c=findSystemClass(name);
 			YetiLog.printDebugLog("Class loaded in parent class loader: "+c.getName(), this);
 			resolveClass(c);
