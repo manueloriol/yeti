@@ -41,7 +41,7 @@ public class YetiModule {
 	/**
 	 * Add a routine to the list of routine in module.
 	 * 
-	 * @param routine the routien to add.
+	 * @param routine the routine to add.
 	 */
 	public void addRoutineInModule(YetiRoutine routine){
 		routinesInModule.put(routine.name.toString(),routine);
