@@ -1,6 +1,7 @@
 package yeti;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import yeti.environments.YetiProgrammingLanguageProperties;
@@ -149,14 +150,30 @@ public class Yeti {
 		// getting the module(s) to test
 		YetiModule mod=null;
 		
-		if (modulesToTest.length==1)
+		if (modulesToTest.length==1) {
 			mod=YetiModule.allModules.get(modulesToTest[0]);
-		else {
-			YetiModule []modules=new YetiModule[modulesToTest.length];
-			for (int i = 0; i<modulesToTest.length; i++ ) {
-				modules[i]=YetiModule.allModules.get(modulesToTest[i]);
+			if(mod==null) {
+				System.err.println(modulesToTest[0] + " was not found. Please check");
+				System.err.println("Testing halted");
+				System.exit(-1);
 			}
-			mod = YetiModule.combineModules(modules);
+		} else {
+			ArrayList<YetiModule> modules=new ArrayList<YetiModule>(modulesToTest.length);
+			for(String moduleToTest : modulesToTest) {
+				YetiModule yetiModuleToTest = YetiModule.allModules.get(moduleToTest);
+				if(yetiModuleToTest==null) {
+					System.err.println(moduleToTest + " was not found. Please check");
+					System.err.println(moduleToTest + " is skipped from testing");
+				} else {
+					modules.add(yetiModuleToTest);
+				}
+			}
+			
+			if(modules.isEmpty()) {
+				System.err.println("Testing halted");
+				System.exit(-1);
+			}
+			mod = YetiModule.combineModules(modules.toArray(new YetiModule[modules.size()]));
 		}
 			
 		// creating the engine object
