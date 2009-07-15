@@ -32,7 +32,7 @@ public abstract class YetiStrategy {
 
 	
 	/**
-	 * Method to get all paramaters for a routine.
+	 * Method to get all parameters for a routine.
 	 * 
 	 * @param routine the routine to treat.
 	 * @return the array of cards.
