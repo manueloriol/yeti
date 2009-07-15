@@ -20,6 +20,7 @@ import yeti.environments.YetiTestManager;
  */
 public class YetiRandomStrategy extends YetiStrategy{
 	
+
 	/**
 	 * The maximum number of recursions allowed for creating arguments to a method.
 	 */
@@ -97,7 +98,7 @@ public class YetiRandomStrategy extends YetiStrategy{
 		YetiLog.printDebugLog(routine.getName().getValue(),this);
 		
 		// we try to get a random instance from the pool
-		if (type.instances.size()>0){
+		if ((type.instances.size()>0)&&(Math.random()<NEW_INSTANCES_INJECTION_PROBABILITY)){
 			return type.getRandomInstance();
 		}		
 		YetiRoutine creator;

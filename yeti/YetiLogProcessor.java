@@ -99,6 +99,45 @@ public abstract class YetiLogProcessor {
 		return logs;
 	}
 	
+	/**
+	 * Printer for raw logs
+	 * 
+	 * @parameter message the message log to print.
+	 */
+	public void printMessageRawLogs(String message) {
+		System.err.println("YETI LOG: "+message);
+	}
 	
+	/**
+	 * Printer for throwables in raw logs
+	 * 
+	 * @parameter t the throwable log to print.
+	 */
+	public void printThrowableRawLogs(Throwable t) {
+		System.err.println("YETI EXCEPTION - START ");
+		if (t!=null) 
+			t.printStackTrace(System.err);
+		else 
+			System.err.println("Thread killed by Yeti!");
+		System.err.println("YETI EXCEPTION - END ");
+
+	}
+	
+	/**
+	 * Printer for no logs
+	 * 
+	 * @parameter message the message log not to print.
+	 */
+	public void printMessageNoLogs(String message) {
+	}
+	
+	/**
+	 * Printer for throwables in no logs
+	 * 
+	 * @parameter t the throwable log not to print.
+	 */
+	public void printThrowableNoLogs(Throwable t) {
+
+	}
 	
 }

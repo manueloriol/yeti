@@ -1,9 +1,13 @@
 package yeti.environments.java;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
+import yeti.Yeti;
 import yeti.YetiLog;
 import yeti.YetiLogProcessor;
 
@@ -53,12 +57,12 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	 * The number of errors in last Logs processed.
 	 */
 	private static int lastLogTotalSize=0;
-	
+
 	/**
 	 * The number of non-unique bugs in last logs.
 	 */
 	private static int lastNumberOfNonUniqueBugs=0;
-	
+
 	/**
 	 * Generates a Vector<String> that a test case for each cell.
 	 * 
@@ -77,7 +81,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		return result;
 	}
 
-	
+
 	/**
 	 * Generates the kill value for this line.
 	 * 
@@ -142,10 +146,11 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			localLoc = localLoc.substring(indexOfAfterOpenParenthesis, indexOfCloseParenthesis);
 
 			// we add all arguments one after he other
-			for (String var: localLoc.split(",")){
-				YetiLog.printDebugLog("arg: "+var, YetiJavaLogProcessor.class);
-				valuesThatMatter.add(var);
-			}
+			if (localLoc.length()>0)
+				for (String var: localLoc.split(",")){
+					YetiLog.printDebugLog("arg: "+var, YetiJavaLogProcessor.class);
+					valuesThatMatter.add(var);
+				}
 		}
 		// we return the result
 		return valuesThatMatter;
@@ -188,7 +193,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 
 		// we split the lines of code
 		String []linesOfTest = log.split("\n");
-		
+
 		// for logging purposes
 		lastLogTotalSize=linesOfTest.length;
 
@@ -203,10 +208,10 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			if (linesOfTest[i].startsWith("/**BUG")||linesOfTest[i].startsWith("/**POSSIBLE BUG")){
 				// we aggregate the results and give some output
 				int k=i+1;
-				
+
 				// logging purposes
 				numberOfErrorsParsed++;
-				
+
 				// the exception starts with a comment
 				if (linesOfTest[k].startsWith("/**")) {
 					// will be used to filter the yeti exception stack
@@ -225,14 +230,14 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 					}
 				}
 				// we add the error if it is unique
-				if (!listOfErrors.containsKey(exceptionTrace))
+				if (!listOfErrors.containsKey(exceptionTrace)&&((YetiJavaModule)Yeti.testModule).isThrowableInModule(exceptionTrace))
 					listOfErrors.put(exceptionTrace,i-1);
 			}
 		}
 
 		// for logging purposes:
 		lastNumberOfNonUniqueBugs=numberOfErrorsParsed;
-		
+
 		// for each error:
 		for(int i: listOfErrors.values()){
 			int finalLength = 0;
@@ -241,18 +246,20 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			boolean ignoreNext = false;
 			// for all lines previously executed:
 			for (int j = i-1; j>=0 ; j--){
+				// if there is no active variable we stop here
+				if (variables.isEmpty()) break;
+
 				// if there is an error, we ignore the call
 				if (ignoreNext) {
-					ignoreNext = false;
+					if (linesOfTest[j+1].startsWith("/**"))
+						ignoreNext = false;
 					continue;
 				}
-				if (linesOfTest[j].startsWith("/**BUG")||linesOfTest[i].startsWith("/**POSSIBLE BUG")) {
+				if (linesOfTest[j].endsWith("**/")) {
 					ignoreNext=true;
 					continue;
 				}
 
-				// if there is no active variable we stop here
-				if (variables.isEmpty()) break;
 
 				// if the line contains meaningful kills or gen 
 				// then we include it in the trace
@@ -297,7 +304,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 				exceptionTrace=exceptionTrace+"\n"+linesOfTest[k++];				
 			}
 			currentTestCase=currentTestCase+exceptionTrace;
-			currentTestCase=currentTestCase+"\n/** original locs: "+i+" minimal locs: "+finalLength+"**/";
+			currentTestCase=currentTestCase+"\n/** original locs: "+i+" minimal locs: "+(finalLength+1)+"**/";
 			testCases.add(currentTestCase);
 		}
 
@@ -307,6 +314,95 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		return testCases;
 
 	}
+	/**
+	 * Printer for raw logs
+	 * 
+	 * @parameter message the message log to print.
+	 */
+	public void printMessageRawLogs(String message) {
+		System.err.println("YETI LOG: "+message);
+	}
+
+	/**
+	 * A list of traces for relevant detected errors. 
+	 */
+	public HashMap<String,Object> listOfErrors=new HashMap<String, Object>();
+
+
+	/**
+	 * Printer for throwables in raw logs
+	 * 
+	 * @parameter t the throwable log to print.
+	 */
+	public void printThrowableRawLogs(Throwable t) {
+		System.err.print("YETI EXCEPTION - START ");
+		OutputStream os=new ByteArrayOutputStream();
+		PrintStream ps = new PrintStream(os);
+		if (t!=null) 
+			t.printStackTrace(ps);
+		else 
+			ps.println("Thread killed by Yeti!");
+		String throwableLog = os.toString();
+		// we split the lines of code
+		String []linesOfTest = throwableLog.split("\n");
+		// we continue until the end of the exception trace
+		int k = 0;
+		String exceptionTrace = "";
+		while (k<linesOfTest.length){
+
+			// if we arrive to the reflexive call, we cut
+			if (linesOfTest[k].contains("sun.reflect.")) {
+				break;
+			}
+			exceptionTrace=exceptionTrace+"\n"+linesOfTest[k++];
+		}
+		if (((YetiJavaModule)Yeti.testModule).isThrowableInModule(exceptionTrace)) {
+			System.err.println(exceptionTrace);
+			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));
+			if (!listOfErrors.containsKey(s0)) {
+				listOfErrors.put(s0,this);
+			}
+		}
+		else 
+			System.err.println("- NOT IN TESTED MODULE"+exceptionTrace);
+		System.err.println("YETI EXCEPTION - END ");
+
+
+
+	}
+
+	/**
+	 * Printer for throwables in no logs
+	 * 
+	 * @parameter t the throwable log not to print.
+	 */
+	public void printThrowableNoLogs(Throwable t) {
+		OutputStream os=new ByteArrayOutputStream();
+		PrintStream ps = new PrintStream(os);
+		if (t!=null) 
+			t.printStackTrace(ps);
+		String throwableLog = os.toString();
+		// we split the lines of code
+		String []linesOfTest = throwableLog.split("\n");
+		// we continue until the end of the exception trace
+		int k = 0;
+		String exceptionTrace = "";
+		while (k<linesOfTest.length){
+
+			// if we arrive to the reflexive call, we cut
+			if (linesOfTest[k].contains("sun.reflect.")) {
+				break;
+			}
+			exceptionTrace=exceptionTrace+"\n"+linesOfTest[k++];
+		}
+		if (((YetiJavaModule)Yeti.testModule).isThrowableInModule(exceptionTrace)) {
+			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));
+			if (!listOfErrors.containsKey(s0)) {
+				listOfErrors.put(s0,this);
+			}
+		}
+	}
+
 
 
 }

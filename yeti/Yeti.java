@@ -6,6 +6,7 @@ import java.util.Date;
 
 import yeti.environments.YetiProgrammingLanguageProperties;
 import yeti.environments.YetiTestManager;
+import yeti.environments.java.YetiJavaLogProcessor;
 import yeti.environments.java.YetiJavaProperties;
 import yeti.strategies.YetiRandomStrategy;
 
@@ -26,7 +27,18 @@ public class Yeti {
 	 * The strategy being used.
 	 */
 	public static YetiStrategy strategy = null;
+
+	/**
+	 * The tested modules.
+	 */
+	public static YetiModule testModule = null;
+
 	
+	/**
+	 * Stores the path to use for testing.
+	 */
+	public static String yetiPath=System.getProperty("java.class.path");
+
 	/**
 	 * Main method of Yeti. Arguments are numerous. Here is a list of the current ones:
 	 * 
@@ -35,9 +47,12 @@ public class Yeti {
 	 * -nTests=X : for calling Yeti to attempt X method calls.
 	 * -testModules=M1:M2:...:Mn : for testing one or several modules.
 	 * -help, -h: prints the help out.
-	 * -rawlog: prints the logs directly instead of processing them at the end. 
-	 * -ms_calltimeout=X : sets the timeout (in milliseconds) for a method call to X. Note that too 
+	 * -rawlogs : prints the logs directly instead of processing them at the end. 
+	 * -nologs : does not print logs, only the final result.
+	 * -msCalltimeout=X : sets the timeout (in milliseconds) for a method call to X. Note that too 
 	 * low values may result in blocking Yeti (use at least 30ms for good performances).
+	 * -yetiPath=X : stores the path that contains the code to test (e.g. for Java the classpath to consider)
+	 * -newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100. 
 	 * 
 	 * @param args the arguments of the program
 	 */
@@ -49,9 +64,11 @@ public class Yeti {
 		int timeOutSec=0;
 		boolean isNTests = false;
 		boolean isRawLog = false;
+		boolean isNoLogs = false;
 		int nTests=0;
 		String []modulesToTest=null;
 		int callsTimeOut=75;
+		
 		
 		// we parse all arguments of the program
 		for (String s0: args) {
@@ -81,11 +98,22 @@ public class Yeti {
 				}				
 			}
 			// if testing for time value
-			if (s0.startsWith("-ms_calltimeout=")) {
+			if (s0.startsWith("-msCalltimeout=")) {
 				int size = s0.length();
 				// if the time value is in seconds
-				callsTimeOut=(Integer.parseInt(s0.substring(16, size)));
+				callsTimeOut=(Integer.parseInt(s0.substring(15, size)));
 				if (callsTimeOut<=0) {
+					Yeti.printHelp();
+					return;
+				}
+				continue;
+			}
+			// if testing for new instance injection probability
+			if (s0.startsWith("-newInstanceInjectionProbability=")) {
+				int size = s0.length();
+				// if the time value is in seconds
+				YetiStrategy.NEW_INSTANCES_INJECTION_PROBABILITY=(Integer.parseInt(s0.substring(33, size)))/100d;
+				if ((YetiStrategy.NEW_INSTANCES_INJECTION_PROBABILITY>1.0)||(YetiStrategy.NEW_INSTANCES_INJECTION_PROBABILITY<0)) {
 					Yeti.printHelp();
 					return;
 				}
@@ -105,10 +133,26 @@ public class Yeti {
 				continue;
 			}
 			// we want to have only logs in standard form
-			if (s0.equals("-rawlog")) {
+			if (s0.equals("-rawlogs")) {
 				isRawLog = true;
 				continue;	
 			}
+
+			// we want to have only logs in standard form
+			if (s0.equals("-nologs")) {
+				isNoLogs = true;
+				isRawLog = true;
+				continue;	
+			}
+			
+			// we want to use the following path
+			if (s0.startsWith("-yetiPath=")) {
+				String s1=s0.substring(10);
+				Yeti.yetiPath = s1;
+				System.setProperty("java.class.path", System.getProperty("java.class.path")+":"+s1);
+				continue;
+			}
+
 			
 			System.out.println("Yeti could not understand option: "+s0);
 			Yeti.printHelp();
@@ -128,6 +172,11 @@ public class Yeti {
 			pl.setRawLog(isRawLog);
 		}
 		
+		//if it is raw logs, then set it		
+		if (isNoLogs) {
+			pl.setNoLogs(isNoLogs);
+		}
+
 		// initializing Yeti
 		try {
 			pl.getInitializer().initialize(args);
@@ -175,7 +224,9 @@ public class Yeti {
 			}
 			mod = YetiModule.combineModules(modules.toArray(new YetiModule[modules.size()]));
 		}
-			
+		// we let everybody use the tested module
+		Yeti.testModule = mod;
+		
 		// creating the engine object
 		engine= new YetiEngine(strategy,testManager);
 		
@@ -216,6 +267,10 @@ public class Yeti {
 			long endProcessingTime = new Date().getTime();
 			aggregationProcessing = "/** Processing time: "+(endProcessingTime-endTestingTime)+"ms **/";
 		}
+		if (!isProcessed) {
+			YetiJavaLogProcessor lp = (YetiJavaLogProcessor)Yeti.pl.getLogProcessor();
+			System.out.println("/** Unique relevant bugs: "+lp.listOfErrors.size()+" **/");			
+		}
 		if (isProcessed) {
 			System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");
 			System.out.println(aggregationProcessing);			
@@ -235,8 +290,13 @@ public class Yeti {
 		System.out.println("\t-nTests=X : for calling Yeti to attempt X method calls.");
 		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules.");
 		System.out.println("\t-help, -h: prints the help out.");
-		System.out.println("\t-rawlog: prints the logs directly instead of processing them at the end.");
-		System.out.println("\t-ms_calltimeout=X : sets the timeout (in milliseconds) for a method call to X.Note that too low values may result in blocking Yeti (use at least 30ms for good performances)");
+		System.out.println("\t-rawlogs: prints the logs directly instead of processing them at the end.");
+		System.out.println("\t-nologs : does not print logs, only the final result.");
+		System.out.println("\t-msCalltimeout=X : sets the timeout (in milliseconds) for a method call to X.Note that too low values may result in blocking Yeti (use at least 30ms for good performances)");
+		System.out.println("\t-yetiPath=X : stores the path that contains the code to test (e.g. for Java the classpath to consider)");
+		System.out.println("\t-newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100.");
+
+	
 	}
 
 }

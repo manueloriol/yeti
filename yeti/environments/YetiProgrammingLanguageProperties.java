@@ -11,6 +11,31 @@ import yeti.YetiLogProcessor;
  *
  */
 public abstract class YetiProgrammingLanguageProperties {
+	
+
+	/**
+	 * Should we have proper logs?
+	 */
+	private boolean isNoLogs =false;
+
+	/**
+	 * Simple getter on the logs.
+	 * 
+	 * @return false if there is logs, true if there is no log.
+	 */
+	public boolean isNoLogs() {
+		return isNoLogs;
+	}
+
+	/**
+	 * Simple setter on the no logs.
+	 * 
+	 * @param isNoLogs true to remove logs, false otherwise.
+	 */
+	public void setNoLogs(boolean isNoLogs) {
+		this.isNoLogs = isNoLogs;
+	}
+
 	/**
 	 * Should we get the logs rather than the test case
 	 */

@@ -152,6 +152,52 @@ public class YetiType {
 	public String toString() {
 		return name;
 	}
+	
+	/**
+	 * The vector of interestingValues. 
+	 */
+	private Vector<Object> interestingValues = new Vector<Object>();
+	
+	/**
+	 * Simple getter for interesting values.
+	 * 
+	 * @return the vector of interesting values.
+	 */
+	public Vector<Object> getInterestingValues() {
+		return interestingValues;
+	}
+
+	/**
+	 * Adds an interesting value on this type.
+	 * 
+	 * @param interestingValue the value to add.
+	 */
+	public void addInterestingValues(Object interestingValue) {
+		this.interestingValues.add(interestingValue);
+	}
+
+	/**
+	 * A simple setter to say that a type has interesting values.
+	 * 
+	 * @param hasInterestingValues true if it has interesting values, false otherwise.
+	 */
+	public void setHasInterestingValues(boolean hasInterestingValues) {
+		this.hasInterestingValues = hasInterestingValues;
+	}
+
+	/**
+	 * Indicates whether this type has interesting values.
+	 */
+	private boolean hasInterestingValues = false;
+	
+	/**
+	 * Defines whether this type has interesting values.
+	 * 
+	 * @return
+	 */
+	public boolean hasInterestingValues() {
+		return hasInterestingValues;
+	}
 
 	/**
 	 * Returns true if the present type is a subtype of the argument.

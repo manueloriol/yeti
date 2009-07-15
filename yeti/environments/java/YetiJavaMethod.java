@@ -137,7 +137,17 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			YetiLog.printDebugLog("return type is "+m.getReturnType().getName(), this);
 			id=YetiIdentifier.getFreshIdentifier();
 			String s0=m.getName();
-			if (s0.startsWith("__yetiValue_")){
+			// this is a hack still decide whether it is a simple type 
+			// (in which case, we will print the result rather than the sequence to construct it 
+			boolean isSimpleReturnType=false;
+			if (this.returnType instanceof YetiJavaSpecificType) {
+				YetiJavaSpecificType rt = (YetiJavaSpecificType) this.returnType;
+				if (rt.isSimpleType()) {
+					isSimpleReturnType=true;
+				}
+
+			}
+			if (s0.startsWith("__yetiValue_")||isSimpleReturnType) {//||(this.returnType instanceof YetiJavaSpecificType)){ //(this.returnType instanceof YetiJavaSpecificType)
 				isValue=true;
 				log = this.returnType.toString()+" "+ id.getValue() + "=";
 			} else

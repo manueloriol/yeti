@@ -13,12 +13,12 @@ import java.io.PrintStream;
  *
  */
 public class YetiLog {
-	
+
 	public static YetiLogProcessor proc = null;
-	
+
 	public static long numberOfCalls =0;
 	public static long numberOfErrors =0;
-	
+
 	/**
 	 * The array of classes on which the debug messages should be shown. 
 	 * example of classes to debug:	
@@ -26,7 +26,7 @@ public class YetiLog {
 	 */
 	//public static String []enabledDebugClasses={"yeti.YetiType", "yeti.environments.java.YetiJavaMethod"};
 	public static String []enabledDebugClasses={};
-	
+
 	/**
 	 * Method used to print debugging messages.
 	 * 
@@ -36,20 +36,20 @@ public class YetiLog {
 	@SuppressWarnings("unchecked")
 	public static void printDebugLog(String message, Object objectInWhichCalled){
 		String className;
-		
+
 		// if it is a class we check directly for this class
 		if (objectInWhichCalled instanceof Class)
 			className = ((Class)objectInWhichCalled).getName();
 		// else we get the class of the object passed as a parameter
 		else
 			className = objectInWhichCalled.getClass().getName();
-		
+
 		// we check that the class is in the classes to print
 		boolean isPrintable = false;
 		for(String s : enabledDebugClasses){
 			if (className.equals(s)) {
-					isPrintable = true; 
-					break;
+				isPrintable = true; 
+				break;
 			}
 		}
 		if (isPrintable) 
@@ -60,7 +60,7 @@ public class YetiLog {
 			else
 				System.err.println("YETI DEBUG:"+className+": "+message);
 	}
-	
+
 	/**
 	 * Method used to print debugging messages. Prints the message if isTemporary is true.
 	 * 
@@ -68,8 +68,8 @@ public class YetiLog {
 	 * @param objectInWhichCalled the caller or the class of the caller in case it is in a static method.
 	 * @param isTemporary print the message anyway if true.
 	 */
-		@SuppressWarnings("unchecked")
-		public static void printDebugLog(String message, Object objectInWhichCalled, boolean isTemporary) {
+	@SuppressWarnings("unchecked")
+	public static void printDebugLog(String message, Object objectInWhichCalled, boolean isTemporary) {
 		if (isTemporary)
 			if (objectInWhichCalled instanceof Class)
 				System.err.println("YETI DEBUG:TMP:"+((Class)objectInWhichCalled).getName()+": "+message);
@@ -83,12 +83,16 @@ public class YetiLog {
 	 * @param message the log to add/print
 	 * @param objectInWhichCalled object in which the method was called
 	 */
-	public static void printYetiLog(String message, Object objectInWhichCalled){
+	public static synchronized void printYetiLog(String message, Object objectInWhichCalled){
 		numberOfCalls++;
-		if (Yeti.pl.isRawLog())
-			System.err.println("YETI LOG: "+message);
-		else
-			proc.appendToCurrentLog(message);
+		if (Yeti.pl.isNoLogs())
+			proc.printMessageNoLogs(message);
+		else {
+			if (Yeti.pl.isRawLog())
+				proc.printMessageRawLogs(message);
+			else
+				proc.appendToCurrentLog(message);
+		}
 	}
 
 	/**
@@ -97,29 +101,28 @@ public class YetiLog {
 	 * @param t the Throwable to print.
 	 * @param objectInWhichCalled the object in which this was called.
 	 */
-	public static void printYetiThrowable(Throwable t, Object objectInWhichCalled){
+	public static synchronized void printYetiThrowable(Throwable t, Object objectInWhichCalled){
 		numberOfErrors++;
-		if (Yeti.pl.isRawLog()){
-			System.err.println("YETI EXCEPTION - START ");
-			if (t!=null) 
-				t.printStackTrace(System.err);
-			else 
-				System.err.println("Thread killed by Yeti!");
-			System.err.println("YETI EXCEPTION - END ");
-		} else {
-			proc.appendFailureToCurrentLog("/**YETI EXCEPTION - START ");
-			OutputStream os=new ByteArrayOutputStream();
-			PrintStream ps = new PrintStream(os);
-			if (t!=null) 
-				t.printStackTrace(ps);
-			else 
-				ps.println("Thread killed by Yeti!");
-			proc.appendFailureToCurrentLog(os.toString());
-			proc.appendFailureToCurrentLog("YETI EXCEPTION - END**/ ");
-			YetiLog.printDebugLog(os.toString(), YetiLog.class);
+		if (Yeti.pl.isNoLogs())
+			proc.printThrowableNoLogs(t);
+		else {
+			if (Yeti.pl.isRawLog()){
+				proc.printThrowableRawLogs(t);
+			} else {
+				proc.appendFailureToCurrentLog("/**YETI EXCEPTION - START ");
+				OutputStream os=new ByteArrayOutputStream();
+				PrintStream ps = new PrintStream(os);
+				if (t!=null) 
+					t.printStackTrace(ps);
+				else 
+					ps.println("Thread killed by Yeti!");
+				proc.appendFailureToCurrentLog(os.toString());
+				proc.appendFailureToCurrentLog("YETI EXCEPTION - END**/ ");
+				YetiLog.printDebugLog(os.toString(), YetiLog.class);
+			}
 		}
 	}
 
-	
+
 
 }

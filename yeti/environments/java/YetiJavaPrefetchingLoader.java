@@ -66,18 +66,17 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 		// has the class already been loaded
 		if (c!=null) return c;
 		// is it a standard Java Class
-	/** TODO QuickFix
 		if (name.startsWith("java.") || name.startsWith("javax.")||
-				name.startsWith("sun.")) {**/
+				name.startsWith("sun.")) {
 			// we load it from within the standard loader
 			c=findSystemClass(name);
 			YetiLog.printDebugLog("Class loaded in parent class loader: "+c.getName(), this);
 			resolveClass(c);
-/**		}else {
+		}else {
 			// otherwise, we try to find it...
 			c=findClass(name);
 			resolveClass(c);
-		}**/
+		}
 			return addDefinition(c);
 
 	}
@@ -275,14 +274,15 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	public Class readClass(File file,String name){
 		Class c;
 		try {
-			FileReader fr=new FileReader(file);
+			BufferedInputStream fr=new BufferedInputStream(new FileInputStream(file));
 			long l=file.length();
-			char[] cBuf=new char[(int)l+1];
+			byte[] bBuf=new byte[(int)l];
 			// we try to read the file as a byte array
-			fr.read(cBuf,0,(int)l);
-			byte[] bBuf=(new String(cBuf)).getBytes();
+			fr.read(bBuf,0,(int)l);
+			YetiLog.printDebugLog(name+" read in byte[]", this);
 			// we try to define the class
-			c=defineClass(name, bBuf,0,(int)l);
+			c=defineClass(name, bBuf,0,bBuf.length);
+			YetiLog.printDebugLog(name+" defined ", this);
 			return c;
 		} catch (Throwable e){
 			e.printStackTrace();
@@ -331,7 +331,10 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 					YetiLog.printDebugLog("reading "+className, this);
 					try {
 						// we actually try to load the class
-						loadClass(prefix+"."+className);
+						if (prefix.equals(""))
+							loadClass(className);
+						else
+							loadClass(prefix+"."+className);
 					} catch (ClassNotFoundException e) {
 						// should never happen
 						e.printStackTrace();

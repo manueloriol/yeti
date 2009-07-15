@@ -1,5 +1,6 @@
 package yeti.environments.java;
 
+import yeti.Yeti;
 import yeti.YetiInitializationException;
 import yeti.YetiLog;
 import yeti.environments.YetiInitializer;
@@ -17,7 +18,7 @@ public class YetiJavaInitializer extends YetiInitializer{
 	/**
 	 * The custom class loader that is going to be used.
 	 */
-	YetiJavaPrefetchingLoader cl= new YetiJavaPrefetchingLoader(System.getProperty("java.class.path"));
+	YetiJavaPrefetchingLoader cl= new YetiJavaPrefetchingLoader(Yeti.yetiPath);
 	
 	/**
 	 * A simpel helper routine that ignores the parameter String.
@@ -57,11 +58,11 @@ public class YetiJavaInitializer extends YetiInitializer{
 					cl.loadAllClassesInPath();
 					
 					// TODO we load the classes defined in the module to test
-					cl.loadClass("yeti.test.YetiTest");
+					cl.loadClass("java.lang.String");
 
 				} catch (ClassNotFoundException e) {
 					// Should not happen, but... we ignore it...
-					YetiLog.printDebugLog(e.toString(), this);
+					YetiLog.printDebugLog(e.toString(), this, true);
 					// e.printStackTrace();
 				}
 			}

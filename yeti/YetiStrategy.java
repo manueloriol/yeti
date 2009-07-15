@@ -16,6 +16,11 @@ import yeti.environments.YetiTestManager;
 public abstract class YetiStrategy {
 
 	/**
+	 * Probability to generate a new instance rather than use an old one.
+	 */
+	public static double NEW_INSTANCES_INJECTION_PROBABILITY=.10;
+
+	/**
 	 * The test manager used.
 	 */
 	@SuppressWarnings("unused")

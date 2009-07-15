@@ -17,7 +17,29 @@ public class YetiModule {
 	 */
 	protected String moduleName;
 
+	/**
+	 * The modules from which it was combined.
+	 */
+	private YetiModule []combiningModules = null;
 	
+	/**
+	 * Gets the modules from which it was combined.
+	 * 
+	 * @return the array containing all modules, null if not composed.
+	 */
+	public YetiModule[] getCombiningModules() {
+		return combiningModules;
+	}
+
+	/**
+	 * Sets the modules that were combined to obtain this one. 
+	 * 
+	 * @param combiningModules the array of combined modules.
+	 */
+	public void setCombiningModules(YetiModule[] combiningModules) {
+		this.combiningModules = combiningModules;
+	}
+
 	/**
 	 * A HashMap of all existing modules.
 	 */
@@ -106,6 +128,7 @@ public class YetiModule {
 	 */
 	public static YetiModule combineModules(YetiModule []modules) {
 		YetiModule result = new YetiModule(YetiName.getFreshNameFrom("__yeti_test_module").value);
+		result.setCombiningModules(modules);
 		for (YetiModule mod0: modules) {
 			for (YetiRoutine rout0: mod0.routinesInModule.values())
 				result.addRoutineInModule(rout0);

@@ -10,7 +10,7 @@ import yeti.YetiType;
  *
  */
 public class YetiJavaSpecificType extends YetiType {
-	
+
 	/**
 	 * A version of the type name actually nice to read 
 	 */
@@ -21,48 +21,73 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	@SuppressWarnings("unused")
 	private boolean isArrayType = false;
-	
+
 	/**
 	 * The number of levels of array if it is an array type.
 	 */
 	private int numLevelsArray = 0;
-	
-	
+
+
 	/**
 	 * The base type if it is an array type.
 	 */
 	private String baseTypeForArrayName="";
-	
+
+	/**
+	 * Is it a simple type?
+	 */
+	private boolean isSimpleType=false;
+
+
+
+	/**
+	 * Is this type a simple type?
+	 * 
+	 * @return the fact it is a simple type.
+	 */
+	public boolean isSimpleType() {
+		return isSimpleType;
+	}
+
+
+	/**
+	 * Sets the reason it is a simple type.
+	 * 
+	 * @param isSimpleType true if it is a simple type.
+	 */
+	public void setSimpleType(boolean isSimpleType) {
+		this.isSimpleType = isSimpleType;
+	}
+
+
 	/**
 	 * Initialize the primitive types (as they are not classes, they need to be initialized in a specific way).
 	 */
 	public static void initPrimitiveTypes(){
-		
+
 		// we create the primitive types
-		@SuppressWarnings("unused")
 		YetiJavaSpecificType tBoolean=new YetiJavaSpecificType("boolean");
-		@SuppressWarnings("unused")
+		tBoolean.setSimpleType(true);
 		YetiJavaSpecificType tByte=new YetiJavaSpecificType("byte");
-		@SuppressWarnings("unused")
+		tByte.setSimpleType(true);
 		YetiJavaSpecificType tShort=new YetiJavaSpecificType("short");
-		@SuppressWarnings("unused")
+		tShort.setSimpleType(true);
 		YetiJavaSpecificType tInt=new YetiJavaSpecificType("int");
-		@SuppressWarnings("unused")
+		tInt.setSimpleType(true);
 		YetiJavaSpecificType tLong=new YetiJavaSpecificType("long");
-		@SuppressWarnings("unused")
+		tLong.setSimpleType(true);
 		YetiJavaSpecificType tDouble=new YetiJavaSpecificType("double");
-		@SuppressWarnings("unused")
+		tDouble.setSimpleType(true);
 		YetiJavaSpecificType tChar=new YetiJavaSpecificType("char");
-		@SuppressWarnings("unused")
+		tChar.setSimpleType(true);
 		YetiJavaSpecificType tFloat=new YetiJavaSpecificType("float");
-		@SuppressWarnings("unused")
-		YetiJavaSpecificType tdouble=new YetiJavaSpecificType("double");
-		
+		tFloat.setSimpleType(true);
+
 		// we add the helper class that has creating procedures.
 		YetiJavaPrefetchingLoader.yetiLoader.addDefinition(YetiJavaSpecificType.class);
-		
-		}
-		
+
+	}
+
 
 	/**
 	 * A boolean random generator.
@@ -82,7 +107,7 @@ public class YetiJavaSpecificType extends YetiType {
 		double d=Math.random();
 		return new Byte((byte) Math.floor(257*d)).byteValue();
 	}
-	
+
 	/**
 	 * A short random generator.
 	 * 
@@ -103,7 +128,7 @@ public class YetiJavaSpecificType extends YetiType {
 		double d2=Math.random()*2-1.0d;
 		return new Integer((int) Math.floor(2147483647*d*d2)).intValue();
 	}
-	
+
 	/**
 	 * A long random generator.
 	 * 
@@ -113,7 +138,7 @@ public class YetiJavaSpecificType extends YetiType {
 		Double d=new Double(YetiJavaSpecificType.__yetiValue_createRandomDouble());
 		return d.longValue();
 	}
-	
+
 	/**
 	 * A char random generator.
 	 * 
@@ -143,7 +168,7 @@ public class YetiJavaSpecificType extends YetiType {
 		int i = (int) Math.floor(15*Math.random());
 		return new Double(Math.random()*(10^i)).doubleValue();
 	}
-	
+
 	/**
 	 * Constructor that creates an empty type.
 	 * 
