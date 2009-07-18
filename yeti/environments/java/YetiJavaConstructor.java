@@ -1,8 +1,6 @@
 package yeti.environments.java;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiIdentifier;
@@ -61,15 +59,15 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 
 
 	/**
-	 * @param arg
-	 * @return
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
+	 * Makes the effective call (lets return the exceptions and Errors).
+	 * 
+	 * @param arg the arguments of the call.
+	 * @return the logs.
+	 * @throws YetiCallException the wrapped exception. 
 	 */
+
 	public String makeEffectiveCall(YetiCard[] arg)
-	throws Throwable {
+	throws YetiCallException {
 		String log;
 		lastCallResult=null;
 		Object []initargs=new Object[arg.length];
