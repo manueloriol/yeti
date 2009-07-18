@@ -15,7 +15,7 @@ public class YetiType {
 
 	/**
 	 * The name of the type. Note that this can be a class name, 
-	 * a type with a generic instanciation, or an interface.
+	 * a type with a generic instantiation, or an interface.
 	 */
 	protected String name;
 
@@ -101,13 +101,13 @@ public class YetiType {
 	public HashMap <String, YetiType> directSuperTypes=new HashMap<String,YetiType>();
 
 	/**
-	 * A HashMap that stores all instanciated subtypes. 
+	 * A HashMap that stores all instantiated subtypes. 
 	 * 
 	 */
 	public HashMap <String, YetiType> allSubtypes=new HashMap<String,YetiType>();
 
 	/**
-	 * A HashMap that stores all instanciated types. 
+	 * A HashMap that stores all instantiated types. 
 	 * 
 	 */
 	public static HashMap <String, YetiType> allTypes=new HashMap<String,YetiType>();
@@ -123,7 +123,7 @@ public class YetiType {
 	}
 
 	/**
-	 * Adds a subtype that was instanciated
+	 * Adds a subtype that was instantiated
 	 * 
 	 * @param yt type to add
 	 */
