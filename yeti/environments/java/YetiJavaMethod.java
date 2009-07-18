@@ -30,7 +30,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 	/**
 	 * Result of the last call.
 	 */
-	public YetiVariable lastCallResult=null;
+	private YetiVariable lastCallResult=null;
 
 	/**
 	 * The actual method to call.
@@ -111,6 +111,58 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 	 * @see yeti.environments.java.YetiJavaRoutine#makeCall(yeti.YetiCard[])
 	 */
 	public Object makeCall(YetiCard []arg){
+		String log = null;
+
+		try {
+
+		
+		log = makeEffectiveCall(arg);
+		} catch (IllegalArgumentException e) {
+			// should never happen
+			//e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// should never happen
+			// e.printStackTrace();
+		} catch (InvocationTargetException e) {
+
+			// if we are here, we found a bug.
+			// we first print the log
+			YetiLog.printYetiLog(log+");", this);
+			// then print the exception
+			if (e.getCause() instanceof RuntimeException || e.getCause() instanceof Error) {
+				if (e.getCause() instanceof ThreadDeath) {
+					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
+				} else {
+					YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
+				}
+			}
+			else
+				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
+			YetiLog.printYetiThrowable(e.getCause(), this);
+		} catch (Error e){
+			// if we are here there was a serious error
+			// we print it
+			YetiLog.printYetiLog(log+");", this);
+			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
+			YetiLog.printYetiThrowable(e.getCause(), this);
+			
+		}
+		catch (Throwable e){
+			// should never happen
+			e.printStackTrace();
+		}
+		return this.lastCallResult;
+	}
+
+	/**
+	 * Makes the effective call (lets return the exceptions and Errors).
+	 * 
+	 * @param arg the arguments of the call.
+	 * @return the logs.
+	 * @throws Throwable 
+	 */
+	public String makeEffectiveCall(YetiCard[] arg) throws Throwable {
+		String log;
 		lastCallResult=null;
 		int length = 0;
 		String prefix;
@@ -127,8 +179,6 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		}
 
 		Object []initargs=new Object[length];
-		String log = null;
-
 		// we start generating the log as well as the identifier to use to store the 
 		// result if there is one.
 		YetiIdentifier id=null;
@@ -175,8 +225,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 				}
 			}
 		}
-		try {
-
+		
 			// we  make the call
 			if (target!=null)
 				YetiLog.printDebugLog("trying to call "+m.getName()+" on a "+target.getClass().getName(), this);
@@ -268,37 +317,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 				log=log+");";
 			// finally we print the log.
 			YetiLog.printYetiLog(log, this);
-		} catch (IllegalArgumentException e) {
-			// should never happen
-			//e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// should never happen
-			// e.printStackTrace();
-		} catch (InvocationTargetException e) {
-
-			// if we are here, we found a bug.
-			// we first print the log
-			YetiLog.printYetiLog(log+");", this);
-			// then print the exception
-			if (e.getCause() instanceof RuntimeException || e.getCause() instanceof Error) {
-				if (e.getCause() instanceof ThreadDeath) {
-					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
-				} else {
-					YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
-				}
-			}
-			else
-				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
-			YetiLog.printYetiThrowable(e.getCause(), this);
-		} catch (Error e){
-			// if we are here there was a serious error
-			// we print it
-			YetiLog.printYetiLog(log+");", this);
-			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
-			YetiLog.printYetiThrowable(e.getCause(), this);
-			
-		}
-		return this.lastCallResult;
+		return log;
 	}
 
 	/**

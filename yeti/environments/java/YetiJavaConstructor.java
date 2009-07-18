@@ -24,7 +24,7 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 	 * The actual constructor.  
 	 */
 	@SuppressWarnings("unchecked")
-	private Constructor c;
+	protected Constructor c;
 	
 	
 	/**
@@ -65,29 +65,11 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 	 * @see yeti.environments.java.YetiJavaRoutine#makeCall(yeti.YetiCard[])
 	 */
 	public Object makeCall(YetiCard []arg){
-		lastCallResult=null;
-		Object []initargs=new Object[arg.length];
-
-		// we start by unboxing the arguments boxed into the cards
-		YetiIdentifier id=YetiIdentifier.getFreshIdentifier();
-		String log = returnType.toString() + " " + id.getValue() + "=new "+returnType.getName()+"(";
-		for (int i=0;i<arg.length; i++){
-			// note that we use getValue to get the actual value
-			initargs[i]=arg[i].getValue();
-			// we use toString() to make it pretty-print.
-			log=log+arg[i].toString();
-			if (i<arg.length-1){
-				log=log+",";
-			}
-		}
+		String log = null;
+			
+			
 		try {
-			// we try to make the call
-			Object o = c.newInstance(initargs);
-			// if it succeeds we create the new variable
-			this.lastCallResult=new YetiVariable(id, returnType, o);
-			log=log+");";
-			// print the log
-			YetiLog.printYetiLog(log, this);
+		log = makeEffectiveCall(arg);
 		} catch (IllegalArgumentException e) {
 			// should never happen
 			// we ignore it
@@ -125,11 +107,51 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
 			YetiLog.printYetiThrowable(e.getCause(), this);
 			
+		}catch (Throwable e){
+			// should never happen
+			e.printStackTrace();
 		}
 		return this.lastCallResult;	
 			
 			
 			
 		}
+
+
+	/**
+	 * @param arg
+	 * @return
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 */
+	public String makeEffectiveCall(YetiCard[] arg)
+			throws Throwable {
+		String log;
+		lastCallResult=null;
+		Object []initargs=new Object[arg.length];
+
+		// we start by unboxing the arguments boxed into the cards
+		YetiIdentifier id=YetiIdentifier.getFreshIdentifier();
+		log = returnType.toString() + " " + id.getValue() + "=new "+returnType.getName()+"(";
+		for (int i=0;i<arg.length; i++){
+			// note that we use getValue to get the actual value
+			initargs[i]=arg[i].getValue();
+			// we use toString() to make it pretty-print.
+			log=log+arg[i].toString();
+			if (i<arg.length-1){
+				log=log+",";
+			}
+		}
+			// we try to make the call
+			Object o = c.newInstance(initargs);
+			// if it succeeds we create the new variable
+			this.lastCallResult=new YetiVariable(id, returnType, o);
+			log=log+");";
+			// print the log
+			YetiLog.printYetiLog(log, this);
+		return log;
+	}
 
 }

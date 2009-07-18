@@ -18,6 +18,7 @@ import yeti.YetiType;
 public class YetiJavaRoutine extends YetiRoutine {
 
 	
+
 	/**
 	 * 
 	 * Creates a Java routine.
@@ -55,6 +56,12 @@ public class YetiJavaRoutine extends YetiRoutine {
 	@Override
 	public Object makeCall(YetiCard[] args) {
 		YetiLog.printDebugLog("Calling "+this.name.getValue(), this);
+		return null;
+	}
+	
+	@Override
+	public String makeEffectiveCall(YetiCard[] arg) throws Throwable {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -48,12 +48,22 @@ public abstract class YetiRoutine {
 	/**
 	 * 
 	 * Make a call of this routine if arguments fit the routine.
+	 * Can be used to code a specific oracle.
 	 * 
 	 * @param arg the arguments.
 	 * @return the result of the call.
 	 */
 	public abstract Object makeCall(YetiCard []arg);
 
+	/**
+	 * Makes the effective call (lets return the exceptions and Errors).
+	 * 
+	 * @param arg the arguments of the call.
+	 * @return the logs.
+	 * @throws Throwable 
+	 */
+	public abstract String makeEffectiveCall(YetiCard[] arg) throws Throwable;
+	
 	/**
 	 * GEtter for the name of the routine.
 	 * 
