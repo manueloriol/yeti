@@ -179,7 +179,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		if (target!=null)
 			YetiLog.printDebugLog("trying to call "+m.getName()+" on a "+target.getClass().getName(), this);
 		else 
-			YetiLog.printDebugLog("trying to call statically "+m.getName()+" of "+m.getDeclaringClass().getName(), this,true);				
+			YetiLog.printDebugLog("trying to call statically "+m.getName()+" of "+m.getDeclaringClass().getName(), this);				
 
 		Object o=null;
 		try {
