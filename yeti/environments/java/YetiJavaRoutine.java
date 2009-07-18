@@ -1,11 +1,15 @@
 package yeti.environments.java;
 
+import java.lang.reflect.InvocationTargetException;
+
+import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiLog;
 import yeti.YetiModule;
 import yeti.YetiName;
 import yeti.YetiRoutine;
 import yeti.YetiType;
+import yeti.YetiVariable;
 
 
 /**
@@ -17,7 +21,11 @@ import yeti.YetiType;
  */
 public class YetiJavaRoutine extends YetiRoutine {
 
-	
+	/**
+	 * Result of the last call.
+	 */
+	protected YetiVariable lastCallResult=null;
+
 
 	/**
 	 * 
@@ -49,14 +57,57 @@ public class YetiJavaRoutine extends YetiRoutine {
 	}
 
 	/* (non-Javadoc)
-	 * We make the call. In this super type, we simply print a message but do not make the call.
+	 * Method used to perform the actual call
 	 * 
-	 * @see yeti.YetiRoutine#makeCall(yeti.YetiCard[])
+	 * @see yeti.environments.java.YetiJavaRoutine#makeCall(yeti.YetiCard[])
 	 */
-	@Override
-	public Object makeCall(YetiCard[] args) {
-		YetiLog.printDebugLog("Calling "+this.name.getValue(), this);
-		return null;
+	public Object makeCall(YetiCard []arg){
+		String log = null;
+
+		try {
+
+			try {
+				makeEffectiveCall(arg);
+			} catch(YetiCallException e) {
+				log = e.getLog();
+				throw e.getOriginalThrowable();
+			}
+
+		} catch (IllegalArgumentException e) {
+			// should never happen
+			//e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// should never happen
+			// e.printStackTrace();
+		} catch (InvocationTargetException e) {
+
+			// if we are here, we found a bug.
+			// we first print the log
+			YetiLog.printYetiLog(log+");", this);
+			// then print the exception
+			if (e.getCause() instanceof RuntimeException || e.getCause() instanceof Error) {
+				if (e.getCause() instanceof ThreadDeath) {
+					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
+				} else {
+					YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
+				}
+			}
+			else
+				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
+			YetiLog.printYetiThrowable(e.getCause(), this);
+		} catch (Error e){
+			// if we are here there was a serious error
+			// we print it
+			YetiLog.printYetiLog(log+");", this);
+			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
+			YetiLog.printYetiThrowable(e.getCause(), this);
+
+		}
+		catch (Throwable e){
+			// should never happen
+			e.printStackTrace();
+		}
+		return this.lastCallResult;
 	}
 	
 	@Override

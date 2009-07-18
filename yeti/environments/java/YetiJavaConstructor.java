@@ -3,6 +3,7 @@ package yeti.environments.java;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiIdentifier;
 import yeti.YetiLog;
@@ -25,13 +26,13 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 	 */
 	@SuppressWarnings("unchecked")
 	protected Constructor c;
-	
-	
+
+
 	/**
 	 * The last result of a call to this constructor.
 	 */
 	public YetiVariable lastCallResult=null;
-	
+
 	/**
 	 * Constructor to the constructor.
 	 * 
@@ -46,7 +47,7 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 		super(name, openSlots, returnType, originatingModule);
 		this.c=c;
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * Returns the actual name of the constructor.
@@ -58,65 +59,6 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 	}
 
 
-	/* (non-Javadoc)
-	 * 
-	 * Makes the call to create a new instance.
-	 * 
-	 * @see yeti.environments.java.YetiJavaRoutine#makeCall(yeti.YetiCard[])
-	 */
-	public Object makeCall(YetiCard []arg){
-		String log = null;
-			
-			
-		try {
-		log = makeEffectiveCall(arg);
-		} catch (IllegalArgumentException e) {
-			// should never happen
-			// we ignore it
-			// TODO check that
-			// e.printStackTrace();
-		} catch (InstantiationException e) {
-			// should never happen
-			// we ignore it
-			// TODO check that
-			// e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// can happen
-			// ignored!
-			//e.printStackTrace();
-		} catch (InvocationTargetException e) {
-
-			// if we are here, we found a bug.
-			// we first print the log
-			YetiLog.printYetiLog(log+");", this);
-			// then print the exception
-			if (e.getCause() instanceof RuntimeException || e.getCause() instanceof Error) {
-				if (e.getCause() instanceof ThreadDeath) {
-					YetiLog.printYetiLog("/** POSSIBLE BUG FOUND: TIMEOUT **/", this);
-				} else {
-					YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
-				}
-			}
-			else
-				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
-			YetiLog.printYetiThrowable(e.getCause(), this);
-		} catch (Error e){
-			// if we are here there was a serious error
-			// we print it
-			YetiLog.printYetiLog(log+");", this);
-			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
-			YetiLog.printYetiThrowable(e.getCause(), this);
-			
-		}catch (Throwable e){
-			// should never happen
-			e.printStackTrace();
-		}
-		return this.lastCallResult;	
-			
-			
-			
-		}
-
 
 	/**
 	 * @param arg
@@ -127,7 +69,7 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 	 * @throws InvocationTargetException
 	 */
 	public String makeEffectiveCall(YetiCard[] arg)
-			throws Throwable {
+	throws Throwable {
 		String log;
 		lastCallResult=null;
 		Object []initargs=new Object[arg.length];
@@ -144,13 +86,18 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 				log=log+",";
 			}
 		}
-			// we try to make the call
-			Object o = c.newInstance(initargs);
-			// if it succeeds we create the new variable
-			this.lastCallResult=new YetiVariable(id, returnType, o);
-			log=log+");";
-			// print the log
-			YetiLog.printYetiLog(log, this);
+		// we try to make the call
+		Object o = null;
+		try {
+			o = c.newInstance(initargs);
+		} catch (Throwable t) {
+			throw new YetiCallException(log,t);
+		}
+		// if it succeeds we create the new variable
+		this.lastCallResult=new YetiVariable(id, returnType, o);
+		log=log+");";
+		// print the log
+		YetiLog.printYetiLog(log, this);
 		return log;
 	}
 

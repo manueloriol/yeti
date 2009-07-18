@@ -269,7 +269,10 @@ public class YetiJavaTestManager extends YetiTestManager {
 					YetiLog.printDebugLog("Stopping the Worker Thread", this);
 					ct.interrupt();
 					Thread.sleep(0,250);
-					ct.stop();
+					// we make sure that the logs are not cut
+					synchronized (YetiLog.class) {
+						ct.stop();
+					}
 					nThreadsStopped++;
 				} catch (Throwable t) {
 					// Should not really matter here.
@@ -307,8 +310,11 @@ public class YetiJavaTestManager extends YetiTestManager {
 				ct.interrupt();
 				Thread.sleep(0,250);
 			}
-			// we stop the thread anyway!
-			ct.stop();
+			// we make sure that the logs are not cut
+			synchronized (YetiLog.class) {
+				// we stop the thread anyway!
+				ct.stop();
+			}
 			nThreadsStopped++;
 		} catch (Throwable e) {
 			// Should never happen

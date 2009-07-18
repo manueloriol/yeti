@@ -1,10 +1,10 @@
 package yeti.environments.java;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 
+import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiIdentifier;
 import yeti.YetiLog;
@@ -27,10 +27,6 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 	 */
 	public static HashMap<String,Object> methodsNotToAdd ;
 
-	/**
-	 * Result of the last call.
-	 */
-	private YetiVariable lastCallResult=null;
 
 	/**
 	 * The actual method to call.
@@ -105,54 +101,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		return m.getName();
 	}
 
-	/* (non-Javadoc)
-	 * Method used to perform the actual call
-	 * 
-	 * @see yeti.environments.java.YetiJavaRoutine#makeCall(yeti.YetiCard[])
-	 */
-	public Object makeCall(YetiCard []arg){
-		String log = null;
 
-		try {
-
-		
-		log = makeEffectiveCall(arg);
-		} catch (IllegalArgumentException e) {
-			// should never happen
-			//e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// should never happen
-			// e.printStackTrace();
-		} catch (InvocationTargetException e) {
-
-			// if we are here, we found a bug.
-			// we first print the log
-			YetiLog.printYetiLog(log+");", this);
-			// then print the exception
-			if (e.getCause() instanceof RuntimeException || e.getCause() instanceof Error) {
-				if (e.getCause() instanceof ThreadDeath) {
-					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
-				} else {
-					YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
-				}
-			}
-			else
-				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
-			YetiLog.printYetiThrowable(e.getCause(), this);
-		} catch (Error e){
-			// if we are here there was a serious error
-			// we print it
-			YetiLog.printYetiLog(log+");", this);
-			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
-			YetiLog.printYetiThrowable(e.getCause(), this);
-			
-		}
-		catch (Throwable e){
-			// should never happen
-			e.printStackTrace();
-		}
-		return this.lastCallResult;
-	}
 
 	/**
 	 * Makes the effective call (lets return the exceptions and Errors).
@@ -161,7 +110,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 	 * @return the logs.
 	 * @throws Throwable 
 	 */
-	public String makeEffectiveCall(YetiCard[] arg) throws Throwable {
+	public String makeEffectiveCall(YetiCard[] arg) throws YetiCallException {
 		String log;
 		lastCallResult=null;
 		int length = 0;
@@ -188,7 +137,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			id=YetiIdentifier.getFreshIdentifier();
 			String s0=m.getName();
 			// this is a hack still decide whether it is a simple type 
-			// (in which case, we will print the result rather than the sequence to construct it 
+			// (in which case, we will print the result rather than the sequence to construct it) 
 			boolean isSimpleReturnType=false;
 			if (this.returnType instanceof YetiJavaSpecificType) {
 				YetiJavaSpecificType rt = (YetiJavaSpecificType) this.returnType;
@@ -225,98 +174,104 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 				}
 			}
 		}
-		
-			// we  make the call
-			if (target!=null)
-				YetiLog.printDebugLog("trying to call "+m.getName()+" on a "+target.getClass().getName(), this);
-			else 
-				YetiLog.printDebugLog("trying to call statically "+m.getName()+" of "+m.getDeclaringClass().getName(), this);				
-			Object o = m.invoke(target,initargs);
 
-			// if the reurn type is void, we look it up
-			if (returnType==null)
-				returnType=YetiType.allTypes.get(m.getReturnType().getName());
-			// if there is a result, we store it and create the variable
-			if (id!=null&&o!=null){
-				this.lastCallResult=new YetiVariable(id, returnType, o);
-			}
-			// if this is a value, we print it directly
-			if (isValue)
-				// we escape the values
-				if (o instanceof Character){
-					String value;
-					// in case we have space characters
-					switch (((Character)o).charValue()){
+		// we  make the call
+		if (target!=null)
+			YetiLog.printDebugLog("trying to call "+m.getName()+" on a "+target.getClass().getName(), this);
+		else 
+			YetiLog.printDebugLog("trying to call statically "+m.getName()+" of "+m.getDeclaringClass().getName(), this,true);				
 
-					case '\r': {
-						value = "\r"; 
-						break;
-					}
+		Object o=null;
+		try {
+			o = m.invoke(target,initargs);
+		} catch (Throwable t) {
+			throw new YetiCallException(log,t);
+		}
 
-					case ' ': {
-						value = " "; 
-						break;
-					}
+		// if the reurn type is void, we look it up
+		if (returnType==null)
+			returnType=YetiType.allTypes.get(m.getReturnType().getName());
+		// if there is a result, we store it and create the variable
+		if (id!=null&&o!=null){
+			this.lastCallResult=new YetiVariable(id, returnType, o);
+		}
+		// if this is a value, we print it directly
+		if (isValue)
+			// we escape the values
+			if (o instanceof Character){
+				String value;
+				// in case we have space characters
+				switch (((Character)o).charValue()){
 
-					case '\f': {
-						value = "\f"; 
-						break;
-					}
-					case '\t': {
-						value = "\t"; 
-						break;
-					}
-					case '\n': {
-						value = "\n";
-						break;
-					}
-					default :{
-						// if this is not a standard charcter from the old time ISO set
-						int i = ((Character)o).charValue();
-						if (!(i<128 && Character.isLetter(i))) {
-							value = "\\u";
-							String value0="";
-							// we have to reconstruct the correct value
-							char hexDigit[] = {
-									'0', '1', '2', '3', '4', '5', '6', '7',
-									'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
-							};
-							// we iterate 4 times (only)
-							for (int j = 0;j<4;j++){
-								value0 = hexDigit[i & 0x0f]+value0;
-								i = i>>4;
-							}
-							value = value+value0;
-						} else
-							// otherwise, we simply show it as is
-							value = ""+((Character)o).charValue();
-					}
+				case '\r': {
+					value = "\r"; 
+					break;
+				}
 
-					}
-					log=log+"'"+value+"'"+";";
-				} else
-					// just in case we have a NaN value we are able to make it again...
-					// we also add the correct modifier to indicate Longs, floats, and double
-					if (o instanceof Float) {
-						if (((Float)o).isNaN()) {
-							log = log+"0.0/0.0f;";
-						} else
-							log = log+o.toString()+"f;";
+				case ' ': {
+					value = " "; 
+					break;
+				}
+
+				case '\f': {
+					value = "\f"; 
+					break;
+				}
+				case '\t': {
+					value = "\t"; 
+					break;
+				}
+				case '\n': {
+					value = "\n";
+					break;
+				}
+				default :{
+					// if this is not a standard charcter from the old time ISO set
+					int i = ((Character)o).charValue();
+					if (!(i<128 && Character.isLetter(i))) {
+						value = "\\u";
+						String value0="";
+						// we have to reconstruct the correct value
+						char hexDigit[] = {
+								'0', '1', '2', '3', '4', '5', '6', '7',
+								'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+						};
+						// we iterate 4 times (only)
+						for (int j = 0;j<4;j++){
+							value0 = hexDigit[i & 0x0f]+value0;
+							i = i>>4;
+						}
+						value = value+value0;
 					} else
-						if (o instanceof Double) {
-							if (((Double)o).isNaN()) {
-								log = log+"0.0/0.0d;";
-							} else
-								log = log+o.toString()+"d;";
+						// otherwise, we simply show it as is
+						value = ""+((Character)o).charValue();
+				}
+
+				}
+				log=log+"'"+value+"'"+";";
+			} else
+				// just in case we have a NaN value we are able to make it again...
+				// we also add the correct modifier to indicate Longs, floats, and double
+				if (o instanceof Float) {
+					if (((Float)o).isNaN()) {
+						log = log+"0.0/0.0f;";
+					} else
+						log = log+o.toString()+"f;";
+				} else
+					if (o instanceof Double) {
+						if (((Double)o).isNaN()) {
+							log = log+"0.0/0.0d;";
 						} else
-							if (o instanceof Long) {
-								log = log+o.toString()+"L;";
-							} else
-								log=log+o.toString()+";";
-			else
-				log=log+");";
-			// finally we print the log.
-			YetiLog.printYetiLog(log, this);
+							log = log+o.toString()+"d;";
+					} else
+						if (o instanceof Long) {
+							log = log+o.toString()+"L;";
+						} else
+							log=log+o.toString()+";";
+		else
+			log=log+");";
+		// finally we print the log.
+		YetiLog.printYetiLog(log, this);
 		return log;
 	}
 

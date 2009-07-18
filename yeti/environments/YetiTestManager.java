@@ -4,7 +4,8 @@ import yeti.YetiModule;
 import yeti.YetiStrategy;
 
 /**
- * Class that represents... 
+ * Class that represents a test manager.
+ * A test manager manages oracles and effectively making the calls.
  * 
  * @author Manuel Oriol (manuel@cs.york.ac.uk)
  * @date Jun 22, 2009
@@ -14,7 +15,7 @@ public abstract class YetiTestManager {
 	/**
 	 * The standard timeout for a method execution.
 	 */
-	protected int timeoutInMilliseconds;
+	protected int timeoutInMilliseconds=50;
 
 	
 	
