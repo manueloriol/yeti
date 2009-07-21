@@ -141,6 +141,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	@SuppressWarnings("unchecked")
 	private void addMethods(Class c, YetiModule mod) {
 		
+		
 		// we add all methods
 		Method[] methods = c.getMethods();
 		for (Method m: methods){
@@ -198,6 +199,11 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	 */
 	@SuppressWarnings("unchecked")
 	private void addConstructors(Class c, YetiType type, YetiModule mod) {
+		// if the class is abstract, the constructors should not be called
+		if (Modifier.isAbstract(c.getModifiers()))
+			return;
+
+		// we add the constructors
 		Constructor[]constructors = c.getConstructors();
 		for (Constructor m: constructors){
 			boolean usable = true;
