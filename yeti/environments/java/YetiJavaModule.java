@@ -24,8 +24,7 @@ public class YetiJavaModule extends YetiModule {
 		super(className);
 	}
 
-	private String []moduleNames=null;
-	
+
 	/**
 	 * Checks that the throwable trace contains the name (or one of the names) of the module(s) in its trace.
 	 * 
@@ -34,23 +33,8 @@ public class YetiJavaModule extends YetiModule {
 	 */
 	public boolean isThrowableInModule(String throwableTrace) {
 		String trace = throwableTrace.substring(throwableTrace.indexOf('\t')+1);
-		if (moduleNames == null) {
-			if (this.getCombiningModules()!=null) {
-				YetiModule []modules = this.getCombiningModules();
-				moduleNames = new String[modules.length];
-				int i = 0;
-				for (YetiModule m: modules) {
-					moduleNames[i++]=m.getModuleName();
-				}
-			} else {
-				moduleNames = new String[1];
-				moduleNames[0] = this.getModuleName();
-			}
-		}
-		for (String modName: moduleNames) {
-			if (trace.contains(modName))
-				return true;
-		}
+		if (trace.contains(this.getModuleName()))
+			return true;
 		return false;
 	}
 }

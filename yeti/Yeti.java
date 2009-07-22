@@ -212,15 +212,23 @@ public class Yeti {
 		// getting the module(s) to test
 		YetiModule mod=null;
 		
+		// if the modules to test is actually one module
 		if (modulesToTest.length==1) {
+			// we get the module
 			mod=YetiModule.allModules.get(modulesToTest[0]);
+			
+			// if it does not exist we stop
 			if(mod==null) {
 				System.err.println(modulesToTest[0] + " was not found. Please check");
 				System.err.println("Testing halted");
-				System.exit(-1);
+				printHelp();
+				return;
 			}
 		} else {
+			// if the modules to test are amny
 			ArrayList<YetiModule> modules=new ArrayList<YetiModule>(modulesToTest.length);
+			// we iterate through the modules
+			// if the module does not exist we omit it
 			for(String moduleToTest : modulesToTest) {
 				YetiModule yetiModuleToTest = YetiModule.allModules.get(moduleToTest);
 				if(yetiModuleToTest==null) {
@@ -230,11 +238,13 @@ public class Yeti {
 					modules.add(yetiModuleToTest);
 				}
 			}
-			
+			// if none rests at the end, we stop the program
 			if(modules.isEmpty()) {
 				System.err.println("Testing halted");
-				System.exit(-1);
+				printHelp();
+				return;
 			}
+			// otherwise, we combine all modules
 			mod = YetiModule.combineModules(modules.toArray(new YetiModule[modules.size()]));
 		}
 		// we let everybody use the tested module
