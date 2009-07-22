@@ -8,6 +8,7 @@ import yeti.environments.YetiProgrammingLanguageProperties;
 import yeti.environments.YetiTestManager;
 import yeti.environments.java.YetiJavaLogProcessor;
 import yeti.environments.java.YetiJavaProperties;
+import yeti.strategies.YetiRandomPlusStrategy;
 import yeti.strategies.YetiRandomStrategy;
 
 /**
@@ -53,6 +54,7 @@ public class Yeti {
 	 * low values may result in blocking Yeti (use at least 30ms for good performances).
 	 * -yetiPath=X : stores the path that contains the code to test (e.g. for Java the classpath to consider)
 	 * -newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100. 
+	 * -randomPlus : uses the random+ strategy that injects interesting values every now and then.
 	 * 
 	 * @param args the arguments of the program
 	 */
@@ -65,6 +67,7 @@ public class Yeti {
 		boolean isNTests = false;
 		boolean isRawLog = false;
 		boolean isNoLogs = false;
+		boolean isRandomPlus = false;
 		int nTests=0;
 		String []modulesToTest=null;
 		int callsTimeOut=75;
@@ -153,6 +156,12 @@ public class Yeti {
 				continue;
 			}
 
+			// we can use the randomPlus strategy
+			if (s0.equals("-randomPlus")) {
+				isRandomPlus = true;
+				continue;	
+			}
+
 			
 			System.out.println("Yeti could not understand option: "+s0);
 			Yeti.printHelp();
@@ -194,8 +203,12 @@ public class Yeti {
 		}
 		
 		// We set the strategy
-		strategy= new YetiRandomStrategy(testManager);
-
+		if (isRandomPlus)
+			strategy= new YetiRandomStrategy(testManager);
+		else
+			strategy= new YetiRandomPlusStrategy(testManager);
+			
+			
 		// getting the module(s) to test
 		YetiModule mod=null;
 		
@@ -295,6 +308,7 @@ public class Yeti {
 		System.out.println("\t-msCalltimeout=X : sets the timeout (in milliseconds) for a method call to X.Note that too low values may result in blocking Yeti (use at least 30ms for good performances)");
 		System.out.println("\t-yetiPath=X : stores the path that contains the code to test (e.g. for Java the classpath to consider)");
 		System.out.println("\t-newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100.");
+		System.out.println("\t-randomPlus : uses the random+ strategy that injects interesting values every now and then.");
 
 	
 	}

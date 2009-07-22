@@ -173,7 +173,30 @@ public class YetiType {
 	 * @param interestingValue the value to add.
 	 */
 	public void addInterestingValues(Object interestingValue) {
+		if (!this.hasInterestingValues())
+			this.setHasInterestingValues(true);
 		this.interestingValues.add(interestingValue);
+	}
+
+	/**
+	 * Resets interesting values on this type.
+	 * 
+	 * @param interestingValue the value to add.
+	 */
+	public void resetInterestingValues() {
+		this.interestingValues=new Vector<Object>();
+		this.setHasInterestingValues(false);
+	}
+	/**
+	 * Returns an interesting value and removes it from the list of interesting values.
+	 * 
+	 * @param interestingValue the value to add.
+	 */
+	public Object removeInterestingValue() {
+		if (interestingValues.size()==1) 		
+			this.setHasInterestingValues(false);
+
+		return this.interestingValues.remove(interestingValues.size()-1);
 	}
 
 	/**

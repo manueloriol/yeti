@@ -137,4 +137,19 @@ public class YetiModule {
 		return result;
 	}
 	
+	/**
+	 * Checks that the trace contains refers to the module(s) in its trace.
+	 * 
+	 * @param trace the trace to check.
+	 * @return true if the throwable is relevant.
+	 */
+	public boolean isThrowableInModule(String trace) {
+		YetiModule []combModules = this.combiningModules;
+		if (combModules!=null) {
+			for (YetiModule mod: combModules) {
+				if (mod.isThrowableInModule(trace)) return true;
+			}
+		}
+		return true;
+	}
 }

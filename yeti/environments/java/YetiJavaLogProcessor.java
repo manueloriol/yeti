@@ -230,7 +230,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 					}
 				}
 				// we add the error if it is unique
-				if (!listOfErrors.containsKey(exceptionTrace)&&((YetiJavaModule)Yeti.testModule).isThrowableInModule(exceptionTrace))
+				if (!listOfErrors.containsKey(exceptionTrace)&&Yeti.testModule.isThrowableInModule(exceptionTrace))
 					listOfErrors.put(exceptionTrace,i-1);
 			}
 		}
@@ -356,7 +356,9 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			}
 			exceptionTrace=exceptionTrace+"\n"+linesOfTest[k++];
 		}
-		if (((YetiJavaModule)Yeti.testModule).isThrowableInModule(exceptionTrace)) {
+		// if the trace is actually relevant for the considered module...
+		if (Yeti.testModule.isThrowableInModule(exceptionTrace)) {
+			// we print the exception trace
 			System.err.println(exceptionTrace);
 			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));
 			if (!listOfErrors.containsKey(s0)) {
@@ -395,7 +397,8 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			}
 			exceptionTrace=exceptionTrace+"\n"+linesOfTest[k++];
 		}
-		if (((YetiJavaModule)Yeti.testModule).isThrowableInModule(exceptionTrace)) {
+		// if the trace is actually relevant for the considered module...
+		if (Yeti.testModule.isThrowableInModule(exceptionTrace)) {
 			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));
 			if (!listOfErrors.containsKey(s0)) {
 				listOfErrors.put(s0,this);
