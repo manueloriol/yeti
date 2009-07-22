@@ -55,10 +55,7 @@ public class YetiLog {
 		if (isPrintable) 
 			// we print the message with maximum information so it is easier 
 			// to know where it comes from 
-			if (objectInWhichCalled instanceof Class)
-				System.err.println("YETI DEBUG:"+className+": "+message);
-			else
-				System.err.println("YETI DEBUG:"+className+": "+message);
+			System.err.println("YETI DEBUG:"+className+": "+message);
 	}
 
 	/**
