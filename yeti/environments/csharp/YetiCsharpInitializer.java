@@ -26,13 +26,14 @@ import yeti.environments.csharp.YetiCsharpSpecificType;
 public class YetiCsharpInitializer extends YetiInitializer {
 
 	private ArrayList<String> strTypes;
-	private ArrayList<String> cons,meths;
+	private ArrayList<String> cons,meths,inters;
 	
 	public YetiCsharpInitializer()
 	{
 		strTypes=new ArrayList<String>();
 		cons=new ArrayList<String>();
 		meths=new ArrayList<String>();
+		inters=new ArrayList<String>();
 	
 	}
 	/**
@@ -62,6 +63,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 			strTypes = soc.getData(2000);
 			cons = soc.getData(2100);
 			meths = soc.getData(2200);
+			inters = soc.getData(2300);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,7 +78,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 			String[] st = s.split(":");
 			System.out.println("st[0]: "+ st[0]);
 			System.out.println("st[1]: "+ st[1]);
-			YetiType type=new YetiCsharpSpecificType(st[0]);
+			YetiType type=new YetiCsharpSpecificType(st[0].trim());
 			YetiType.allTypes.put(type.getName(), type);
 			YetiLog.printDebugLog("adding "+type.getName()+" to yeti types ", this);
 			//If the base class is not object we add it to the subtypes 
@@ -86,14 +88,26 @@ public class YetiCsharpInitializer extends YetiInitializer {
 				YetiLog.printDebugLog("linking "+type.getName()+" to "+parent, this);
 				YetiType.allTypes.get(parent).allSubtypes.put(st[0], type);
 			}
-			
+							
 			// we create the YetiModule out of the type
 			// which exists in st[0] each time
 			YetiModule mod = this.makeModuleFromClass(st[0]);
 			YetiModule.allModules.put(st[0], mod);
 			
 		}
-		
+		// we link an interface with its type to the parent interfaces
+		for (String i: inters ) 
+		{
+			String[] st = i.split(":");
+			System.out.println("st[0]: "+ st[0]);
+			System.out.println("st[1]: "+ st[1]);
+			YetiType type=new YetiCsharpSpecificType(st[1].trim());
+			if (YetiType.allTypes.containsKey(st[0])){
+				YetiLog.printDebugLog("linking "+type.getName()+" to "+st[0], this);
+				YetiType.allTypes.get(st[0]).allSubtypes.put(st[1], type);
+				System.out.println("---------\n"+i+"\n----------");
+			}
+		}
 		// Here we add the constructors of the assemblies
 		// Each constructor is put to the Module and Type (i.e. class)
 		// that it belongs to and we do that by getting the types/modules from
@@ -101,8 +115,8 @@ public class YetiCsharpInitializer extends YetiInitializer {
 		for(String cs: cons)
 		{
 			String[] st = cs.split(":");
-			YetiType t = YetiType.allTypes.get(st[0]);
-			YetiModule m = YetiModule.allModules.get(st[0]);
+			YetiType t = YetiType.allTypes.get(st[0].trim());
+			YetiModule m = YetiModule.allModules.get(st[0].trim());
 			addConstructors(cs, t, m);
 			//System.out.println(cs);
 		}
@@ -114,8 +128,8 @@ public class YetiCsharpInitializer extends YetiInitializer {
 		for(String ms: meths)
 		{
 			String[] st = ms.split(":");
-			YetiType t = YetiType.allTypes.get(st[0]);
-			YetiModule m = YetiModule.allModules.get(st[0]);
+			YetiType t = YetiType.allTypes.get(st[0].trim());
+			YetiModule m = YetiModule.allModules.get(st[0].trim());
 			addMethods(ms,t,m);
 			//System.out.println(ms);
 		}
