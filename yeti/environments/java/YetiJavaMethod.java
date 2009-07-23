@@ -212,7 +212,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 				switch (((Character)o).charValue()){
 
 				case '\r': {
-					value = "\r"; 
+					value = "\\r"; 
 					break;
 				}
 
@@ -222,15 +222,15 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 				}
 
 				case '\f': {
-					value = "\f"; 
+					value = "\\f"; 
 					break;
 				}
 				case '\t': {
-					value = "\t"; 
+					value = "\\t"; 
 					break;
 				}
 				case '\n': {
-					value = "\n";
+					value = "\\n";
 					break;
 				}
 				default :{
