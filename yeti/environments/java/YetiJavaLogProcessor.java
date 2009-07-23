@@ -209,6 +209,10 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			if (linesOfTest[i].startsWith("/**BUG")||linesOfTest[i].startsWith("/**POSSIBLE BUG")){
 				// we aggregate the results and give some output
 				int k=i+1;
+				
+				// just in case the trace is unfinished
+				if (k>=linesOfTest.length)
+					continue;
 
 				// logging purposes
 				numberOfErrorsParsed++;
