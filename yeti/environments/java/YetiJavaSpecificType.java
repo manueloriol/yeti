@@ -105,7 +105,7 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	public static byte __yetiValue_createRandomByte(){
 		double d=Math.random();
-		return new Byte((byte) Math.floor(257*d)).byteValue();
+		return ((byte) Math.floor(257*d));
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	public static short __yetiValue_createRandomShort(){
 		double d=Math.random();
-		return new Short((short) (Math.floor(65535*d)-32767)).shortValue();
+		return((short) (Math.floor(65535*d)-32767));
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class YetiJavaSpecificType extends YetiType {
 	public static int __yetiValue_createRandomInt(){
 		double d=Math.random();
 		double d2=Math.random()*2-1.0d;
-		return new Integer((int) Math.floor(2147483647*d*d2)).intValue();
+		return ((int) Math.floor(2147483647*d*d2));
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	public static char __yetiValue_createRandomChar(){
 		double d=Math.random();
-		return new Character((char)Math.floor(0xFFFF*d)).charValue();
+		return (char)(Math.floor(0xFFFF*d));
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	public static float __yetiValue_createRandomFloat(){
 		int i = (int) Math.floor(11*Math.random());
-		return new Float((float)Math.random()*(10^i)).floatValue();
+		return ((float)Math.random()*(10^i));
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	public static double __yetiValue_createRandomDouble(){
 		int i = (int) Math.floor(15*Math.random());
-		return new Double(Math.random()*(10^i)).doubleValue();
+		return (Math.random()*(10^i));
 	}
 
 	/**

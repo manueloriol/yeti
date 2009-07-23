@@ -63,7 +63,7 @@ public class YetiVariable extends YetiCard{
 	 * 
 	 * @return the identifier.
 	 */
-	public YetiIdentifier getId() {
+	public synchronized YetiIdentifier getId() {
 		return identity;
 	}
 
@@ -82,7 +82,7 @@ public class YetiVariable extends YetiCard{
 	 * 
 	 * @see yeti.YetiCard#getType()
 	 */
-	public YetiType getType() {
+	public synchronized YetiType getType() {
 		return type;
 	}
 
@@ -100,7 +100,7 @@ public class YetiVariable extends YetiCard{
 	 * 
 	 * @see yeti.YetiCard#getValue()
 	 */
-	public Object getValue() {
+	public synchronized Object getValue() {
 		return value;
 	}
 

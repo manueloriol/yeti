@@ -26,10 +26,6 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 	protected Constructor c;
 
 
-	/**
-	 * The last result of a call to this constructor.
-	 */
-	public YetiVariable lastCallResult=null;
 
 	/**
 	 * Constructor to the constructor.

@@ -49,7 +49,7 @@ public class YetiEngine {
 		 */
 		public void testModuleForNMinutes(YetiModule mod, int minutes){
 			// we generate the end time using a long representation
-			long endTime = new Date().getTime()+minutes*60*1000;
+			long endTime = new Date().getTime()+(long)(minutes)*60*1000;
 			
 			// at each iteration we test the current time
 			while (new Date().getTime()<endTime){
