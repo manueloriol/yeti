@@ -47,8 +47,8 @@ public class YetiJavaTestManager extends YetiTestManager {
 		 * @param strategy the strategy to use.
 		 * @param mod the module to test.
 		 */
-		public CallerThread() {
-			super();
+		public CallerThread(ThreadGroup tg,String Name) {
+			super(tg,Name);
 		}
 
 
@@ -200,6 +200,10 @@ public class YetiJavaTestManager extends YetiTestManager {
 	 */
 	public static long nThreadsStopped = 0;
 
+	/**
+	 * A thread group to which all workers belong.
+	 */
+	public static ThreadGroup workersGroup = new ThreadGroup("workers");
 	/* (non-Javadoc)
 	 * 
 	 * We make the call.
@@ -223,7 +227,7 @@ public class YetiJavaTestManager extends YetiTestManager {
 			// create the worker thread
 			if (ct==null || !ct.isAlive()) {
 				YetiLog.printDebugLog("Restarting Worker thread",this);
-				ct=new CallerThread();
+				ct=new CallerThread(workersGroup,"WorkerThread_"+nThreadsStarted);
 				ct.start();
 				nThreadsStarted++;
 			}

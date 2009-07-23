@@ -1,9 +1,13 @@
 package yeti.environments.java;
 
+import java.io.FilePermission;
+import java.security.Permission;
+
 import yeti.Yeti;
 import yeti.YetiInitializationException;
 import yeti.YetiLog;
 import yeti.environments.YetiInitializer;
+import yeti.environments.YetiSecurityException;
 
 
 /**
@@ -19,16 +23,16 @@ public class YetiJavaInitializer extends YetiInitializer{
 	 * The custom class loader that is going to be used.
 	 */
 	YetiJavaPrefetchingLoader cl= new YetiJavaPrefetchingLoader(Yeti.yetiPath);
-	
+
 	/**
 	 * A simpel helper routine that ignores the parameter String.
 	 * 
 	 * @param s teh string to be ignored.
 	 */
 	public void ignore(String s){
-		
+
 	}
-	
+
 	/* (non-Javadoc)
 	 * Initializes the Java environment.
 	 * 
@@ -46,17 +50,17 @@ public class YetiJavaInitializer extends YetiInitializer{
 			// should never happen
 			e1.printStackTrace();
 		}
-		
+
 		// we go through all arguments
 		for(int i=0; i<args.length; i++) {
 			if (args[i].equals("-java")) 
 				ignore(args[i]);
 			else {
-				
+
 				try {
 					// we load all classes in path
 					cl.loadAllClassesInPath();
-					
+
 					// TODO we load the classes defined in the module to test
 					cl.loadClass("java.lang.String");
 
@@ -67,8 +71,23 @@ public class YetiJavaInitializer extends YetiInitializer{
 				}
 			}
 		}
-		
-		
+		System.setSecurityManager(new SecurityManager(){
+			// we set this security manager that filters file output/execution for worker threads
+			public void checkPermission(Permission perm) {
+				// if we are in the thread group of worker threads
+				if (this.getThreadGroup()==YetiJavaTestManager.workersGroup)
+					// if we are trying to access a file permission
+					if (perm instanceof FilePermission) {
+						String action = perm.getActions();
+						// if any of those is in the permission requested, we throw the exception
+						if ((action.indexOf("write")>=0) ||(action.indexOf("execute")>=0)||(action.indexOf("delete")>=0)) {
+							YetiLog.printDebugLog("Yeti did not grant permission: "+perm, this, true);
+							throw new YetiSecurityException("Yeti did not grant the following file permission: "+perm.toString());
+						}
+					}
+			}
+		});
+
 	}
 
 }

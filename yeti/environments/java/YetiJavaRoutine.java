@@ -10,6 +10,7 @@ import yeti.YetiName;
 import yeti.YetiRoutine;
 import yeti.YetiType;
 import yeti.YetiVariable;
+import yeti.environments.YetiSecurityException;
 
 
 /**
@@ -89,6 +90,9 @@ public class YetiJavaRoutine extends YetiRoutine {
 				if (e.getCause() instanceof ThreadDeath) {
 					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
 				} else {
+					if (e.getCause() instanceof YetiSecurityException) {
+						YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: "+e.getCause().getMessage()+" **/", this);
+					} else
 					YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
 				}
 			}
