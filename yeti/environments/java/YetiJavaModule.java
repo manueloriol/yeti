@@ -32,7 +32,9 @@ public class YetiJavaModule extends YetiModule {
 	 * @return true if the throwable is relevant.
 	 */
 	public boolean isThrowableInModule(String throwableTrace) {
+		// we remove the beginning of the trace
 		String trace = throwableTrace.substring(throwableTrace.indexOf('\t')+1);
+		// we return true if the trace contains the module name
 		if (trace.contains(this.getModuleName()))
 			return true;
 		return false;

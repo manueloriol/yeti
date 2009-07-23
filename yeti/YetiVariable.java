@@ -12,6 +12,12 @@ import yeti.environments.java.YetiJavaPrefetchingLoader;
  *
  */
 public class YetiVariable extends YetiCard{
+
+	/**
+	 * The probability to use a null value instead of a normal value.
+	 */
+	public static double PROBABILITY_TO_USE_NULL_VALUE = .01;
+	
 	/**
 	 * Contains all variables available.
 	 */

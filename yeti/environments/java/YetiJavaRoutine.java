@@ -110,9 +110,15 @@ public class YetiJavaRoutine extends YetiRoutine {
 		return this.lastCallResult;
 	}
 	
+	
+	/* (non-Javadoc)
+	 * A stub for sublasses.
+	 * 
+	 * @see yeti.YetiRoutine#makeEffectiveCall(yeti.YetiCard[])
+	 */
 	@Override
 	public String makeEffectiveCall(YetiCard[] arg) throws Throwable {
-		// TODO Auto-generated method stub
+		// by default this one does not do anything
 		return null;
 	}
 

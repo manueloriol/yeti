@@ -169,8 +169,14 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			target= arg[0].getValue();			
 		}
 		for (int i = offset;i<arg.length; i++){
-			initargs[i-offset]=arg[i].getValue();
-			log=log+arg[i].toString();
+			// if we should replace it by a null value, we do it
+			if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&&!(((YetiJavaSpecificType)arg[i].getType()).isSimpleType())) {
+				initargs[i-offset]=null;
+				log=log+"null";
+			} else {
+				initargs[i-offset]=arg[i].getValue();
+				log=log+arg[i].toString();
+			}
 			if (i<arg.length-1){
 				log=log+",";
 			}
@@ -271,7 +277,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 						} else
 							log1=log1+o.toString()+";";
 			}
-		log = log1;
+			log = log1;
 		}
 		else
 			log=log+");";

@@ -54,8 +54,8 @@ public class Yeti {
 	 * low values may result in blocking Yeti (use at least 30ms for good performances).
 	 * -yetiPath=X : stores the path that contains the code to test (e.g. for Java the classpath to consider)
 	 * -newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100. 
+	 * -probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100 default is 1.
 	 * -randomPlus : uses the random+ strategy that injects interesting values every now and then.
-	 * 
 	 * @param args the arguments of the program
 	 */
 	public static void main(String[] args) {
@@ -117,6 +117,18 @@ public class Yeti {
 				// if the time value is in seconds
 				YetiStrategy.NEW_INSTANCES_INJECTION_PROBABILITY=(Integer.parseInt(s0.substring(33, size)))/100d;
 				if ((YetiStrategy.NEW_INSTANCES_INJECTION_PROBABILITY>1.0)||(YetiStrategy.NEW_INSTANCES_INJECTION_PROBABILITY<0)) {
+					Yeti.printHelp();
+					return;
+				}
+				continue;
+			}
+
+			// if testing for new instance injection probability
+			if (s0.startsWith("-probabilityToUseNullValue=")) {
+				int size = s0.length();
+				// if the time value is in seconds
+				YetiVariable.PROBABILITY_TO_USE_NULL_VALUE=(Integer.parseInt(s0.substring(27, size)))/100d;
+				if ((YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>1.0)||(YetiVariable.PROBABILITY_TO_USE_NULL_VALUE<0)) {
 					Yeti.printHelp();
 					return;
 				}
@@ -317,7 +329,8 @@ public class Yeti {
 		System.out.println("\t-nologs : does not print logs, only the final result.");
 		System.out.println("\t-msCalltimeout=X : sets the timeout (in milliseconds) for a method call to X.Note that too low values may result in blocking Yeti (use at least 30ms for good performances)");
 		System.out.println("\t-yetiPath=X : stores the path that contains the code to test (e.g. for Java the classpath to consider)");
-		System.out.println("\t-newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100.");
+		System.out.println("\t-newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100, default is 25.");
+		System.out.println("\t-probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100, default is 1.");
 		System.out.println("\t-randomPlus : uses the random+ strategy that injects interesting values every now and then.");
 
 	

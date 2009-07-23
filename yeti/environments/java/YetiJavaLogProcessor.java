@@ -149,7 +149,8 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			if (localLoc.length()>0)
 				for (String var: localLoc.split(",")){
 					YetiLog.printDebugLog("arg: "+var, YetiJavaLogProcessor.class);
-					valuesThatMatter.add(var);
+					if (!var.equals("null")) 
+						valuesThatMatter.add(var);
 				}
 		}
 		// we return the result

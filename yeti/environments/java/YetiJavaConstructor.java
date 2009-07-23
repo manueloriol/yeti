@@ -76,10 +76,16 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 		YetiIdentifier id=YetiIdentifier.getFreshIdentifier();
 		log = returnType.toString() + " " + id.getValue() + "=new "+returnType.getName()+"(";
 		for (int i=0;i<arg.length; i++){
-			// note that we use getValue to get the actual value
-			initargs[i]=arg[i].getValue();
-			// we use toString() to make it pretty-print.
-			log=log+arg[i].toString();
+			// if we should replace it by a null value, we do it
+			if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&&!(((YetiJavaSpecificType)arg[i].getType()).isSimpleType())) {
+				initargs[i]=null;
+				log=log+"null";
+			} else {
+				// note that we use getValue to get the actual value
+				initargs[i]=arg[i].getValue();
+				// we use toString() to make it pretty-print.
+				log=log+arg[i].toString();
+			}
 			if (i<arg.length-1){
 				log=log+",";
 			}
