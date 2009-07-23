@@ -40,6 +40,8 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 		this.classpaths = path.split(System.getProperty("path.separator"));
 		yetiLoader = this;
 	}
+	
+	
 
 	/* (non-Javadoc)
 	 * 
@@ -139,7 +141,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	 * @param mod the module in which ad it.
 	 */
 	@SuppressWarnings("unchecked")
-	private void addMethods(Class c, YetiModule mod) {
+	public void addMethods(Class c, YetiModule mod) {
 		
 		
 		// we add all methods
@@ -175,18 +177,32 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 					usable = false;
 				}
 			}
-			// if we don't know a type from the method we don't add it
-			if (usable && !YetiJavaMethod.isMethodNotToAdd(m.getName())){
-				YetiLog.printDebugLog("adding method "+m.getName()+" in module "+mod.getModuleName(), this);
-				// add it as a creation routine for the return type
-				YetiType returnType = YetiType.allTypes.get(m.getReturnType().getName());
-				if (returnType==null)
-					returnType = new YetiJavaSpecificType(m.getReturnType().getName());
-				YetiJavaMethod method = new YetiJavaMethod(YetiName.getFreshNameFrom(m.getName()), paramTypes , returnType, mod,m);
-				returnType.addCreationRoutine(method);
-				// add the constructor as a routines to test
-				mod.addRoutineInModule(method);
-			}
+			addMethodToModuleIfUsable(mod, m, usable, paramTypes);
+		}
+	}
+
+
+
+	/**
+	 * Adds a method to the module if it is usable.
+	 * 
+	 * @param mod the module to which add the method.
+	 * @param m the method to add.
+	 * @param usable True if it should be added.
+	 * @param paramTypes the types of the parameters.
+	 */
+	public void addMethodToModuleIfUsable(YetiModule mod, Method m, boolean usable, YetiType[] paramTypes) {
+		// if we don't know a type from the method we don't add it
+		if (usable && !YetiJavaMethod.isMethodNotToAdd(m.getName())){
+			YetiLog.printDebugLog("adding method "+m.getName()+" in module "+mod.getModuleName(), this);
+			// add it as a creation routine for the return type
+			YetiType returnType = YetiType.allTypes.get(m.getReturnType().getName());
+			if (returnType==null)
+				returnType = new YetiJavaSpecificType(m.getReturnType().getName());
+			YetiJavaMethod method = new YetiJavaMethod(YetiName.getFreshNameFrom(m.getName()), paramTypes , returnType, mod,m);
+			returnType.addCreationRoutine(method);
+			// add the constructor as a routines to test
+			mod.addRoutineInModule(method);
 		}
 	}
 
@@ -198,7 +214,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	 * @param mod teh module to which add the class.
 	 */
 	@SuppressWarnings("unchecked")
-	private void addConstructors(Class c, YetiType type, YetiModule mod) {
+	public void addConstructors(Class c, YetiType type, YetiModule mod) {
 		// if the class is abstract, the constructors should not be called
 		if (Modifier.isAbstract(c.getModifiers()))
 			return;
@@ -218,15 +234,34 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 					usable = false;
 				}
 			}
-			// if we don't know a type from the constructor we don't add it
-			if (usable){
-				YetiLog.printDebugLog("adding constructor to "+type.getName()+" in module "+mod.getModuleName(), this);
-				YetiJavaConstructor construct = new YetiJavaConstructor(YetiName.getFreshNameFrom(c.getName()), paramTypes , type, mod,m);
-				// add it as a creation routine for the type
-				type.addCreationRoutine(construct);
-				// add the constructor as a routines to test
-				mod.addRoutineInModule(construct);
-			}
+			addConstructorFromClassToTypeInModuleIfUsable(c, type, mod, m,
+					usable, paramTypes);
+		}
+	}
+
+
+
+	/**
+	 * Add a constructor to a  module and a type if usable.
+	 * 
+	 * @param c the originating class.
+	 * @param type the type of the created object.
+	 * @param mod the module to which we should add it.
+	 * @param m the constructor.
+	 * @param usable True if it is usable.
+	 * @param paramTypes the types of the parameters.
+	 */
+	@SuppressWarnings("unchecked")
+	public void addConstructorFromClassToTypeInModuleIfUsable(Class c,	YetiType type, YetiModule mod, Constructor m, boolean usable,
+			YetiType[] paramTypes) {
+		// if we don't know a type from the constructor we don't add it
+		if (usable){
+			YetiLog.printDebugLog("adding constructor to "+type.getName()+" in module "+mod.getModuleName(), this);
+			YetiJavaConstructor construct = new YetiJavaConstructor(YetiName.getFreshNameFrom(c.getName()), paramTypes , type, mod,m);
+			// add it as a creation routine for the type
+			type.addCreationRoutine(construct);
+			// add the constructor as a routines to test
+			mod.addRoutineInModule(construct);
 		}
 	}
 
