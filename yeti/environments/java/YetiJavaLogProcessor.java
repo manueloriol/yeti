@@ -402,7 +402,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		if (Yeti.testModule.isThrowableInModule(exceptionTrace)) {
 			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));
 			if (!listOfErrors.containsKey(s0)) {
-				listOfErrors.put(s0,this);
+				listOfErrors.put(s0,new Date());
 			}
 		}
 	}
