@@ -29,7 +29,7 @@ public class YetiJavaProperties extends YetiProgrammingLanguageProperties {
 	/**
 	 * The Java logProcessor.
 	 */
-	private YetiJavaLogProcessor jlp=new YetiJavaLogProcessor();
+	private YetiLogProcessor jlp=new YetiJavaLogProcessor();
 	
 	/* (non-Javadoc)
 	 * 

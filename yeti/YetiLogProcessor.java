@@ -1,5 +1,6 @@
 package yeti;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 /**
@@ -11,6 +12,11 @@ import java.util.Vector;
  */
 public abstract class YetiLogProcessor {
 	
+	/**
+	 * The number of non-unique bugs in last logs.
+	 */
+	public static int lastNumberOfNonUniqueBugs = 0;
+
 	/**
 	 * The number of (non-unique) failures found so far.
 	 */
@@ -30,6 +36,11 @@ public abstract class YetiLogProcessor {
 	 * a variable to append to current logs.
 	 */
 	private String currentLog = "";
+
+	/**
+	 * A list of traces for relevant detected errors. 
+	 */
+	public HashMap<String,Object> listOfErrors = new HashMap<String, Object>();
 	
 	/**
 	 * Constructor of the YetiLogProcessor.

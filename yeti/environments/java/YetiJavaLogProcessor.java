@@ -51,6 +51,26 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		log=log+"\n"+newLog;
 		this.setCurrentLog(log);
 		this.numberOfErrors++;
+		// we split the lines of code
+		String []linesOfTest = newLog.split("\n");
+		// we continue until the end of the exception trace
+		int k = 0;
+		String exceptionTrace = "";
+		while (k<linesOfTest.length){
+
+			// if we arrive to the reflexive call, we cut
+			if (linesOfTest[k].contains("sun.reflect.")) {
+				break;
+			}
+			exceptionTrace=exceptionTrace+"\n"+linesOfTest[k++];
+		}
+		// if the trace is actually relevant for the considered module...
+		if (Yeti.testModule.isThrowableInModule(exceptionTrace)&&exceptionTrace.indexOf('\t')>=0) {
+			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));
+			if (!listOfErrors.containsKey(s0)) {
+				listOfErrors.put(s0,new Date());
+			}
+		}
 	}	
 
 	/**
@@ -59,17 +79,12 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	private static int lastLogTotalSize=0;
 
 	/**
-	 * The number of non-unique bugs in last logs.
-	 */
-	private static int lastNumberOfNonUniqueBugs=0;
-
-	/**
 	 * Generates a Vector<String> that a test case for each cell.
 	 * 
 	 * @see yeti.YetiLogProcessor#processLogs()
 	 */
 	@Override
-	public Vector<String> processLogs() {		
+	public Vector<String> processLogs() {
 		Vector<String> tmp = YetiJavaLogProcessor.sliceStatically(this.getCurrentLog());
 		Vector<String> result = new Vector<String>();
 		int i = 0;
@@ -329,12 +344,6 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	}
 
 	/**
-	 * A list of traces for relevant detected errors. 
-	 */
-	public HashMap<String,Object> listOfErrors=new HashMap<String, Object>();
-
-
-	/**
 	 * Printer for throwables in raw logs
 	 * 
 	 * @parameter t the throwable log to print.
@@ -403,7 +412,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			exceptionTrace=exceptionTrace+"\n"+linesOfTest[k++];
 		}
 		// if the trace is actually relevant for the considered module...
-		if (Yeti.testModule.isThrowableInModule(exceptionTrace)) {
+		if (Yeti.testModule.isThrowableInModule(exceptionTrace)&&exceptionTrace.indexOf('\t')>=0) {
 			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));
 			if (!listOfErrors.containsKey(s0)) {
 				listOfErrors.put(s0,new Date());

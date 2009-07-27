@@ -23,6 +23,10 @@ public class YetiVariable extends YetiCard{
 	 */
 	public static HashMap<String, YetiVariable> allId = new HashMap<String, YetiVariable>();
 
+	/**
+	 * The number of variables created in the system (instances used for testing)
+	 */
+	public static long nVariables = 0;
 	
 	
 	/**
@@ -35,6 +39,7 @@ public class YetiVariable extends YetiCard{
 	 */
 	public YetiVariable( YetiIdentifier id, YetiType type, Object value) {
 		super (id, type, value);
+		nVariables++;
 		allId.put(id.value, this);
 		YetiLog.printDebugLog("type: "+type, this);
 		// if the type was not created before we create it on the fly

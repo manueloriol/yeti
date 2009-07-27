@@ -2,10 +2,12 @@ package yeti.environments.java;
 
 import java.io.FilePermission;
 import java.security.Permission;
+import java.util.ArrayList;
 
 import yeti.Yeti;
 import yeti.YetiInitializationException;
 import yeti.YetiLog;
+import yeti.YetiModule;
 import yeti.environments.YetiInitializer;
 import yeti.environments.YetiSecurityException;
 
@@ -58,11 +60,27 @@ public class YetiJavaInitializer extends YetiInitializer{
 			else {
 
 				try {
-					// we load all classes in path
+					// we load all classes in path and String
 					cl.loadAllClassesInPath();
-
-					// TODO we load the classes defined in the module to test
 					cl.loadClass("java.lang.String");
+					// we want to test these modules
+					String []modulesToTest=null;
+					for (String s0: args) {
+						if (s0.startsWith("-testModules=")) {
+							String s1=s0.substring(13);
+							modulesToTest=s1.split(":");
+							break;
+						}
+					}
+
+					// we iterate through the modules
+					// if the module does not exist we load it
+					for(String moduleToTest : modulesToTest) {
+						YetiModule yetiModuleToTest = YetiModule.allModules.get(moduleToTest);
+						if(yetiModuleToTest==null) {
+							cl.loadClass(moduleToTest);
+						} 
+					}
 
 				} catch (ClassNotFoundException e) {
 					// Should not happen, but... we ignore it...
@@ -81,7 +99,7 @@ public class YetiJavaInitializer extends YetiInitializer{
 						String action = perm.getActions();
 						// if any of those is in the permission requested, we throw the exception
 						if ((action.indexOf("write")>=0) ||(action.indexOf("execute")>=0)||(action.indexOf("delete")>=0)) {
-							YetiLog.printDebugLog("Yeti did not grant permission: "+perm, this, true);
+							YetiLog.printDebugLog("Yeti did not grant permission: "+perm, this);
 							throw new YetiSecurityException("Yeti did not grant the following file permission: "+perm.toString());
 						}
 					}

@@ -6,8 +6,11 @@ import java.util.Date;
 
 import yeti.environments.YetiProgrammingLanguageProperties;
 import yeti.environments.YetiTestManager;
-import yeti.environments.java.YetiJavaLogProcessor;
 import yeti.environments.java.YetiJavaProperties;
+import yeti.monitoring.YetiGUIFaultsOverTime;
+import yeti.monitoring.YetiGUINumberOfCallsOverTime;
+import yeti.monitoring.YetiGUINumberOfFailuresOverTime;
+import yeti.monitoring.YetiGUINumberOfVariablesOverTime;
 import yeti.strategies.YetiRandomPlusStrategy;
 import yeti.strategies.YetiRandomStrategy;
 
@@ -56,6 +59,8 @@ public class Yeti {
 	 * -newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100. 
 	 * -probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100 default is 1.
 	 * -randomPlus : uses the random+ strategy that injects interesting values every now and then.
+	 * -gui : shows the standard graphical user interface for monitoring yeti.
+	 * 
 	 * @param args the arguments of the program
 	 */
 	public static void main(String[] args) {
@@ -68,6 +73,7 @@ public class Yeti {
 		boolean isRawLog = false;
 		boolean isNoLogs = false;
 		boolean isRandomPlus = false;
+		boolean showMonitoringGui = false;
 		int nTests=0;
 		String []modulesToTest=null;
 		int callsTimeOut=75;
@@ -159,7 +165,13 @@ public class Yeti {
 				isRawLog = true;
 				continue;	
 			}
-			
+
+			// we want to have only logs in standard form
+			if (s0.equals("-gui")) {
+				showMonitoringGui = true;
+				continue;	
+			}
+
 			// we want to use the following path
 			if (s0.startsWith("-yetiPath=")) {
 				String s1=s0.substring(10);
@@ -237,7 +249,7 @@ public class Yeti {
 				return;
 			}
 		} else {
-			// if the modules to test are amny
+			// if the modules to test are many
 			ArrayList<YetiModule> modules=new ArrayList<YetiModule>(modulesToTest.length);
 			// we iterate through the modules
 			// if the module does not exist we omit it
@@ -266,7 +278,11 @@ public class Yeti {
 		engine= new YetiEngine(strategy,testManager);
 		
 		// Creating the log processor
-		YetiLog.proc=pl.getLogProcessor();
+		if (showMonitoringGui) {
+		YetiLog.proc=new YetiGUINumberOfVariablesOverTime(new YetiGUINumberOfFailuresOverTime(new YetiGUINumberOfCallsOverTime(new YetiGUIFaultsOverTime(pl.getLogProcessor(),100),100),100),100);
+		} else {
+			YetiLog.proc=pl.getLogProcessor();
+		}
 		
 		// logging purposes:
 		long startTestingTime = new Date().getTime();
@@ -303,7 +319,7 @@ public class Yeti {
 			aggregationProcessing = "/** Processing time: "+(endProcessingTime-endTestingTime)+"ms **/";
 		}
 		if (!isProcessed) {
-			YetiJavaLogProcessor lp = (YetiJavaLogProcessor)Yeti.pl.getLogProcessor();
+			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
 			System.out.println("/** Unique relevant bugs: "+lp.listOfErrors.size()+" **/");			
 		}
 		if (isProcessed) {
@@ -332,7 +348,7 @@ public class Yeti {
 		System.out.println("\t-newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100, default is 25.");
 		System.out.println("\t-probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100, default is 1.");
 		System.out.println("\t-randomPlus : uses the random+ strategy that injects interesting values every now and then.");
-
+		System.out.println("\t-gui : shows the standard graphical user interface for monitoring yeti.");
 	
 	}
 
