@@ -1,6 +1,6 @@
 package yeti.environments.jml;
 
-import yeti.environments.YetiPrefetchingLoader;
+import yeti.environments.YetiLoader;
 import yeti.environments.java.YetiJavaInitializer;
 
 /**
@@ -13,7 +13,7 @@ import yeti.environments.java.YetiJavaInitializer;
  */
 public class YetiJMLInitializer extends YetiJavaInitializer {
 
-	public YetiJMLInitializer(YetiPrefetchingLoader prefetchingLoader) {
+	public YetiJMLInitializer(YetiLoader prefetchingLoader) {
 		super(prefetchingLoader);
 	}
 }

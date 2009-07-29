@@ -9,7 +9,7 @@ import yeti.YetiModule;
 import yeti.YetiName;
 import yeti.YetiRoutine;
 import yeti.YetiType;
-import yeti.environments.YetiPrefetchingLoader;
+import yeti.environments.YetiLoader;
 
 /**
  * Class that represents the custom class loader to load classes of the program.
@@ -18,7 +18,7 @@ import yeti.environments.YetiPrefetchingLoader;
  * @date Jun 22, 2009
  *
  */
-public class YetiJavaPrefetchingLoader extends YetiPrefetchingLoader {
+public class YetiJavaPrefetchingLoader extends YetiLoader {
 
 	/**
 	 * Constructor that creates a new loader.
@@ -179,7 +179,7 @@ public class YetiJavaPrefetchingLoader extends YetiPrefetchingLoader {
 			YetiType returnType = YetiType.allTypes.get(method.getReturnType().getName());
 			if (returnType==null)
 				returnType = new YetiJavaSpecificType(method.getReturnType().getName());
-			YetiRoutine methodRoutine = generateMethodRoutine(module , method, paramTypes , returnType);
+			YetiRoutine methodRoutine = generateRoutineFromMethod(module , method, paramTypes , returnType);
 			// add it as a creation routine for the type
 			returnType.addCreationRoutine(methodRoutine);
 			// add the method as a routine to test
@@ -196,7 +196,7 @@ public class YetiJavaPrefetchingLoader extends YetiPrefetchingLoader {
 	 * @param returnType the type returned by the method 
 	 * @return a Yeti routine for this method
 	 */
-	protected YetiRoutine generateMethodRoutine(YetiModule module, Method method, YetiType[] paramTypes, YetiType returnType) {
+	protected YetiRoutine generateRoutineFromMethod(YetiModule module, Method method, YetiType[] paramTypes, YetiType returnType) {
 		return new YetiJavaMethod(YetiName.getFreshNameFrom(method.getName()), paramTypes , returnType, module, method);
 	}
 	
@@ -248,7 +248,7 @@ public class YetiJavaPrefetchingLoader extends YetiPrefetchingLoader {
 		// if we don't know a type from the constructor we don't add it
 		if (usable){
 			YetiLog.printDebugLog("adding constructor to "+type.getName()+" in module "+module.getModuleName(), this);
-			YetiRoutine constructorRoutine = generateConstructorRoutine(clazz, paramTypes , type, module, con);
+			YetiRoutine constructorRoutine = generateRoutineFromConstructor(clazz, paramTypes , type, module, con);
 			// add it as a creation routine for the type
 			type.addCreationRoutine(constructorRoutine);
 			// add the constructor as a routine to test
@@ -267,7 +267,7 @@ public class YetiJavaPrefetchingLoader extends YetiPrefetchingLoader {
 	 * @return the Yeti routine for the constructor of the class c
 	 */
 	@SuppressWarnings("unchecked")
-	protected YetiRoutine generateConstructorRoutine(Class clazz, YetiType[] paramTypes, YetiType type, YetiModule mod, Constructor con) {
+	protected YetiRoutine generateRoutineFromConstructor(Class clazz, YetiType[] paramTypes, YetiType type, YetiModule mod, Constructor con) {
 		return new YetiJavaConstructor(YetiName.getFreshNameFrom(clazz.getName()), paramTypes , type, mod, con);
 	}
 	

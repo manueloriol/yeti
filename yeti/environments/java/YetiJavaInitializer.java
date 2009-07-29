@@ -7,7 +7,7 @@ import yeti.YetiInitializationException;
 import yeti.YetiLog;
 import yeti.YetiModule;
 import yeti.environments.YetiInitializer;
-import yeti.environments.YetiPrefetchingLoader;
+import yeti.environments.YetiLoader;
 import yeti.environments.YetiSecurityException;
 
 
@@ -23,9 +23,9 @@ public class YetiJavaInitializer extends YetiInitializer {
 	/**
 	 * The custom class loader that is going to be used.
 	 */
-	protected YetiPrefetchingLoader prefetchingLoader = null;
+	protected YetiLoader prefetchingLoader = null;
 	
-	public YetiJavaInitializer(YetiPrefetchingLoader prefetchingLoader) {
+	public YetiJavaInitializer(YetiLoader prefetchingLoader) {
 		this.prefetchingLoader = prefetchingLoader;
 	}
 	

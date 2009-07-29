@@ -56,7 +56,7 @@ public class YetiJMLPrefetchingLoader extends YetiJavaPrefetchingLoader {
 	 * @return the Yeti routine for the constructor of the class c
 	 */
 	@SuppressWarnings("unchecked")
-	protected YetiRoutine generateConstructorRoutine(Class clazz, YetiType[] paramTypes, YetiType type, YetiModule mod, Constructor con) {
+	protected YetiRoutine generateRoutineFromConstructor(Class clazz, YetiType[] paramTypes, YetiType type, YetiModule mod, Constructor con) {
 		return new YetiJMLConstructor(YetiName.getFreshNameFrom(clazz.getName()), paramTypes , type, mod, con);
 	}
 	
@@ -69,7 +69,7 @@ public class YetiJMLPrefetchingLoader extends YetiJavaPrefetchingLoader {
 	 * @param returnType the type returned by the method 
 	 * @return a Yeti routine for this method
 	 */
-	protected YetiRoutine generateMethodRoutine(YetiModule module, Method method, YetiType[] paramTypes, YetiType returnType) {
+	protected YetiRoutine generateRoutineFromMethod(YetiModule module, Method method, YetiType[] paramTypes, YetiType returnType) {
 		return new YetiJMLMethod(YetiName.getFreshNameFrom(method.getName()), paramTypes , returnType, module, method);
 	}
 	

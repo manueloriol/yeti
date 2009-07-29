@@ -1,7 +1,7 @@
 package yeti.environments.java;
 
 import yeti.YetiType;
-import yeti.environments.YetiPrefetchingLoader;
+import yeti.environments.YetiLoader;
 
 /**
  * Class that represents primitive types.
@@ -85,7 +85,7 @@ public class YetiJavaSpecificType extends YetiType {
 		tFloat.setSimpleType(true);
 
 		// we add the helper class that has creating procedures.
-		YetiPrefetchingLoader.yetiLoader.addDefinition(YetiJavaSpecificType.class);
+		YetiLoader.yetiLoader.addDefinition(YetiJavaSpecificType.class);
 
 	}
 

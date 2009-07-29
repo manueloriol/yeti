@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import yeti.environments.YetiInitializer;
-import yeti.environments.YetiPrefetchingLoader;
+import yeti.environments.YetiLoader;
 import yeti.environments.YetiProgrammingLanguageProperties;
 import yeti.environments.YetiTestManager;
 import yeti.environments.java.YetiJavaInitializer;
@@ -55,6 +55,7 @@ public class Yeti {
 	 * Main method of Yeti. Arguments are numerous. Here is a list of the current ones:
 	 * 
 	 * -java, -Java : for calling it on Java.
+	 * -jml, -JML : for calling it on JML annotated code.
 	 * -time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).
 	 * -nTests=X : for calling Yeti to attempt X method calls.
 	 * -testModules=M1:M2:...:Mn : for testing one or several modules.
@@ -211,7 +212,7 @@ public class Yeti {
 		
 		//test of options to set up the YetiProperties for Java
 		if (isJava) {
-			YetiPrefetchingLoader prefetchingLoader = new YetiJavaPrefetchingLoader(yetiPath);
+			YetiLoader prefetchingLoader = new YetiJavaPrefetchingLoader(yetiPath);
 			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader);
 			YetiTestManager testManager = new YetiJavaTestManager();
 			YetiLogProcessor logProcessor = new YetiJavaLogProcessor();
@@ -220,7 +221,7 @@ public class Yeti {
 		
 		//test of options to set up the YetiProperties for JML
 		if (isJML) {
-			YetiPrefetchingLoader prefetchingLoader = new YetiJMLPrefetchingLoader(yetiPath);
+			YetiLoader prefetchingLoader = new YetiJMLPrefetchingLoader(yetiPath);
 			YetiInitializer initializer = new YetiJMLInitializer(prefetchingLoader);
 			YetiTestManager testManager = new YetiJavaTestManager();
 			YetiLogProcessor logProcessor = new YetiJavaLogProcessor();

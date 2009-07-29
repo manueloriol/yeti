@@ -7,7 +7,7 @@ package yeti.environments;
  * @date 20 Jul 2009
  *
  */
-public abstract class YetiPrefetchingLoader extends ClassLoader {
+public abstract class YetiLoader extends ClassLoader {
 	
 	/**
 	 * The classpath of classes to load.
@@ -18,14 +18,14 @@ public abstract class YetiPrefetchingLoader extends ClassLoader {
 	/**
 	 * The general loader.
 	 */
-	public static YetiPrefetchingLoader yetiLoader;
+	public static YetiLoader yetiLoader;
 	
 	/**
 	 * Constructor that creates a new loader.
 	 * 
 	 * @param path the classpath to load classes.
 	 */
-	public YetiPrefetchingLoader(String path) {
+	public YetiLoader(String path) {
 		super();
 		
 		this.classpaths = path.split(System.getProperty("path.separator"));
