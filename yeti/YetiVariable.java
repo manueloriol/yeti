@@ -43,12 +43,13 @@ public class YetiVariable extends YetiCard{
 		allId.put(id.value, this);
 		YetiLog.printDebugLog("type: "+type, this);
 		// if the type was not created before we create it on the fly
-		if (type==null){
-			YetiLog.printDebugLog("value's type: "+value.getClass().getName(), this);
-			YetiPrefetchingLoader.yetiLoader.addDefinition(value.getClass());
-			this.type=YetiType.allTypes.get(value.getClass().getName());
-			
-		}
+// TODO this is innocuously removed
+//		if (type==null){
+//			YetiLog.printDebugLog("value's type: "+value.getClass().getName(), this);
+//			YetiPrefetchingLoader.yetiLoader.addDefinition(value.getClass());
+//			this.type=YetiType.allTypes.get(value.getClass().getName());
+//			
+//		}
 		YetiLog.printDebugLog("type: "+this.type.name, this);
 		// we add the instance to the type
 		this.type.addInstance(this);
