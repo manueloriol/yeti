@@ -69,7 +69,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 		if (c!=null) return c;
 		// is it a standard Java Class
 		if (name.startsWith("java.") || name.startsWith("javax.")||
-				name.startsWith("sun.")||name.endsWith(".jar")) {
+				name.startsWith("sun.")) {
 			// we load it from within the standard loader
 			c=findSystemClass(name);
 			YetiLog.printDebugLog("Class loaded in parent class loader: "+c.getName(), this);
@@ -77,6 +77,8 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 		}else {
 			// otherwise, we try to find it...
 			c=findClass(name);
+			if (c==null)
+				c=findSystemClass(name);
 			resolveClass(c);
 		}
 			return addDefinition(c);
@@ -285,7 +287,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	 * @see java.lang.ClassLoader#findClass(java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
-	public Class findClass(String name)throws ClassNotFoundException{
+	public Class findClass(String name) throws ClassNotFoundException{
 		File fc=null;
 		Class c=null;
 		
@@ -337,7 +339,8 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	 */
 	public void loadAllClassesInPath(){
 		for (String s0:classpaths){
-			loadAllClassesIn(s0,"");
+			if (!s0.endsWith(".jar"))
+				loadAllClassesIn(s0,"");
 		}
 		
 	}
