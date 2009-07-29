@@ -69,7 +69,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 		if (c!=null) return c;
 		// is it a standard Java Class
 		if (name.startsWith("java.") || name.startsWith("javax.")||
-				name.startsWith("sun.")) {
+				name.startsWith("sun.")||name.endsWith(".jar")) {
 			// we load it from within the standard loader
 			c=findSystemClass(name);
 			YetiLog.printDebugLog("Class loaded in parent class loader: "+c.getName(), this);
