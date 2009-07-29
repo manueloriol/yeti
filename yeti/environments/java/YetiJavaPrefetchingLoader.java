@@ -77,6 +77,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 		}else {
 			// otherwise, we try to find it...
 			c=findClass(name);
+			// if we could not find it we delegate to the system class loader
 			if (c==null)
 				c=findSystemClass(name);
 			resolveClass(c);
