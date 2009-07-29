@@ -4,9 +4,17 @@ package yeti;
 import java.util.ArrayList;
 import java.util.Date;
 
+import yeti.environments.YetiInitializer;
+import yeti.environments.YetiPrefetchingLoader;
 import yeti.environments.YetiProgrammingLanguageProperties;
 import yeti.environments.YetiTestManager;
+import yeti.environments.java.YetiJavaInitializer;
+import yeti.environments.java.YetiJavaLogProcessor;
+import yeti.environments.java.YetiJavaPrefetchingLoader;
 import yeti.environments.java.YetiJavaProperties;
+import yeti.environments.java.YetiJavaTestManager;
+import yeti.environments.jml.YetiJMLInitializer;
+import yeti.environments.jml.YetiJMLPrefetchingLoader;
 import yeti.monitoring.YetiGUIFaultsOverTime;
 import yeti.monitoring.YetiGUINumberOfCallsOverTime;
 import yeti.monitoring.YetiGUINumberOfFailuresOverTime;
@@ -41,7 +49,7 @@ public class Yeti {
 	/**
 	 * Stores the path to use for testing.
 	 */
-	public static String yetiPath=System.getProperty("java.class.path");
+	public static String yetiPath = System.getProperty("java.class.path");
 
 	/**
 	 * Main method of Yeti. Arguments are numerous. Here is a list of the current ones:
@@ -67,6 +75,7 @@ public class Yeti {
 		
 		YetiEngine engine;
 		boolean isJava = false;
+		boolean isJML = false;
 		boolean isTimeout = false;
 		int timeOutSec=0;
 		boolean isNTests = false;
@@ -91,6 +100,13 @@ public class Yeti {
 				isJava = true;
 				continue;
 			}
+			// if JML
+			//TODO somebody could also set -java
+			if (s0.toLowerCase().equals("-jml")) {
+				isJML = true;
+				continue;
+			}
+			
 			// if testing for time value
 			if (s0.startsWith("-time=")) {
 				isTimeout=true;
@@ -193,11 +209,23 @@ public class Yeti {
 
 		}
 		
-		//test of options to set up the YetiProperties
+		//test of options to set up the YetiProperties for Java
 		if (isJava) {
-			pl=new YetiJavaProperties();
+			YetiPrefetchingLoader prefetchingLoader = new YetiJavaPrefetchingLoader(yetiPath);
+			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader);
+			YetiTestManager testManager = new YetiJavaTestManager();
+			YetiLogProcessor logProcessor = new YetiJavaLogProcessor();
+			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
 		}
-
+		
+		//test of options to set up the YetiProperties for JML
+		if (isJML) {
+			YetiPrefetchingLoader prefetchingLoader = new YetiJMLPrefetchingLoader(yetiPath);
+			YetiInitializer initializer = new YetiJMLInitializer(prefetchingLoader);
+			YetiTestManager testManager = new YetiJavaTestManager();
+			YetiLogProcessor logProcessor = new YetiJavaLogProcessor();
+			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
+		}
 
 		
 		//if it is raw logs, then set it		
@@ -288,7 +316,7 @@ public class Yeti {
 		long startTestingTime = new Date().getTime();
 		// depending of the options launch the testing
 		if (isNTests)
-			// if iit is the number of states
+			// if it is the number of states
 			engine.testModuleForNumberOfTests(mod, nTests);
 		else if (isTimeout) 
 			// if it is according to a timeout
@@ -327,8 +355,6 @@ public class Yeti {
 			System.out.println(aggregationProcessing);			
 		}
 		
-
-		
 	}
 	
 	/**
@@ -337,6 +363,7 @@ public class Yeti {
 	public static void printHelp() {
 		System.out.println("Yeti Usage:\n java yeti.Yeti [-java|-Java] [[-time=Xs|-time=Xmn]|[-nTests=X]][-testModules=M1:M2:...:Mn][-help|-h][-rawlog]");
 		System.out.println("\t-java, -Java : for calling it on Java.");
+		System.out.println("\t-jml, -JML : for calling it on JML annotated code.");
 		System.out.println("\t-time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).");
 		System.out.println("\t-nTests=X : for calling Yeti to attempt X method calls.");
 		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules.");

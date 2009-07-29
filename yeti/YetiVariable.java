@@ -2,7 +2,7 @@ package yeti;
 
 import java.util.HashMap;
 
-import yeti.environments.java.YetiJavaPrefetchingLoader;
+import yeti.environments.YetiPrefetchingLoader;
 
 /**
  * Class that represents a variable in Yeti. 
@@ -45,7 +45,7 @@ public class YetiVariable extends YetiCard{
 		// if the type was not created before we create it on the fly
 		if (type==null){
 			YetiLog.printDebugLog("value's type: "+value.getClass().getName(), this);
-			YetiJavaPrefetchingLoader.yetiLoader.addDefinition(value.getClass());
+			YetiPrefetchingLoader.yetiLoader.addDefinition(value.getClass());
 			this.type=YetiType.allTypes.get(value.getClass().getName());
 			
 		}

@@ -7,7 +7,9 @@ import java.lang.reflect.Modifier;
 import yeti.YetiLog;
 import yeti.YetiModule;
 import yeti.YetiName;
+import yeti.YetiRoutine;
 import yeti.YetiType;
+import yeti.environments.YetiPrefetchingLoader;
 
 /**
  * Class that represents the custom class loader to load classes of the program.
@@ -16,33 +18,17 @@ import yeti.YetiType;
  * @date Jun 22, 2009
  *
  */
-public class YetiJavaPrefetchingLoader extends ClassLoader{
+public class YetiJavaPrefetchingLoader extends YetiPrefetchingLoader {
 
-	/**
-	 * The classpath of classes to load.
-	 */
-	String []classpaths;
-
-
-	/**
-	 * The general loader.
-	 */
-	public static YetiJavaPrefetchingLoader yetiLoader;
-	
 	/**
 	 * Constructor that creates a new loader.
 	 * 
 	 * @param path the classpath to load classes.
 	 */
 	public YetiJavaPrefetchingLoader(String path) {
-		super();
-		
-		this.classpaths = path.split(System.getProperty("path.separator"));
-		yetiLoader = this;
+		super(path);
 	}
 	
-	
-
 	/* (non-Javadoc)
 	 * 
 	 * Standard class loader method to load a class and resolve it.
@@ -60,112 +46,105 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	 * @see java.lang.ClassLoader#loadClass(java.lang.String, boolean)
 	 */
 	@SuppressWarnings("unchecked")
-	public Class loadClass(String name,boolean resolve)	throws ClassNotFoundException{ 
+	public Class loadClass(String name, boolean resolve)	throws ClassNotFoundException{ 
 
-		 
-		Class c;
-		c=findLoadedClass(name);
+		Class clazz = findLoadedClass(name);
 		// has the class already been loaded
-		if (c!=null) return c;
+		if (clazz!=null) return clazz;
 		// is it a standard Java Class
-		if (name.startsWith("java.") || name.startsWith("javax.")||
-				name.startsWith("sun.")) {
+		if (name.startsWith("java.") || name.startsWith("javax.") || name.startsWith("sun.")) {
 			// we load it from within the standard loader
-			c=findSystemClass(name);
-			YetiLog.printDebugLog("Class loaded in parent class loader: "+c.getName(), this);
-			resolveClass(c);
-		}else {
+			clazz=findSystemClass(name);
+			YetiLog.printDebugLog("Class loaded in parent class loader: " + clazz.getName(), this);
+			resolveClass(clazz);
+		} else {
 			// otherwise, we try to find it...
-			c=findClass(name);
+			clazz=findClass(name);
 			// if we could not find it we delegate to the system class loader
-			if (c==null)
-				c=findSystemClass(name);
-			resolveClass(c);
+			if (clazz==null)
+				clazz=findSystemClass(name);
+			resolveClass(clazz);
 		}
-			return addDefinition(c);
-
+		return addDefinition(clazz);
 	}
 
 	/**
 	 * We add the definition of the parameter class to the Yeti structures.
 	 * 
-	 * @param c the class to add.
+	 * @param clazz the class to add.
 	 * @return the class that was added.
 	 */
 	@SuppressWarnings("unchecked")
-	public Class addDefinition(Class c) {
+	public Class addDefinition(Class clazz) {
 
 		// we add the type to the types
-		YetiType type=new YetiJavaSpecificType(c.getName());
+		YetiType type=new YetiJavaSpecificType(clazz.getName());
 		YetiType.allTypes.put(type.getName(), type);
-		YetiLog.printDebugLog("adding "+type.getName()+" to yeti types ", this);
-		
+		YetiLog.printDebugLog("adding " + type.getName() + " to yeti types ", this);
 		
 		// we link this class to the parent class type
-		Class parent = c.getSuperclass();
+		Class parent = clazz.getSuperclass();
 		
 		if (parent!=null && YetiType.allTypes.containsKey(parent.getName())){
-			YetiLog.printDebugLog("linking "+type.getName()+" to "+parent.getName(), this);
-			YetiType.allTypes.get(parent.getName()).allSubtypes.put(c.getName(), type);
+			YetiLog.printDebugLog("linking " + type.getName() + " to " + parent.getName(), this);
+			YetiType.allTypes.get(parent.getName()).allSubtypes.put(clazz.getName(), type);
 		}
 		
 		// we link this class to the parent interfaces
-		Class []interfaces = c.getInterfaces();
+		Class []interfaces = clazz.getInterfaces();
 		for (Class i: interfaces ) 
 			if (YetiType.allTypes.containsKey(i.getName())){
-				YetiLog.printDebugLog("linking "+type.getName()+" to "+i.getName(), this);
-				YetiType.allTypes.get(i.getName()).allSubtypes.put(c.getName(), type);
+				YetiLog.printDebugLog("linking " + type.getName() + " to " +i.getName(), this);
+				YetiType.allTypes.get(i.getName()).allSubtypes.put(clazz.getName(), type);
 			}
 
 		// we create the YetiModule out of the class
-		YetiModule mod = this.makeModuleFromClass(c);
-		YetiModule.allModules.put(c.getName(), mod);
+		YetiModule mod = this.makeModuleFromClass(clazz);
+		YetiModule.allModules.put(clazz.getName(), mod);
 
 		// we add the constructors to the type information	
-		addConstructors(c, type, mod);
+		addConstructors(clazz, type, mod);
 		
 		// we add methods to the module in which they were defined		
-		addMethods(c, mod);
+		addMethods(clazz, mod);
 		
 		// we add inner classes
-		for(Class c0: c.getDeclaredClasses()){
-			YetiLog.printDebugLog("Adding inner class: "+c0.getName(), this);
-			addDefinition(c0);
+		for(Class declaredClazz: clazz.getDeclaredClasses()){
+			YetiLog.printDebugLog("Adding inner class: " + declaredClazz.getName(), this);
+			addDefinition(declaredClazz);
 		}
 		
-		
-		return c;
+		return clazz;
 	}
 
 	/**
 	 * We add the methods of the class to the module.
 	 * 
-	 * @param c the class to add.
-	 * @param mod the module in which ad it.
+	 * @param clazz the class to add.
+	 * @param module the module in which ad it.
 	 */
 	@SuppressWarnings("unchecked")
-	public void addMethods(Class c, YetiModule mod) {
-		
+	public void addMethods(Class clazz, YetiModule module) {
 		
 		// we add all methods
-		Method[] methods = c.getMethods();
-		for (Method m: methods){
+		Method[] methods = clazz.getMethods();
+		for (Method method: methods){
 			boolean usable = true;
-			Class []classes=m.getParameterTypes();
+			Class []classes=method.getParameterTypes();
 		
 			// check if method is static
-			boolean isStatic = Modifier.isStatic((m.getModifiers()));
+			boolean isStatic = Modifier.isStatic((method.getModifiers()));
 			YetiType []paramTypes;
 		
 			// if the method is static we do not introduce a slot for the target.
 			int offset = 0;
-			if (isStatic){
+			if (isStatic) {
 				paramTypes=new YetiType[classes.length];
 			} else {
 				paramTypes=new YetiType[classes.length+1];
 				offset = 1;
-				if (YetiType.allTypes.containsKey(c.getName())){
-					paramTypes[0]=YetiType.allTypes.get(c.getName());						
+				if (YetiType.allTypes.containsKey(clazz.getName())){
+					paramTypes[0]=YetiType.allTypes.get(clazz.getName());						
 				} else {
 					usable = false;
 				}
@@ -180,53 +159,65 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 					usable = false;
 				}
 			}
-			addMethodToModuleIfUsable(mod, m, usable, paramTypes);
+			addMethodToModuleIfUsable(module, method, usable, paramTypes);
 		}
 	}
-
-
 
 	/**
 	 * Adds a method to the module if it is usable.
 	 * 
-	 * @param mod the module to which add the method.
-	 * @param m the method to add.
+	 * @param module the module to which add the method.
+	 * @param method the method to add.
 	 * @param usable True if it should be added.
 	 * @param paramTypes the types of the parameters.
 	 */
-	public void addMethodToModuleIfUsable(YetiModule mod, Method m, boolean usable, YetiType[] paramTypes) {
+	public void addMethodToModuleIfUsable(YetiModule module, Method method, boolean usable, YetiType[] paramTypes) {
 		// if we don't know a type from the method we don't add it
-		if (usable && !YetiJavaMethod.isMethodNotToAdd(m.getName())){
-			YetiLog.printDebugLog("adding method "+m.getName()+" in module "+mod.getModuleName(), this);
+		if (usable && !YetiJavaMethod.isMethodNotToAdd(method.getName())){
+			YetiLog.printDebugLog("adding method "+method.getName()+" in module "+module.getModuleName(), this);
 			// add it as a creation routine for the return type
-			YetiType returnType = YetiType.allTypes.get(m.getReturnType().getName());
+			YetiType returnType = YetiType.allTypes.get(method.getReturnType().getName());
 			if (returnType==null)
-				returnType = new YetiJavaSpecificType(m.getReturnType().getName());
-			YetiJavaMethod method = new YetiJavaMethod(YetiName.getFreshNameFrom(m.getName()), paramTypes , returnType, mod,m);
-			returnType.addCreationRoutine(method);
-			// add the constructor as a routines to test
-			mod.addRoutineInModule(method);
+				returnType = new YetiJavaSpecificType(method.getReturnType().getName());
+			YetiRoutine methodRoutine = generateMethodRoutine(module , method, paramTypes , returnType);
+			// add it as a creation routine for the type
+			returnType.addCreationRoutine(methodRoutine);
+			// add the method as a routine to test
+			module.addRoutineInModule(methodRoutine);
 		}
 	}
-
+	
+	/**
+	 * Create a Yeti routine for the Java method to test
+	 * 
+	 * @param module the module to which add the method.
+	 * @param method the method to add.
+	 * @param paramTypes the types of the parameters.
+	 * @param returnType the type returned by the method 
+	 * @return a Yeti routine for this method
+	 */
+	protected YetiRoutine generateMethodRoutine(YetiModule module, Method method, YetiType[] paramTypes, YetiType returnType) {
+		return new YetiJavaMethod(YetiName.getFreshNameFrom(method.getName()), paramTypes , returnType, module, method);
+	}
+	
 	/**
 	 * Add the constructors of a class.
 	 * 
-	 * @param c the class of the constructor.
+	 * @param clazz the class of the constructor.
 	 * @param type the type of the instance created.
-	 * @param mod teh module to which add the class.
+	 * @param module the module to which add the class.
 	 */
 	@SuppressWarnings("unchecked")
-	public void addConstructors(Class c, YetiType type, YetiModule mod) {
+	public void addConstructors(Class clazz, YetiType type, YetiModule module) {
 		// if the class is abstract, the constructors should not be called
-		if (Modifier.isAbstract(c.getModifiers()))
+		if (Modifier.isAbstract(clazz.getModifiers()))
 			return;
 
 		// we add the constructors
-		Constructor[]constructors = c.getConstructors();
-		for (Constructor m: constructors){
+		Constructor[] constructors = clazz.getConstructors();
+		for (Constructor con: constructors){
 			boolean usable = true;
-			Class []classes= m.getParameterTypes();
+			Class[] classes= con.getParameterTypes();
 			YetiType []paramTypes=new YetiType[classes.length];
 			// for all types we box the types.
 			for (int i=0; i<classes.length; i++){
@@ -237,37 +228,49 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 					usable = false;
 				}
 			}
-			addConstructorFromClassToTypeInModuleIfUsable(c, type, mod, m,
-					usable, paramTypes);
+			addConstructorFromClassToTypeInModuleIfUsable(clazz, type, module, con, usable, paramTypes);
 		}
 	}
-
-
 
 	/**
 	 * Add a constructor to a  module and a type if usable.
 	 * 
-	 * @param c the originating class.
+	 * @param clazz the originating class.
 	 * @param type the type of the created object.
-	 * @param mod the module to which we should add it.
-	 * @param m the constructor.
+	 * @param module the module to which we should add it.
+	 * @param con the constructor.
 	 * @param usable True if it is usable.
 	 * @param paramTypes the types of the parameters.
 	 */
 	@SuppressWarnings("unchecked")
-	public void addConstructorFromClassToTypeInModuleIfUsable(Class c,	YetiType type, YetiModule mod, Constructor m, boolean usable,
+	public void addConstructorFromClassToTypeInModuleIfUsable(Class clazz,	YetiType type, YetiModule module, Constructor con, boolean usable,
 			YetiType[] paramTypes) {
 		// if we don't know a type from the constructor we don't add it
 		if (usable){
-			YetiLog.printDebugLog("adding constructor to "+type.getName()+" in module "+mod.getModuleName(), this);
-			YetiJavaConstructor construct = new YetiJavaConstructor(YetiName.getFreshNameFrom(c.getName()), paramTypes , type, mod,m);
+			YetiLog.printDebugLog("adding constructor to "+type.getName()+" in module "+module.getModuleName(), this);
+			YetiRoutine constructorRoutine = generateConstructorRoutine(clazz, paramTypes , type, module, con);
 			// add it as a creation routine for the type
-			type.addCreationRoutine(construct);
-			// add the constructor as a routines to test
-			mod.addRoutineInModule(construct);
+			type.addCreationRoutine(constructorRoutine);
+			// add the constructor as a routine to test
+			module.addRoutineInModule(constructorRoutine);
 		}
 	}
-
+	
+	/**
+	 * Create a Yeti routine for the Java constructor to test
+	 * 
+	 * @param clazz the originating class.
+	 * @param paramTypes the types of the parameters.
+	 * @param type the type of the created object.
+	 * @param mod the module to which we should add it.
+	 * @param m the constructor.
+	 * @return the Yeti routine for the constructor of the class c
+	 */
+	@SuppressWarnings("unchecked")
+	protected YetiRoutine generateConstructorRoutine(Class clazz, YetiType[] paramTypes, YetiType type, YetiModule mod, Constructor con) {
+		return new YetiJavaConstructor(YetiName.getFreshNameFrom(clazz.getName()), paramTypes , type, mod, con);
+	}
+	
 	/**
 	 * Create an empty module from a class (using its class name).
 	 * 
@@ -293,8 +296,8 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 		Class c=null;
 		
 		// for all paths in class path, we try to load the class 
-		for (String s0:classpaths){
-			fc=new File(s0+System.getProperty("file.separator")+name.replace('.', System.getProperty("file.separator").charAt(0))+".class");
+		for (String classpath: classpaths){
+			fc=new File(classpath+System.getProperty("file.separator")+name.replace('.', System.getProperty("file.separator").charAt(0))+".class");
 			YetiLog.printDebugLog("trying: "+fc.getAbsolutePath(), this);
 			// we actually check that the class exists
 			if (fc.exists()){
@@ -316,7 +319,7 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	 */
 	@SuppressWarnings("unchecked")
 	public Class readClass(File file,String name){
-		Class c;
+		Class clazz ;
 		try {
 			BufferedInputStream fr=new BufferedInputStream(new FileInputStream(file));
 			long l=file.length();
@@ -325,9 +328,9 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 			fr.read(bBuf,0,(int)l);
 			YetiLog.printDebugLog(name+" read in byte[]", this);
 			// we try to define the class
-			c=defineClass(name, bBuf,0,bBuf.length);
+			clazz = defineClass(name, bBuf,0,bBuf.length);
 			YetiLog.printDebugLog(name+" defined ", this);
-			return c;
+			return clazz ;
 		} catch (Throwable e){
 			e.printStackTrace();
 			YetiLog.printDebugLog(name+" not loaded", this);
@@ -339,52 +342,52 @@ public class YetiJavaPrefetchingLoader extends ClassLoader{
 	 * We load all the classes in the classpath.
 	 */
 	public void loadAllClassesInPath(){
-		for (String s0:classpaths){
-			if (!s0.endsWith(".jar"))
-				loadAllClassesIn(s0,"");
+		for (String classpath: classpaths){
+			if (!classpath.endsWith(".jar"))
+			loadAllClassesIn(classpath, "");
 		}
-		
 	}
+	
 	/**
 	 * We load all classes in a directory.
 	 * 
 	 * @param directoryName the name of the directory.
 	 * @param prefix the prefix for the class.
 	 */
-	public void loadAllClassesIn(String directoryName, String prefix){
-		File dir=null;
-		String s=directoryName;
-		YetiLog.printDebugLog("loading from classpath: "+s, this);
+	public void loadAllClassesIn(String directoryName, String prefix) {
 		// we create the directory
-		dir=new File(directoryName);
+		File dir = new File(directoryName);
+		YetiLog.printDebugLog("loading from classpath: " + directoryName, this);
 		
-		// we iterate through the content
-		for (File f0:dir.listFiles()){
-			// For each subdirectory we load recursively
-			String cname=f0.getName();
-			if (f0.isDirectory()){
-				if (prefix.equals("")){
-					loadAllClassesIn(directoryName+System.getProperty("file.separator")+cname,cname);
-				}else{
-					loadAllClassesIn(directoryName+System.getProperty("file.separator")+cname,prefix+"."+cname);
+		if (dir.isDirectory()) {
+			// we iterate through the content
+			for (File file: dir.listFiles()) {
+				// For each subdirectory we load recursively
+				String cname=file.getName();
+				if (file.isDirectory()){
+					if (prefix.equals("")){
+						loadAllClassesIn(directoryName+System.getProperty("file.separator")+cname,cname);
+					}else{
+						loadAllClassesIn(directoryName+System.getProperty("file.separator")+cname,prefix+"."+cname);
+						}
+				} else
+					// otherwise we load the class
+					if (cname.endsWith(".class")){
+						String className=cname;
+						className=className.substring(0,className.length()-6);
+						YetiLog.printDebugLog("reading "+className, this);
+						try {
+							// we actually try to load the class
+							if (prefix.equals(""))
+								loadClass(className);
+							else
+								loadClass(prefix+"."+className);
+						} catch (ClassNotFoundException e) {
+							// should never happen
+							e.printStackTrace();
+						}
 					}
-			} else
-				// otherwise we load the class
-				if (cname.endsWith(".class")){
-					String className=cname;
-					className=className.substring(0,className.length()-6);
-					YetiLog.printDebugLog("reading "+className, this);
-					try {
-						// we actually try to load the class
-						if (prefix.equals(""))
-							loadClass(className);
-						else
-							loadClass(prefix+"."+className);
-					} catch (ClassNotFoundException e) {
-						// should never happen
-						e.printStackTrace();
-					}
-				}
+			}
 		}
 	}
 }

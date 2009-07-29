@@ -13,23 +13,27 @@ import yeti.environments.YetiTestManager;
  *
  */
 public class YetiJavaProperties extends YetiProgrammingLanguageProperties {
-	
-
 
 	/**
-	 * The Java intialiser.
+	 * The initialiser.
 	 */
-	private YetiJavaInitializer jinit=new YetiJavaInitializer();
+	protected YetiInitializer initializer = null;
 	
 	/**
-	 * The Java test manager.
+	 * The test manager.
 	 */
-	private YetiJavaTestManager jtm=new YetiJavaTestManager();
+	protected YetiTestManager testManager = null;
 	
 	/**
-	 * The Java logProcessor.
+	 * The logProcessor.
 	 */
-	private YetiLogProcessor jlp=new YetiJavaLogProcessor();
+	protected YetiLogProcessor logProcessor = null;
+	
+	public YetiJavaProperties(YetiInitializer initializer, YetiTestManager testManager, YetiLogProcessor logProcessor) {
+		this.initializer = initializer;
+		this.testManager = testManager;
+		this.logProcessor = logProcessor;
+	}
 	
 	/* (non-Javadoc)
 	 * 
@@ -40,7 +44,7 @@ public class YetiJavaProperties extends YetiProgrammingLanguageProperties {
 	@Override
 	public YetiInitializer getInitializer() {
 		
-		return jinit;
+		return initializer;
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +54,7 @@ public class YetiJavaProperties extends YetiProgrammingLanguageProperties {
 	 */
 	@Override
 	public YetiTestManager getTestManager() {
-		return jtm;
+		return testManager;
 	}
 
 	/* (non-Javadoc)
@@ -60,7 +64,7 @@ public class YetiJavaProperties extends YetiProgrammingLanguageProperties {
 	 */
 	@Override
 	public YetiLogProcessor getLogProcessor() {
-		return jlp;
+		return logProcessor;
 	}
 
 }

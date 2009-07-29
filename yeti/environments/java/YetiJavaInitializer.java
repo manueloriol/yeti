@@ -2,13 +2,12 @@ package yeti.environments.java;
 
 import java.io.FilePermission;
 import java.security.Permission;
-import java.util.ArrayList;
 
-import yeti.Yeti;
 import yeti.YetiInitializationException;
 import yeti.YetiLog;
 import yeti.YetiModule;
 import yeti.environments.YetiInitializer;
+import yeti.environments.YetiPrefetchingLoader;
 import yeti.environments.YetiSecurityException;
 
 
@@ -19,17 +18,21 @@ import yeti.environments.YetiSecurityException;
  * @date Jun 22, 2009
  *
  */
-public class YetiJavaInitializer extends YetiInitializer{
+public class YetiJavaInitializer extends YetiInitializer {
 
 	/**
 	 * The custom class loader that is going to be used.
 	 */
-	YetiJavaPrefetchingLoader cl= new YetiJavaPrefetchingLoader(Yeti.yetiPath);
-
+	protected YetiPrefetchingLoader prefetchingLoader = null;
+	
+	public YetiJavaInitializer(YetiPrefetchingLoader prefetchingLoader) {
+		this.prefetchingLoader = prefetchingLoader;
+	}
+	
 	/**
-	 * A simpel helper routine that ignores the parameter String.
+	 * A simple helper routine that ignores the parameter String.
 	 * 
-	 * @param s teh string to be ignored.
+	 * @param s the string to be ignored.
 	 */
 	public void ignore(String s){
 
@@ -47,7 +50,7 @@ public class YetiJavaInitializer extends YetiInitializer{
 
 		// we try to load classes that will certainly be used
 		try {
-			cl.loadClass("java.lang.String");
+			prefetchingLoader.loadClass("java.lang.String");
 		} catch (ClassNotFoundException e1) {
 			// should never happen
 			e1.printStackTrace();
@@ -61,8 +64,8 @@ public class YetiJavaInitializer extends YetiInitializer{
 
 				try {
 					// we load all classes in path and String
-					cl.loadAllClassesInPath();
-					cl.loadClass("java.lang.String");
+					prefetchingLoader.loadAllClassesInPath();
+					prefetchingLoader.loadClass("java.lang.String");
 					// we want to test these modules
 					String []modulesToTest=null;
 					for (String s0: args) {
@@ -78,7 +81,7 @@ public class YetiJavaInitializer extends YetiInitializer{
 					for(String moduleToTest : modulesToTest) {
 						YetiModule yetiModuleToTest = YetiModule.allModules.get(moduleToTest);
 						if(yetiModuleToTest==null) {
-							cl.loadClass(moduleToTest);
+							prefetchingLoader.loadClass(moduleToTest);
 						} 
 					}
 
@@ -89,20 +92,21 @@ public class YetiJavaInitializer extends YetiInitializer{
 				}
 			}
 		}
-		System.setSecurityManager(new SecurityManager(){
+		System.setSecurityManager(new SecurityManager() {
 			// we set this security manager that filters file output/execution for worker threads
 			public void checkPermission(Permission perm) {
 				// if we are in the thread group of worker threads
-				if (this.getThreadGroup()==YetiJavaTestManager.workersGroup)
+				if (this.getThreadGroup()==YetiJavaTestManager.workersGroup) {
 					// if we are trying to access a file permission
 					if (perm instanceof FilePermission) {
 						String action = perm.getActions();
 						// if any of those is in the permission requested, we throw the exception
-						if ((action.indexOf("write")>=0) ||(action.indexOf("execute")>=0)||(action.indexOf("delete")>=0)) {
-							YetiLog.printDebugLog("Yeti did not grant permission: "+perm, this);
+						if ((action.indexOf("write")>=0) || (action.indexOf("execute")>=0) || (action.indexOf("delete")>=0)) {
+							YetiLog.printDebugLog("Yeti did not grant permission: "+ perm, this);
 							throw new YetiSecurityException("Yeti did not grant the following file permission: "+perm.toString());
 						}
 					}
+				}
 			}
 		});
 
