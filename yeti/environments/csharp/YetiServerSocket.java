@@ -1,10 +1,12 @@
-package yeti.environments;
+package yeti.environments.csharp;
 
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -20,6 +22,18 @@ import java.util.ArrayList;
  */
 public class YetiServerSocket {
 	
+	public static ServerSocket testing = null;
+	public YetiServerSocket()
+	{
+		try {
+			
+			testing = new ServerSocket(2400);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
     //public static ArrayList<String> allTypes = new ArrayList();
 	/**
 	 * It is a method that gets the data from the specified socket
@@ -28,13 +42,13 @@ public class YetiServerSocket {
 	 * @param soc the integer that specifies the socket to listen
 	 * @return it returns an ArrayList<String> so we can use the info
 	 */
-	public ArrayList<String> getData(int soc) throws IOException
+	public static ArrayList<String> getData(int soc) throws IOException
 	{
 		ServerSocket s;
 		ArrayList<String> temp = new ArrayList<String>();
-		
+		if(soc!=2400)
 		s=new ServerSocket(soc);
-		//Socket s1 = s.accept();
+		else s=testing;
 		boolean read=true;
 
 		//OutputStream output = s1.getOutputStream();
@@ -48,9 +62,10 @@ public class YetiServerSocket {
 		while(read)
 		try {
 		//Thread.sleep(1000);
-			System.out.println("%%%%%%%%%%%%%%%%%%");
-		//Hold until data are sent by the othe part
+			//System.out.println("%%%%%%%%%%%%%%%%%%");
+		//Hold until data are sent by the other part
 		Socket s1 = s.accept();
+		//System.out.println("&&&&&&&&&&&&&&&&&&&&&");
 		InputStream input = s1.getInputStream();
 		//Convert stream to string so we can manipulate it
 		received = YetiServerSocket.convertStreamToString(input);
@@ -68,16 +83,27 @@ public class YetiServerSocket {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		//s.close();
 		i++;
 		//ps.println("My message "+ i);
 		
 		//}
+		
 		return temp;
 		
 		
 	}
 	
+	
+	public static void sendData(int soc, String msg) throws IOException
+	{
+		
+		Socket s2 = new Socket("localhost",soc);
+		OutputStream output = s2.getOutputStream();
+		PrintStream ps = new PrintStream(output);
+		ps.println(msg);
+		ps.flush();
+	}
 	
 	public static void main(String []args) throws UnknownHostException, IOException{
 	
@@ -145,3 +171,4 @@ public class YetiServerSocket {
 	  }
 
 }
+

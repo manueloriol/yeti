@@ -3,7 +3,7 @@ package yeti.environments.csharp;
 import yeti.YetiLogProcessor;
 import yeti.environments.YetiInitializer;
 import yeti.environments.YetiProgrammingLanguageProperties;
-import yeti.environments.YetiServerSocket;
+import yeti.environments.csharp.YetiServerSocket;
 import yeti.environments.YetiTestManager;
 import yeti.environments.csharp.YetiCsharpInitializer;
 import yeti.environments.csharp.YetiCsharpLogProcessor;

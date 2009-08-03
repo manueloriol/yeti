@@ -10,7 +10,7 @@ import yeti.environments.YetiTestManager;
 
 /**
  * Class that represents an improved random strategy.
- * The goal is to also maitain a set of interesting values within the types.
+ * The goal is to also maintain a set of interesting values within the types.
  * With a given probability, the strategy injects one of these values instead
  * of a pure random approach.
  * 

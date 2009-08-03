@@ -12,15 +12,15 @@ import yeti.environments.csharp.YetiCsharpLogProcessor;
  * Class that represents a log processor for Java. 
  * <code>processLog</code> generates test cases in each cell of the array.
  * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
+ * @author Sotirios Tassis (st552@cs.york.ac.uk)
+ * @date Jul 28, 2009
  *
  */
 
 public class YetiCsharpLogProcessor extends YetiLogProcessor {
 
 	/**
-	 * A constructor for the YetiJavaLogProcessor.
+	 * A constructor for the YetiCsharpLogProcessor.
 	 */
 	public YetiCsharpLogProcessor() {	
 

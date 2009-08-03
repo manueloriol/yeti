@@ -3,6 +3,7 @@ package yeti.environments.csharp;
 import yeti.YetiType;
 import yeti.environments.csharp.YetiCsharpPrefetchingLoader;
 import yeti.environments.csharp.YetiCsharpSpecificType;
+//import yeti.environments.java.YetiJavaPrefetchingLoader;
 
 /**
  * Class that represents primitive types.
@@ -23,17 +24,43 @@ public class YetiCsharpSpecificType extends YetiType {
 	 */
 	@SuppressWarnings("unused")
 	private boolean isArrayType = false;
-	
+
 	/**
 	 * The number of levels of array if it is an array type.
 	 */
 	private int numLevelsArray = 0;
-	
-	
+
+
 	/**
 	 * The base type if it is an array type.
 	 */
 	private String baseTypeForArrayName="";
+
+	/**
+	 * Is it a simple type?
+	 */
+	private boolean isSimpleType=false;
+
+
+
+	/**
+	 * Is this type a simple type?
+	 * 
+	 * @return the fact it is a simple type.
+	 */
+	public boolean isSimpleType() {
+		return isSimpleType;
+	}
+
+
+	/**
+	 * Sets the reason it is a simple type.
+	 * 
+	 * @param isSimpleType true if it is a simple type.
+	 */
+	public void setSimpleType(boolean isSimpleType) {
+		this.isSimpleType = isSimpleType;
+	}
 	
 	/**
 	 * Initialize the primitive types (as they are not classes, they need to be initialized in a specific way).
@@ -65,6 +92,9 @@ public class YetiCsharpSpecificType extends YetiType {
 		
 		YetiCsharpSpecificType tFloat=new YetiCsharpSpecificType("Single");
 		YetiType.allTypes.put(tFloat.getName(), tFloat);
+		
+		//YetiCsharpSpecificType tEmpty=new YetiCsharpSpecificType("");
+		//YetiType.allTypes.put(tEmpty.getName(), tEmpty);
 		//@SuppressWarnings("unused")
 		//YetiCsharpSpecificType tdouble=new YetiCsharpSpecificType("double");
 		

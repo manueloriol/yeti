@@ -1,8 +1,6 @@
 package yeti.environments.csharp;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
+import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiIdentifier;
 import yeti.YetiLog;
@@ -10,7 +8,7 @@ import yeti.YetiModule;
 import yeti.YetiName;
 import yeti.YetiType;
 import yeti.YetiVariable;
-import yeti.environments.csharp.YetiCsharpRoutine;
+import yeti.environments.java.YetiJavaSpecificType;
 
 
 /**
@@ -27,13 +25,9 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
 	 */
 	@SuppressWarnings("unchecked")
 	private String c;
-	
-	
-	/**
-	 * The last result of a call to this constructor.
-	 */
-	public YetiVariable lastCallResult=null;
-	
+
+
+
 	/**
 	 * Constructor to the constructor.
 	 * 
@@ -60,69 +54,55 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
 	}
 
 
-	/* (non-Javadoc)
+	/**
+	 * Makes the effective call (lets return the exceptions and Errors).
 	 * 
-	 * Makes the call to create a new instance.
-	 * 
-	 * @see yeti.environments.java.YetiJavaRoutine#makeCall(yeti.YetiCard[])
+	 * @param arg the arguments of the call.
+	 * @return the logs.
+	 * @throws YetiCallException the wrapped exception. 
 	 */
-	public Object makeCall(YetiCard []arg){
+
+	public String makeEffectiveCall(YetiCard[] arg)
+	throws YetiCallException {
+		String log;
+		String msg="";
 		lastCallResult=null;
 		Object []initargs=new Object[arg.length];
-
+		
+		msg+=c+":";
 		// we start by unboxing the arguments boxed into the cards
 		YetiIdentifier id=YetiIdentifier.getFreshIdentifier();
-		String log = returnType.toString() + " " + id.getValue() + "=new "+returnType.getName()+"(";
+		log = returnType.toString() + " " + id.getValue() + "=new "+returnType.getName()+"(";
 		for (int i=0;i<arg.length; i++){
-			// note that we use getValue to get the actual value
-			initargs[i]=arg[i].getValue();
-			// we use toString() to make it pretty-print.
-			log=log+arg[i].toString();
+			// if we should replace it by a null value, we do it
+			if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&&!(((YetiJavaSpecificType)arg[i].getType()).isSimpleType())) {
+				initargs[i]=null;
+				log=log+"null";
+			} else {
+				// note that we use getValue to get the actual value
+				initargs[i]=arg[i].getValue();
+				msg+=initargs[i].toString();
+				
+				// we use toString() to make it pretty-print.
+				log=log+arg[i].toString();
+			}
 			if (i<arg.length-1){
 				log=log+",";
 			}
 		}
+		// we try to make the call
+		Object o = null;
 		try {
-			// we try to make the call
-			Object o = c;
-			// if it succeeds we create the new variable
-			this.lastCallResult=new YetiVariable(id, returnType, o);
-			log=log+");";
-			// print the log
-			YetiLog.printYetiLog(log, this);
-		} catch (IllegalArgumentException e) {
-			// should never happen
-			// we ignore it
-			// TODO check that
-			// e.printStackTrace();
-		} /* catch (InvocationTargetException e) {
-
-			// if we are here, we found a bug.
-			// we first print the log
-			YetiLog.printYetiLog(log+");", this);
-			// then print the exception
-			if (e.getCause() instanceof RuntimeException || e.getCause() instanceof Error) {
-				if (e.getCause() instanceof ThreadDeath) {
-					//YetiLog.printYetiLog("/** POSSIBLE BUG FOUND: TIMEOUT **///", this);
-				/*} else {
-					//YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**///", this);
-				/*}
-			}
-			else
-				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**///", this);
-			//YetiLog.printYetiThrowable(e.getCause(), this);
-		/*} catch (Error e){
-			// if we are here there was a serious error
-			// we print it
-			YetiLog.printYetiLog(log+");", this);
-			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
-			YetiLog.printYetiThrowable(e.getCause(), this);
-			
-		}*/
-		return this.lastCallResult;	
-			
-			
-			
+			//o = c.newInstance(initargs);
+		} catch (Throwable t) {
+			throw new YetiCallException(log,t);
 		}
+		// if it succeeds we create the new variable
+		this.lastCallResult=new YetiVariable(id, returnType, o);
+		log=log+");";
+		// print the log
+		YetiLog.printYetiLog(log, this);
+		return log;
+	}
 
 }
