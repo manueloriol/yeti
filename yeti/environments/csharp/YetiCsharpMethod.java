@@ -1,8 +1,10 @@
 package yeti.environments.csharp;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import yeti.YetiCallException;
@@ -58,35 +60,11 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 	 */
 	public YetiCsharpMethod(YetiName name, YetiType[] openSlots, YetiType returnType, YetiModule originatingModule, String m, boolean isStatic) {
 		super(name, openSlots, returnType, originatingModule);
-		this.m=name.getValue();
+		this.m=m;
 		this.isStatic=isStatic;
 		
 	}
 
-
-	/**
-	 * A method to initialize the set of methods not to add.
-	 */
-	
-	
-	public static void initMethodsNotToAdd(){
-		methodsNotToAdd = new HashMap<String,Object>();
-		methodsNotToAdd.put("Equals", null);
-		methodsNotToAdd.put("GetHashCode", null);
-		methodsNotToAdd.put("GetType", null);
-	}
-
-	/**
-	 * Checks whether the method corresponds to a method not to test.
-	 * 
-	 * @param methodName the name of the method.
-	 * @return <code>true</code> if the method should not be tested. <code>false</code> Otherwise.
-	 */
-	public static boolean isMethodNotToAdd(String methodName){
-		if (methodsNotToAdd==null)
-			initMethodsNotToAdd();
-		return methodsNotToAdd.containsKey(methodName);
-	}
 
 	/* (non-Javadoc)
 	 * Returns the name of the method for pretty-print.
@@ -108,46 +86,41 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 		String log="";
 		String log1="";
 		lastCallResult=null;
-		int length = 0;
 		String prefix;
 		boolean isValue= false;
+		String msg="Method:";
 
 		// if the method is static, we need to adjust the arguments
 		// there is no target in the open slots.
-		if (isStatic){
-			length = arg.length;
+		if (isStatic){			
 			prefix = this.originatingModule.getModuleName();
 		}else{
-			length = arg.length-1;
 			prefix = arg[0].getIdentity().toString();
 		}
-
-		Object []initargs=new Object[length];
+		
+		//Object []initargs=new Object[length];
 		// we start generating the log as well as the identifier to use to store the 
 		// result if there is one.
 		YetiIdentifier id=null;
-		if (returnType.getName() != "Void") {
+		if (!("Void".equals(returnType.getName()))) {
 			// if there is a result to be expected
-			YetiLog.printDebugLog("return type is "+returnType.getName(), this);
+			//YetiLog.printDebugLog("return type is "+returnType.getName(), this);
 			id=YetiIdentifier.getFreshIdentifier();
-			String s0=m;
-			// this is a hack still decide whether it is a simple type 
-			// (in which case, we will print the result rather than the sequence to construct it) 
+			msg+=id+":"+originatingModule.getModuleName()+":"+returnType.getName()+":";
+			msg+=m+":";
+			
 			boolean isSimpleReturnType=false;
-			if (this.returnType instanceof YetiCsharpSpecificType) {
-				YetiCsharpSpecificType rt = (YetiCsharpSpecificType) this.returnType;
-				if (rt.isSimpleType()) {
-					isSimpleReturnType=true;
-				}
-
-			}
-			if (s0.startsWith("__yetiValue_")||isSimpleReturnType) {//||(this.returnType instanceof YetiJavaSpecificType)){ //(this.returnType instanceof YetiJavaSpecificType)
+			
+			if (this.m.startsWith("__yetiValue_"))			
+					isSimpleReturnType=true;						
+			
+			if (isSimpleReturnType) {
 				isValue=true;
 				log1 = this.returnType.toString()+" "+ id.getValue() + "=";
-				log = this.returnType.toString()+" "+ id.getValue() + "="+ prefix +"."+ m +"(";			
 			} else
-				log = this.returnType.toString()+" "+ id.getValue() + "="+ prefix +"."+ m +"(";			
+				log = this.returnType.toString()+" "+ id.getValue() + "="+ prefix +"."+ m+"(";			
 
+			
 		} else {
 			// otherwise
 			log = prefix + "."+m +"(";
@@ -159,17 +132,20 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 		Object target=null;
 		if (isStatic){
 			offset=0;
-		} else {
-			target= arg[0].getValue();			
-		}
+		} 
+		
+		
 		for (int i = offset;i<arg.length; i++){
 			// if we should replace it by a null value, we do it
-			if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&&!(((YetiJavaSpecificType)arg[i].getType()).isSimpleType())) {
-				initargs[i-offset]=null;
+			if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&&!(((YetiCsharpSpecificType)arg[i].getType()).isSimpleType())) {
+				//initargs[i-offset]=null;
+				msg+="null";
+				if(i<arg.length -1) msg+= ";";
 				log=log+"null";
 			} else {
-				initargs[i-offset]=arg[i].getValue();
-				arg[i].getType();
+				//initargs[i-offset]=arg[i].getValue();
+				msg+=arg[i].getIdentity();
+                if(i<arg.length -1) msg+= ";";				
 				log=log+arg[i].toString();
 			}
 			if (i<arg.length-1){
@@ -177,107 +153,43 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 			}
 
 		}
+		
+		String valuestring="$$";
+        try {
+            YetiServerSocket.sendData(2400, msg);
+           
+            ArrayList<String> a = YetiServerSocket.getData(2300);
+           
+            for(String s : a)
+            {
+                String[] helps = s.split(":");
+                System.out.println(helps[0]);
+                System.out.println(helps[1].trim());
+               
+                valuestring = helps[1].trim();
 
-		// we  make the call
-		if (target!=null)
-			YetiLog.printDebugLog("trying to call "+m +" on a "+target.getClass().getName(), this);
-		else 
-			YetiLog.printDebugLog("trying to call statically "+m +" of "+ originatingModule.getModuleName(), this);				
-
-		Object o=null;
-		try {
-			//o = m.invoke(target,initargs);
-		} catch (Throwable t) {
-			throw new YetiCallException(log,t);
+            }
+        } catch (IOException e) {
+            
+            e.printStackTrace();
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		// if the return type is void, we look it up
-		if (returnType==null)
+		if ("Void".equals(this.returnType.getName()))
 			returnType=YetiType.allTypes.get(returnType.getName());
 		// if there is a result, we store it and create the variable
-		if (id!=null&&o!=null){
-			this.lastCallResult=new YetiVariable(id, returnType, o);
+		if (id!=null&& "OK".equals(valuestring.trim())){
+	        System.out.println("LastCallResult: --> "+id+" "+returnType+" "+valuestring);
+			this.lastCallResult=new YetiVariable(id, returnType, valuestring);
 		}
-		// if this is a value, we print it directly
-		if (isValue) {
-			// we escape the values
-			if (o instanceof Character){
-				String value;
-				// in case we have space characters
-				switch (((Character)o).charValue()){
-
-				case '\r': {
-					value = "\\r"; 
-					break;
-				}
-
-				case ' ': {
-					value = " "; 
-					break;
-				}
-
-				case '\f': {
-					value = "\\f"; 
-					break;
-				}
-				case '\t': {
-					value = "\\t"; 
-					break;
-				}
-				case '\n': {
-					value = "\\n";
-					break;
-				}
-				default :{
-					// if this is not a standard character from the old time ISO set
-					int i = ((Character)o).charValue();
-					if (!(i<128 && Character.isLetter(i))) {
-						value = "\\u";
-						String value0="";
-						// we have to reconstruct the correct value
-						char hexDigit[] = {
-								'0', '1', '2', '3', '4', '5', '6', '7',
-								'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
-						};
-						// we iterate 4 times (only)
-						for (int j = 0;j<4;j++){
-							value0 = hexDigit[i & 0x0f]+value0;
-							i = i>>4;
-						}
-						value = value+value0;
-					} else
-						// otherwise, we simply show it as is
-						value = ""+((Character)o).charValue();
-				}
-
-				}
-				log1=log1+"'"+value+"'"+";";
-			} else {
-				// just in case we have a NaN value we are able to make it again...
-				// we also add the correct modifier to indicate Longs, floats, and double
-				if (o instanceof Float) {
-					if (((Float)o).isNaN()) {
-						log1 = log1+"0.0/0.0f;";
-					} else
-						log1 = log1+o.toString()+"f;";
-				} else
-					if (o instanceof Double) {
-						if (((Double)o).isNaN()) {
-							log1 = log1+"0.0/0.0d;";
-						} else
-							log1 = log1+o.toString()+"d;";
-					} else
-						if (o instanceof Long) {
-							log1 = log1+o.toString()+"L;";
-						} else
-							log1=log1+o.toString()+";";
-			}
-			log = log1;
-		}
-		else
-			log=log+");";
+		if(isValue) log=log1+" "+valuestring;
+		else	log=log+");";
+		System.out.println(msg);
 		// finally we print the log.
-		YetiLog.printYetiLog(log, this);
+		//YetiLog.printYetiLog(log, this);
 		return log;
 	}
 

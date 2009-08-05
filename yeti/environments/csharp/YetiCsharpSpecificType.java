@@ -93,6 +93,9 @@ public class YetiCsharpSpecificType extends YetiType {
 		YetiCsharpSpecificType tFloat=new YetiCsharpSpecificType("Single");
 		YetiType.allTypes.put(tFloat.getName(), tFloat);
 		
+		YetiCsharpSpecificType tString=new YetiCsharpSpecificType("String");
+		YetiType.allTypes.put(tString.getName(), tString);
+		
 		//YetiCsharpSpecificType tEmpty=new YetiCsharpSpecificType("");
 		//YetiType.allTypes.put(tEmpty.getName(), tEmpty);
 		//@SuppressWarnings("unused")

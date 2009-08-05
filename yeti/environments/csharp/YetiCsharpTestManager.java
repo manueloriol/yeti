@@ -1,5 +1,7 @@
 package yeti.environments.csharp;
 
+import java.io.IOException;
+
 import yeti.ImpossibleToMakeConstructorException;
 import yeti.YetiLog;
 import yeti.YetiModule;
@@ -60,7 +62,12 @@ public class YetiCsharpTestManager extends YetiTestManager {
 	@Override
 	public void stopTesting() {
 
-
+		try {
+			YetiServerSocket.sendData(2400, "! STOP TESTING !");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//TODO kill the C# part
 	}
 
