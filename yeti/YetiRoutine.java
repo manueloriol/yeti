@@ -45,6 +45,12 @@ public abstract class YetiRoutine {
 	 */
 	public abstract boolean checkArguments(YetiCard []arg);
 	
+
+	/**
+	 * Tracks how many calls were made to this routine. 
+	 */
+	public int nTimesCalled = 0;
+	
 	/**
 	 * 
 	 * Make a call of this routine if arguments fit the routine.
@@ -53,7 +59,9 @@ public abstract class YetiRoutine {
 	 * @param arg the arguments.
 	 * @return the result of the call.
 	 */
-	public abstract Object makeCall(YetiCard []arg);
+	public Object makeCall(YetiCard []arg) {
+		return nTimesCalled++;
+	}
 
 	/**
 	 * Makes the effective call (lets return the exceptions and Errors).

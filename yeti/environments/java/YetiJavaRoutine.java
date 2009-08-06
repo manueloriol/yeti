@@ -64,6 +64,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 	 */
 	public Object makeCall(YetiCard []arg){
 		String log = null;
+		super.makeCall(arg);
 
 		try {
 
