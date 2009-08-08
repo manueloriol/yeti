@@ -23,10 +23,14 @@ public class YetiJavaInitializer extends YetiInitializer {
 	/**
 	 * The custom class loader that is going to be used.
 	 */
-	protected YetiLoader prefetchingLoader = null;
+	protected YetiLoader loader = null;
 	
-	public YetiJavaInitializer(YetiLoader prefetchingLoader) {
-		this.prefetchingLoader = prefetchingLoader;
+	/**
+	 * Default constructor 
+	 * @param loader the class loader to use.
+	 */
+	public YetiJavaInitializer(YetiLoader loader) {
+		this.loader = loader;
 	}
 	
 	/**
@@ -50,7 +54,7 @@ public class YetiJavaInitializer extends YetiInitializer {
 
 		// we try to load classes that will certainly be used
 		try {
-			prefetchingLoader.loadClass("java.lang.String");
+			loader.loadClass("java.lang.String");
 		} catch (ClassNotFoundException e1) {
 			// should never happen
 			e1.printStackTrace();
@@ -64,8 +68,8 @@ public class YetiJavaInitializer extends YetiInitializer {
 
 				try {
 					// we load all classes in path and String
-					prefetchingLoader.loadAllClassesInPath();
-					prefetchingLoader.loadClass("java.lang.String");
+					loader.loadAllClassesInPath();
+					loader.loadClass("java.lang.String");
 					// we want to test these modules
 					String []modulesToTest=null;
 					for (String s0: args) {
@@ -81,7 +85,7 @@ public class YetiJavaInitializer extends YetiInitializer {
 					for(String moduleToTest : modulesToTest) {
 						YetiModule yetiModuleToTest = YetiModule.allModules.get(moduleToTest);
 						if(yetiModuleToTest==null) {
-							prefetchingLoader.loadClass(moduleToTest);
+							loader.loadClass(moduleToTest);
 						} 
 					}
 
