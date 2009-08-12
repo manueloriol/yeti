@@ -1,6 +1,8 @@
 package yeti;
 
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.io.*;
@@ -9,6 +11,11 @@ import yeti.environments.YetiInitializer;
 import yeti.environments.YetiLoader;
 import yeti.environments.YetiProgrammingLanguageProperties;
 import yeti.environments.YetiTestManager;
+import yeti.environments.csharp.YetiCsharpInitializer;
+import yeti.environments.csharp.YetiCsharpLogProcessor;
+import yeti.environments.csharp.YetiCsharpProperties;
+import yeti.environments.csharp.YetiCsharpTestManager;
+import yeti.environments.csharp.YetiServerSocket;
 import yeti.environments.java.YetiJavaInitializer;
 import yeti.environments.java.YetiJavaLogProcessor;
 import yeti.environments.java.YetiJavaPrefetchingLoader;
@@ -103,6 +110,7 @@ public class Yeti {
 		YetiEngine engine;
 		boolean isJava = false;
 		boolean isJML = false;
+		boolean isDotNet = false;
 		boolean isTimeout = false;
 		int timeOutSec=0;
 		boolean isNTests = false;
@@ -131,6 +139,12 @@ public class Yeti {
 			//TODO somebody could also set -java
 			if (s0.toLowerCase().equals("-jml")) {
 				isJML = true;
+				continue;
+			}
+			
+			//if .NET
+			if(s0.toLowerCase().equals("-dotnet")){		
+				isDotNet = true;
 				continue;
 			}
 			
@@ -267,7 +281,39 @@ public class Yeti {
 			YetiLogProcessor logProcessor = new YetiJavaLogProcessor();
 			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
 		}
-
+		
+		//test of options to set up the YetiProperties for .NET assemblies
+		if (isDotNet) {
+			
+			Thread th = new Thread(new Runnable()
+			{
+				
+				
+				public void run() {
+					Runtime run = Runtime.getRuntime();
+					String command = "C:\\Users\\st552\\Documents\\Visual Studio 2008\\Projects\\CsharpReflexiveLayer\\CsharpReflexiveLayer\\bin\\Debug\\CsharpReflexiveLayer.exe";					
+					try {
+						Process p = run.exec(command);						
+						InputStream in = p.getInputStream();						
+					    int c;
+					    while ((c = in.read()) != -1) {
+					      //System.out.print((char) c);
+					    }
+					} catch (IOException e) {					
+						YetiCsharpInitializer.initflag=true;
+					}
+				}
+				} );
+			
+			th.start();
+			
+			
+			YetiInitializer initializer = new YetiCsharpInitializer();
+			YetiTestManager testManager = new YetiCsharpTestManager();
+			YetiLogProcessor logProcessor = new YetiCsharpLogProcessor();
+			YetiServerSocket socketConnector = new YetiServerSocket();
+			pl=new YetiCsharpProperties(initializer, testManager, logProcessor, socketConnector);
+		}
 		
 		//if it is raw logs, then set it		
 		if (isRawLog) {
@@ -382,8 +428,10 @@ public class Yeti {
 		String aggregationProcessing = "";
 		// presents the logs
 		System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");
+		System.out.println("RAW LOG 1");
 		if (!Yeti.pl.isRawLog()) {
 			isProcessed = true;
+			System.out.println("RAW LOG 2");			
 			for (String log: YetiLog.proc.processLogs()) {
 				System.out.println(log);
 			}

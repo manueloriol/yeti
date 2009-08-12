@@ -11,7 +11,7 @@ import yeti.YetiModule;
 import yeti.YetiName;
 import yeti.YetiType;
 import yeti.YetiVariable;
-import yeti.environments.java.YetiJavaSpecificType;
+
 
 
 /**
@@ -70,21 +70,24 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
         String log;
         String msg="";
         lastCallResult=null;
-        Object []initargs=new Object[arg.length];
+        boolean successCall=true;
+        //Object []initargs=new Object[arg.length];
        
         msg+="Constructor:";
         // we start by unboxing the arguments boxed into the cards
         YetiIdentifier id=YetiIdentifier.getFreshIdentifier();
         msg+=id+":"+c+":";
-        System.out.println(msg);
+        
         log = returnType.toString() + " " + id.getValue() + "=new "+returnType.getName()+"(";
         for (int i=0;i<arg.length; i++){
             // if we should replace it by a null value, we do it
-            if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&&!(((YetiJavaSpecificType)arg[i].getType()).isSimpleType())) {
+        	
+            if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&& !(((YetiCsharpSpecificType)arg[i].getType()).isSimpleType())) {
                 //initargs[i]=null;
                 msg+="null";
                 if(i<arg.length -1) msg+= ";";
                 log=log+"null";
+                
             } else {
                 // note that we use getValue to get the actual value
                 //initargs[i]=arg[i].getValue();
@@ -97,36 +100,67 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
                 log=log+",";
             }
         }
-        String valuestring="$$";
+        String valuestring="";
+        boolean communicationflag=true;
         try {
+        	System.out.println(msg);
             YetiServerSocket.sendData(2400, msg);
            
             ArrayList<String> a = YetiServerSocket.getData(2300);
-           
+            int i=0;
             for(String s : a)
             {
-                String[] helps = s.split(":");
-                System.out.println(helps[0]);
-                System.out.println(helps[1].trim());
-               
-                valuestring = helps[1].trim();
+            	i=s.indexOf("FAIL!");
+            	System.out.println("The S in Cons ----: "+s);
+            	if(i==-1)
+        		{
+        			String[] helps = s.split(":");
+        			if(helps.length>=2)
+        			{
+        				System.out.println("Constructor help 1: "+helps[0]);
+        				System.out.println("Constructor help 2: "+helps[1].trim());
+
+        				valuestring = helps[1].trim();
+        			}
+        			else System.out.println("Constructor help 1: "+helps[0]);
+        		}
+            	else
+            	{
+            		System.out.println(s);
+            		successCall=false;
+            		msg=s;
+            	}
 
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            communicationflag=false;
+            //e.printStackTrace();
         } catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            communicationflag=false;
+			//e.printStackTrace();
+		} 
        
-        // if it succeeds we create the new variable
-        System.out.println("LastCallResult: --> "+id+" "+returnType+" "+valuestring);
-        this.lastCallResult=new YetiVariable(id, returnType, valuestring);
-        log=log+");";
+        if(communicationflag)
+        {
+        	// if it succeeds we create the new variable
+        	//System.out.println("LastCallResult: --> "+id+" "+returnType+" "+valuestring);
+        	if(successCall)
+        	this.lastCallResult=new YetiVariable(id, returnType, valuestring);
+        	log=log+");";
+        	if(!successCall) throw new YetiCallException(log+"<>"+msg,new Throwable());
+        	
+        	if(successCall)
+        	{
+        		System.out.println(log);
+        		//System.out.println("The Msg is "+msg);
+        		YetiLog.printYetiLog(log, this);
+        		
+        	}
+        }
+              
         // print the log
-        //YetiLog.printYetiLog(log, this);
+        
         return log;
-    }
+    }     
 
 }

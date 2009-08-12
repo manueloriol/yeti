@@ -1,7 +1,6 @@
 package yeti.environments.csharp;
 
 import yeti.YetiType;
-import yeti.environments.csharp.YetiCsharpPrefetchingLoader;
 import yeti.environments.csharp.YetiCsharpSpecificType;
 //import yeti.environments.java.YetiJavaPrefetchingLoader;
 
@@ -70,30 +69,39 @@ public class YetiCsharpSpecificType extends YetiType {
 		// we create the primitive types
 		
 		YetiCsharpSpecificType tBoolean=new YetiCsharpSpecificType("Boolean");
+		tBoolean.setSimpleType(true);
 		YetiType.allTypes.put(tBoolean.getName(), tBoolean);
 
 		YetiCsharpSpecificType tByte=new YetiCsharpSpecificType("Byte");
+		tByte.setSimpleType(true);
 		YetiType.allTypes.put(tByte.getName(), tByte);
 		
 		YetiCsharpSpecificType tShort=new YetiCsharpSpecificType("Int16");
+		tShort.setSimpleType(true);
 		YetiType.allTypes.put(tShort.getName(), tShort);
 		
 		YetiCsharpSpecificType tInt=new YetiCsharpSpecificType("Int32");
+		tInt.setSimpleType(true);
 		YetiType.allTypes.put(tInt.getName(), tInt);
 		
 		YetiCsharpSpecificType tLong=new YetiCsharpSpecificType("Int64");
+		tLong.setSimpleType(true);
 		YetiType.allTypes.put(tLong.getName(), tLong);
 		
 		YetiCsharpSpecificType tDouble=new YetiCsharpSpecificType("Double");
+		tBoolean.setSimpleType(true);
 		YetiType.allTypes.put(tDouble.getName(), tDouble);
 		
 		YetiCsharpSpecificType tChar=new YetiCsharpSpecificType("Char");
+		tChar.setSimpleType(true);
 		YetiType.allTypes.put(tChar.getName(), tChar);
 		
 		YetiCsharpSpecificType tFloat=new YetiCsharpSpecificType("Single");
+		tFloat.setSimpleType(true);
 		YetiType.allTypes.put(tFloat.getName(), tFloat);
 		
 		YetiCsharpSpecificType tString=new YetiCsharpSpecificType("String");
+		tString.setSimpleType(true);
 		YetiType.allTypes.put(tString.getName(), tString);
 		
 		//YetiCsharpSpecificType tEmpty=new YetiCsharpSpecificType("");

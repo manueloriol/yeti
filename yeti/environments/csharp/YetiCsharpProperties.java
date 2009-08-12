@@ -3,11 +3,7 @@ package yeti.environments.csharp;
 import yeti.YetiLogProcessor;
 import yeti.environments.YetiInitializer;
 import yeti.environments.YetiProgrammingLanguageProperties;
-import yeti.environments.csharp.YetiServerSocket;
 import yeti.environments.YetiTestManager;
-import yeti.environments.csharp.YetiCsharpInitializer;
-import yeti.environments.csharp.YetiCsharpLogProcessor;
-import yeti.environments.csharp.YetiCsharpTestManager;
 
 /**
  * Class that represents the Csharp specific properties 
@@ -19,59 +15,68 @@ import yeti.environments.csharp.YetiCsharpTestManager;
 public class YetiCsharpProperties extends YetiProgrammingLanguageProperties {
 	
 
-
-	/**
-	 * The Csharp intialiser.
-	 */
-	private YetiCsharpInitializer csinit=new YetiCsharpInitializer();
-	
-	/**
-	 * The Csharp test manager.
-	 */
-	private YetiCsharpTestManager cstm=new YetiCsharpTestManager();
-	
-	/**
-	 * The Csharp logProcessor.
-	 */
-	private YetiCsharpLogProcessor cslp=new YetiCsharpLogProcessor();
-	
-	private YetiServerSocket cscon = new YetiServerSocket();
-	
-	/* (non-Javadoc)
-	 * 
-	 * Returns an initializer.
-	 * 
-	 * @see yeti.environments.YetiProgrammingLanguageProperties#getInitializer()
-	 */
-	@Override
-	public YetiInitializer getInitializer() {
+		/**
+		 * The initialiser.
+		 */
+		protected YetiInitializer initializer = null;
 		
-		return csinit;
-	}
+		/**
+		 * The test manager.
+		 */
+		protected YetiTestManager testManager = null;
+		
+		/**
+		 * The logProcessor.
+		 */
+		protected YetiLogProcessor logProcessor = null;
+		
+		/**
+		 * The socketConnector.
+		 */
+		protected YetiServerSocket socketConnector = null;
+		
+		public YetiCsharpProperties(YetiInitializer initializer, YetiTestManager testManager, YetiLogProcessor logProcessor, YetiServerSocket socketConnector) {
+			this.initializer = initializer;
+			this.testManager = testManager;
+			this.logProcessor = logProcessor;
+			this.socketConnector = socketConnector;
+		}
+		
+		/* (non-Javadoc)
+		 * 
+		 * Returns an initializer.
+		 * 
+		 * @see yeti.environments.YetiProgrammingLanguageProperties#getInitializer()
+		 */
+		@Override
+		public YetiInitializer getInitializer() {
+			
+			return initializer;
+		}
 
-	/* (non-Javadoc)
-	 * Returns the test manager
-	 * 
-	 * @see yeti.environments.YetiProgrammingLanguageProperties#getTestManager()
-	 */
-	@Override
-	public YetiTestManager getTestManager() {
-		return cstm;
-	}
+		/* (non-Javadoc)
+		 * Returns the test manager
+		 * 
+		 * @see yeti.environments.YetiProgrammingLanguageProperties#getTestManager()
+		 */
+		@Override
+		public YetiTestManager getTestManager() {
+			return testManager;
+		}
 
-	/* (non-Javadoc)
-	 * Returns the log processor
-	 * 
-	 * @see yeti.environments.YetiProgrammingLanguageProperties#getTestManager()
-	 */
-	@Override
-	public YetiLogProcessor getLogProcessor() {
-		return cslp;
-	}
+		/* (non-Javadoc)
+		 * Returns the log processor
+		 * 
+		 * @see yeti.environments.YetiProgrammingLanguageProperties#getTestManager()
+		 */
+		@Override
+		public YetiLogProcessor getLogProcessor() {
+			return logProcessor;
+		}
 	
 	public YetiServerSocket getServerSocket() {
 		
-		return cscon;
+		return socketConnector;
 	}
 
 

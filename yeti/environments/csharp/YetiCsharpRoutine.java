@@ -1,7 +1,5 @@
 package yeti.environments.csharp;
 
-import java.lang.reflect.InvocationTargetException;
-
 import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiLog;
@@ -10,14 +8,14 @@ import yeti.YetiName;
 import yeti.YetiRoutine;
 import yeti.YetiType;
 import yeti.YetiVariable;
-import yeti.environments.YetiSecurityException;
+//import yeti.environments.YetiSecurityException;
 
 
 /**
  * Class that represents... 
  * 
  * @author Sotirios Tassis (st552@cs.york.ac.uk)
- * @date Jul 20, 2009
+ * @date Aug 09, 2009
  *
  */
 public class YetiCsharpRoutine extends YetiRoutine {
@@ -61,57 +59,47 @@ public class YetiCsharpRoutine extends YetiRoutine {
 	/* (non-Javadoc)
 	 * Method used to perform the actual call
 	 * 
-	 * @see yeti.environments.java.YetiJavaRoutine#makeCall(yeti.YetiCard[])
+	 * @see yeti.environments.java.YetiCsharpRoutine#makeCall(yeti.YetiCard[])
 	 */
 	public Object makeCall(YetiCard []arg){
 		String log = null;
-
-		try {
+		super.makeCall(arg);
+		
 
 			try {
 				makeEffectiveCall(arg);
 			} catch(YetiCallException e) {
-				log = e.getLog();
-				throw e.getOriginalThrowable();
-			}
-
-		} catch (IllegalArgumentException e) {
-			// should never happen
-			//e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// should never happen
-			// e.printStackTrace();
-		} catch (InvocationTargetException e) {
-
-			// if we are here, we found a bug.
-			// we first print the log
-			YetiLog.printYetiLog(log+");", this);
-			// then print the exception
-			if (e.getCause() instanceof RuntimeException || e.getCause() instanceof Error) {
-				if (e.getCause() instanceof ThreadDeath) {
-					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
-				} else {
-					if (e.getCause() instanceof YetiSecurityException) {
-						YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: "+e.getCause().getMessage()+" **/", this);
-					} else
-					YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
+				String temp = e.getLog();
+				String[] results = temp.split("<>");
+				log = results[0];
+				System.out.println("The LOG ---> "+temp);
+				String reasonException="";
+				int tmp=0;
+				if(results[1]!=null)
+				{
+					System.out.println("The result[1]= "+results[1]);
+					reasonException = results[1];
+					tmp = results[1].indexOf("PRECONDITION");
 				}
+				
+				YetiLog.printYetiLog(log, this);				
+				if(tmp==-1)
+				{
+					//String[] exception = reasonException.split("!");
+					System.out.println("BUG EXCEPTION");
+					YetiLog.printYetiLog("BUG FOUND: ERROR", this);
+					YetiLog.printYetiLog(reasonException, this);
+				}
+				else
+				{
+					System.out.println("NORMAL EXCEPTION");
+					YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
+				}
+			} catch (Throwable e) {
+				
 			}
-			else
-				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
-			YetiLog.printYetiThrowable(e.getCause(), this);
-		} catch (Error e){
-			// if we are here there was a serious error
-			// we print it
-			YetiLog.printYetiLog(log+");", this);
-			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
-			YetiLog.printYetiThrowable(e.getCause(), this);
 
-		}
-		catch (Throwable e){
-			// should never happen
-			e.printStackTrace();
-		}
+		
 		return this.lastCallResult;
 	}
 	

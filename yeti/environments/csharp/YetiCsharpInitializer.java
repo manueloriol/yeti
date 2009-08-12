@@ -5,28 +5,40 @@ import java.io.InputStream;
 //import java.lang.reflect.Modifier;
 //import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.Date;
+//import java.util.Enumeration;
+//import java.util.HashMap;
 import java.util.Iterator;
-import java.util.ListIterator;
+//import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import yeti.YetiCallException;
+import yeti.Yeti;
+//import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiIdentifier;
 import yeti.YetiInitializationException;
 import yeti.YetiLog;
+import yeti.YetiLogProcessor;
 import yeti.YetiModule;
 import yeti.YetiName;
-import yeti.YetiRoutine;
+//import yeti.YetiRoutine;
 import yeti.YetiType;
 import yeti.environments.YetiInitializer;
+//import yeti.environments.YetiLoader;
+import yeti.environments.YetiTestManager;
 import yeti.environments.csharp.YetiServerSocket;
 //import yeti.environments.csharp.YetiCsharpPrefetchingLoader;
 import yeti.environments.csharp.YetiCsharpSpecificType;
-import yeti.strategies.YetiRandomPlusStrategy;
+//import yeti.environments.java.YetiJavaLogProcessor;
+//import yeti.environments.java.YetiJavaProperties;
+//import yeti.environments.java.YetiJavaTestManager;
+//import yeti.environments.jml.YetiJMLInitializer;
+//import yeti.environments.jml.YetiJMLPrefetchingLoader;
+//import yeti.strategies.YetiRandomPlusStrategy;
 import java.lang.Thread;
+
+//import com.sun.org.apache.xml.internal.utils.IntVector;
 
 /**
  * Class that represents the initialiser for Csharp.
@@ -66,72 +78,76 @@ public class YetiCsharpInitializer extends YetiInitializer {
 	 */
 	@SuppressWarnings("static-access")
 	@Override
-	public void initialize(final String[] args) throws YetiInitializationException {
+	public void initialize(String[] args) throws YetiInitializationException {
 		
-		YetiServerSocket soc = new YetiServerSocket();
+		YetiServerSocket soc;		
+		soc = new YetiServerSocket();
 		
-		Thread th = new Thread(new Runnable()
+		
+		
+		// we go through all arguments
+		String modulesToTest="";
+		String yetiPath="";
+		for(int i=0; i<args.length; i++) 
 		{
-			String[] as = args;
-			
-			public void run() {
-				Runtime run = Runtime.getRuntime();
-				String command = "C:\\Users\\st552\\Documents\\Visual Studio 2008\\Projects\\CsharpReflexiveLayer\\CsharpReflexiveLayer\\bin\\Debug\\CsharpReflexiveLayer.exe";
-				 
-				//String command = "C:\\Users\\st552\\test\\CsharpReflexiveLayer.exe";
-				try {
-					Process p = run.exec(command);
+			if (args[i].equals("-csharp")) 
+				ignore(args[i]);
+			else 
+			{
+				
+				for (String s0: args) {
+					if (s0.startsWith("-testModules=")) 
+					{
+						String s1=s0.substring(13);
+						modulesToTest=s1;
+						
+					}
 					
-					InputStream in = p.getInputStream();
-					//PrintStream ps = new PrintStream(in);
-					//ps.println();
-				    int c;
-				    while ((c = in.read()) != -1) {
-				      //System.out.print((char) c);
-				    }
-				} catch (IOException e) {					
-					YetiCsharpInitializer.initflag=true;
+					if(s0.startsWith("-yetiPath="))
+					{
+						String s1=s0.substring(13);
+						yetiPath=s1;
+					}
 				}
 			}
-			} );
-		
-		th.start();
-		
+		}
 		
 		if(YetiCsharpInitializer.initflag) throw new YetiInitializationException("C#ReflexiveLayer Unable To Start");
+		yetiPath = "C:\\Users\\st552\\Documents\\Visual Studio 2008\\Projects\\CsharpReflexiveLayer\\CsharpReflexiveLayer\\bin\\Debug\\";
+		String info= yetiPath+"="+modulesToTest;
 		// we initialize primitive types first
-		// the primitives have the type names that C# has
+		// the primitives have the type names that C# has		
 		YetiCsharpSpecificType.initPrimitiveTypes();
-		try {
-		@SuppressWarnings("unused")
-		ArrayList<String> a = YetiServerSocket.getData(2300);	    		
-		System.out.println("**************************************");
+		try {			    	
 		
-			YetiServerSocket.sendData(2400, "ContrExample1.exe");
+			YetiServerSocket.sendData(2400, info);
 		} catch (IOException e1) {
+			System.out.println(e1.getMessage());
 			throw new YetiInitializationException(e1.getMessage());
 		} catch (Exception e) {
 			throw new YetiInitializationException(e.getMessage());
-		}
-		System.out.println("**************************************");
+		}		
 		
 		try {
+			@SuppressWarnings("unused")
+			ArrayList<String> a = YetiServerSocket.getData(2300);
 			YetiServerSocket.sendData(2400, "reached read point");
-			System.out.println("1");
+			a = YetiServerSocket.getData(2300);
+			//System.out.println("1");
 			strTypes = soc.getData(2300);
-			System.out.println("2");
+			//System.out.println("2");
 			cons = soc.getData(2300);
-			System.out.println("3");
+			//System.out.println("3");
 			meths = soc.getData(2300);
-			System.out.println("4");
+			//System.out.println("4");
 			inters = soc.getData(2300);
-			System.out.println("5");
+			//System.out.println("5");
 		} catch (IOException e) {			
 			throw new YetiInitializationException(e.getMessage());
 		} catch (Exception e) {
 			throw new YetiInitializationException(e.getMessage());
 		}
-		System.out.println("**************************************");
+		//System.out.println("**************************************");
 		//For each type we do what the Prefetching Loader does	
 		for(String s: strTypes)
 		{
@@ -141,6 +157,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 			String[] st = s.split(":");
 			System.out.println("st[0]: "+ st[0]);
 			System.out.println("st[1]: "+ st[1]);
+			System.out.println("st[2]: "+ st[2]);
 			YetiType type=new YetiCsharpSpecificType(st[0].trim());
 			YetiType.allTypes.put(type.getName(), type);
 			YetiLog.printDebugLog("adding "+type.getName()+" to yeti types ", this);
@@ -154,8 +171,12 @@ public class YetiCsharpInitializer extends YetiInitializer {
 							
 			// we create the YetiModule out of the type
 			// which exists in st[0] each time
-			YetiModule mod = this.makeModuleFromClass(st[0]);
-			YetiModule.allModules.put(st[0], mod);
+			if(!(YetiModule.allModules.containsKey(st[2].trim())))
+			{
+				System.out.println("HEEEREEEEE: "+st[2].trim());
+				YetiModule mod = this.makeModuleFromClass(st[2].trim());
+				YetiModule.allModules.put(st[2].trim(), mod);
+			}
 			
 		}
 		// we link an interface with its type to the parent interfaces
@@ -163,7 +184,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 		{
 			String[] st = i.split(":");
 			System.out.println("st[0]: "+ st[0]);
-			System.out.println("st[1]: "+ st[1]);
+			System.out.println("st[1]: "+ st[1]);			
 			YetiType type=new YetiCsharpSpecificType(st[0].trim());
 			if (YetiType.allTypes.containsKey(st[0])){
 				YetiLog.printDebugLog("linking "+type.getName()+" to "+st[0], this);
@@ -179,7 +200,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 		{
 			String[] st = cs.split(":");
 			YetiType t = YetiType.allTypes.get(st[0].trim());
-			YetiModule m = YetiModule.allModules.get(st[0].trim());
+			YetiModule m = YetiModule.allModules.get(st[2].trim());
 			addConstructors(cs, t, m);
 			System.out.println("$$$$$"+t);
 		}
@@ -192,7 +213,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 		{
 			String[] st = ms.split(":");
 			YetiType t = YetiType.allTypes.get(st[0].trim());
-			YetiModule m = YetiModule.allModules.get(st[0].trim());
+			YetiModule m = YetiModule.allModules.get(st[5].trim());
 			addMethods(ms,t,m);
 			System.out.println(ms);
 		}
@@ -205,16 +226,18 @@ public class YetiCsharpInitializer extends YetiInitializer {
 		System.out.println("st[0]: "+ st[0]);
 		System.out.println("st[1]: "+ st[1]);
 		String[] pars = st[1].split(";");
+		System.out.println("PARS[0]: "+pars[0]);
 		boolean usable = true;
 		YetiType []paramTypes=null;
 		int numberPars=0; //The number of parameters the constructor has
 		//Checks if there are any parameters or not
-		if("\n".equals(pars[0]))
-			paramTypes=null;					
+		if("".equals(pars[0]))
+			paramTypes=new YetiType[numberPars];				
 		else 
 		{
-			paramTypes=new YetiType[pars.length];
 			numberPars=pars.length;
+			paramTypes=new YetiType[numberPars];
+			
 		}
 		// for all types we box the types.
 		for (int i=0; i<numberPars; i++){
@@ -256,7 +279,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 		if("".equals(pars[0].trim())) numberParameters=0;
 		else numberParameters=pars.length;
 		
-		boolean isStatic;
+		boolean isStatic = false;
 		if("True".equals(st[4].trim())) isStatic = true;
 		else isStatic = false;
 	    //System.out.println("Static: "+isStatic+"Pars: "+pars.length);
@@ -289,13 +312,13 @@ public class YetiCsharpInitializer extends YetiInitializer {
 		
 		// if we don't know a type from the constructor we don't add it
 		if (usable){
-			System.out.println(c);
-			YetiLog.printDebugLog("adding method "+st[1]+" in module "+st[0], this);
+			System.out.println(c+" ---> "+isStatic);
+			YetiLog.printDebugLog("adding method "+st[1]+" in module "+st[5], this);
 			// add it as a creation routine for the return type
 			YetiType returnType = YetiType.allTypes.get(st[3].trim());
 			if (returnType==null)
 				returnType = new YetiCsharpSpecificType(st[3].trim());
-			YetiCsharpMethod method = new YetiCsharpMethod(YetiName.getFreshNameFrom(st[1]), paramTypes , returnType, mod,st[1],isStatic);
+			YetiCsharpMethod method = new YetiCsharpMethod(YetiName.getFreshNameFrom(st[1]), paramTypes , returnType, mod,st[1].trim(),isStatic,st[0].trim());
 			returnType.addCreationRoutine(method);
 			// add the constructor as a routines to test
 			mod.addRoutineInModule(method);
@@ -310,10 +333,51 @@ public class YetiCsharpInitializer extends YetiInitializer {
 	}
 	
 	public static void main(String[] args)
-	{
-		YetiCsharpInitializer init = new YetiCsharpInitializer();
+	{		
+		YetiInitializer initializer = new YetiCsharpInitializer();
+		YetiTestManager testManager = new YetiCsharpTestManager();
+		YetiLogProcessor logProcessor = new YetiCsharpLogProcessor();
+		YetiServerSocket socketConnector = new YetiServerSocket();
+		Yeti.pl=new YetiCsharpProperties(initializer, testManager, logProcessor,socketConnector);
+		YetiLog.proc = Yeti.pl.getLogProcessor();
+		
+		YetiInitializer init = Yeti.pl.getInitializer();
+		
+		Thread th = new Thread(new Runnable()
+		{
+			
+			
+			public void run() {
+				Runtime run = Runtime.getRuntime();
+				String command = "C:\\Users\\st552\\Documents\\Visual Studio 2008\\Projects\\CsharpReflexiveLayer\\CsharpReflexiveLayer\\bin\\Debug\\CsharpReflexiveLayer.exe";
+				 
+				//String command = "C:\\Users\\st552\\test\\CsharpReflexiveLayer.exe";
+				try {
+					Process p = run.exec(command);
+					
+					InputStream in = p.getInputStream();
+					//PrintStream ps = new PrintStream(in);
+					//ps.println();
+				    int c;
+				    while ((c = in.read()) != -1) {
+				      System.out.print((char) c);
+				    }
+				} catch (IOException e) {					
+					YetiCsharpInitializer.initflag=true;
+				}
+			}
+			} );
+		
+		th.start();
+		
 		try {
-			String[] a = null;
+			String[] a = new String[4];
+			a[0]="-csharp";
+			a[1]="-testModules=ContrExample1.exe:CarLibrary.dll";
+			a[2]="-yetiPath=C:\\Users\\st552\\Documents\\Visual Studio 2008\\Projects\\CsharpReflexiveLayer\\CsharpReflexiveLayer\\bin\\Debug\\";
+			a[2]="-time=10s";
+			a[3]="-gui";
+			
 			
 			init.initialize(a);
 		} catch (YetiInitializationException e) {
@@ -353,163 +417,262 @@ public class YetiCsharpInitializer extends YetiInitializer {
 	    
 	    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 	    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-	    System.out.println("THE CREATIONROUTINES : ");
-	    
-	    //YetiType rType = YetiType.allTypes.get("Rational");
-	    YetiType rType2 = YetiType.allTypes.get("Int32");
-	    
-	    /*Iterator itr = rType.creationRoutines.iterator();
-	    
-	    while (itr.hasNext()){
-	    	Object o = (Object) itr.next();
-	    	o.toString();
-	    	
-	    	YetiCsharpRoutine r = (YetiCsharpRoutine) o;
-	    	
-	    		int offset=0;
-	    		//if(r.isStatic)
-	    		//{
-	    		//	offset=0;
-	    		//}
-	    		System.out.print(r+": ");
-	    		if(r.getOpenSlots()!=null)
-	    		{
-	    			YetiType[] yt= r.getOpenSlots();
-	    			for(int i=0+offset; i< yt.length; i++)
-	    			{
-	    				System.out.print(yt[i]+";");
-
-	    			}
-	    		}
-	    		System.out.println();
-	    	
-	    	//System.out.println(itr.next());
-	    		  
-	    }*/
-	    
+	    //System.out.println("THE CREATIONROUTINES : ");
+	    long startTestingTime = new Date().getTime();
 	    System.out.println("Send Data to C# Reflexive Layer");
-	    /*int i =0;	   
-	    try {
-	    	ArrayList<String> a = YetiServerSocket.getData(2300);
-
-	    	while(true)
-	    	{
-	    		System.out.println("**************************************");
-	    		if(i<9)
-	    			YetiServerSocket.sendData(2400, "TESTING MESSAGE FROM JAVA PART --> "+i);
-	    		else
-	    		{
-	    			YetiServerSocket.sendData(2400, "! STOP TESTING !");
-	    			break;
-	    		}
-	    		a = YetiServerSocket.getData(2300);
-	    		for(String s : a)
-	    		{
-	    			String[] helps = s.split(":");
-	    			System.out.println(helps[0]);
-	    			System.out.println(helps[1]);
-
-	    		}
-	    		System.out.println("**************************************");	    		
-	    		i++;
-	    	}
-	    } catch (IOException e1) {
-	    	
-	    	e1.printStackTrace();
-	    }*/
+	    YetiType rType = YetiType.allTypes.get("String");
+	    YetiType rType2 = YetiType.allTypes.get("Rational");
+	    YetiType rType3 = YetiType.allTypes.get("Int32");
+	    YetiType rType4 = YetiType.allTypes.get("Boolean");
+	    YetiType rType5 = YetiType.allTypes.get("Byte");
+	    YetiType rType6 = YetiType.allTypes.get("Int16");
+	    YetiType rType7 = YetiType.allTypes.get("Int64");
+	    YetiType rType8 = YetiType.allTypes.get("Single");
+	    YetiType rType9 = YetiType.allTypes.get("Double");
+	    YetiType rType10 = YetiType.allTypes.get("Void");
+	    YetiType rType11 = YetiType.allTypes.get("Prorgam");
+	    YetiType rType12 = YetiType.allTypes.get("Char");
 	    
 	    
-	    /*Iterator itr2 =rType.creationRoutines.iterator();
-        System.out.println("**************************************");
-        try
+	    Iterator itr = rType8.creationRoutines.iterator();
+	    Iterator itr5 = rType.creationRoutines.iterator();
+	    
+	    long intvalue=YetiIdentifier.getCurrentIndex();
+	    long strvalue=0;
+	    try
         {
-            ArrayList<String> a = YetiServerSocket.getData(2300);
-            while(itr2.hasNext())
+	    	YetiCard[] argConstr = new YetiCard[0];
+        	ArrayList<String> a = YetiServerSocket.getData(2300);
+        	
+            while(itr.hasNext())
             {
-                Object o = (Object) itr2.next();
-                int i=0;
-                
-                YetiCsharpRoutine r = (YetiCsharpRoutine) o;
-                
-                	if(r.getOpenSlots().length==0)
-                	{
-                		while(i<5)
-                        {
-                		YetiCard[] arg = new YetiCard[0];
-                		String result = r.makeEffectiveCall(arg);                    
-                		System.out.println("The Result is: ");
-                		System.out.println(result);
-                		i++;
-                        }
-                	}
-                
+            	
+            	Object o = (Object) itr.next();
+            	System.out.println("------->"+o);
+            	YetiCsharpRoutine r = (YetiCsharpRoutine)o;
+            	YetiName namehelp = r.getName();
+        		int nameFlag=0;
+        		nameFlag = namehelp.getValue().indexOf("__yetiValue_createRandomFloat");
+        		
+        		if(nameFlag!=-1)
+        		{
+        			int i=0;
+        			
+        			//YetiIdentifier rrr = YetiIdentifier.getFreshIdentifier();
+            		//YetiCsharpSpecificType tprr = new YetiCsharpSpecificType("Rational");
+        			
+        			Object obrr = null;
+            		//argConstr[0] = new YetiCard(rrr,rType2,obrr);
+        			while(i<1)
+        			{
+        				String result = r.makeEffectiveCall(argConstr);                    
+        				System.out.println("The Result is: ");
+        				System.out.println(result);
+        				i++;
+        			}
+        		}
+            }
+            
+            while(itr5.hasNext())
+            {
+            	Object o = (Object) itr5.next();
+            	System.out.println("------->"+o);
+            	YetiCsharpRoutine r = (YetiCsharpRoutine)o;
+            	YetiName namehelp = r.getName();
+        		int nameFlag=0;
+        		nameFlag = namehelp.getValue().indexOf("M");
+        		if(nameFlag!=-1)
+        		{
+        			YetiIdentifier rrr = YetiIdentifier.getFreshIdentifier();
+        			
+        			Object obrr = null;
+        			argConstr = new YetiCard[1];
+        			argConstr[0] = new YetiCard(rrr,rType2,obrr);
+        			strvalue=YetiIdentifier.getCurrentIndex();;
+        			String result = r.makeEffectiveCall(argConstr);                    
+    				System.out.println("The Result is: ");
+    				System.out.println(result);
+    				
+        		}
             }
             
         }
-        catch(Throwable e)
-        {
-            System.out.println(e);
-        }
-        System.out.println("**************************************");*/
+	    catch(Throwable e)
+	    {
+	    	System.out.println(e);
+	    }
 	    
-        
-        
-       
-        
-        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+	    
+	                               
+	    
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
         Iterator itr3 =rType2.creationRoutines.iterator();
         try
         {
-        	ArrayList<String> a = YetiServerSocket.getData(2300);
+        	//ArrayList<String> a = YetiServerSocket.getData(2300);
+        	long l=0;
             while(itr3.hasNext())
             {
                 Object o = (Object) itr3.next();
                 int i=0;
                 
-                YetiCsharpMethod r = (YetiCsharpMethod) o;
-                System.out.println("---> "+r.m);
-                	if(r.m.equals("ComputeResult"))
+                YetiCsharpRoutine r = (YetiCsharpRoutine) o;                                
+                System.out.println("Rational Return ---->"+o);
+                //System.out.println("---> "+r.m+": "+r.isStatic);
+                
+                YetiCard[] argConstr = new YetiCard[0];
+        		YetiCard[] arg = new YetiCard[2];
+    			
+    			
+    			/*YetiIdentifier h2 = YetiIdentifier.getFreshIdentifier();
+    			YetiCsharpSpecificType tp2 = new YetiCsharpSpecificType("Rational");
+    			
+    			YetiIdentifier h3 = new YetiIdentifier("v9");
+    			YetiCsharpSpecificType tp3 = new YetiCsharpSpecificType("Rational");*/
+    			
+        		
+        		//arg[2] = new YetiCard(h2,tp2,ob);
+        		
+        		//YetiIdentifier h4 = YetiIdentifier.getFreshIdentifier();
+    			//YetiCsharpSpecificType tp4 = new YetiCsharpSpecificType("Rational");        			
+        		YetiName namehelp = r.getName();
+        		int nameFlag=0;
+        		System.out.println("£££  "+namehelp.getValue());
+        		nameFlag = namehelp.getValue().indexOf("Rational");
+                	if(nameFlag!=-1 && r.getOpenSlots().length==0)
                 	{
-                		while(i<5)
+                		while(i<1)
                         {
                 			System.out.println("100");
-                		YetiCard[] arg = new YetiCard[1];
-            			System.out.println("101");
-                		YetiIdentifier h1 = new YetiIdentifier("v110");
-            			System.out.println("102");
-                		YetiType tp = new YetiType("Int32");
-            			System.out.println("103");
-                		Object ob = null;
-                		arg[0] = new YetiCard(h1,tp,ob);
-            			System.out.println("104");
-                		    
-                		String result = r.makeEffectiveCall(arg);                    
+                			
+                		
+                		//argConstr[0] = new YetiCard(h4,tp4,ob);
+                		
+            			System.out.println("104");                		    
+                		String result = r.makeEffectiveCall(argConstr);                    
                 		System.out.println("The Result is: ");
                 		System.out.println(result);
                 		i++;
                         }
                 	}
-                
+                	
+                	
+                	
+                	/*if(nameFlag!=-1 && r.getOpenSlots().length==2)
+                	{
+                		i=0;
+                		l = YetiIdentifier.getCurrentIndex()-1;
+                		while(i<1)
+                        {
+                		System.out.println("101");
+            			
+            			String sv = "v"+Long.toString(l);
+                		YetiIdentifier h1 = new YetiIdentifier(sv);
+                		sv="v" + Long.toString(intvalue);
+                		YetiIdentifier h2 = new YetiIdentifier(sv);
+            			System.out.println("102");
+                		//YetiCsharpSpecificType tp = new YetiCsharpSpecificType("Rational");
+            			System.out.println("103");
+            			Object ob = null;
+                		arg[0] = new YetiCard(h1,rType2,ob);
+                		arg[1] = new YetiCard(h2,rType3,ob);
+                		System.out.println("104");      
+                		
+                		String result = r.makeEffectiveCall(arg);                    
+                		System.out.println("The Result is: ");
+                		System.out.println(result);
+                		i++;
+                        }
+                		
+                	}*/
+                	
+                	
+                	
             }
             
-							            
+            Iterator itr4 =rType10.creationRoutines.iterator();
+            
+            while(itr4.hasNext())
+            {
+            	Object o = (Object) itr4.next();
+            	YetiCsharpRoutine r = (YetiCsharpRoutine) o;                                
+                System.out.println("---->"+o+": "+r.getOpenSlots().length);
+                
+                YetiCard[] arg = new YetiCard[2];
+                YetiName namehelp = r.getName();
+        		int nameFlag=0;
+        		nameFlag = namehelp.getValue().indexOf("printaString");
+        		if(nameFlag!=-1 && r.getOpenSlots().length == 2)
+        		{
+        			int i=0;
+        			while(i<1)
+        			{
+        				String sv = "v"+Long.toString(strvalue);
+        				YetiIdentifier h5 = new YetiIdentifier(sv);
+        				sv = "v"+Long.toString(intvalue);
+        				YetiIdentifier h6 = new YetiIdentifier(sv);
+
+        				Object ob = null;
+        				//arg[0] = new YetiCard(h6,rType11,ob);
+        				arg[0] = new YetiCard(h5,rType,ob);
+        				arg[1] = new YetiCard(h6,rType8,ob);
+
+        				String result = r.makeEffectiveCall(arg);                    
+        				System.out.println("The Result is: ");
+        				System.out.println(result);
+        				i++;
+        			}
+        		}
+            }
+            
+            
+            						            
         }
         catch(Throwable e)
         {
             System.out.println(e);
         }
-        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        
+        Iterator itr12 =rType12.creationRoutines.iterator();
+        System.out.println("The -- routines");
+        while(itr12.hasNext())
+        {
+        	Object o = (Object) itr12.next();
+        	YetiCsharpRoutine r = (YetiCsharpRoutine) o;
+        	
+            System.out.println("---->"+o+": "+r.getOpenSlots().length);
+            
+            YetiCard[] arg = new YetiCard[0];
+            YetiName namehelp = r.getName();
+    		int nameFlag=0;
+    		nameFlag = namehelp.getValue().indexOf("__yetiValue_createRandomChar");
+    		if(nameFlag!=-1 && r.getOpenSlots().length == 0)
+    		{
+    			String result="NORESULT";
+				try {
+					result = r.makeEffectiveCall(arg);
+				} catch (Throwable e) {
+					e.printStackTrace();
+				}                    
+				System.out.println("The Result is: ");
+				System.out.println(result);
+    		}
+        }
+        	
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 	    
-        try {
+        /*try {
 			YetiServerSocket.sendData(2400, "! STOP TESTING !");
-			 ArrayList<String> a = YetiServerSocket.getData(2300);
+			 @SuppressWarnings("unused")
+			ArrayList<String> a = YetiServerSocket.getData(2300);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-	    
+		}*/
+		
+		testManager.stopTesting();
+		long endTestingTime = new Date().getTime();
 	    System.out.println(YetiCsharpSpecificType.__yetiValue_createRandomBoolean());
 	    System.out.println(YetiCsharpSpecificType.__yetiValue_createRandomChar());
 	    System.out.println(YetiCsharpSpecificType.__yetiValue_createRandomDouble());
@@ -518,7 +681,29 @@ public class YetiCsharpInitializer extends YetiInitializer {
 	    System.out.println(YetiCsharpSpecificType.__yetiValue_createRandomLong());
 	    System.out.println(YetiCsharpSpecificType.__yetiValue_createRandomByte());
 	    System.out.println(YetiCsharpSpecificType.__yetiValue_createRandomShort());
-
+	    System.out.println("");
+	    
+	    boolean isProcessed = false;
+		String aggregationProcessing = "";
+		// presents the logs
+		System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");
+		if (!Yeti.pl.isRawLog()) {
+			isProcessed = true;
+			for (String log: YetiLog.proc.processLogs()) {
+				System.out.println(log);
+			}
+			// logging purposes: (slightly wrong because of printing)
+			long endProcessingTime = new Date().getTime();
+			aggregationProcessing = "/** Processing time: "+(endProcessingTime-endTestingTime)+"ms **/";
+		}
+		if (!isProcessed) {
+			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
+			System.out.println("/** Unique relevant bugs: "+lp.listOfErrors.size()+" **/");			
+		}
+		if (isProcessed) {
+			System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");
+			System.out.println(aggregationProcessing);			
+		}
 	    /*try {
 	    	ArrayList<String> a = YetiServerSocket.getData(2400);	    		    		
     		YetiServerSocket.sendData(2400, "Constructor:v112:Rational:null;v110");
@@ -537,7 +722,6 @@ public class YetiCsharpInitializer extends YetiInitializer {
 
     		}
     	} catch (IOException e1) {
-    		// TODO Auto-generated catch block
     		e1.printStackTrace();
     	}*/
 

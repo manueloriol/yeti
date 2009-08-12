@@ -7,9 +7,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+//import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
+//import java.net.SocketAddress;
+//import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 //import yeti.environments.csharp.YetiCsharpProperties;
@@ -22,10 +24,21 @@ import java.util.ArrayList;
  */
 public class YetiServerSocket {
 	
-	public static ServerSocket testing = null;
-	public YetiServerSocket()
+	public static ServerSocket s = null;
+	private static boolean startServer=true;
+	public YetiServerSocket() 
 	{
-		
+		if(startServer)
+		{
+			try {
+				s=new ServerSocket(2300);
+				startServer=false;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 	}
 	
     //public static ArrayList<String> allTypes = new ArrayList();
@@ -39,9 +52,9 @@ public class YetiServerSocket {
 	 */
 	public static ArrayList<String> getData(int soc) throws Exception
 	{
-		ServerSocket s;
+		//ServerSocket s;
 		ArrayList<String> temp = new ArrayList<String>();
-		s=new ServerSocket(soc);
+		//s=new ServerSocket(soc);
 		boolean read=true;
 
 		//OutputStream output = s1.getOutputStream();
@@ -53,26 +66,26 @@ public class YetiServerSocket {
 		int i = 0;		
 		while(read)
 		{
-		
-		//Hold until data are sent by the other part
-		Socket s1 = s.accept();
-		InputStream input = s1.getInputStream();
-		//Convert stream to string so we can manipulate it
-		received = YetiServerSocket.convertStreamToString(input);
-		//when the other part sends "stop" the getData method will terminate
-		if("stop".equals(received.trim()))
-			read =false;
-		else
-		//System.out.println(received);
-		temp.add(received);
-		//allTypes.add(received);
-		
-		i++;
-		//ps.println("My message "+ i);
-		
-		//}
+
+			//Hold until data are sent by the other part
+			Socket s1 = s.accept();
+			InputStream input = s1.getInputStream();
+			//Convert stream to string so we can manipulate it
+			received = YetiServerSocket.convertStreamToString(input);
+			//when the other part sends "stop" the getData method will terminate
+			if("stop".equals(received.trim()))
+				read =false;
+			else
+				//System.out.println(received);
+				temp.add(received);
+			//allTypes.add(received);
+
+			i++;
+			//ps.println("My message "+ i);
+
+			//}
 		}
-		s.close();
+		//s.close();
 		return temp;
 		
 		
@@ -80,13 +93,12 @@ public class YetiServerSocket {
 	
 	
 	public static void sendData(int soc, String msg) throws IOException
-	{
-		
+	{			   
 		Socket s2 = new Socket("localhost",soc);
 		OutputStream output = s2.getOutputStream();
 		PrintStream ps = new PrintStream(output);
 		ps.println(msg);
-		ps.flush();
+		ps.flush();		
 	}
 	
 	/**
@@ -95,15 +107,28 @@ public class YetiServerSocket {
 	 * @return it returns the string that has all the data sent
 	 */
 	private static String convertStreamToString(InputStream is) throws Exception {
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-	    StringBuilder sb = new StringBuilder();
-	    String line = null;
-	    while ((line = reader.readLine()) != null) {
-	      sb.append(line + "\n");
-	    }
-	    is.close();
-	    return sb.toString();
-	  }
+		
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			String tmp=null;
+			boolean flag=false;
+			int index1=0;
+			while ((line = reader.readLine()) != null) {
+				index1 = line.indexOf("!CHARVALUE!");
+				 if (index1 != -1)
+				 {
+					 tmp=line.substring(11);
+					 flag=true;
+				 }
+				 else				 
+					 sb.append(line + "\n");					 				
+				
+			}
+			is.close();
+			if(!flag) tmp=sb.toString();			
+			return tmp;										
+	}
 
 }
 
