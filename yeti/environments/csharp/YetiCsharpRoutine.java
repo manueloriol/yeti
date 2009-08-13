@@ -72,12 +72,12 @@ public class YetiCsharpRoutine extends YetiRoutine {
 				String temp = e.getLog();
 				String[] results = temp.split("<>");
 				log = results[0];
-				System.out.println("The LOG ---> "+temp);
+				//System.out.println("The LOG ---> "+temp);
 				String reasonException="";
 				int tmp=0;
 				if(results[1]!=null)
 				{
-					System.out.println("The result[1]= "+results[1]);
+					//System.out.println("The result[1]= "+results[1]);
 					reasonException = results[1];
 					tmp = results[1].indexOf("PRECONDITION");
 				}
@@ -85,15 +85,24 @@ public class YetiCsharpRoutine extends YetiRoutine {
 				YetiLog.printYetiLog(log, this);				
 				if(tmp==-1)
 				{
-					//String[] exception = reasonException.split("!");
-					System.out.println("BUG EXCEPTION");
-					YetiLog.printYetiLog("BUG FOUND: ERROR", this);
-					YetiLog.printYetiLog(reasonException, this);
+					String[] exception = reasonException.split("@");
+					//exception[1] has the Buggy Log
+					//exception[0] has the Exception Message and StackTrace
+					String exceMessage = exception[2].trim()+"\n"+exception[1].trim();
+					System.out.println("BUG FOUND: ERROR");
+					System.out.println(exceMessage);
+					YetiLog.printYetiLog("BUG FOUND: ERROR"+"\n"+exceMessage, this);
+					YetiLog.printYetiLog(exceMessage, this);
 				}
 				else
 				{
-					System.out.println("NORMAL EXCEPTION");
-					YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
+					String[] exception = reasonException.split("@");
+					//exception[1] has the Buggy Log
+					//exception[0] has the Exception Message and StackTrace
+					String exceMessage = exception[1].trim();
+					System.out.println("/**NORMAL EXCEPTION:**/");
+					System.out.println(exceMessage);
+					YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/"+"\n"+exceMessage, this);
 				}
 			} catch (Throwable e) {
 				

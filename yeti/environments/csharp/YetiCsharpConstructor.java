@@ -100,6 +100,9 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
                 log=log+",";
             }
         }
+        
+        log=log+");";
+        msg+=":"+log;
         String valuestring="";
         boolean communicationflag=true;
         try {
@@ -126,7 +129,7 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
         		}
             	else
             	{
-            		System.out.println(s);
+            		//System.out.println(s);
             		successCall=false;
             		msg=s;
             	}
@@ -145,8 +148,7 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
         	// if it succeeds we create the new variable
         	//System.out.println("LastCallResult: --> "+id+" "+returnType+" "+valuestring);
         	if(successCall)
-        	this.lastCallResult=new YetiVariable(id, returnType, valuestring);
-        	log=log+");";
+        	this.lastCallResult=new YetiVariable(id, returnType, valuestring);        	
         	if(!successCall) throw new YetiCallException(log+"<>"+msg,new Throwable());
         	
         	if(successCall)

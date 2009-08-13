@@ -155,6 +155,8 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 
 		}
 		
+		log=log+");";
+		msg+=":"+log;
 		String valuestring="";
 		boolean communicationflag=true;
         try {
@@ -208,8 +210,7 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
         		this.lastCallResult=new YetiVariable(id, returnType, valuestring);
         	}
         	
-        	if(isValue) log=log1;
-        	else	log=log+");";
+        	if(isValue) log=log1;        	
         	//System.out.println(msg);
         	count++;
         	if(!successCall) throw new YetiCallException(log+"<>"+msg,new Throwable());

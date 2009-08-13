@@ -231,10 +231,13 @@ public class Yeti {
 			}
 
 			// we want to use the following path
-			if (s0.startsWith("-yetiPath=")) {
+			if (s0.startsWith("-yetiPath=")) {				
 				String s1=s0.substring(10);
-				Yeti.yetiPath = s1;
-				System.setProperty("java.class.path", System.getProperty("java.class.path")+":"+s1);
+				if(!isDotNet)																
+				{
+					Yeti.yetiPath = s1;
+					System.setProperty("java.class.path", System.getProperty("java.class.path")+":"+s1);
+				}
 				continue;
 			}
 			

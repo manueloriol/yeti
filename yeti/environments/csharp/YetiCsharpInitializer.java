@@ -105,15 +105,16 @@ public class YetiCsharpInitializer extends YetiInitializer {
 					
 					if(s0.startsWith("-yetiPath="))
 					{
-						String s1=s0.substring(13);
-						yetiPath=s1;
+						String s1=s0.substring(10);
+						yetiPath=s1;																	
 					}
 				}
 			}
 		}
 		
 		if(YetiCsharpInitializer.initflag) throw new YetiInitializationException("C#ReflexiveLayer Unable To Start");
-		yetiPath = "C:\\Users\\st552\\Documents\\Visual Studio 2008\\Projects\\CsharpReflexiveLayer\\CsharpReflexiveLayer\\bin\\Debug\\";
+		//yetiPath = "C:\\Users\\st552\\Documents\\Visual Studio 2008\\Projects\\CsharpReflexiveLayer\\CsharpReflexiveLayer\\bin\\Debug\\";
+		yetiPath = "C:\\DotNetTest\\";
 		String info= yetiPath+"="+modulesToTest;
 		// we initialize primitive types first
 		// the primitives have the type names that C# has		
@@ -343,7 +344,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 		
 		YetiInitializer init = Yeti.pl.getInitializer();
 		
-		Thread th = new Thread(new Runnable()
+		/*Thread th = new Thread(new Runnable()
 		{
 			
 			
@@ -368,7 +369,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 			}
 			} );
 		
-		th.start();
+		th.start();*/
 		
 		try {
 			String[] a = new String[4];
