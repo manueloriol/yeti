@@ -114,7 +114,7 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 			
 			if (isSimpleReturnType) {
 				isValue=true;
-				log1 = this.returnType.toString()+" "+ id.getValue() + "=";
+				log1 = this.returnType.toString()+" "+ id.getValue();
 			} else
 				log = this.returnType.toString()+" "+ id.getValue() + "="+ prefix +"."+ m+"(";			
 
@@ -158,22 +158,22 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 		String valuestring="";
 		boolean communicationflag=true;
         try {
-        	System.out.println(msg);
+        	//System.out.println(msg);
             YetiServerSocket.sendData(2400, msg);
            
             ArrayList<String> a = YetiServerSocket.getData(2300);
             int i=0;
             for(String s : a)
             {
-            	System.out.println("The S in Meths ----: "+s);
+            	//System.out.println("The S in Meths ----: "+s);
             		i=s.indexOf("FAIL!");
             		if(i==-1)
             		{
             			String[] helps = s.split(":");
             			if(helps.length>=2)
             			{
-            				System.out.println("Method help 1: "+helps[0]);
-            				System.out.println("Method help 2: "+helps[1].trim());
+            				//System.out.println("Method help 1: "+helps[0]);
+            				//System.out.println("Method help 2: "+helps[1].trim());
 
             				valuestring = helps[1].trim();
             			}
@@ -208,7 +208,7 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
         		this.lastCallResult=new YetiVariable(id, returnType, valuestring);
         	}
         	
-        	if(isValue) log=log1+" "+valuestring;
+        	if(isValue) log=log1;
         	else	log=log+");";
         	//System.out.println(msg);
         	count++;

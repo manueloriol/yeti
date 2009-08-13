@@ -103,7 +103,7 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
         String valuestring="";
         boolean communicationflag=true;
         try {
-        	System.out.println(msg);
+        	//System.out.println(msg);
             YetiServerSocket.sendData(2400, msg);
            
             ArrayList<String> a = YetiServerSocket.getData(2300);
@@ -111,14 +111,14 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
             for(String s : a)
             {
             	i=s.indexOf("FAIL!");
-            	System.out.println("The S in Cons ----: "+s);
+            	//System.out.println("The S in Cons ----: "+s);
             	if(i==-1)
         		{
         			String[] helps = s.split(":");
         			if(helps.length>=2)
         			{
-        				System.out.println("Constructor help 1: "+helps[0]);
-        				System.out.println("Constructor help 2: "+helps[1].trim());
+        				//System.out.println("Constructor help 1: "+helps[0]);
+        				//System.out.println("Constructor help 2: "+helps[1].trim());
 
         				valuestring = helps[1].trim();
         			}
@@ -151,7 +151,7 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
         	
         	if(successCall)
         	{
-        		System.out.println(log);
+        		System.out.println("The LOG: "+log);
         		//System.out.println("The Msg is "+msg);
         		YetiLog.printYetiLog(log, this);
         		

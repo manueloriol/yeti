@@ -107,28 +107,17 @@ public class YetiServerSocket {
 	 * @return it returns the string that has all the data sent
 	 */
 	private static String convertStreamToString(InputStream is) throws Exception {
-		
-			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-			StringBuilder sb = new StringBuilder();
-			String line = null;
-			String tmp=null;
-			boolean flag=false;
-			int index1=0;
-			while ((line = reader.readLine()) != null) {
-				index1 = line.indexOf("!CHARVALUE!");
-				 if (index1 != -1)
-				 {
-					 tmp=line.substring(11);
-					 flag=true;
-				 }
-				 else				 
-					 sb.append(line + "\n");					 				
-				
-			}
-			is.close();
-			if(!flag) tmp=sb.toString();			
-			return tmp;										
+
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuilder sb = new StringBuilder();			
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			sb.append(line + "\n");
+		}
+		is.close();
+		return sb.toString();
 	}
+
 
 }
 

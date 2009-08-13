@@ -121,6 +121,7 @@ public class Yeti {
 		int nTests=0;
 		String []modulesToTest=null;
 		int callsTimeOut=75;
+		Thread th=null; //The thread to start CsharpReflexiveLayer process that is needed
 		
 		
 		// we parse all arguments of the program
@@ -285,7 +286,7 @@ public class Yeti {
 		//test of options to set up the YetiProperties for .NET assemblies
 		if (isDotNet) {
 			
-			Thread th = new Thread(new Runnable()
+			th = new Thread(new Runnable()
 			{
 				
 				
@@ -423,15 +424,23 @@ public class Yeti {
 		if (isTimeout) {
 			System.out.println("\n/** Testing Session finished, time: "+(endTestingTime-startTestingTime)+"ms **/");
 		}
-
+		
+		//Here it synchronizes we the thread that created the C# process after its termination
+		if(isDotNet)
+		{
+			try {
+				th.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		boolean isProcessed = false;
 		String aggregationProcessing = "";
 		// presents the logs
-		System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");
-		System.out.println("RAW LOG 1");
+		System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");		
 		if (!Yeti.pl.isRawLog()) {
-			isProcessed = true;
-			System.out.println("RAW LOG 2");			
+			isProcessed = true;						
 			for (String log: YetiLog.proc.processLogs()) {
 				System.out.println(log);
 			}
@@ -439,8 +448,7 @@ public class Yeti {
 			long endProcessingTime = new Date().getTime();
 			aggregationProcessing = "/** Processing time: "+(endProcessingTime-endTestingTime)+"ms **/";
 		}
-		if (!isProcessed) {
-				
+		if (!isProcessed) {				
 			try{
 				YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
 				if(Yeti.path!=null){
