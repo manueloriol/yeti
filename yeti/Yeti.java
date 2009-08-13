@@ -233,6 +233,7 @@ public class Yeti {
 			// we want to use the following path
 			if (s0.startsWith("-yetiPath=")) {				
 				String s1=s0.substring(10);
+				//if it is dotnet the yetiPath can be extracted in the initialize() method
 				if(!isDotNet)																
 				{
 					Yeti.yetiPath = s1;
