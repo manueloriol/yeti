@@ -84,7 +84,7 @@ public class YetiCsharpRoutine extends YetiRoutine {
 				
 				YetiLog.printYetiLog(log, this);				
 				if(tmp==-1)
-				{
+				{									
 					String[] exception = reasonException.split("@");
 					//exception[1] has the Buggy Log
 					//exception[0] has the Exception Message and StackTrace

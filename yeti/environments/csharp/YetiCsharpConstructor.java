@@ -131,7 +131,7 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
             	{
             		//System.out.println(s);
             		successCall=false;
-            		msg=s;
+            		msg=s;            		            	
             	}
 
             }
