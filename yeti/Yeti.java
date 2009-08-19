@@ -1,11 +1,11 @@
 package yeti;
 
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+
 
 import yeti.environments.YetiInitializer;
 import yeti.environments.YetiLoader;
@@ -61,17 +61,6 @@ public class Yeti {
 	public static String yetiPath = System.getProperty("java.class.path");
 	
 	/**
-	 * Stores the path to use for outputing results to file in distributed mode.
-	 */
-	public static File path=null; 
-	
-	/**
-	 * File name for the output file containing bugs found result
-	 */
-	
-	public static String filename ="yetiout";
-	
-	/**
 	 * Main method of Yeti. It serves YetiRun the arguments it receives.
 	 * Arguments are numerous. Here is a list of the current ones:
 	 * 
@@ -90,8 +79,6 @@ public class Yeti {
 	 * -probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100 default is 1.
 	 * -randomPlus : uses the random+ strategy that injects interesting values every now and then.
 	 * -gui : shows the standard graphical user interface for monitoring yeti.
-	 * -path: the path on DFS where output files should be placed in distributed mode & which will serve as input for MapReduce
-	 * -dfsOutput: The path on DFS where the output of MapReduce should be placed
 	 * 
 	 * @param args the arguments of the program
 	 */
@@ -104,7 +91,7 @@ public class Yeti {
 	/**
 	 * The Run Method for Yeti.
 	 * This will receive the same arguments as described for method main and process them
-	 * @param args the list of arguments passed on either by main or the main method in YetiJob
+	 * @param args the list of arguments passed on either by main or Map Method in YetiMap
 	 */	
 	public static void YetiRun(String[] args){
 		YetiEngine engine;
@@ -121,7 +108,6 @@ public class Yeti {
 		int nTests=0;
 		String []modulesToTest=null;
 		int callsTimeOut=75;
-		Thread th=null; //The thread to start CsharpReflexiveLayer process that is needed
 		
 		
 		// we parse all arguments of the program
@@ -248,21 +234,6 @@ public class Yeti {
 				continue;	
 			}
 			
-			//seting up the path on DFS for output files which will also serve as Input for MapReduce
-			if(s0.startsWith("-path=")){
-				String s1=s0.substring(6);
-				Yeti.path= new File(s1);
-				//We set the MapReduce Input path
-				YetiJob.dfsInput= s1;
-				continue;
-			}
-			
-			//seting up the ouput path on the DFS for MapReduce result
-			if(s0.startsWith("-dfsOutput=")){
-				YetiJob.dfsOutput= s0.substring(11);
-				continue;
-			}
-			
 			System.out.println("Yeti could not understand option: "+s0);
 			Yeti.printHelp();
 			return;
@@ -290,7 +261,7 @@ public class Yeti {
 		//test of options to set up the YetiProperties for .NET assemblies
 		if (isDotNet) {
 			
-			th = new Thread(new Runnable()
+			Thread th = new Thread(new Runnable()
 			{
 				
 				
@@ -428,23 +399,15 @@ public class Yeti {
 		if (isTimeout) {
 			System.out.println("\n/** Testing Session finished, time: "+(endTestingTime-startTestingTime)+"ms **/");
 		}
-		
-		//Here it synchronizes we the thread that created the C# process after its termination
-		if(isDotNet)
-		{
-			try {
-				th.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		
+
 		boolean isProcessed = false;
 		String aggregationProcessing = "";
 		// presents the logs
-		System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");		
+		System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");
+		System.out.println("RAW LOG 1");
 		if (!Yeti.pl.isRawLog()) {
-			isProcessed = true;						
+			isProcessed = true;
+			System.out.println("RAW LOG 2");			
 			for (String log: YetiLog.proc.processLogs()) {
 				System.out.println(log);
 			}
@@ -452,28 +415,16 @@ public class Yeti {
 			long endProcessingTime = new Date().getTime();
 			aggregationProcessing = "/** Processing time: "+(endProcessingTime-endTestingTime)+"ms **/";
 		}
-		if (!isProcessed) {				
-			try{
+		if (!isProcessed) {
+				
 				YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
-				if(Yeti.path!=null){
-					//We create a file to store the number of bugs found	
-					File newFile = File.createTempFile(filename, ".txt", path);
-					PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(newFile)));
-					out.append(lp.listOfErrors.size()+"\n");
-					out.close();
-					System.err.println("File was Written succesfully ");		
-				}
-				
 				System.out.println("/** Unique relevant bugs: "+lp.listOfErrors.size()+" **/");
-				
-			}catch(IOException e){
-				System.err.println("Output File could not be written");
-			}
-			
+							
 		}
 		if (isProcessed) {
 			System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");
-			System.out.println(aggregationProcessing);			
+			System.out.println(aggregationProcessing);
+			
 		}
 		
 	}
@@ -499,5 +450,5 @@ public class Yeti {
 		System.out.println("\t-gui : shows the standard graphical user interface for monitoring yeti.");
 	
 	}
-
+	
 }
