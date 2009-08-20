@@ -89,12 +89,12 @@ public class YetiGUIFaultsOverTime extends YetiLogProcessor{
 			firstInstant = lastInstantShown;
 			called = true;
 			// and add the value
-			graph.addValue(firstInstant,lp.listOfErrors.size());
+			graph.addValue(firstInstant,lp.listOfErrors.size()-lp.numberOfNonErrors);
 		} else {
 			// otherwise, we remove the offset and add the offsetted value
 			int currentSecond = (int) (new Date().getTime()/nMilliseconds);
 			if (lastInstantShown+1<currentSecond) {
-				graph.addValue(currentSecond-firstInstant,lp.listOfErrors.size());				
+				graph.addValue(currentSecond-firstInstant,lp.listOfErrors.size()-lp.numberOfNonErrors);				
 				lastInstantShown=currentSecond;
 			}
 		}	

@@ -47,10 +47,15 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 	 * @param originatingModule the module in which it was defined.
 	 * @param m the method implementation.
 	 */
+	@SuppressWarnings("unchecked")
 	public YetiJavaMethod(YetiName name, YetiType[] openSlots, YetiType returnType, YetiModule originatingModule, Method m) {
 		super(name, openSlots, returnType, originatingModule);
 		isStatic = Modifier.isStatic((m.getModifiers()));
 		this.m=m;
+		for (Class cl: m.getExceptionTypes()) {
+			this.addAcceptableExceptionType(cl.getName());			
+		}
+
 	}
 
 	/**
@@ -63,10 +68,15 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 	 * @param m the method implementation.
 	 * @param isStatic the parameter that says whether the method is static or not.
 	 */
+	@SuppressWarnings("unchecked")
 	public YetiJavaMethod(YetiName name, YetiType[] openSlots, YetiType returnType, YetiModule originatingModule, Method m, boolean isStatic) {
 		super(name, openSlots, returnType, originatingModule);
 		this.m=m;
 		this.isStatic=isStatic;
+		for (Class cl: m.getExceptionTypes()) {
+			this.addAcceptableExceptionType(cl.getName());			
+		}
+
 	}
 
 

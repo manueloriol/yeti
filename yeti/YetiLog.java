@@ -100,12 +100,24 @@ public class YetiLog {
 	 * @param objectInWhichCalled the object in which this was called.
 	 */
 	public static synchronized void printYetiThrowable(Throwable t, Object objectInWhichCalled){
-		numberOfErrors++;
+		printYetiThrowable(t, objectInWhichCalled,true);
+	}
+
+
+	/**
+	 * Method used to store or print log of a Throwable (Exception or Error).
+	 * 
+	 * @param t the Throwable to print.
+	 * @param objectInWhichCalled the object in which this was called.
+	 * @param isFailure
+	 */
+	public static synchronized void printYetiThrowable(Throwable t, Object objectInWhichCalled, boolean isFailure){
+		if (isFailure) numberOfErrors++;
 		if (Yeti.pl.isNoLogs())
-			proc.printThrowableNoLogs(t);
+			proc.printThrowableNoLogs(t, isFailure);
 		else {
 			if (Yeti.pl.isRawLog()){
-				proc.printThrowableRawLogs(t);
+				proc.printThrowableRawLogs(t, isFailure);
 			} else {
 				proc.appendFailureToCurrentLog("/**YETI EXCEPTION - START ");
 				OutputStream os=new ByteArrayOutputStream();
@@ -120,7 +132,6 @@ public class YetiLog {
 			}
 		}
 	}
-
 
 
 }

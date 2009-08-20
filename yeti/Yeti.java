@@ -3,6 +3,7 @@ package yeti;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -63,22 +64,24 @@ public class Yeti {
 	/**
 	 * Main method of Yeti. It serves YetiRun the arguments it receives.
 	 * Arguments are numerous. Here is a list of the current ones:
-	 * 
-	 * -java, -Java : for calling it on Java.
-	 * -jml, -JML : for calling it on JML annotated code.
-	 * -time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).
-	 * -nTests=X : for calling Yeti to attempt X method calls.
-	 * -testModules=M1:M2:...:Mn : for testing one or several modules.
-	 * -help, -h: prints the help out.
-	 * -rawlogs : prints the logs directly instead of processing them at the end. 
-	 * -nologs : does not print logs, only the final result.
-	 * -msCalltimeout=X : sets the timeout (in milliseconds) for a method call to X. Note that too 
-	 * low values may result in blocking Yeti (use at least 30ms for good performances).
-	 * -yetiPath=X : stores the path that contains the code to test (e.g. for Java the classpath to consider)
-	 * -newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100. 
-	 * -probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100 default is 1.
-	 * -randomPlus : uses the random+ strategy that injects interesting values every now and then.
-	 * -gui : shows the standard graphical user interface for monitoring yeti.
+	 * <br>
+	 * <br>
+	 * -java, -Java : for calling it on Java.<br>
+	 * -jml, -JML : for calling it on JML annotated code.<br>
+	 * -time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).<br>
+	 * -nTests=X : for calling Yeti to attempt X method calls.<br>
+	 * -testModules=M1:M2:...:Mn : for testing one or several modules.<br>
+	 * -initClass=X : this will use a user class to initialize the system this class will be a subclass of yeti.environments.YetiInitializer<br>
+	 * -help, -h: prints the help out.<br>
+	 * -rawlogs : prints the logs directly instead of processing them at the end. <br>
+	 * -nologs : does not print logs, only the final result.<br>
+	 * -msCalltimeout=X : sets the timeout (in milliseconds) for a method call to X. Note that too
+	 * low values may result in blocking Yeti (use at least 30ms for good performances).<br>
+	 * -yetiPath=X : stores the path that contains the code to test (e.g. for Java the classpath to consider)<br>
+	 * -newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100. <br>
+	 * -probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100 default is 1.<br>
+	 * -randomPlus : uses the random+ strategy that injects interesting values every now and then.<br>
+	 * -gui : shows the standard graphical user interface for monitoring yeti.<br>
 	 * 
 	 * @param args the arguments of the program
 	 */
@@ -95,6 +98,7 @@ public class Yeti {
 	 */	
 	public static void YetiRun(String[] args){
 		YetiEngine engine;
+		YetiInitializer secondaryInitializer = null;
 		boolean isJava = false;
 		boolean isJML = false;
 		boolean isDotNet = false;
@@ -234,6 +238,17 @@ public class Yeti {
 				continue;	
 			}
 			
+			//setting up the secondary initializer
+			if(s0.startsWith("-initClass=")){
+				try {
+					secondaryInitializer= (YetiInitializer)Yeti.class.getClassLoader().loadClass(s0.substring(11)).newInstance();
+				} catch (Exception e) {
+					System.err.print("Problem while loading user initializer class "+s0.substring(11));
+					e.printStackTrace();
+					return;
+				}
+				continue;
+			}
 			System.out.println("Yeti could not understand option: "+s0);
 			Yeti.printHelp();
 			return;
@@ -307,6 +322,17 @@ public class Yeti {
 		} catch (YetiInitializationException e) {
 			//should never happen
 			e.printStackTrace();
+		}
+		
+		// calls the secondary initializer
+		try {
+			secondaryInitializer.initialize(args);
+		} catch (YetiInitializationException e1) {
+			// if there is an issue with the custom initialization
+			System.err.print("Problem while executing user initializer class "+secondaryInitializer.getClass().getName());
+			e1.printStackTrace();
+			return;
+
 		}
 		
 		// create a YetiTestManager and 
@@ -440,6 +466,7 @@ public class Yeti {
 		System.out.println("\t-nTests=X : for calling Yeti to attempt X method calls.");
 		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules.");
 		System.out.println("\t-help, -h: prints the help out.");
+		System.out.println("\t-initClass=X : this will use a user class to initialize the system this class will be a subclass of yeti.environments.YetiInitializer\n");
 		System.out.println("\t-rawlogs: prints the logs directly instead of processing them at the end.");
 		System.out.println("\t-nologs : does not print logs, only the final result.");
 		System.out.println("\t-msCalltimeout=X : sets the timeout (in milliseconds) for a method call to X.Note that too low values may result in blocking Yeti (use at least 30ms for good performances)");

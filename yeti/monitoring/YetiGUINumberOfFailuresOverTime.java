@@ -9,7 +9,7 @@ import yeti.YetiLog;
 import yeti.YetiLogProcessor;
 
 /**
- * Class that allows the wrapping of a YetiLogProcessor and shows the number of calls over time.
+ * Class that allows the wrapping of a YetiLogProcessor and shows the number of failures over time.
  * 
  * @author Manuel Oriol (manuel@cs.york.ac.uk)
  * @date Jul 27, 2009

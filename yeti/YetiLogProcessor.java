@@ -42,6 +42,12 @@ public abstract class YetiLogProcessor {
 	 */
 	public HashMap<String,Object> listOfErrors = new HashMap<String, Object>();
 	
+	
+	/**
+	 * The number of errors in the listOfErrors that are actually acceptable errors. 
+	 */
+	public int numberOfNonErrors = 0;
+	
 	/**
 	 * Constructor of the YetiLogProcessor.
 	 */
@@ -133,7 +139,17 @@ public abstract class YetiLogProcessor {
 		System.err.println("YETI EXCEPTION - END ");
 
 	}
-	
+
+	/**
+	 * Printer for throwables in raw logs
+	 * 
+	 * @parameter t the throwable log to print.
+	 * @param isFailure if it is actually a real failure.
+	 */
+	public void printThrowableRawLogs(Throwable t, boolean isFailure) {
+		if (isFailure) printThrowableRawLogs(t);
+	}
+
 	/**
 	 * Printer for no logs
 	 * 
@@ -150,5 +166,15 @@ public abstract class YetiLogProcessor {
 	public void printThrowableNoLogs(Throwable t) {
 
 	}
-	
+
+	/**
+	 * Printer for throwables in no logs
+	 * 
+	 * @parameter t the throwable log not to print.
+	 * @param isFailure if it is actually a real failure.
+	 */
+	public void printThrowableNoLogs(Throwable t, boolean isFailure) {
+		if (isFailure) this.printThrowableNoLogs(t);
+	}
+
 }

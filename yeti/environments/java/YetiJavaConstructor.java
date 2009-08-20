@@ -40,6 +40,10 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 	public YetiJavaConstructor(YetiName name, YetiType[] openSlots, YetiType returnType, YetiModule originatingModule, Constructor c) {
 		super(name, openSlots, returnType, originatingModule);
 		this.c=c;
+		
+		for (Class cl: c.getExceptionTypes()) {
+			this.addAcceptableExceptionType(cl.getName());			
+		}
 	}
 
 

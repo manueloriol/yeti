@@ -416,6 +416,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));
 			if (!listOfErrors.containsKey(s0)) {
 				listOfErrors.put(s0,new Date());
+				System.out.println("Exception "+listOfErrors.size()+"\n"+t.toString()+"\n"+s0);
 			}
 		}
 	}

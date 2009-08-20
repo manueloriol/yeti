@@ -1,6 +1,8 @@
 package yeti.environments.java;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import yeti.YetiCallException;
 import yeti.YetiCard;
@@ -87,7 +89,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 			// we first print the log
 			YetiLog.printYetiLog(log+");", this);
 			// then print the exception
-			if (e.getCause() instanceof RuntimeException || e.getCause() instanceof Error) {
+			if ((e.getCause() instanceof RuntimeException && !isAcceptable(e.getCause())) || e.getCause() instanceof Error  ) {
 				if (e.getCause() instanceof ThreadDeath) {
 					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
 				} else {
@@ -95,11 +97,13 @@ public class YetiJavaRoutine extends YetiRoutine {
 						YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: "+e.getCause().getMessage()+" **/", this);
 					} else
 					YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
+					YetiLog.printYetiThrowable(e.getCause(), this,true);
 				}
 			}
-			else
+			else {
 				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
-			YetiLog.printYetiThrowable(e.getCause(), this);
+				YetiLog.printYetiThrowable(e.getCause(), this,false);
+			}
 		} catch (Error e){
 			// if we are here there was a serious error
 			// we print it
@@ -115,7 +119,50 @@ public class YetiJavaRoutine extends YetiRoutine {
 		return this.lastCallResult;
 	}
 	
+	/**
+	 * A hashmap of acceptable exception types.
+	 */
+	@SuppressWarnings("unchecked")
+	public HashMap <String, Class> acceptableExceptionTypes = new HashMap <String, Class>();
 	
+	/**
+	 * Add an acceptable exception type of this routine.
+	 * 
+	 * @param s the name of the exception type.
+	 */
+	public void addAcceptableExceptionType(String s) {
+		try {	
+			YetiLog.printDebugLog("Added to "+this.name.getValue() + " the following acceptable exception " +s+" in "+Class.forName(s), this);
+			acceptableExceptionTypes.put(s, Class.forName(s));
+		} catch (ClassNotFoundException e) {
+			// Ignored
+			YetiLog.printDebugLog(e.getMessage(), this);
+		}
+	}
+	
+	/**
+	 * This method returns true if and only if the throwable 
+	 * is considered acceptable for the routine.
+	 * 
+	 * @param cause the Throwable to consider.
+	 * @return true if the exception is to be expected, false otherwise.
+	 */
+	@SuppressWarnings("unchecked")
+	public boolean isAcceptable(Throwable cause) {
+		// optimization
+		if (acceptableExceptionTypes.isEmpty()) return false;
+		// for all classes, we check that the Throwable is not an instance 
+		// of a subclass of an acceptable Throwable
+		
+		YetiLog.printDebugLog("Class of the cause of the Throwable: "+cause.getClass().getName()+ "for method: "+this.getName().getValue(), this);
+		for (Class c: acceptableExceptionTypes.values()) {
+			YetiLog.printDebugLog("Matching: _"+c.getName()+ "_ with: _"+cause.getClass().getName(), this);
+			
+			if (c.getName().equals(cause.getClass().getName())) return true;
+		}
+		return false;
+	}
+
 	/* (non-Javadoc)
 	 * A stub for sublasses.
 	 * 
