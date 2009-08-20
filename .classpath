@@ -3,5 +3,6 @@
 	<classpathentry kind="src" path=""/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jmlruntime.jar"/>
+	<classpathentry kind="lib" path="/media/disk/Linux_Data/workspace/yeti_origo/lib/hadoop-0.19.2-core.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
