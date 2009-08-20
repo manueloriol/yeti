@@ -44,7 +44,7 @@ public class Yeti {
 	 * The properties of the programming language.
 	 */
 	public static YetiProgrammingLanguageProperties pl;
-	
+
 	/**
 	 * The strategy being used.
 	 */
@@ -55,12 +55,12 @@ public class Yeti {
 	 */
 	public static YetiModule testModule = null;
 
-	
+
 	/**
 	 * Stores the path to use for testing.
 	 */
 	public static String yetiPath = System.getProperty("java.class.path");
-	
+
 	/**
 	 * Main method of Yeti. It serves YetiRun the arguments it receives.
 	 * Arguments are numerous. Here is a list of the current ones:
@@ -86,11 +86,11 @@ public class Yeti {
 	 * @param args the arguments of the program
 	 */
 	public static void main (String[] args) {
-		
+
 		Yeti.YetiRun(args);
-		
+
 	}
-	
+
 	/**
 	 * The Run Method for Yeti.
 	 * This will receive the same arguments as described for method main and process them
@@ -112,8 +112,8 @@ public class Yeti {
 		int nTests=0;
 		String []modulesToTest=null;
 		int callsTimeOut=75;
-		
-		
+
+
 		// we parse all arguments of the program
 		for (String s0: args) {
 			// if it is printing help
@@ -132,13 +132,13 @@ public class Yeti {
 				isJML = true;
 				continue;
 			}
-			
+
 			//if .NET
 			if(s0.toLowerCase().equals("-dotnet")){		
 				isDotNet = true;
 				continue;
 			}
-			
+
 			// if testing for time value
 			if (s0.startsWith("-time=")) {
 				isTimeout=true;
@@ -231,13 +231,13 @@ public class Yeti {
 				}
 				continue;
 			}
-			
+
 			// we can use the randomPlus strategy
 			if (s0.equals("-randomPlus")) {
 				isRandomPlus = true;
 				continue;	
 			}
-			
+
 			//setting up the secondary initializer
 			if(s0.startsWith("-initClass=")){
 				try {
@@ -254,7 +254,7 @@ public class Yeti {
 			return;
 
 		}
-		
+
 		//test of options to set up the YetiProperties for Java
 		if (isJava) {
 			YetiLoader prefetchingLoader = new YetiJavaPrefetchingLoader(yetiPath);
@@ -263,7 +263,7 @@ public class Yeti {
 			YetiLogProcessor logProcessor = new YetiJavaLogProcessor();
 			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
 		}
-		
+
 		//test of options to set up the YetiProperties for JML
 		if (isJML) {
 			YetiLoader prefetchingLoader = new YetiJMLPrefetchingLoader(yetiPath);
@@ -272,45 +272,45 @@ public class Yeti {
 			YetiLogProcessor logProcessor = new YetiJavaLogProcessor();
 			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
 		}
-		
+
 		//test of options to set up the YetiProperties for .NET assemblies
 		if (isDotNet) {
-			
+
 			Thread th = new Thread(new Runnable()
 			{
-				
-				
+
+
 				public void run() {
 					Runtime run = Runtime.getRuntime();
 					String command = "C:\\Users\\st552\\Documents\\Visual Studio 2008\\Projects\\CsharpReflexiveLayer\\CsharpReflexiveLayer\\bin\\Debug\\CsharpReflexiveLayer.exe";					
 					try {
 						Process p = run.exec(command);						
 						InputStream in = p.getInputStream();						
-					    int c;
-					    while ((c = in.read()) != -1) {
-					      //System.out.print((char) c);
-					    }
+						int c;
+						while ((c = in.read()) != -1) {
+							//System.out.print((char) c);
+						}
 					} catch (IOException e) {					
 						YetiCsharpInitializer.initflag=true;
 					}
 				}
-				} );
-			
+			} );
+
 			th.start();
-			
-			
+
+
 			YetiInitializer initializer = new YetiCsharpInitializer();
 			YetiTestManager testManager = new YetiCsharpTestManager();
 			YetiLogProcessor logProcessor = new YetiCsharpLogProcessor();
 			YetiServerSocket socketConnector = new YetiServerSocket();
 			pl=new YetiCsharpProperties(initializer, testManager, logProcessor, socketConnector);
 		}
-		
+
 		//if it is raw logs, then set it		
 		if (isRawLog) {
 			pl.setRawLog(isRawLog);
 		}
-		
+
 		//if it is raw logs, then set it		
 		if (isNoLogs) {
 			pl.setNoLogs(isNoLogs);
@@ -323,45 +323,47 @@ public class Yeti {
 			//should never happen
 			e.printStackTrace();
 		}
-		
-		// calls the secondary initializer
-		try {
-			secondaryInitializer.initialize(args);
-		} catch (YetiInitializationException e1) {
-			// if there is an issue with the custom initialization
-			System.err.print("Problem while executing user initializer class "+secondaryInitializer.getClass().getName());
-			e1.printStackTrace();
-			return;
 
+		// calls the secondary initializer
+		if (secondaryInitializer!=null) {
+			try {
+				secondaryInitializer.initialize(args);
+			} catch (YetiInitializationException e1) {
+				// if there is an issue with the custom initialization
+				System.err.print("Problem while executing user initializer class "+secondaryInitializer.getClass().getName());
+				e1.printStackTrace();
+				return;
+
+			}
 		}
-		
+
 		// create a YetiTestManager and 
 		YetiTestManager testManager = pl.getTestManager(); 
-	
+
 		//sets the calls timeout
 		if (!(callsTimeOut<=0)) {
 			testManager.setTimeoutInMilliseconds(callsTimeOut);
 		}
-		
+
 		// We set the strategy
 		if (isRandomPlus)
 			strategy= new YetiRandomStrategy(testManager);
 		else
 			strategy= new YetiRandomPlusStrategy(testManager);
-			
-			
+
+
 		// getting the module(s) to test
 		YetiModule mod=null;
-		
+
 		// if the modules to test is actually one module
 		if (modulesToTest.length==1) {
 			// we get the module
 			mod=YetiModule.allModules.get(modulesToTest[0]);
-			
+
 			//check
 			System.out.println(modulesToTest[0]);
 			System.out.println(mod);
-			
+
 			// if it does not exist we stop
 			if(mod==null) {
 				System.err.println(modulesToTest[0] + " was not found. Please check");
@@ -394,17 +396,17 @@ public class Yeti {
 		}
 		// we let everybody use the tested module
 		Yeti.testModule = mod;
-		
+
 		// creating the engine object
 		engine= new YetiEngine(strategy,testManager);
-		
+
 		// Creating the log processor
 		if (showMonitoringGui) {
-		YetiLog.proc=new YetiGUINumberOfVariablesOverTime(new YetiGUINumberOfFailuresOverTime(new YetiGUINumberOfCallsOverTime(new YetiGUIFaultsOverTime(pl.getLogProcessor(),100),100),100),100);
+			YetiLog.proc=new YetiGUINumberOfVariablesOverTime(new YetiGUINumberOfFailuresOverTime(new YetiGUINumberOfCallsOverTime(new YetiGUIFaultsOverTime(pl.getLogProcessor(),100),100),100),100);
 		} else {
 			YetiLog.proc=pl.getLogProcessor();
 		}
-		
+
 		// logging purposes:
 		long startTestingTime = new Date().getTime();
 		// depending of the options launch the testing
@@ -420,7 +422,7 @@ public class Yeti {
 		}
 		// logging purposes:
 		long endTestingTime = new Date().getTime();
-	
+
 		// for logging purposes
 		if (isTimeout) {
 			System.out.println("\n/** Testing Session finished, time: "+(endTestingTime-startTestingTime)+"ms **/");
@@ -442,19 +444,19 @@ public class Yeti {
 			aggregationProcessing = "/** Processing time: "+(endProcessingTime-endTestingTime)+"ms **/";
 		}
 		if (!isProcessed) {
-				
-				YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
-				System.out.println("/** Unique relevant bugs: "+lp.listOfErrors.size()+" **/");
-							
+
+			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
+			System.out.println("/** Unique relevant bugs: "+lp.listOfErrors.size()+" **/");
+
 		}
 		if (isProcessed) {
 			System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");
 			System.out.println(aggregationProcessing);
-			
+
 		}
-		
+
 	}
-	
+
 	/**
 	 * This is a simple help printing utility function.
 	 */
@@ -475,7 +477,7 @@ public class Yeti {
 		System.out.println("\t-probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100, default is 1.");
 		System.out.println("\t-randomPlus : uses the random+ strategy that injects interesting values every now and then.");
 		System.out.println("\t-gui : shows the standard graphical user interface for monitoring yeti.");
-	
+
 	}
-	
+
 }
