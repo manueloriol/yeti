@@ -61,7 +61,8 @@ public abstract class YetiLogProcessor {
 	 * @param newLog the log to add.
 	 */
 	public void appendToCurrentLog(String newLog){
-		currentLog=this.currentLog+"\n"+newLog;
+		
+		currentLog=this.currentLog+"\n"+newLog;		
 		this.numberOfCalls++;
 	}
 	

@@ -1,6 +1,6 @@
 package yeti.environments.csharp;
 
-import java.io.IOException;
+//import java.io.IOException;
 import java.util.ArrayList;
 
 import yeti.YetiCallException;
@@ -105,48 +105,37 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
         msg+=":"+log;
         String valuestring="";
         boolean communicationflag=true;
-        try {
+    
         	//System.out.println(msg);
-            YetiServerSocket.sendData(2400, msg);
+            YetiServerSocket.sendData(msg);
            
-            ArrayList<String> a = YetiServerSocket.getData(2300);
-            int i=0;
-            for(String s : a)
-            {
-            	i=s.indexOf("FAIL!");
-            	//System.out.println("The S in Cons ----: "+s);
-            	if(i==-1)
-        		{
-        			String[] helps = s.split(":");
-        			if(helps.length>=2)
-        			{
-        				//System.out.println("Constructor help 1: "+helps[0]);
-        				//System.out.println("Constructor help 2: "+helps[1].trim());
-
-        				valuestring = helps[1].trim();
-        			}
-        			else System.out.println("Constructor help 1: "+helps[0]);
-        		}
-            	else
-            	{
-            		//System.out.println(s);
-            		successCall=false;
-            		msg=s;            		            	
-            	}
-
+            ArrayList<String> a = YetiServerSocket.getData();
+            //int i=0;
+            String s=a.get(0);
+            if (s.indexOf("FAIL!")>=0){
+            	successCall = false;
+            	msg="";
+            	for (String s0: a)
+            		msg=msg+s0+"\n";
+            	
+            } else{
+            	String[] helps = s.split(":");
+     			if(helps.length>=2)
+    			{
+    				valuestring = helps[1].trim();
+    			}
             }
-        } catch (IOException e) {
-            communicationflag=false;
-            //e.printStackTrace();
-        } catch (Exception e) {
-            communicationflag=false;
-			//e.printStackTrace();
-		} 
-       
+
+
         if(communicationflag)
         {
         	// if it succeeds we create the new variable
         	//System.out.println("LastCallResult: --> "+id+" "+returnType+" "+valuestring);
+        	
+        	//if the call is successful we store to the pool the id
+        	//the value for now is not the valid one because of syncronization
+        	//problem with the working threads and the non-asynchronous socket
+        	//communication
         	if(successCall)
         	this.lastCallResult=new YetiVariable(id, returnType, valuestring);        	
         	if(!successCall) throw new YetiCallException(log+"<>"+msg,new Throwable());
@@ -154,7 +143,6 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
         	if(successCall)
         	{
         		System.out.println("The LOG: "+log);
-        		//System.out.println("The Msg is "+msg);
         		YetiLog.printYetiLog(log, this);
         		
         	}

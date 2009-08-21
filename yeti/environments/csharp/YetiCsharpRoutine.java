@@ -70,6 +70,7 @@ public class YetiCsharpRoutine extends YetiRoutine {
 				makeEffectiveCall(arg);
 			} catch(YetiCallException e) {
 				String temp = e.getLog();
+				YetiLog.printDebugLog(temp, this);
 				String[] results = temp.split("<>");
 				log = results[0];
 				//System.out.println("The LOG ---> "+temp);
@@ -92,7 +93,7 @@ public class YetiCsharpRoutine extends YetiRoutine {
 					System.out.println("BUG FOUND: ERROR");
 					System.out.println(exceMessage);
 					YetiLog.printYetiLog("BUG FOUND: ERROR"+"\n"+exceMessage, this);
-					YetiLog.printYetiLog(exceMessage, this);
+					YetiLog.printYetiThrowable(new Exception("BUG FOUND: ERROR"+"\n"+exceMessage), this);
 				}
 				else
 				{

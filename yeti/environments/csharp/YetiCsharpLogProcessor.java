@@ -10,7 +10,6 @@ import java.util.Vector;
 import yeti.Yeti;
 import yeti.YetiLog;
 import yeti.YetiLogProcessor;
-import yeti.environments.java.YetiJavaLogProcessor;
 
 /**
  * Class that represents a log processor for Java. 
@@ -39,6 +38,7 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 	public void appendToCurrentLog(String newLog) {
 		// substantific gains (2-3x) in execution time can be done by NOT adding the timestamp
 		// super.appendToCurrentLog(newLog);
+		//System.out.println("The newLog = "+newLog);
 		super.appendToCurrentLog(newLog+" // time:"+(new Date()).getTime());
 	}
 
@@ -87,7 +87,7 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 	 */
 	@Override
 	public Vector<String> processLogs() {
-		Vector<String> tmp = YetiJavaLogProcessor.sliceStatically(this.getCurrentLog());
+		Vector<String> tmp = YetiCsharpLogProcessor.sliceStatically(this.getCurrentLog());
 		Vector<String> result = new Vector<String>();
 		int i = 0;
 		for (String tc: tmp) {
@@ -110,12 +110,12 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 		int indexOfSpace = loc.indexOf(" ");
 
 
-		YetiLog.printDebugLog("loc: "+loc, YetiJavaLogProcessor.class);
+		YetiLog.printDebugLog("loc: "+loc, YetiCsharpLogProcessor.class);
 		if (isAssignment){
-			YetiLog.printDebugLog("kill: "+ loc.substring(indexOfSpace+1,loc.indexOf("=")), YetiJavaLogProcessor.class);
+			YetiLog.printDebugLog("kill: "+ loc.substring(indexOfSpace+1,loc.indexOf("=")), YetiCsharpLogProcessor.class);
 			return loc.substring(indexOfSpace+1,loc.indexOf("="));
 		}else {
-			YetiLog.printDebugLog("no kill", YetiJavaLogProcessor.class);
+			YetiLog.printDebugLog("no kill", YetiCsharpLogProcessor.class);
 			return null;
 		}
 	}
@@ -141,7 +141,7 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 		// we initialize the values
 		String localLoc = loc;
 		Vector<String> valuesThatMatter = new Vector<String>();
-		YetiLog.printDebugLog("loc: "+loc, YetiJavaLogProcessor.class);
+		YetiLog.printDebugLog("loc: "+loc, YetiCsharpLogProcessor.class);
 
 		// if it is not a creation method but it is a method call
 		if (!isCreation&&isMethodCall) {
@@ -151,7 +151,7 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 				target = loc.substring(loc.indexOf("=")+1,loc.lastIndexOf('.'));
 			else
 				target = loc.substring(0,loc.lastIndexOf('.'));
-			YetiLog.printDebugLog("target: "+target, YetiJavaLogProcessor.class);
+			YetiLog.printDebugLog("target: "+target, YetiCsharpLogProcessor.class);
 
 			// we add it to the values that matter
 			valuesThatMatter.add(target);
@@ -165,7 +165,7 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 			// we add all arguments one after he other
 			if (localLoc.length()>0)
 				for (String var: localLoc.split(",")){
-					YetiLog.printDebugLog("arg: "+var, YetiJavaLogProcessor.class);
+					YetiLog.printDebugLog("arg: "+var, YetiCsharpLogProcessor.class);
 					if (!var.equals("null")) 
 						valuesThatMatter.add(var);
 				}
@@ -330,7 +330,7 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 			testCases.add(currentTestCase);
 		}
 
-		YetiLog.printDebugLog("Number of Errors: "+listOfErrors.size()+" Number of test cases: "+testCases.size(), YetiJavaLogProcessor.class);
+		YetiLog.printDebugLog("Number of Errors: "+listOfErrors.size()+" Number of test cases: "+testCases.size(), YetiCsharpLogProcessor.class);
 		//testCases.add("Number of Errors: "+listOfErrors.size()+" Number of test cases: "+testCases.size());
 
 		return testCases;

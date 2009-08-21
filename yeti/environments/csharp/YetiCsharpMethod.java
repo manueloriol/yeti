@@ -1,6 +1,6 @@
 package yeti.environments.csharp;
 
-import java.io.IOException;
+//import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -114,7 +114,7 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 			
 			if (isSimpleReturnType) {
 				isValue=true;
-				log1 = this.returnType.toString()+" "+ id.getValue();
+				log1 = this.returnType.toString()+" "+ id.getValue()+";";
 			} else
 				log = this.returnType.toString()+" "+ id.getValue() + "="+ prefix +"."+ m+"(";			
 
@@ -159,44 +159,28 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 		msg+=":"+log;
 		String valuestring="";
 		boolean communicationflag=true;
-        try {
         	//System.out.println(msg);
-            YetiServerSocket.sendData(2400, msg);
+            YetiServerSocket.sendData(msg);
            
-            ArrayList<String> a = YetiServerSocket.getData(2300);
-            int i=0;
-            for(String s : a)
-            {
-            	//System.out.println("The S in Meths ----: "+s);
-            		i=s.indexOf("FAIL!");
-            		if(i==-1)
-            		{
-            			String[] helps = s.split(":");
-            			if(helps.length>=2)
-            			{
-            				//System.out.println("Method help 1: "+helps[0]);
-            				//System.out.println("Method help 2: "+helps[1].trim());
-
-            				valuestring = helps[1].trim();
-            			}
-            			else System.out.println("Method help 1: "+helps[0]);
-            		}
-            		else
-            		{            		            		
-            			//System.out.println(s);
-                		successCall=false;
-                		msg=s;
-            		}            	
-
+            ArrayList<String> a = YetiServerSocket.getData();
+           // int i=0;
+            String s=a.get(0);
+            if (s.indexOf("FAIL!")>=0){
+            	successCall = false;
+            	msg="";
+            	for (String s0: a)
+            		msg=msg+s0+"\n";
+            	
+            } else{
+            	String[] helps = s.split(":");
+     			if(helps.length>=2)
+    			{
+    				valuestring = helps[1].trim();
+    			}
             }
-        } catch (IOException e) {
-            communicationflag=false;
-            //e.printStackTrace();
-        } catch (Exception e) {
-            communicationflag=false;
-			//e.printStackTrace();
-		} 
-        
+            YetiLog.printDebugLog(msg, this);
+            
+
         if(communicationflag)
         {
         	// if the return type is void, we look it up
@@ -206,14 +190,20 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
         	
         	// if there is a result, we store it and create the variable
         	//if(successCall) System.out.println("LastCallResult: --> "+id+" "+returnType+" "+valuestring);
-        	if (id!=null && successCall){        		        		
+        	if (id!=null && successCall){
+        		//if the call is successful we store to the pool the id
+            	//the value for now is not the valid one because of syncronization
+            	//problem with the working threads and the non-asynchronous socket
+            	//communication
         		this.lastCallResult=new YetiVariable(id, returnType, valuestring);
         	}
         	
         	if(isValue) log=log1;        	
         	//System.out.println(msg);
         	count++;
-        	if(!successCall) throw new YetiCallException(log+"<>"+msg,new Throwable());
+        	if(!successCall) {        		
+        		throw new YetiCallException(log+"<>"+msg,new Throwable());
+        	}
         	//System.out.println("The COUNT is : ---> "+count);        	
         	if(successCall)
         	{
@@ -225,25 +215,7 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 		// finally we print the log.
 		
 		return log;
-	}
-
-	/**
-	 * Getter for the implementation of the method.
-	 * 
-	 * @return the implementation of the method.
-	 */
-	/*public Method getM() {
-		return m;
-	}
-
-	/**
-	 * Setter for the implementation of the method.
-	 * 
-	 * @param m the method to set.
-	 */
-	/*public void setM(Method m) {
-		this.m = m;
-	}*/
+	}	
 
 
 }

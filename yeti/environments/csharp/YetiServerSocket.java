@@ -14,6 +14,8 @@ import java.net.Socket;
 //import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import yeti.YetiLog;
+
 //import yeti.environments.csharp.YetiCsharpProperties;
 /**
  * Class that holds the methods with which the Csharp environment
@@ -25,6 +27,12 @@ import java.util.ArrayList;
 public class YetiServerSocket {
 	
 	public static ServerSocket s = null;
+	public static Socket clientSocket = null;
+	public static InputStream input = null;
+	public static OutputStream output = null;
+	public static BufferedReader reader = null;
+	public static PrintStream ps =null;
+
 	private static boolean startServer=true;
 	public YetiServerSocket() 
 	{
@@ -33,8 +41,15 @@ public class YetiServerSocket {
 			try {
 				s=new ServerSocket(2300);
 				startServer=false;
+				//Hold until data are sent by the other part
+				clientSocket=s.accept();
+				YetiLog.printDebugLog("after s.accept", this);
+				input = clientSocket.getInputStream();
+				output = clientSocket.getOutputStream();
+				reader = new BufferedReader(new InputStreamReader(input));
+				ps = new PrintStream(output);
+				//s.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -50,73 +65,47 @@ public class YetiServerSocket {
 	 * @return it returns an ArrayList<String> so we can use the info
 	 * @throws Exception 
 	 */
-	public static ArrayList<String> getData(int soc) throws Exception
+	public static ArrayList<String> getData()
 	{
 		//ServerSocket s;
 		ArrayList<String> temp = new ArrayList<String>();
-		//s=new ServerSocket(soc);
-		boolean read=true;
-
-		//OutputStream output = s1.getOutputStream();
-		//InputStream input = s1.getInputStream();
-		//PrintStream ps = new PrintStream(output);
-		//System.out.println(input.toString());
 		String received="INITIAL";
 		
-		int i = 0;		
-		while(read)
+		while(true)
 		{
-
-			//Hold until data are sent by the other part
-			Socket s1 = s.accept();
-			InputStream input = s1.getInputStream();
-			//Convert stream to string so we can manipulate it
-			received = YetiServerSocket.convertStreamToString(input);
+			try {
+				received = reader.readLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			//when the other part sends "stop" the getData method will terminate
-			if("stop".equals(received.trim()))
-				read =false;
-			else
-				//System.out.println(received);
-				temp.add(received);
-			//allTypes.add(received);
+			if (received != null){
+				if("stop".equals(received.trim())){
+					break;
+				}
+				else{
+					temp.add(received);
+				}
+			}
+		}	
+		for (String s0: temp) 
+			YetiLog.printDebugLog("<-"+s0, YetiServerSocket.class);
 
-			i++;
-			//ps.println("My message "+ i);
-
-			//}
-		}
-		//s.close();
 		return temp;
 		
 		
 	}
 	
 	
-	public static void sendData(int soc, String msg) throws IOException
+	public static void sendData(String msg)
 	{			   
-		Socket s2 = new Socket("localhost",soc);
-		OutputStream output = s2.getOutputStream();
-		PrintStream ps = new PrintStream(output);
 		ps.println(msg);
-		ps.flush();		
+		YetiLog.printDebugLog("->"+msg, YetiServerSocket.class);
+		//ps.flush();		
 	}
 	
-	/**
-	 * A helper method that converts a stream to string
-	 * @param is denotes the input stream
-	 * @return it returns the string that has all the data sent
-	 */
-	private static String convertStreamToString(InputStream is) throws Exception {
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		StringBuilder sb = new StringBuilder();			
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			sb.append(line + "\n");
-		}
-		is.close();
-		return sb.toString();
-	}
 
 
 }

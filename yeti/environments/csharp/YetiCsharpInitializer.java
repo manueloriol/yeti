@@ -1,7 +1,7 @@
 package yeti.environments.csharp;
 
-import java.io.IOException;
-import java.io.InputStream;
+//import java.io.IOException;
+//import java.io.InputStream;
 //import java.lang.reflect.Modifier;
 //import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import yeti.environments.csharp.YetiCsharpSpecificType;
 //import yeti.environments.jml.YetiJMLInitializer;
 //import yeti.environments.jml.YetiJMLPrefetchingLoader;
 //import yeti.strategies.YetiRandomPlusStrategy;
-import java.lang.Thread;
+//import java.lang.Thread;
 
 //import com.sun.org.apache.xml.internal.utils.IntVector;
 
@@ -105,8 +105,9 @@ public class YetiCsharpInitializer extends YetiInitializer {
 					
 					if(s0.startsWith("-yetiPath="))
 					{
+					
 						String s1=s0.substring(10);
-						yetiPath=s1;																	
+						yetiPath=s1;
 					}
 				}
 			}
@@ -114,51 +115,34 @@ public class YetiCsharpInitializer extends YetiInitializer {
 		
 		if(YetiCsharpInitializer.initflag) throw new YetiInitializationException("C#ReflexiveLayer Unable To Start");
 		//yetiPath = "C:\\Users\\st552\\Documents\\Visual Studio 2008\\Projects\\CsharpReflexiveLayer\\CsharpReflexiveLayer\\bin\\Debug\\";
-		yetiPath = "C:\\DotNetTest\\";
+		//yetiPath = "C:\\Users\\st552\\Documents\\Visual Studio 2008\\Projects\\CsharpReflexiveLayer\\CsharpReflexiveLayer\\bin\\Debug\\";
+		
 		String info= yetiPath+"="+modulesToTest;
 		// we initialize primitive types first
 		// the primitives have the type names that C# has		
 		YetiCsharpSpecificType.initPrimitiveTypes();
-		try {			    	
-		
-			YetiServerSocket.sendData(2400, info);
-		} catch (IOException e1) {
-			System.out.println(e1.getMessage());
-			throw new YetiInitializationException(e1.getMessage());
-		} catch (Exception e) {
-			throw new YetiInitializationException(e.getMessage());
-		}		
-		
-		try {
-			@SuppressWarnings("unused")
-			ArrayList<String> a = YetiServerSocket.getData(2300);
-			YetiServerSocket.sendData(2400, "reached read point");
-			a = YetiServerSocket.getData(2300);
-			//System.out.println("1");
-			strTypes = soc.getData(2300);
-			//System.out.println("2");
-			cons = soc.getData(2300);
-			//System.out.println("3");
-			meths = soc.getData(2300);
-			//System.out.println("4");
-			inters = soc.getData(2300);
-			//System.out.println("5");
-		} catch (IOException e) {			
-			throw new YetiInitializationException(e.getMessage());
-		} catch (Exception e) {
-			throw new YetiInitializationException(e.getMessage());
-		}
+			YetiServerSocket.sendData(info);
+			
+			@SuppressWarnings("unused")			
+			ArrayList<String> a = YetiServerSocket.getData();
+			YetiServerSocket.sendData("reached read point");
+			a = YetiServerSocket.getData();
+			strTypes = soc.getData();
+			cons = soc.getData();
+			meths = soc.getData();
+			inters = soc.getData();
+	
 		//System.out.println("**************************************");
 		//For each type we do what the Prefetching Loader does	
 		for(String s: strTypes)
 		{
 			//st[0]: stores types names, st[1]: stores base types names
 			//e.g. YetiTest:System.Object
-			System.out.println(s);
+			//System.out.println(s);
 			String[] st = s.split(":");
-			System.out.println("st[0]: "+ st[0]);
-			System.out.println("st[1]: "+ st[1]);
-			System.out.println("st[2]: "+ st[2]);
+//			System.out.println("st[0]: "+ st[0]);
+//			System.out.println("st[1]: "+ st[1]);
+//			System.out.println("st[2]: "+ st[2]);
 			YetiType type=new YetiCsharpSpecificType(st[0].trim());
 			YetiType.allTypes.put(type.getName(), type);
 			YetiLog.printDebugLog("adding "+type.getName()+" to yeti types ", this);
@@ -174,7 +158,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 			// which exists in st[0] each time
 			if(!(YetiModule.allModules.containsKey(st[2].trim())))
 			{
-				System.out.println("HEEEREEEEE: "+st[2].trim());
+				//System.out.println("HEEEREEEEE: "+st[2].trim());
 				YetiModule mod = this.makeModuleFromClass(st[2].trim());
 				YetiModule.allModules.put(st[2].trim(), mod);
 			}
@@ -184,13 +168,13 @@ public class YetiCsharpInitializer extends YetiInitializer {
 		for (String i: inters ) 
 		{
 			String[] st = i.split(":");
-			System.out.println("st[0]: "+ st[0]);
-			System.out.println("st[1]: "+ st[1]);			
+//			System.out.println("st[0]: "+ st[0]);
+//			System.out.println("st[1]: "+ st[1]);			
 			YetiType type=new YetiCsharpSpecificType(st[0].trim());
 			if (YetiType.allTypes.containsKey(st[0])){
 				YetiLog.printDebugLog("linking "+type.getName()+" to "+st[0], this);
 				YetiType.allTypes.get(st[0]).allSubtypes.put(st[1].trim(), type);
-				System.out.println("---------\n"+i+"\n----------");
+				//System.out.println("---------\n"+i+"\n----------");
 			}
 		}
 		// Here we add the constructors of the assemblies
@@ -203,7 +187,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 			YetiType t = YetiType.allTypes.get(st[0].trim());
 			YetiModule m = YetiModule.allModules.get(st[2].trim());
 			addConstructors(cs, t, m);
-			System.out.println("$$$$$"+t);
+			//System.out.println("$$$$$"+t);
 		}
 		
 		// Here we add the methods of the assemblies
@@ -216,7 +200,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 			YetiType t = YetiType.allTypes.get(st[0].trim());
 			YetiModule m = YetiModule.allModules.get(st[5].trim());
 			addMethods(ms,t,m);
-			System.out.println(ms);
+			//System.out.println(ms);
 		}
 		
 	}
@@ -224,10 +208,10 @@ public class YetiCsharpInitializer extends YetiInitializer {
 	
 	private void addConstructors(String c, YetiType type, YetiModule mod) {
 		String[] st = c.split(":");
-		System.out.println("st[0]: "+ st[0]);
-		System.out.println("st[1]: "+ st[1]);
+//		System.out.println("st[0]: "+ st[0]);
+//		System.out.println("st[1]: "+ st[1]);
 		String[] pars = st[1].split(";");
-		System.out.println("PARS[0]: "+pars[0]);
+		//System.out.println("PARS[0]: "+pars[0]);
 		boolean usable = true;
 		YetiType []paramTypes=null;
 		int numberPars=0; //The number of parameters the constructor has
@@ -252,15 +236,15 @@ public class YetiCsharpInitializer extends YetiInitializer {
 		
 		// if we don't know a type from the constructor we don't add it
 		if (usable){
-			System.out.println("+++++++++++++++++++++++");
+			//System.out.println("+++++++++++++++++++++++");
 			YetiLog.printDebugLog("adding constructor to "+type.getName()+" in module "+mod.getModuleName(), this);
 			YetiCsharpConstructor construct = new YetiCsharpConstructor(YetiName.getFreshNameFrom(st[0]), paramTypes , type, mod,type.getName());		
 			// add it as a creation routine for the type
 			type.addCreationRoutine(construct);
 			// add the constructor as a routines to test
 			mod.addRoutineInModule(construct);
-			System.out.println("O constructor is: "+ type);
-			System.out.println("=======================");
+//			System.out.println("O constructor is: "+ type);
+//			System.out.println("=======================");
 		}
 	}
 	
@@ -313,7 +297,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 		
 		// if we don't know a type from the constructor we don't add it
 		if (usable){
-			System.out.println(c+" ---> "+isStatic);
+			//System.out.println(c+" ---> "+isStatic);
 			YetiLog.printDebugLog("adding method "+st[1]+" in module "+st[5], this);
 			// add it as a creation routine for the return type
 			YetiType returnType = YetiType.allTypes.get(st[3].trim());
@@ -443,7 +427,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 	    try
         {
 	    	YetiCard[] argConstr = new YetiCard[0];
-        	ArrayList<String> a = YetiServerSocket.getData(2300);
+        	ArrayList<String> a = YetiServerSocket.getData();
         	
             while(itr.hasNext())
             {
@@ -506,7 +490,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 	    
 	                               
 	    
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        //System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
         Iterator itr3 =rType2.creationRoutines.iterator();
         try
         {

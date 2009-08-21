@@ -111,6 +111,7 @@ public class Yeti {
 		int nTests=0;
 		String []modulesToTest=null;
 		int callsTimeOut=75;
+		Thread th = null;
 
 
 		// we parse all arguments of the program
@@ -221,13 +222,14 @@ public class Yeti {
 
 			// we want to use the following path
 			if (s0.startsWith("-yetiPath=")) {				
-				String s1=s0.substring(10);
-				//if it is dotnet the yetiPath can be extracted in the initialize() method
-				if(!isDotNet)																
-				{
+				
+//				//if it is dotnet the yetiPath can be extracted in the initialize() method
+//				if(!isDotNet)																
+//				{
+					String s1=s0.substring(10);
 					Yeti.yetiPath = s1;
 					System.setProperty("java.class.path", System.getProperty("java.class.path")+":"+s1);
-				}
+				//}
 				continue;
 			}
 
@@ -275,20 +277,26 @@ public class Yeti {
 		//test of options to set up the YetiProperties for .NET assemblies
 		if (isDotNet) {
 
-			Thread th = new Thread(new Runnable()
-			{
+			System.out.println("****************************************");
+			System.out.println("STARTING CsharpReflexiveLayer.exe ");
+			System.out.println("****************************************");
 
+			th = new Thread(new Runnable()
+			{
 
 				public void run() {
 					Runtime run = Runtime.getRuntime();
-					String command = "C:\\Users\\st552\\Documents\\Visual Studio 2008\\Projects\\CsharpReflexiveLayer\\CsharpReflexiveLayer\\bin\\Debug\\CsharpReflexiveLayer.exe";					
+					String command = yetiPath + "CsharpReflexiveLayer.exe";					
 					try {
 						Process p = run.exec(command);						
 						InputStream in = p.getInputStream();						
+
+					    @SuppressWarnings("unused")
 						int c;
-						while ((c = in.read()) != -1) {
-							//System.out.print((char) c);
-						}
+					    while ((c = in.read()) != -1) {
+					      //System.out.print((char) c);
+					    }
+
 					} catch (IOException e) {					
 						YetiCsharpInitializer.initflag=true;
 					}
@@ -303,6 +311,10 @@ public class Yeti {
 			YetiLogProcessor logProcessor = new YetiCsharpLogProcessor();
 			YetiServerSocket socketConnector = new YetiServerSocket();
 			pl=new YetiCsharpProperties(initializer, testManager, logProcessor, socketConnector);
+			System.out.println("Making the .NET test-case calls...\n");
+			System.out.println("The LOGS of the calls are: \n");
+			System.out.println("----------------------------------------");
+
 		}
 
 		//if it is raw logs, then set it		
@@ -431,11 +443,9 @@ public class Yeti {
 		boolean isProcessed = false;
 		String aggregationProcessing = "";
 		// presents the logs
-		System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");
-		System.out.println("RAW LOG 1");
+		System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");	
 		if (!Yeti.pl.isRawLog()) {
-			isProcessed = true;
-			System.out.println("RAW LOG 2");			
+			isProcessed = true;		
 			for (String log: YetiLog.proc.processLogs()) {
 				System.out.println(log);
 			}
@@ -464,6 +474,7 @@ public class Yeti {
 		System.out.println("Yeti Usage:\n java yeti.Yeti [-java|-Java] [[-time=Xs|-time=Xmn]|[-nTests=X]][-testModules=M1:M2:...:Mn][-help|-h][-rawlog]");
 		System.out.println("\t-java, -Java : for calling it on Java.");
 		System.out.println("\t-jml, -JML : for calling it on JML annotated code.");
+		System.out.println("\t-donet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts.");
 		System.out.println("\t-time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).");
 		System.out.println("\t-nTests=X : for calling Yeti to attempt X method calls.");
 		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules.");
