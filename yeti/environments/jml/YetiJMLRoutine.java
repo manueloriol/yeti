@@ -12,14 +12,21 @@ import yeti.YetiType;
 import yeti.environments.java.YetiJavaRoutine;
 
 /**
- * Class that represents a routine in Yeti which is annotated with JML
+ * Class that represents a routine in Yeti which is annotated with JML.
+ * 
+ * When making the call either to a constructor or a method  annotated 
+ * with JML then the strategy for determining if there is an error is 
+ * determined by the template method suggested in 
+ * "JML and JUnit way of unit testing and its implementation" paper
+ * by Y. Cheon and G. T. Leavens for running a test case and deciding 
+ * the test output
  * 
  * @@author Vasileios Dimitriadis (vd508@cs.york.ac.uk, vdimitr@hotmail.com)
  * @date 20 Jul 2009
  *
  */
-public class YetiJMLRoutine extends YetiJavaRoutine {
-
+public abstract class YetiJMLRoutine extends YetiJavaRoutine {
+	
 	/**
 	 * Create a JML Routine
 	 * 
@@ -61,20 +68,33 @@ public class YetiJMLRoutine extends YetiJavaRoutine {
 
 			// if we are here, we found a bug.
 			// we first print the log
+			//TODO log can be null here if thread is killed
 			YetiLog.printYetiLog(log+");", this);
 			
 			// then print the exception
 			// if the thread was killed
 			if (e.getCause() instanceof ThreadDeath) {
 				YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
-			}
-			
-			// if the cause is a violation of a JML Assertion
-			if (isJMLAssertionError(e.getCause())) {
+				YetiLog.printYetiThrowable(e.getCause(), this);
+			} else if (e.getCause() instanceof org.jmlspecs.jmlrac.runtime.JMLEntryPreconditionError) {
+				// if the cause is a precondition violation of a JML Assertion
+				YetiLog.printYetiLog("/**MEANINGLESS: JMLEntryPreconditionError**/", this);
+				
+			} else if (e.getCause() instanceof org.jmlspecs.jmlrac.runtime.JMLAssertionError) {
+				// if the cause is a violation of a JML Assertion other than precondition
 				YetiLog.printYetiLog("/**BUG FOUND: JMLAssertionError**/", this);
+				YetiLog.printYetiThrowable(e.getCause(), this);
+			} else {
+				// if the cause is a violation any other than JML Assertion
+				if (isAcceptable(e.getCause())) {
+					// if the cause is declared
+					YetiLog.printYetiLog("/**DECLARED EXCEPTION:**/", this);
+					YetiLog.printYetiThrowable(e.getCause(), this);
+				} else {
+					YetiLog.printYetiLog("/**UNDECLARED EXCEPTION:**/", this);
+					YetiLog.printYetiThrowable(e.getCause(), this);
+				}
 			}
-			
-			YetiLog.printYetiThrowable(e.getCause(), this);
 		} catch (Error e) {
 			// if we are here there was a serious error
 			// we print it
@@ -90,28 +110,4 @@ public class YetiJMLRoutine extends YetiJavaRoutine {
 		}
 		return this.lastCallResult;
 	}
-	
-	/**
-	 * This method is correspondent to the template method suggested
-	 * in "JML and JUnit way of unit testing and its implementation" paper
-	 * by Yoosnik Cheon and Gary T. Leavens 
-	 * for running a test case and deciding the test output
-	 * 
-	 * @param t The cause to check
-	 * @return True if <code>t</code> is instance of org.jmlspecs.jmlrac.runtime.JMLAssertionError
-	 * and not instance of org.jmlspecs.jmlrac.runtime.JMLEntryPreconditionError
-	 */
-	private boolean isJMLAssertionError(Throwable t) {
-		if (t instanceof org.jmlspecs.jmlrac.runtime.JMLEntryPreconditionError) {
-            // meaningless test input
-			return false;
-		}
-        if (t instanceof org.jmlspecs.jmlrac.runtime.JMLAssertionError) {
-        	// test failure
-            return true;
-        } 
-        // test success
-        return false;
-	}
-
 }

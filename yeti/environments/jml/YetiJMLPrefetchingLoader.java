@@ -3,7 +3,6 @@ package yeti.environments.jml;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-import yeti.YetiLog;
 import yeti.YetiModule;
 import yeti.YetiName;
 import yeti.YetiRoutine;
@@ -24,25 +23,17 @@ import yeti.environments.java.YetiJavaPrefetchingLoader;
 public class YetiJMLPrefetchingLoader extends YetiJavaPrefetchingLoader {
 	
 	/**
+	 * This character denotes that the 
+	 */
+	private static final char JML_SPECIFIC_INDICATOR = '$';
+	
+	/**
 	 * Constructor that creates a new loader for loading JML annotated Java classes.
 	 * 
 	 * @param path the classpath to load classes.
 	 */
 	public YetiJMLPrefetchingLoader(String path) {
 		super(path);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public Class loadClass(String name, boolean resolve) throws ClassNotFoundException {
-		if (name.startsWith("org.jmlspecs.")) {
-			// we load it from within the standard loader
-			Class clazz=findSystemClass(name);
-			YetiLog.printDebugLog("Class loaded in parent class loader: " + clazz.getName(), this);
-			resolveClass(clazz);
-			return addDefinition(clazz);
-		} else {
-			return super.loadClass(name, resolve);
-		}
 	}
 	
 	/**
@@ -95,6 +86,6 @@ public class YetiJMLPrefetchingLoader extends YetiJavaPrefetchingLoader {
 	 */
 	protected boolean isJMLSpecific(Method method) {
 		// if it is jml-specific, skip the method
-		return method.getName().indexOf('$') >= 0; 
+		return method.getName().indexOf(JML_SPECIFIC_INDICATOR) >= 0; 
 	}
 }

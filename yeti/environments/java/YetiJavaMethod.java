@@ -31,7 +31,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 	/**
 	 * The actual method to call.
 	 */
-	protected Method m;
+	protected Method method;
 
 	/**
 	 * Checks whether this method is a static method or not. 
@@ -51,7 +51,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 	public YetiJavaMethod(YetiName name, YetiType[] openSlots, YetiType returnType, YetiModule originatingModule, Method m) {
 		super(name, openSlots, returnType, originatingModule);
 		isStatic = Modifier.isStatic((m.getModifiers()));
-		this.m=m;
+		this.method=m;
 		for (Class cl: m.getExceptionTypes()) {
 			this.addAcceptableExceptionType(cl.getName());			
 		}
@@ -71,7 +71,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 	@SuppressWarnings("unchecked")
 	public YetiJavaMethod(YetiName name, YetiType[] openSlots, YetiType returnType, YetiModule originatingModule, Method m, boolean isStatic) {
 		super(name, openSlots, returnType, originatingModule);
-		this.m=m;
+		this.method=m;
 		this.isStatic=isStatic;
 		for (Class cl: m.getExceptionTypes()) {
 			this.addAcceptableExceptionType(cl.getName());			
@@ -108,7 +108,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return m.getName();
+		return method.getName();
 	}
 
 
@@ -142,11 +142,11 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		// we start generating the log as well as the identifier to use to store the 
 		// result if there is one.
 		YetiIdentifier id=null;
-		if (m.getReturnType()!= void.class) {
+		if (method.getReturnType()!= void.class) {
 			// if there is a result to be expected
-			YetiLog.printDebugLog("return type is "+m.getReturnType().getName(), this);
+			YetiLog.printDebugLog("return type is "+method.getReturnType().getName(), this);
 			id=YetiIdentifier.getFreshIdentifier();
-			String s0=m.getName();
+			String s0=method.getName();
 			// this is a hack still decide whether it is a simple type 
 			// (in which case, we will print the result rather than the sequence to construct it) 
 			boolean isSimpleReturnType=false;
@@ -160,13 +160,13 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			if (s0.startsWith("__yetiValue_")||isSimpleReturnType) {//||(this.returnType instanceof YetiJavaSpecificType)){ //(this.returnType instanceof YetiJavaSpecificType)
 				isValue=true;
 				log1 = this.returnType.toString()+" "+ id.getValue() + "=";
-				log = this.returnType.toString()+" "+ id.getValue() + "="+ prefix +"."+ m.getName()+"(";			
+				log = this.returnType.toString()+" "+ id.getValue() + "="+ prefix +"."+ method.getName()+"(";			
 			} else
-				log = this.returnType.toString()+" "+ id.getValue() + "="+ prefix +"."+ m.getName()+"(";			
+				log = this.returnType.toString()+" "+ id.getValue() + "="+ prefix +"."+ method.getName()+"(";			
 
 		} else {
 			// otherwise
-			log = prefix + "."+m.getName()+"(";
+			log = prefix + "."+method.getName()+"(";
 		}
 
 		// we adjust the number of arguments according 
@@ -195,20 +195,20 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 
 		// we  make the call
 		if (target!=null)
-			YetiLog.printDebugLog("trying to call "+m.getName()+" on a "+target.getClass().getName(), this);
+			YetiLog.printDebugLog("trying to call "+method.getName()+" on a "+target.getClass().getName(), this);
 		else 
-			YetiLog.printDebugLog("trying to call statically "+m.getName()+" of "+m.getDeclaringClass().getName(), this);				
+			YetiLog.printDebugLog("trying to call statically "+method.getName()+" of "+method.getDeclaringClass().getName(), this);				
 
 		Object o=null;
 		try {
-			o = m.invoke(target,initargs);
+			o = method.invoke(target,initargs);
 		} catch (Throwable t) {
 			throw new YetiCallException(log,t);
 		}
 
 		// if the reurn type is void, we look it up
 		if (returnType==null)
-			returnType=YetiType.allTypes.get(m.getReturnType().getName());
+			returnType=YetiType.allTypes.get(method.getReturnType().getName());
 		// if there is a result, we store it and create the variable
 		if (id!=null&&o!=null){
 			this.lastCallResult=new YetiVariable(id, returnType, o);
@@ -301,8 +301,8 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 	 * 
 	 * @return the implementation of the method.
 	 */
-	public Method getM() {
-		return m;
+	public Method getMethod() {
+		return method;
 	}
 
 	/**
@@ -310,8 +310,8 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 	 * 
 	 * @param m the method to set.
 	 */
-	public void setM(Method m) {
-		this.m = m;
+	public void setMethod(Method m) {
+		this.method = m;
 	}
 
 }

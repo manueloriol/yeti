@@ -3,7 +3,6 @@ package yeti;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -346,10 +345,11 @@ public class Yeti {
 		}
 
 		// We set the strategy
-		if (isRandomPlus)
-			strategy= new YetiRandomStrategy(testManager);
-		else
+		if (isRandomPlus) {
 			strategy= new YetiRandomPlusStrategy(testManager);
+		} else {
+			strategy= new YetiRandomStrategy(testManager);
+		}
 
 
 		// getting the module(s) to test

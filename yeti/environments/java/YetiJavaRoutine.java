@@ -1,7 +1,6 @@
 package yeti.environments.java;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import yeti.YetiCallException;
