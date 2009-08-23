@@ -1,6 +1,6 @@
 package yeti.environments.csharp;
 
-//import java.io.IOException;
+
 import java.util.ArrayList;
 
 import yeti.YetiCallException;
@@ -28,6 +28,8 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
      */
    
     private String c;
+  //shows when a call was successful on the CsharpReflexiveLayer
+    public boolean successCall=true;
 
 
 
@@ -69,8 +71,8 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
     throws YetiCallException {
         String log;
         String msg="";
-        lastCallResult=null;
-        boolean successCall=true;
+        this.lastCallResult=null;
+        
         //Object []initargs=new Object[arg.length];
        
         msg+="Constructor:";
@@ -103,22 +105,22 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
         
         log=log+");";
         msg+=":"+log;
-        String valuestring="";
-        boolean communicationflag=true;
-    
-        	//System.out.println(msg);
+        String valuestring="";       
+            	
             YetiServerSocket.sendData(msg);
            
             ArrayList<String> a = YetiServerSocket.getData();
-            //int i=0;
             String s=a.get(0);
             if (s.indexOf("FAIL!")>=0){
-            	successCall = false;
+            	successCall = false;              	
             	msg="";
             	for (String s0: a)
             		msg=msg+s0+"\n";
+            	//we throw the exception of an not successful call            	
+            	throw new YetiCallException(log+"><"+msg,new Throwable());
             	
             } else{
+            	
             	String[] helps = s.split(":");
      			if(helps.length>=2)
     			{
@@ -127,28 +129,19 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
             }
 
 
-        if(communicationflag)
-        {
-        	// if it succeeds we create the new variable
-        	//System.out.println("LastCallResult: --> "+id+" "+returnType+" "+valuestring);
         	
         	//if the call is successful we store to the pool the id
         	//the value for now is not the valid one because of syncronization
         	//problem with the working threads and the non-asynchronous socket
         	//communication
         	if(successCall)
-        	this.lastCallResult=new YetiVariable(id, returnType, valuestring);        	
-        	if(!successCall) throw new YetiCallException(log+"<>"+msg,new Throwable());
-        	
-        	if(successCall)
-        	{
-        		System.out.println("The LOG: "+log);
-        		YetiLog.printYetiLog(log, this);
-        		
+        	{          		        		
+        		this.lastCallResult=new YetiVariable(id, returnType, valuestring);
         	}
-        }
-              
-        // print the log
+        	
+        	// print the log
+        		System.out.println("The LOG: "+log);
+        		YetiLog.printYetiLog(log, this);        		                            
         
         return log;
     }     

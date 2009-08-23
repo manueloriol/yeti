@@ -103,103 +103,16 @@ public class YetiCsharpSpecificType extends YetiType {
 		YetiCsharpSpecificType tString=new YetiCsharpSpecificType("String");
 		tString.setSimpleType(true);
 		YetiType.allTypes.put(tString.getName(), tString);
-		
-		//YetiCsharpSpecificType tEmpty=new YetiCsharpSpecificType("");
-		//YetiType.allTypes.put(tEmpty.getName(), tEmpty);
-		//@SuppressWarnings("unused")
-		//YetiCsharpSpecificType tdouble=new YetiCsharpSpecificType("double");
-		
-		// we add the helper class that has creating procedures.
-		//YetiCsharpPrefetchingLoader.yetiLoader.addDefinition(YetiCsharpSpecificType.class);
-		
+				
 		}
 		
 
-	/**
-	 * A boolean random generator.
-	 * 
-	 * @return a random boolean.
-	 */
-	public static boolean __yetiValue_createRandomBoolean(){
-		return (Math.random()<.5);
-	}
 
-	/**
-	 * A byte random generator.
-	 * 
-	 * @return a random byte.
-	 */
-	public static byte __yetiValue_createRandomByte(){
-		double d=Math.random();
-		return new Byte((byte) Math.floor(257*d)).byteValue();
-	}
-	
-	/**
-	 * A short random generator.
-	 * 
-	 * @return a random short.
-	 */
-	public static short __yetiValue_createRandomShort(){
-		double d=Math.random();
-		return new Short((short) (Math.floor(65535*d)-32767)).shortValue();
-	}
-
-	/**
-	 * A int random generator.
-	 * 
-	 * @return a random int.
-	 */
-	public static int __yetiValue_createRandomInt(){
-		double d=Math.random();
-		double d2=Math.random()*2-1.0d;
-		return new Integer((int) Math.floor(2147483647*d*d2)).intValue();
-	}
-	
-	/**
-	 * A long random generator.
-	 * 
-	 * @return a random long.
-	 */
-	public static long __yetiValue_createRandomLong(){
-		Double d=new Double(YetiCsharpSpecificType.__yetiValue_createRandomDouble());
-		return d.longValue();
-	}
-	
-	/**
-	 * A char random generator.
-	 * 
-	 * @return a random char.
-	 */
-	public static char __yetiValue_createRandomChar(){
-		double d=Math.random();
-		return new Character((char)Math.floor(0xFFFF*d)).charValue();
-	}
-
-	/**
-	 * A float random generator.
-	 * 
-	 * @return a random float.
-	 */
-	public static float __yetiValue_createRandomFloat(){
-		int i = (int) Math.floor(11*Math.random());
-		return new Float((float)Math.random()*(10^i)).floatValue();
-	}
-
-	/**
-	 * A double random generator.
-	 * 
-	 * @return a random double.
-	 */
-	public static double __yetiValue_createRandomDouble(){
-		int i = (int) Math.floor(15*Math.random());
-		return new Double(Math.random()*(10^i)).doubleValue();
-	}
 	
 	/**
 	 * Constructor that creates an empty type.
 	 * 
-	 */
-	//TODO check that
+	 */	
 	public YetiCsharpSpecificType(String name) {
 		super(name);
 		String uglyName=name, prettyName="";

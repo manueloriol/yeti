@@ -1,11 +1,11 @@
 package yeti.environments.csharp;
 
-import java.io.IOException;
+//import java.io.IOException;
 import java.util.ArrayList;
 
 
 import yeti.ImpossibleToMakeConstructorException;
-import yeti.YetiLog;
+//import yeti.YetiLog;
 import yeti.YetiModule;
 import yeti.YetiRoutine;
 import yeti.YetiStrategy;
@@ -42,7 +42,7 @@ public class YetiCsharpTestManager extends YetiTestManager {
 	 * 
 	 * @see yeti.environments.YetiTestManager#makeNextCall(yeti.YetiModule, yeti.YetiStrategy)
 	 */
-	@SuppressWarnings("deprecation")
+
 	@Override
 	public void makeNextCall(YetiModule mod, YetiStrategy strategy) {
 

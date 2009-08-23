@@ -1,6 +1,6 @@
 package yeti.environments.csharp;
 
-//import java.io.IOException;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,8 +28,7 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 	/**
 	 * a list of methods not to test. Typically will contain wait, notify, notifyAll
 	 */
-	public static HashMap<String,Object> methodsNotToAdd ;
-	public static int count=0;
+	public static HashMap<String,Object> methodsNotToAdd ;	
 
 	/**
 	 * The actual method to call.
@@ -41,6 +40,8 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 	 * Checks whether this method is a static method or not. 
 	 */
 	public boolean isStatic = false;
+	//shows when a call was successful on the CsharpReflexiveLayer
+	public boolean successCall=true;
 
 
 	/**
@@ -81,22 +82,20 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 	public String makeEffectiveCall(YetiCard[] arg) throws YetiCallException {
 		String log="";
 		String log1="";
-		lastCallResult=null;
-		String prefix;
-		boolean isValue= false, successCall=true;
+		this.lastCallResult=null;
+		String prefix,target="";
+		boolean isValue= false;
 		String msg="Method:";
 
 		// if the method is static, we need to adjust the arguments
 		// there is no target in the open slots.
-		if (isStatic){		
-			//System.out.println("It is Static");
+		if (isStatic){					
 			prefix = this.originatingClass;			
 		}else{
 			
 			prefix = arg[0].getIdentity().toString();
 		}
 		
-		//Object []initargs=new Object[length];
 		// we start generating the log as well as the identifier to use to store the 
 		// result if there is one.
 		YetiIdentifier id=null;
@@ -104,6 +103,7 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 			// if there is a result to be expected
 			YetiLog.printDebugLog("return type is "+returnType.getName(), this);
 			id=YetiIdentifier.getFreshIdentifier();
+			//constructing the message to send to the CsharpreflexiveLayer
 			msg+=id+":"+originatingClass+":"+returnType.getName()+":";
 			msg+=m+":";
 			
@@ -120,8 +120,7 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 
 			
 		} else {
-			// otherwise
-			//System.out.println("IT RETURNS VOID");
+			// otherwise		
 			msg+="void"+":"+originatingClass+":"+returnType.getName()+":";
 			msg+=m+":";
 			log = prefix + "."+m +"(";
@@ -132,18 +131,17 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 		int offset=1;
 		if (isStatic){
 			offset=0;
+			target="null";
 		} 
-		//System.out.println("OFFSET IS: "+offset);
+		else target = arg[0].getIdentity().toString();		
 		
 		for (int i = offset;i<arg.length; i++){
 			// if we should replace it by a null value, we do it
-			if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&&!(((YetiCsharpSpecificType)arg[i].getType()).isSimpleType())) {
-				//initargs[i-offset]=null;
+			if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&&!(((YetiCsharpSpecificType)arg[i].getType()).isSimpleType())) {		
 				msg+="null";
 				if(i<arg.length -1) msg+= ";";
 				log=log+"null";
 			} else {
-				//initargs[i-offset]=arg[i].getValue();
 				msg+=arg[i].getIdentity();
                 if(i<arg.length -1) msg+= ";";				
 				log=log+arg[i].toString();
@@ -151,69 +149,57 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 			if (i<arg.length-1){
 				log=log+",";
 			}
-			//System.out.println("THE INDEX IS: "+i);
 
 		}
 		
 		log=log+");";
-		msg+=":"+log;
-		String valuestring="";
-		boolean communicationflag=true;
-        	//System.out.println(msg);
+		msg+=":"+log+":"+target;
+		
+		//we throw the exception of an not successful call
+		if ("Void".equals(this.returnType.getName()))
+    		returnType=YetiType.allTypes.get(returnType.getName());
+    	
+    	if(isValue) log=log1;
+    	
+		String valuestring="";	
+		
+			//sending the call to the other part
             YetiServerSocket.sendData(msg);
-           
+           //Receiving results
             ArrayList<String> a = YetiServerSocket.getData();
-           // int i=0;
             String s=a.get(0);
-            if (s.indexOf("FAIL!")>=0){
+            if (s.indexOf("FAIL!")>=0){            	
             	successCall = false;
+            	
             	msg="";
             	for (String s0: a)
             		msg=msg+s0+"\n";
+            	//we throw the exception of an not successful call
+            	throw new YetiCallException(log+"><"+msg,new Throwable());
             	
-            } else{
+            } else{            	
+            	
             	String[] helps = s.split(":");
      			if(helps.length>=2)
     			{
     				valuestring = helps[1].trim();
     			}
             }
-            YetiLog.printDebugLog(msg, this);
-            
-
-        if(communicationflag)
-        {
-        	// if the return type is void, we look it up
-        	if ("Void".equals(this.returnType.getName()))
-        		returnType=YetiType.allTypes.get(returnType.getName());
+            YetiLog.printDebugLog(msg, this);                            	        	        	        	              
         	
-        	
-        	// if there is a result, we store it and create the variable
-        	//if(successCall) System.out.println("LastCallResult: --> "+id+" "+returnType+" "+valuestring);
         	if (id!=null && successCall){
         		//if the call is successful we store to the pool the id
             	//the value for now is not the valid one because of syncronization
             	//problem with the working threads and the non-asynchronous socket
-            	//communication
+            	//communication 
+        		
         		this.lastCallResult=new YetiVariable(id, returnType, valuestring);
-        	}
+        	}        	                	    
         	
-        	if(isValue) log=log1;        	
-        	//System.out.println(msg);
-        	count++;
-        	if(!successCall) {        		
-        		throw new YetiCallException(log+"<>"+msg,new Throwable());
-        	}
-        	//System.out.println("The COUNT is : ---> "+count);        	
-        	if(successCall)
-        	{
-        		System.out.println("The LOG: "+log);
-        		//System.out.println("The Msg is "+msg);
-        		YetiLog.printYetiLog(log, this);
-        	}
-        }
-		// finally we print the log.
-		
+        	// finally we print the log.
+        		System.out.println("The LOG: "+log);        		
+        		YetiLog.printYetiLog(log, this); 
+
 		return log;
 	}	
 

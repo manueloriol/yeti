@@ -12,11 +12,12 @@ import yeti.YetiLog;
 import yeti.YetiLogProcessor;
 
 /**
- * Class that represents a log processor for Java. 
+ * Class that represents a log processor for Csharp. 
+ * It is a clone of YetiJavaLogProcessor
  * <code>processLog</code> generates test cases in each cell of the array.
  * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
+ * @author Sotirios Tassis (st552@cs.york.ac.uk)
+ * @date Aug 22, 2009
  *
  */
 

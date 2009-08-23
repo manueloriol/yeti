@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 import yeti.YetiLog;
 
-//import yeti.environments.csharp.YetiCsharpProperties;
 /**
  * Class that holds the methods with which the Csharp environment
  * in Java can obtain the information YETI needs
@@ -48,26 +47,22 @@ public class YetiServerSocket {
 				output = clientSocket.getOutputStream();
 				reader = new BufferedReader(new InputStreamReader(input));
 				ps = new PrintStream(output);
-				//s.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
 		}
 	}
-	
-    //public static ArrayList<String> allTypes = new ArrayList();
+	    
 	/**
 	 * It is a method that gets the data from the specified socket
 	 * it will hold until the other par sends data
 	 * 
 	 * @param soc the integer that specifies the socket to listen
-	 * @return it returns an ArrayList<String> so we can use the info
-	 * @throws Exception 
+	 * @return it returns an ArrayList<String> so we can use the info	 
 	 */
 	public static ArrayList<String> getData()
-	{
-		//ServerSocket s;
+	{	
 		ArrayList<String> temp = new ArrayList<String>();
 		String received="INITIAL";
 		
@@ -76,7 +71,6 @@ public class YetiServerSocket {
 			try {
 				received = reader.readLine();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			//when the other part sends "stop" the getData method will terminate
@@ -97,12 +91,15 @@ public class YetiServerSocket {
 		
 	}
 	
-	
+	/**
+	 * It is a method that sends the data to the CsharpReflexiveLayer
+	 * 
+	 * @param msg is the call message that CsharpReflexiveLayer has to execute
+	 */
 	public static void sendData(String msg)
 	{			   
 		ps.println(msg);
-		YetiLog.printDebugLog("->"+msg, YetiServerSocket.class);
-		//ps.flush();		
+		YetiLog.printDebugLog("->"+msg, YetiServerSocket.class);		
 	}
 	
 
