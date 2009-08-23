@@ -311,7 +311,7 @@ public class Yeti {
 			YetiLogProcessor logProcessor = new YetiCsharpLogProcessor();
 			YetiServerSocket socketConnector = new YetiServerSocket();
 			pl=new YetiCsharpProperties(initializer, testManager, logProcessor, socketConnector);
-			System.out.println("Making the .NET test-case calls...\n");
+			System.out.println("\nMaking the .NET test-case calls...\n");
 			System.out.println("The LOGS of the calls are: \n");
 			System.out.println("----------------------------------------");
 
