@@ -19,7 +19,7 @@ import yeti.environments.csharp.YetiCsharpRoutine;
 /**
  * Class that represents a Csharp method.
  * 
- * @author Sotrios Tassis (st552@cs.york.ac.uk)
+ * @author Sotirios Tassis (st552@cs.york.ac.uk)
  * @date Jun 22, 2009
  *
  */
@@ -126,8 +126,7 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 			log = prefix + "."+m +"(";
 		}
 
-		// we adjust the number of arguments according 
-		// to the fact that they are static or not.
+		//we specify which identifier has the target object
 		int offset=1;
 		if (isStatic){
 			offset=0;
@@ -135,6 +134,8 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 		} 
 		else target = arg[0].getIdentity().toString();		
 		
+		// we adjust the number of arguments according 
+		// to the fact that they are static or not.
 		for (int i = offset;i<arg.length; i++){
 			// if we should replace it by a null value, we do it
 			if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&&!(((YetiCsharpSpecificType)arg[i].getType()).isSimpleType())) {		
@@ -155,37 +156,40 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 		log=log+");";
 		msg+=":"+log+":"+target;
 		
-		//we throw the exception of an not successful call
+		
 		if ("Void".equals(this.returnType.getName()))
     		returnType=YetiType.allTypes.get(returnType.getName());
     	
     	if(isValue) log=log1;
     	
 		String valuestring="";	
-		
+		YetiLog.printDebugLog(msg,this);
 			//sending the call to the other part
             YetiServerSocket.sendData(msg);
            //Receiving results
             ArrayList<String> a = YetiServerSocket.getData();
             String s=a.get(0);
-            if (s.indexOf("FAIL!")>=0){            	
+            if (s.indexOf("FAIL!")>=0){ 
+            	//we throw the exception of an not successful call
             	successCall = false;
-            	
+            	//storing the exception message and stack in msg variable
+            	// from a ArrayList
             	msg="";
             	for (String s0: a)
             		msg=msg+s0+"\n";
-            	//we throw the exception of an not successful call
+            	//we throw the exception of a not successful call
+            	YetiLog.printDebugLog(log+"><"+msg, this);
             	throw new YetiCallException(log+"><"+msg,new Throwable());
             	
             } else{            	
-            	
+            	YetiLog.printDebugLog(log+"><"+msg, this);
             	String[] helps = s.split(":");
      			if(helps.length>=2)
     			{
     				valuestring = helps[1].trim();
     			}
             }
-            YetiLog.printDebugLog(msg, this);                            	        	        	        	              
+            YetiLog.printDebugLog(log+"><"+msg, this);                            	        	        	        	              
         	
         	if (id!=null && successCall){
         		//if the call is successful we store to the pool the id

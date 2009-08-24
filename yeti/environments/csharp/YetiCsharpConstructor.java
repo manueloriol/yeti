@@ -84,8 +84,7 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
         for (int i=0;i<arg.length; i++){
             // if we should replace it by a null value, we do it
         	
-            if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&& !(((YetiCsharpSpecificType)arg[i].getType()).isSimpleType())) {
-                //initargs[i]=null;
+            if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&& !(((YetiCsharpSpecificType)arg[i].getType()).isSimpleType())) {                
                 msg+="null";
                 if(i<arg.length -1) msg+= ";";
                 log=log+"null";
@@ -106,7 +105,7 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
         log=log+");";
         msg+=":"+log;
         String valuestring="";       
-            	
+        	YetiLog.printDebugLog(msg,this);	
             YetiServerSocket.sendData(msg);
            
             ArrayList<String> a = YetiServerSocket.getData();
@@ -116,11 +115,12 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
             	msg="";
             	for (String s0: a)
             		msg=msg+s0+"\n";
-            	//we throw the exception of an not successful call            	
+            	//we throw the exception of an not successful call   
+            	//YetiLog.printDebugLog(log+"><"+msg, this, true);
             	throw new YetiCallException(log+"><"+msg,new Throwable());
             	
             } else{
-            	
+            	YetiLog.printDebugLog(log+"><"+msg+"^^^^"+s, this);
             	String[] helps = s.split(":");
      			if(helps.length>=2)
     			{

@@ -61,7 +61,7 @@ public class YetiCsharpRoutine extends YetiRoutine {
 	 * @see yeti.environments.java.YetiCsharpRoutine#makeCall(yeti.YetiCard[])
 	 */
 	public Object makeCall(YetiCard []arg){
-		String log = null;
+		//String log = null;
 		super.makeCall(arg);
 		
 
@@ -71,7 +71,7 @@ public class YetiCsharpRoutine extends YetiRoutine {
 				String temp = e.getLog();
 				YetiLog.printDebugLog(temp, this);
 				String[] results = temp.split("><");
-				log = results[0];			
+				//log = results[0];			
 				String reasonException="";
 				int tmp=0;
 				if(results[1]!=null)
@@ -79,8 +79,7 @@ public class YetiCsharpRoutine extends YetiRoutine {
 					reasonException = results[1];
 					tmp = results[1].indexOf("PRECONDITION");
 				}
-				
-				YetiLog.printYetiLog(log, this);				
+											
 				if(tmp==-1)
 				{	
 					//if it is not precondition break then possible bug
@@ -91,7 +90,7 @@ public class YetiCsharpRoutine extends YetiRoutine {
 					String exceMessage = exception[2].trim()+"\n"+exception[1].trim();
 					System.out.println("BUG FOUND: ERROR");
 					System.out.println(exceMessage);
-					YetiLog.printYetiLog("BUG FOUND: ERROR"+"\n"+exceMessage, this);
+					//YetiLog.printYetiLog("BUG FOUND: ERROR"+"\n"+exceMessage, this);
 					YetiLog.printYetiThrowable(new Exception("BUG FOUND: ERROR"+"\n"+exceMessage), this);
 				}
 				else
