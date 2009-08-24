@@ -67,6 +67,7 @@ public class Yeti {
 	 * <br>
 	 * -java, -Java : for calling it on Java.<br>
 	 * -jml, -JML : for calling it on JML annotated code.<br>
+	 * -dotnet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts.<br>
 	 * -time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).<br>
 	 * -nTests=X : for calling Yeti to attempt X method calls.<br>
 	 * -testModules=M1:M2:...:Mn : for testing one or several modules.<br>
@@ -471,7 +472,7 @@ public class Yeti {
 		System.out.println("Yeti Usage:\n java yeti.Yeti [-java|-Java] [[-time=Xs|-time=Xmn]|[-nTests=X]][-testModules=M1:M2:...:Mn][-help|-h][-rawlog]");
 		System.out.println("\t-java, -Java : for calling it on Java.");
 		System.out.println("\t-jml, -JML : for calling it on JML annotated code.");
-		System.out.println("\t-donet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts.");
+		System.out.println("\t-dotnet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts.");
 		System.out.println("\t-time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).");
 		System.out.println("\t-nTests=X : for calling Yeti to attempt X method calls.");
 		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules.");

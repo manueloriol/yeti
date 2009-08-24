@@ -119,16 +119,7 @@ public class YetiLog {
 			if (Yeti.pl.isRawLog()){
 				proc.printThrowableRawLogs(t, isFailure);
 			} else {
-				proc.appendFailureToCurrentLog("/**YETI EXCEPTION - START ");
-				OutputStream os=new ByteArrayOutputStream();
-				PrintStream ps = new PrintStream(os);
-				if (t!=null) 
-					t.printStackTrace(ps);
-				else 
-					ps.println("Thread killed by Yeti!");
-				proc.appendFailureToCurrentLog(os.toString());
-				proc.appendFailureToCurrentLog("YETI EXCEPTION - END**/ ");
-				YetiLog.printDebugLog(os.toString(), YetiLog.class);
+				proc.printThrowableLogs(t, isFailure);
 			}
 		}
 	}

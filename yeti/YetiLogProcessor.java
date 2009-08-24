@@ -178,4 +178,24 @@ public abstract class YetiLogProcessor {
 		if (isFailure) this.printThrowableNoLogs(t);
 	}
 
+	
+	/**
+	 * Printer for throwables in logs
+	 * 
+	 * @parameter t the throwable log to print.
+	 */
+	public void printThrowableLogs(Throwable t) {
+
+	}
+
+	/**
+	 * Printer for throwables in  logs
+	 * 
+	 * @parameter t the throwable log to print.
+	 * @param isFailure if it is actually a real failure.
+	 */
+	public void printThrowableLogs(Throwable t, boolean isFailure) {
+		if (isFailure) this.printThrowableLogs(t);
+	}
+	
 }

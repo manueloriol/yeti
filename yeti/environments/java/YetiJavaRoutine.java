@@ -95,9 +95,9 @@ public class YetiJavaRoutine extends YetiRoutine {
 					if (e.getCause() instanceof YetiSecurityException) {
 						YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: "+e.getCause().getMessage()+" **/", this);
 					} else
-					YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
-					YetiLog.printYetiThrowable(e.getCause(), this,true);
+						YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
 				}
+				YetiLog.printYetiThrowable(e.getCause(), this,true);
 			}
 			else {
 				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
@@ -108,7 +108,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 			// we print it
 			YetiLog.printYetiLog(log+");", this);
 			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
-			YetiLog.printYetiThrowable(e.getCause(), this);
+			YetiLog.printYetiThrowable(e.getCause(), this,true);
 
 		}
 		catch (Throwable e){
