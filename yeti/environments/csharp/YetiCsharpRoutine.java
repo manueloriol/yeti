@@ -84,13 +84,14 @@ public class YetiCsharpRoutine extends YetiRoutine {
 				{	
 					//if it is not precondition break then possible bug
 					String[] exception = reasonException.split("@");
-					//exception[1] has the Buggy Log
-					//exception[0] has the Exception Message and StackTrace
+					//exception[2] has the Buggy Log
+					//exception[1] has the Exception Message and StackTrace
 					//YetiLog.printDebugLog(temp, this, true);
 					String exceMessage = exception[2].trim()+"\n"+exception[1].trim();
 					System.out.println("BUG FOUND: ERROR");
 					System.out.println(exceMessage);
-					//YetiLog.printYetiLog("BUG FOUND: ERROR"+"\n"+exceMessage, this);
+					YetiLog.printYetiLog(exception[2].trim(),this);
+					YetiLog.printYetiLog("BUG FOUND: ERROR", this);
 					YetiLog.printYetiThrowable(new Exception("BUG FOUND: ERROR"+"\n"+exceMessage), this);
 				}
 				else
@@ -103,7 +104,8 @@ public class YetiCsharpRoutine extends YetiRoutine {
 					YetiLog.printDebugLog(temp, this);
 					System.out.println("/**NORMAL EXCEPTION:**/");
 					System.out.println(exceMessage);
-					YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/"+"\n"+exceMessage, this);
+					YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
+					YetiLog.printYetiThrowable(new Exception(exception[1].trim()), this,false);
 				}
 			} catch (Throwable e) {
 				

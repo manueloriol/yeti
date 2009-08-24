@@ -10,6 +10,7 @@ import java.util.Vector;
 import yeti.Yeti;
 import yeti.YetiLog;
 import yeti.YetiLogProcessor;
+import yeti.environments.csharp.YetiCsharpLogProcessor;
 
 /**
  * Class that represents a log processor for Csharp. 
@@ -24,7 +25,7 @@ import yeti.YetiLogProcessor;
 public class YetiCsharpLogProcessor extends YetiLogProcessor {
 
 	/**
-	 * A constructor for the YetiJavaLogProcessor.
+	 * A constructor for the YetiCsharpLogProcessor.
 	 */
 	public YetiCsharpLogProcessor() {	
 
@@ -39,7 +40,6 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 	public void appendToCurrentLog(String newLog) {
 		// substantific gains (2-3x) in execution time can be done by NOT adding the timestamp
 		// super.appendToCurrentLog(newLog);
-		//System.out.println("The newLog = "+newLog);
 		super.appendToCurrentLog(newLog+" // time:"+(new Date()).getTime());
 	}
 
@@ -51,29 +51,10 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 	 */
 	public void appendFailureToCurrentLog(String newLog){
 		String log = this.getCurrentLog();
-		log=log+"\n"+newLog;
+		log=log+"\n"+"/**YETI EXCEPTION - START \n"+newLog+"\nYETI EXCEPTION - END**/ ";
 		this.setCurrentLog(log);
-		this.numberOfErrors++;
-		// we split the lines of code
-		String []linesOfTest = newLog.split("\n");
-		// we continue until the end of the exception trace
-		int k = 0;
-		String exceptionTrace = "";
-		while (k<linesOfTest.length){
+		YetiLog.printDebugLog("Appending to current log: "+newLog.toString(), YetiLog.class);
 
-			// if we arrive to the reflexive call, we cut
-			if (linesOfTest[k].contains("sun.reflect.")) {
-				break;
-			}
-			exceptionTrace=exceptionTrace+"\n"+linesOfTest[k++];
-		}
-		// if the trace is actually relevant for the considered module...
-		if (Yeti.testModule.isThrowableInModule(exceptionTrace)&&exceptionTrace.indexOf('\t')>=0) {
-			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));
-			if (!listOfErrors.containsKey(s0)) {
-				listOfErrors.put(s0,new Date());
-			}
-		}
 	}	
 
 	/**
@@ -419,8 +400,43 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));
 			if (!listOfErrors.containsKey(s0)) {
 				listOfErrors.put(s0,new Date());
+				System.out.println("Exception "+listOfErrors.size()+"\n"+t.toString()+"\n"+s0);
 			}
 		}
+	}
+	/**
+	 * Printer for throwables in logs
+	 * 
+	 * @parameter t the throwable log to print.
+	 */
+	public void printThrowableLogs(Throwable t) {
+		OutputStream os=new ByteArrayOutputStream();
+		PrintStream ps = new PrintStream(os);
+		if (t!=null) 
+			t.printStackTrace(ps);
+		String throwableLog = os.toString();
+		// we split the lines of code
+		String []linesOfTest = throwableLog.split("\n");
+		// we continue until the end of the exception trace
+		int k = 0;
+		String exceptionTrace = "";
+		while (k<linesOfTest.length){
+
+			// if we arrive to the reflexive call, we cut
+			if (linesOfTest[k].contains("sun.reflect.")) {
+				break;
+			}
+			exceptionTrace=exceptionTrace+"\n"+linesOfTest[k++];
+		}
+		// if the trace is actually relevant for the considered module...
+		if (Yeti.testModule.isThrowableInModule(exceptionTrace)&&exceptionTrace.indexOf('\t')>=0) {
+			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));
+			if (!listOfErrors.containsKey(s0)) {
+				listOfErrors.put(s0,new Date());
+				System.out.println("Exception "+listOfErrors.size()+"\n"+t.toString()+"\n"+s0);
+			}
+		}
+		this.appendFailureToCurrentLog(exceptionTrace);
 	}
 
 
