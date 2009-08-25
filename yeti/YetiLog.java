@@ -119,6 +119,7 @@ public class YetiLog {
 			if (Yeti.pl.isRawLog()){
 				proc.printThrowableRawLogs(t, isFailure);
 			} else {
+				YetiLog.printDebugLog("Will throw Logs in "+proc.getClass().getName(), YetiLog.class);
 				proc.printThrowableLogs(t, isFailure);
 			}
 		}

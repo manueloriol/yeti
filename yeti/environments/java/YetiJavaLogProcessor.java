@@ -407,6 +407,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	 * @parameter t the throwable log to print.
 	 */
 	public void printThrowableLogs(Throwable t) {
+		YetiLog.printDebugLog("Logs printed", this);
 		OutputStream os=new ByteArrayOutputStream();
 		PrintStream ps = new PrintStream(os);
 		if (t!=null) 
@@ -425,6 +426,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			}
 			exceptionTrace=exceptionTrace+"\n"+linesOfTest[k++];
 		}
+		YetiLog.printDebugLog(exceptionTrace, this);
 		// if the trace is actually relevant for the considered module...
 		if (Yeti.testModule.isThrowableInModule(exceptionTrace)&&exceptionTrace.indexOf('\t')>=0) {
 			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));

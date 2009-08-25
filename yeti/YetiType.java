@@ -14,6 +14,26 @@ import java.util.Vector;
 public class YetiType {
 
 	/**
+	 *	True if there is a maximum to the number of instances by default.
+	 */
+	public static boolean defaultTypesHaveCapOnNumberOfDirectInstances = true;
+	
+	/**
+	 *	The default maximum to the number of instances.
+	 */
+	public static int defaultMaximumNumberOfDirectInstances = 1000;
+	
+	/**
+	 *	True if there is a maximum to the number of instances of this type.
+	 */
+	public boolean hasMaximumNumberOfDirectInstances;
+	
+	/**
+	 *	The maximum to the number of instances of this type.
+	 */
+	public int maximumNumberOfDirectInstances;
+	
+	/**
 	 * The name of the type. Note that this can be a class name, 
 	 * a type with a generic instantiation, or an interface.
 	 */
@@ -64,16 +84,48 @@ public class YetiType {
 	public Vector<YetiVariable> instances=new Vector<YetiVariable>();
 
 	/**
+	 * Structure that stores all direct instances of this type (this type is their defining type)
+	 */
+	public Vector<YetiVariable> directInstances=new Vector<YetiVariable>();
+
+	
+	/**
 	 * Adds an instance to the type in question and all supertypes
 	 *
 	 * @param v the instance to add.
 	 */
 	public synchronized void addInstance(YetiVariable v){
 		instances.add(v);
+		// if there is a cap on the number of instances, we will remove one at random to make room
+		if (v.getType().equals(this)) {
+			// if there is a cap and we got to it
+			if (this.hasMaximumNumberOfDirectInstances&&directInstances.size()>=this.maximumNumberOfDirectInstances) {
+				this.removeInstance(this.getRandomDirectInstance());
+			}
+			directInstances.add(v);
+		}
+		// we add the instance to all parents
 		for (YetiType t: directSuperTypes.values()) 
 			t.addInstance(v);
 	}
 	
+	/**
+	 * Removes an instance to the type in question and all supertypes
+	 *
+	 * @param v the instance to add.
+	 */
+	public synchronized void removeInstance(YetiVariable v){
+		instances.remove(v);
+		// if we are in the type that defined the instance
+		if (v.getType().equals(this)) {
+			// we remove it from its set of real instances
+			directInstances.remove(v);
+			YetiVariable.allId.remove(v.identity.value);
+			YetiVariable.nVariables--;
+		}
+		for (YetiType t: directSuperTypes.values()) 
+			t.removeInstance(v);
+	}
 	/**
 	 * Returns all instances of this type
 	 * 
@@ -92,6 +144,17 @@ public class YetiType {
 		double d=Math.random();
 		int i=(int) Math.floor(d*instances.size());
 		return instances.get(i);
+	}
+	
+	/**
+	 * Returns an instance of this type at random.
+	 * 
+	 * @return the chosen instance.
+	 */
+	public YetiVariable getRandomDirectInstance(){
+		double d=Math.random();
+		int i=(int) Math.floor(d*this.directInstances.size());
+		return this.directInstances.get(i);
 	}
 	
 	/**
@@ -120,6 +183,8 @@ public class YetiType {
 	public YetiType(String name){
 		this.name=name;
 		allTypes.put(name, this);
+		this.maximumNumberOfDirectInstances=YetiType.defaultMaximumNumberOfDirectInstances;
+		this.hasMaximumNumberOfDirectInstances = defaultTypesHaveCapOnNumberOfDirectInstances;
 	}
 
 	/**

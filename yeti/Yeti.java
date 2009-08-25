@@ -82,7 +82,8 @@ public class Yeti {
 	 * -probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100 default is 1.<br>
 	 * -randomPlus : uses the random+ strategy that injects interesting values every now and then.<br>
 	 * -gui : shows the standard graphical user interface for monitoring yeti.<br>
-	 * 
+	 * -noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.<br>
+	 * -instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.
 	 * @param args the arguments of the program
 	 */
 	public static void main (String[] args) {
@@ -211,7 +212,6 @@ public class Yeti {
 			// we want to have only logs in standard form
 			if (s0.equals("-nologs")) {
 				isNoLogs = true;
-				isRawLog = true;
 				continue;	
 			}
 
@@ -234,6 +234,19 @@ public class Yeti {
 			// we can use the randomPlus strategy
 			if (s0.equals("-randomPlus")) {
 				isRandomPlus = true;
+				continue;	
+			}
+
+			// we have no limits for the number of instances
+			if (s0.equals("-noInstancesCap")) {
+				YetiType.defaultTypesHaveCapOnNumberOfDirectInstances = true;
+				continue;	
+			}
+
+			
+			// we read a new limit for the number of instances (default is 1000)
+			if (s0.startsWith("-instancesCap=")) {
+				YetiType.defaultMaximumNumberOfDirectInstances=(Integer.parseInt(s0.substring(14)));
 				continue;	
 			}
 
@@ -320,7 +333,7 @@ public class Yeti {
 			pl.setRawLog(isRawLog);
 		}
 
-		//if it is raw logs, then set it		
+		//if it is no logs, then set it		
 		if (isNoLogs) {
 			pl.setNoLogs(isNoLogs);
 		}
@@ -486,6 +499,8 @@ public class Yeti {
 		System.out.println("\t-probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100, default is 1.");
 		System.out.println("\t-randomPlus : uses the random+ strategy that injects interesting values every now and then.");
 		System.out.println("\t-gui : shows the standard graphical user interface for monitoring yeti.");
+		System.out.println("\t-noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.");
+		System.out.println("\t-instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.");
 
 	}
 

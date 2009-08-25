@@ -176,7 +176,17 @@ public class YetiGUINumberOfFailuresOverTime extends YetiLogProcessor {
 	public void printThrowableRawLogs(Throwable t) {
 		lp.printThrowableRawLogs(t);
 	}
-
+	
+	/* 
+	 * Shows the correct value of the list of errors and call the regular RawLogs. 
+	 * 
+	 * (non-Javadoc)
+	 * @see yeti.YetiLogProcessor#printThrowableLogs(java.lang.Throwable)
+	 */
+	@Override
+	public void printThrowableLogs(Throwable t) {
+		lp.printThrowableLogs(t);
+	}
 	
 	/* 
 	 * Returns the wrapped call
