@@ -455,7 +455,7 @@ public class Yeti {
 		String aggregationProcessing = "";
 		// presents the logs
 		System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");	
-		if (!Yeti.pl.isRawLog()) {
+		if (!Yeti.pl.isRawLog()&&!Yeti.pl.isNoLogs()) {
 			isProcessed = true;		
 			for (String log: YetiLog.proc.processLogs()) {
 				System.out.println(log);
