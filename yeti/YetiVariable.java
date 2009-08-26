@@ -2,8 +2,6 @@ package yeti;
 
 import java.util.HashMap;
 
-import yeti.environments.YetiLoader;
-
 /**
  * Class that represents a variable in Yeti. 
  * 

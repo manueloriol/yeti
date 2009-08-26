@@ -1,9 +1,5 @@
 package yeti;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-
 /**
  * Class that manages logging in Yeti. 
  * The generated test cases are also part of the logging mechanism. 
