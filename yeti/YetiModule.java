@@ -147,9 +147,10 @@ public class YetiModule {
 		YetiModule []combModules = this.combiningModules;
 		if (combModules!=null) {
 			for (YetiModule mod: combModules) {
+				YetiLog.printDebugLog(mod.getModuleName(), this);
 				if (mod.isThrowableInModule(trace)) return true;
 			}
 		}
-		return true;
+		return false;
 	}
 }
