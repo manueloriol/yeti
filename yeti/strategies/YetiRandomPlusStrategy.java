@@ -3,6 +3,7 @@ package yeti.strategies;
 import yeti.ImpossibleToMakeConstructorException;
 import yeti.YetiCard;
 import yeti.YetiIdentifier;
+import yeti.YetiLog;
 import yeti.YetiRoutine;
 import yeti.YetiType;
 import yeti.YetiVariable;
@@ -24,7 +25,7 @@ public class YetiRandomPlusStrategy extends YetiRandomStrategy {
 	 * The probability to inject an interesting value (default is 10%).
 	 * 
 	 */
-	public static double INTERESTING_VALUE_INJECTION_PROBABILITY = 0.10;
+	public static double INTERESTING_VALUE_INJECTION_PROBABILITY = 0.50;
 	
 	/**
 	 * Creates the RandomPlusStrategy using a test manager.
@@ -48,6 +49,7 @@ public class YetiRandomPlusStrategy extends YetiRandomStrategy {
 		if (cardType.hasInterestingValues())
 			if (Math.random()<INTERESTING_VALUE_INJECTION_PROBABILITY) {
 				Object value =cardType.removeInterestingValue();
+				YetiLog.printDebugLog("Interesting value: "+value, this);
 				YetiIdentifier id=YetiIdentifier.getFreshIdentifier();
 				return new YetiVariable(id, cardType, value);
 			}
@@ -68,6 +70,7 @@ public class YetiRandomPlusStrategy extends YetiRandomStrategy {
 		if (cardType.hasInterestingValues())
 			if (Math.random()<INTERESTING_VALUE_INJECTION_PROBABILITY) {
 				Object value =cardType.removeInterestingValue();
+				YetiLog.printDebugLog("Interesting value: "+value, this);
 				YetiIdentifier id=YetiIdentifier.getFreshIdentifier();
 				return new YetiVariable(id, cardType, value);
 			}

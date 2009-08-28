@@ -75,6 +75,14 @@ public class YetiJavaSpecificType extends YetiType {
 		tShort.setSimpleType(true);
 		YetiJavaSpecificType tInt=new YetiJavaSpecificType("int");
 		tInt.setSimpleType(true);
+		for (int j = -10; j<11;j++)
+			tInt.addInterestingValues(j);
+		tInt.addInterestingValues(Integer.MAX_VALUE);
+		tInt.addInterestingValues(Integer.MAX_VALUE-1);
+		tInt.addInterestingValues(Integer.MAX_VALUE-2);
+		tInt.addInterestingValues(Integer.MIN_VALUE+2);
+		tInt.addInterestingValues(Integer.MIN_VALUE+1);
+		tInt.addInterestingValues(Integer.MIN_VALUE);
 		YetiJavaSpecificType tLong=new YetiJavaSpecificType("long");
 		tLong.setSimpleType(true);
 		YetiJavaSpecificType tDouble=new YetiJavaSpecificType("double");
