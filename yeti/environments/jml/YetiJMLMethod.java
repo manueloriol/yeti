@@ -35,6 +35,7 @@ public class YetiJMLMethod extends YetiJMLRoutine {
 	public YetiJMLMethod(YetiName name, YetiType[] openSlots, YetiType returnType, YetiModule originatingModule, Method method) {
 		super(name, openSlots, returnType, originatingModule);
 		javaMethod = new YetiJavaMethod(name, openSlots, returnType, originatingModule, method);
+		acceptableExceptionTypes = javaMethod.getAcceptableExceptionTypes();
 	}
 
 	/**
@@ -50,6 +51,7 @@ public class YetiJMLMethod extends YetiJMLRoutine {
 	public YetiJMLMethod(YetiName name, YetiType[] openSlots, YetiType returnType, YetiModule originatingModule, Method method, boolean isStatic) {
 		super(name, openSlots, returnType, originatingModule);
 		javaMethod = new YetiJavaMethod(name, openSlots, returnType, originatingModule, method, isStatic);
+		acceptableExceptionTypes = javaMethod.getAcceptableExceptionTypes();
 	}
 	
 	@Override

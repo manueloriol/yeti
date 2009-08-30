@@ -125,6 +125,15 @@ public class YetiJavaRoutine extends YetiRoutine {
 	public HashMap <String, Class> acceptableExceptionTypes = new HashMap <String, Class>();
 	
 	/**
+	 * 
+	 * @return the types of exceptions that are considered "acceptable"
+	 */
+	@SuppressWarnings("unchecked")
+	public HashMap<String, Class> getAcceptableExceptionTypes() {
+		return acceptableExceptionTypes;
+	}
+
+	/**
 	 * Add an acceptable exception type of this routine.
 	 * 
 	 * @param s the name of the exception type.

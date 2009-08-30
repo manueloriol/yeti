@@ -35,6 +35,7 @@ public class YetiJMLConstructor extends YetiJMLRoutine {
 	public YetiJMLConstructor(YetiName name, YetiType[] openSlots, YetiType returnType, YetiModule originatingModule, Constructor<?> constructor) {
 		super(name, openSlots, returnType, originatingModule);
 		javaConstructor = new YetiJavaConstructor(name, openSlots, returnType, originatingModule, constructor);
+		acceptableExceptionTypes = javaConstructor.getAcceptableExceptionTypes();
 	}
 	
 	@Override

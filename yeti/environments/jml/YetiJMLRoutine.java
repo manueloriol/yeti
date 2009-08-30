@@ -9,10 +9,11 @@ import yeti.YetiLog;
 import yeti.YetiModule;
 import yeti.YetiName;
 import yeti.YetiType;
+import yeti.environments.YetiSecurityException;
 import yeti.environments.java.YetiJavaRoutine;
 
 /**
- * Class that represents a routine in Yeti which is annotated with JML.
+ * Class that represents a routine in Yeti which is annotated with JML. <br>
  * 
  * When making the call either to a constructor or a method  annotated 
  * with JML then the strategy for determining if there is an error is 
@@ -57,7 +58,7 @@ public abstract class YetiJMLRoutine extends YetiJavaRoutine {
 			}
 		} catch (InstantiationException e) {
 			// should never happen
-			//e.printStackTrace();
+			// e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			// should never happen
 			//e.printStackTrace();
@@ -65,35 +66,38 @@ public abstract class YetiJMLRoutine extends YetiJavaRoutine {
 			// should never happen
 			// e.printStackTrace();
 		} catch (InvocationTargetException e) {
-
+			
+			boolean isBug = true;
 			// if we are here, we found a bug.
 			// we first print the log
 			//TODO log can be null here if thread is killed
 			YetiLog.printYetiLog(log+");", this);
 			
 			// then print the exception
-			// if the thread was killed
-			if (e.getCause() instanceof ThreadDeath) {
-				YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
-				YetiLog.printYetiThrowable(e.getCause(), this);
-			} else if (e.getCause() instanceof org.jmlspecs.jmlrac.runtime.JMLEntryPreconditionError) {
-				// if the cause is a precondition violation of a JML Assertion
-				YetiLog.printYetiLog("/**MEANINGLESS: JMLEntryPreconditionError**/", this);
-				
-			} else if (e.getCause() instanceof org.jmlspecs.jmlrac.runtime.JMLAssertionError) {
-				// if the cause is a violation of a JML Assertion other than precondition
-				YetiLog.printYetiLog("/**BUG FOUND: JMLAssertionError**/", this);
-				YetiLog.printYetiThrowable(e.getCause(), this);
-			} else {
-				// if the cause is a violation any other than JML Assertion
-				if (isAcceptable(e.getCause())) {
-					// if the cause is declared
-					YetiLog.printYetiLog("/**DECLARED EXCEPTION:**/", this);
-					YetiLog.printYetiThrowable(e.getCause(), this);
+			if ((e.getCause() instanceof RuntimeException && !isAcceptable(e.getCause())) || e.getCause() instanceof Error  ) {
+				if (e.getCause() instanceof ThreadDeath) {
+					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
 				} else {
-					YetiLog.printYetiLog("/**UNDECLARED EXCEPTION:**/", this);
-					YetiLog.printYetiThrowable(e.getCause(), this);
+					if (e.getCause() instanceof YetiSecurityException) {
+						YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: " + e.getCause().getMessage() + " **/", this);
+					} else if (e.getCause() instanceof org.jmlspecs.jmlrac.runtime.JMLEntryPreconditionError) {
+						// if the cause is a precondition violation of a JML Assertion
+						isBug = false;
+						YetiLog.printYetiLog("/**MEANINGLESS: JMLEntryPreconditionError**/", this);
+					} else if (e.getCause() instanceof org.jmlspecs.jmlrac.runtime.JMLAssertionError) {
+						// if the cause is a violation of a JML Assertion other than precondition
+						YetiLog.printYetiLog("/**BUG FOUND: JMLAssertionError**/", this);
+					} else {
+						YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
+					}
 				}
+			}
+			else {
+				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
+			}
+			
+			if (isBug) {
+				YetiLog.printYetiThrowable(e.getCause(), this);
 			}
 		} catch (Error e) {
 			// if we are here there was a serious error
