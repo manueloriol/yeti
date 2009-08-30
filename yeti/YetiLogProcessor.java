@@ -14,7 +14,7 @@ import java.util.Vector;
  */
 @SuppressWarnings("serial")
 public abstract class YetiLogProcessor {
-	
+
 	/**
 	 * The number of non-unique bugs in last logs.
 	 */
@@ -24,7 +24,7 @@ public abstract class YetiLogProcessor {
 	 * The number of (non-unique) failures found so far.
 	 */
 	public int numberOfErrors = 0;
-	
+
 	/**
 	 * The number of routine calls.
 	 */
@@ -49,7 +49,7 @@ public abstract class YetiLogProcessor {
 	 * A list of traces for relevant detected errors. 
 	 */
 	private HashMap<String,Object> listOfErrors = new HashMap<String, Object>();
-	
+
 	/**
 	 * Wrapping call to add a new trace in the list of errors.
 	 * 
@@ -57,7 +57,12 @@ public abstract class YetiLogProcessor {
 	 * @param d the date to add.
 	 */
 	public void putNewTrace(String trace, Date d) {
-		listOfErrors.put(trace, d);
+		int startIndex = trace.indexOf("\t");
+		String s0 = trace;
+		if (startIndex>=0) {
+			s0=trace.substring(trace.indexOf("\t"));
+		}
+		listOfErrors.put(s0, d);
 		listOfNewErrors.put(trace, d);	
 	}
 	/**
@@ -76,7 +81,7 @@ public abstract class YetiLogProcessor {
 	public int getListOfErrorsSize() {
 		return listOfErrors.size();
 	}
-	
+
 	/**
 	 * Wrapping call to check whether the list of errors contains a trace.
 	 * 
@@ -85,12 +90,12 @@ public abstract class YetiLogProcessor {
 	public boolean listOfErrorsContainsTrace(String trace) {
 		return listOfErrors.containsKey(trace);
 	}
-	
+
 	/**
 	 * The number of errors in the listOfErrors that are actually acceptable errors. 
 	 */
 	public int numberOfNonErrors = 0;
-	
+
 	/**
 	 * Constructor of the YetiLogProcessor.
 	 */
@@ -110,18 +115,18 @@ public abstract class YetiLogProcessor {
 		}
 	}
 
-	
+
 	/**
 	 * Add the parameter at the end of the currentLog.
 	 * 
 	 * @param newLog the log to add.
 	 */
 	public void appendToCurrentLog(String newLog){
-		
+
 		currentLog=this.currentLog+"\n"+newLog;		
 		this.numberOfCalls++;
 	}
-	
+
 	/**
 	 * Add the parameter at the end of the currentLog.
 	 * 
@@ -147,7 +152,7 @@ public abstract class YetiLogProcessor {
 		logs.add(currentLog);
 		currentLog="";
 	}
-	
+
 	/**
 	 * Process the logs currently stored.
 	 * 
@@ -172,7 +177,7 @@ public abstract class YetiLogProcessor {
 	public Vector<String> getLogs() {
 		return logs;
 	}
-	
+
 	/**
 	 * Printer for raw logs
 	 * 
@@ -181,7 +186,7 @@ public abstract class YetiLogProcessor {
 	public void printMessageRawLogs(String message) {
 		System.err.println("YETI LOG: "+message);
 	}
-	
+
 	/**
 	 * Printer for throwables in raw logs
 	 * 
@@ -214,7 +219,7 @@ public abstract class YetiLogProcessor {
 	 */
 	public void printMessageNoLogs(String message) {
 	}
-	
+
 	/**
 	 * Printer for throwables in no logs
 	 * 
@@ -234,7 +239,7 @@ public abstract class YetiLogProcessor {
 		if (isFailure) this.printThrowableNoLogs(t);
 	}
 
-	
+
 	/**
 	 * Printer for throwables in logs
 	 * 
@@ -270,8 +275,8 @@ public abstract class YetiLogProcessor {
 	public int getNumberOfUniqueFaults() {
 		return this.listOfErrors.size()-this.numberOfNonErrors;
 	}
-	
-	
+
+
 	/**
 	 * A simple getter for the list of errors
 	 * 

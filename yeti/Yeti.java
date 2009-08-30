@@ -592,7 +592,7 @@ public class Yeti {
 							String trace = null;
 							// we read the trace itself
 							while((currentLine!=null)&&!currentLine.startsWith("Trace ")) {
-								if (!currentLine.startsWith("//")) {
+								if (currentLine.startsWith("\t")) {
 									if (trace == null) {
 										trace = currentLine;
 									} else {
