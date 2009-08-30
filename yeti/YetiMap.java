@@ -46,7 +46,7 @@ public class YetiMap extends MapReduceBase implements Mapper<LongWritable, Text,
 //		}
 		
 		Text out = new Text("Non-Unique Bugs");
-		output.collect(out, new IntWritable(lp.listOfErrors.size()));
+		output.collect(out, new IntWritable(lp.getListOfErrorsSize()));
 		
 	}
 }

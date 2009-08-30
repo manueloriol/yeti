@@ -31,6 +31,14 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 
 	}
 
+	/**
+	 * Constructor of the YetiLogProcessor with an initial list of errors.
+	 */
+	public YetiCsharpLogProcessor(HashMap<String,Object> listOfErrors) {
+		super(listOfErrors);
+	}
+
+
 	/* (non-Javadoc)
 	 * Adds a timestamp on the log
 	 * 
@@ -208,7 +216,7 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 			if (linesOfTest[i].startsWith("/**BUG")||linesOfTest[i].startsWith("/**POSSIBLE BUG")){
 				// we aggregate the results and give some output
 				int k=i+1;
-				
+
 				// just in case the trace is unfinished
 				if (k>=linesOfTest.length)
 					continue;
@@ -359,8 +367,8 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 			// we print the exception trace
 			System.err.println(exceptionTrace);
 			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));
-			if (!listOfErrors.containsKey(s0)) {
-				listOfErrors.put(s0,this);
+			if (!this.listOfErrorsContainsTrace(s0)) {
+				this.putNewTrace(s0,new Date());
 			}
 		}
 		else 
@@ -398,9 +406,9 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 		// if the trace is actually relevant for the considered module...
 		if (Yeti.testModule.isThrowableInModule(exceptionTrace)&&exceptionTrace.indexOf('\t')>=0) {
 			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));
-			if (!listOfErrors.containsKey(s0)) {
-				listOfErrors.put(s0,new Date());
-				System.out.println("Exception "+listOfErrors.size()+"\n"+t.toString()+"\n"+s0);
+			if (!this.listOfErrorsContainsTrace(s0)) {
+				this.putNewTrace(s0,new Date());
+				System.out.println("Exception "+this.getListOfErrorsSize()+"\n"+t.toString()+"\n"+s0);
 			}
 		}
 	}
@@ -431,9 +439,9 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 		// if the trace is actually relevant for the considered module...
 		if (Yeti.testModule.isThrowableInModule(exceptionTrace)&&exceptionTrace.indexOf('\t')>=0) {
 			String s0=exceptionTrace.substring(exceptionTrace.indexOf('\t'));
-			if (!listOfErrors.containsKey(s0)) {
-				listOfErrors.put(s0,new Date());
-				System.out.println("Exception "+listOfErrors.size()+"\n"+t.toString()+"\n"+s0);
+			if (!this.listOfErrorsContainsTrace(s0)) {
+				this.putNewTrace(s0,new Date());
+				System.out.println("Exception "+this.getListOfErrorsSize()+"\n"+t.toString()+"\n"+s0);
 			}
 		}
 		this.appendFailureToCurrentLog(exceptionTrace);

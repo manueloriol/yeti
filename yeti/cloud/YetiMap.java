@@ -37,14 +37,14 @@ public class YetiMap extends MapReduceBase implements Mapper<LongWritable, Text,
 		YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
 		
 		//You can not duplicate the key anyway, so only unique exception traces would go in
-		YetiJob.uniquelistOfErrors.putAll(lp.listOfErrors);
+		YetiJob.uniquelistOfErrors.putAll(lp.getListOfErrors());
 		
 //		String[] trace = (String[])lp.listOfErrors.keySet().toArray();
 		
 //		traces = trace.toString();
 				
 		//	output.collect(out, new IntWritable(lp.listOfErrors.size()));
-		output.collect(new Text ("Non-Unique"), new IntWritable(lp.listOfErrors.size()));
+		output.collect(new Text ("Non-Unique"), new IntWritable(lp.getListOfErrorsSize()));
 		
 		
 	}

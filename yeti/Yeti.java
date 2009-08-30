@@ -1,11 +1,17 @@
 package yeti;
 
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.File;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.io.FileWriter;
 import java.util.Iterator;
@@ -63,12 +69,12 @@ public class Yeti {
 	 * Stores the path to use for testing.
 	 */
 	public static String yetiPath = System.getProperty("java.class.path");
-	
+
 	/**
 	 * The path to store Yeti Exception traces at in nologs mode
 	 */
 	public static File path=null;
-	
+
 	/**
 	 * Main method of Yeti. It serves YetiRun the arguments it receives.
 	 * Arguments are numerous. Here is a list of the current ones:
@@ -93,7 +99,9 @@ public class Yeti {
 	 * -gui : shows the standard graphical user interface for monitoring yeti.<br>
 	 * -noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.<br>
 	 * -instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.<br>
-	 * -path=X : the path on local disk where all the unique exception traces will be stored (currenlty in nologs mode only).
+	 * -path=X : the path on local disk where all the unique exception traces will be stored (currenlty in nologs mode only).<br>
+	 * -tracesOutputFile=X : the file where to output traces on disk<br>
+	 * -tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').
 	 * @param args the arguments of the program
 	 */
 	public static void main (String[] args) {
@@ -124,7 +132,9 @@ public class Yeti {
 		String []modulesToTest=null;
 		int callsTimeOut=75;
 		Thread th = null;
-
+		String tracesOutputFile = null;
+		String[] traceInputFiles = null;
+		YetiLogProcessor logProcessor = null;
 
 		// we parse all arguments of the program
 		for (String s0: args) {
@@ -166,6 +176,7 @@ public class Yeti {
 					continue;	
 				}				
 			}
+
 			// if testing for time value
 			if (s0.startsWith("-msCalltimeout=")) {
 				int size = s0.length();
@@ -233,11 +244,11 @@ public class Yeti {
 
 			// we want to use the following path
 			if (s0.startsWith("-yetiPath=")) {				
-				
-					String s1=s0.substring(10);
-					Yeti.yetiPath = s1;
-					System.setProperty("java.class.path", System.getProperty("java.class.path")+":"+s1);
-				
+
+				String s1=s0.substring(10);
+				Yeti.yetiPath = s1;
+				System.setProperty("java.class.path", System.getProperty("java.class.path")+":"+s1);
+
 				continue;
 			}
 
@@ -253,7 +264,7 @@ public class Yeti {
 				continue;	
 			}
 
-			
+
 			// we read a new limit for the number of instances (default is 1000)
 			if (s0.startsWith("-instancesCap=")) {
 				YetiType.defaultMaximumNumberOfDirectInstances=(Integer.parseInt(s0.substring(14)));
@@ -271,17 +282,42 @@ public class Yeti {
 				}
 				continue;
 			}
-			
+
+
+			// we want to test these modules
+			if (s0.startsWith("-tracesOutputFile=")) {
+				tracesOutputFile=s0.substring(18);
+				continue;
+			}
+			// we want to test these modules
+			if (s0.startsWith("-tracesInputFiles=")) {
+				String s1=s0.substring(18);
+				traceInputFiles = s1.split(":");
+				continue;
+			}
 			//setting up the path to store exception traces in nologs mode
 			if(s0.toLowerCase().startsWith("-path=")){
 				String s1= s0.substring(6);
 				path = new File (s1);
 				continue;
 			}
-			
+
 			System.out.println("Yeti could not understand option: "+s0);
 			Yeti.printHelp();
 			return;
+
+		}
+
+		// we read traces if there are some to read and we initialize the list of Errors with it.
+		HashMap<String, Object> initialListOfErrors = null;
+		if (traceInputFiles!=null) {
+			initialListOfErrors = new HashMap<String, Object>();
+			// for each file to use, we read the traces and add them to our initial list
+			for (String fileName: traceInputFiles) {
+				for (String trace: Yeti.readTracesFromFile(fileName)) {
+					initialListOfErrors.put(trace, 0);
+				}
+			}
 
 		}
 
@@ -290,7 +326,7 @@ public class Yeti {
 			YetiLoader prefetchingLoader = new YetiJavaPrefetchingLoader(yetiPath);
 			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader);
 			YetiTestManager testManager = new YetiJavaTestManager();
-			YetiLogProcessor logProcessor = new YetiJavaLogProcessor();
+			logProcessor = new YetiJavaLogProcessor(initialListOfErrors);
 			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
 		}
 
@@ -299,7 +335,7 @@ public class Yeti {
 			YetiLoader prefetchingLoader = new YetiJMLPrefetchingLoader(yetiPath);
 			YetiInitializer initializer = new YetiJMLInitializer(prefetchingLoader);
 			YetiTestManager testManager = new YetiJavaTestManager();
-			YetiLogProcessor logProcessor = new YetiJavaLogProcessor();
+			logProcessor = new YetiJavaLogProcessor(initialListOfErrors);
 			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
 		}
 
@@ -320,11 +356,11 @@ public class Yeti {
 						Process p = run.exec(command);						
 						InputStream in = p.getInputStream();						
 
-					    @SuppressWarnings("unused")
+						@SuppressWarnings("unused")
 						int c;
-					    while ((c = in.read()) != -1) {
-					      //System.out.print((char) c);
-					    }
+						while ((c = in.read()) != -1) {
+							//System.out.print((char) c);
+						}
 
 					} catch (IOException e) {					
 						YetiCsharpInitializer.initflag=true;
@@ -337,7 +373,7 @@ public class Yeti {
 
 			YetiInitializer initializer = new YetiCsharpInitializer();
 			YetiTestManager testManager = new YetiCsharpTestManager();
-			YetiLogProcessor logProcessor = new YetiCsharpLogProcessor();
+			logProcessor = new YetiCsharpLogProcessor(initialListOfErrors);
 			YetiServerSocket socketConnector = new YetiServerSocket();
 			pl=new YetiCsharpProperties(initializer, testManager, logProcessor, socketConnector);
 			System.out.println("\nMaking the .NET test-case calls...\n");
@@ -485,22 +521,161 @@ public class Yeti {
 		if (!isProcessed) {
 
 			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
-			System.out.println("/** Unique relevant bugs: "+lp.listOfErrors.size()+" **/");
-			
+			System.out.println("/** Unique relevant bugs: "+lp.getNumberOfUniqueFaults()+" **/");
+
+			// MO: should disappear, please use the traceOutputFile option now...
 			if(path!=null){
 				try{
-					writeExceptionTracesToFile(lp.listOfErrors);
+					writeExceptionTracesToFile(lp.getListOfErrors());
 				}catch(IOException e)
 				{
 					System.err.println("Exception traces could not be written to disk");
 				}
-			}	
+			}
+
+
 		}
 		if (isProcessed) {
 			System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");
 			System.out.println(aggregationProcessing);
 
 		}
+		// if users want to print the traces in an outputFile, we do it now
+		if ((tracesOutputFile!=null)&&(logProcessor!=null)) {
+			Yeti.outputTracesToFile(logProcessor.listOfNewErrors, tracesOutputFile,logProcessor.numberOfNonErrors);
+		}
+
+	}
+
+	public static void writeExceptionTracesToFile(HashMap<String,Object> listOfErrors) throws IOException{
+
+		Collection<String> colKey = listOfErrors.keySet();
+		Collection<Object> colVal = listOfErrors.values();
+		Iterator<String> itKey = colKey.iterator();
+		Iterator<Object> itVal = colVal.iterator();
+
+		//create a unique file each time		
+		File file= File.createTempFile("yetiExceptionTraces", ".txt", path);
+		FileWriter yetiOutputFile = new FileWriter(file);
+
+		while(itKey.hasNext() && itVal.hasNext()){
+			yetiOutputFile.write("**EXCEPTION START**\n"+itKey.next().toString()+" Found at: "+itVal.next()+"\n**EXCEPTION END**\n");
+		}
+		yetiOutputFile.close();
+
+	}
+
+	/**
+	 * Outputs traces into a file passed as an argument. This method is coded to work with method readTracesFromFile 
+	 * 
+	 * @param listOfErrors the list of errors to output.
+	 * @param fileName the name of the file in which to write them.
+	 */
+	public static void outputTracesToFile(HashMap<String,Object> listOfErrors,String fileName, int nNonErrors) {
+		try {
+			// we open the file
+			PrintStream ps = new PrintStream(fileName);
+
+			// we get our values
+			Iterator<String> traces = listOfErrors.keySet().iterator();
+			Iterator<Object> dates = listOfErrors.values().iterator();
+
+
+			DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
+			// we print all the traces in the file
+			for (int i=0; i<listOfErrors.size();i++) {
+					Object traceDate = dates.next();
+					if (traceDate instanceof Date) {
+						ps.println("Trace "+(i+1+nNonErrors)+" discovered on "+df.format(((Date)traceDate))+":\n"+traces.next());
+					} else {
+						ps.println("Trace "+(i+1+nNonErrors)+" discovered on "+traceDate.toString()+":\n"+traces.next());					
+					}
+			}
+
+			// we close the stream
+			ps.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("Trying to write exception trace to "+fileName+": cannot open or create file");
+		}
+
+	}
+
+
+	/**
+	 * Method that reads exception traces from a file where they were stored.
+	 * The exceptions are supposed to be of the format:<br>
+	 * "Trace ...\n..."
+	 * 
+	 * The method also supports comments inserted in the form of a line starting with "//"
+	 * 
+	 * @param fileName the file to read
+	 * @return an ArrayList containing all decoded traces 
+	 */
+	public static ArrayList<String> readTracesFromFile(String fileName) {
+		ArrayList<String> result = new ArrayList<String>();
+		BufferedReader br=null;
+		// we first check that the file exists
+		if (new File(fileName).exists()) {
+			try {
+				// we create a reader to read line by line the traces
+				br = new BufferedReader(new FileReader(fileName));
+				boolean isValid = true;
+
+				// we read line by line
+				String currentLine = br.readLine();
+				while(isValid) {
+					if (currentLine==null) 
+						break;
+					// we have to remove comments
+					if (!currentLine.startsWith("//")) {
+						// the first line of the exception trace should start with "Trace "
+						if (currentLine.startsWith("Trace ")) {
+							currentLine=br.readLine();
+							String trace = null;
+							// we read the trace itself
+							while((currentLine!=null)&&!currentLine.startsWith("Trace ")) {
+								if (!currentLine.startsWith("//")) {
+									if (trace == null) {
+										trace = currentLine;
+									} else {
+										trace = trace + "\n" + currentLine;
+									}
+								}
+								currentLine = br.readLine();
+							}
+							// once read we add it to the result
+							result.add(trace);
+							YetiLog.printDebugLog("Imported trace:\n"+trace, Yeti.class);
+						} else {
+							isValid = false;
+						}
+					}else {
+						// in case the file started by a comment
+						currentLine = br.readLine();
+					}
+				}
+			} catch (FileNotFoundException e) {
+				// Should never happen unless somebody removed it between our two tests!!!
+				// e.printStackTrace();
+			} catch (IOException e) {
+				// Should never happen either
+				// e.printStackTrace();
+			}
+		} else {
+			// just in case the file cannot be open, we print a message
+			System.err.println("Trying to read exception trace from "+fileName+": file not found, continuing with execution");
+		}
+		// we close the streams when we are finished
+		if (br!=null) {
+			try {
+				br.close();
+			} catch (IOException e) {
+				// Should never happen
+				// e.printStackTrace();
+			}
+		}
+		YetiLog.printDebugLog("Imported "+result.size()+" traces", Yeti.class,true);
+		return result;
 
 	}
 
@@ -528,24 +703,9 @@ public class Yeti {
 		System.out.println("\t-noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.");
 		System.out.println("\t-instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.");
 		System.out.println("\t-path=X : sets the path on local disk for yeti to output unique exceptions traces in nologs mode.");
+		System.out.println("\t-tracesOutputFile=X : the file where to output traces on disk.");
+		System.out.println("\t-tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').");
 
 	}
-	
-	public static void writeExceptionTracesToFile(HashMap listOfErrors) throws IOException{
 
-		Collection colKey = listOfErrors.keySet();
-		Collection colVal = listOfErrors.values();
-		Iterator itKey = colKey.iterator();
-		Iterator itVal = colVal.iterator();
-
-		//create a unique file each time		
-		File file= File.createTempFile("yetiExceptionTraces", ".txt", path);
-		FileWriter yetiOutputFile = new FileWriter(file);
-		
-		while(itKey.hasNext() && itVal.hasNext()){
-			yetiOutputFile.write("**EXCEPTION START**\n"+itKey.next().toString()+" Found at: "+itVal.next()+"\n**EXCEPTION END**\n");
-		}
-		yetiOutputFile.close();
-		
-	}
 }

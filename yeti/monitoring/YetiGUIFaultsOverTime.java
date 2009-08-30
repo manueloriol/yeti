@@ -1,10 +1,7 @@
 package yeti.monitoring;
 
 import java.util.Date;
-import java.util.Vector;
-
 import javax.swing.JFrame;
-
 import yeti.YetiLogProcessor;
 
 /**
@@ -14,12 +11,8 @@ import yeti.YetiLogProcessor;
  * @date Jul 27, 2009
  *
  */
-public class YetiGUIFaultsOverTime extends YetiLogProcessor{
+public class YetiGUIFaultsOverTime extends YetiMonitoringLogProcessor{
 
-	/**
-	 * The processor taht we wrap here.
-	 */
-	public YetiLogProcessor lp;
 
 	/**
 	 * The graph in which we show the values
@@ -61,18 +54,6 @@ public class YetiGUIFaultsOverTime extends YetiLogProcessor{
 	public int lastInstantShown = 0;
 	public int firstInstant = 0;
 
-
-	/* (non-Javadoc)
-	 * 
-	 * The call is wrapped. 
-	 * 
-	 * @see yeti.YetiLogProcessor#appendFailureToCurrentLog(java.lang.String)
-	 */
-	@Override
-	public void appendFailureToCurrentLog(String newLog) {
-		lp.appendFailureToCurrentLog(newLog);
-	}
-
 	/* (non-Javadoc)
 	 * 
 	 * The call is wrapped. 
@@ -89,12 +70,12 @@ public class YetiGUIFaultsOverTime extends YetiLogProcessor{
 			firstInstant = lastInstantShown;
 			called = true;
 			// and add the value
-			graph.addValue(firstInstant,lp.listOfErrors.size()-lp.numberOfNonErrors);
+			graph.addValue(firstInstant,lp.getListOfErrorsSize()-getNumberOfNonErrors());
 		} else {
 			// otherwise, we remove the offset and add the offsetted value
 			int currentSecond = (int) (new Date().getTime()/nMilliseconds);
 			if (lastInstantShown+1<currentSecond) {
-				graph.addValue(currentSecond-firstInstant,lp.listOfErrors.size()-lp.numberOfNonErrors);				
+				graph.addValue(currentSecond-firstInstant,lp.getListOfErrorsSize()-getNumberOfNonErrors());				
 				lastInstantShown=currentSecond;
 			}
 		}	
@@ -117,12 +98,12 @@ public class YetiGUIFaultsOverTime extends YetiLogProcessor{
 			firstInstant = lastInstantShown;
 			called = true;
 			// and add the value
-			graph.addValue(firstInstant,lp.listOfErrors.size());
+			graph.addValue(firstInstant,lp.getListOfErrorsSize()-getNumberOfNonErrors());
 		} else {
 			// otherwise, we remove the offset and add the offsetted value
 			int currentSecond = (int) (new Date().getTime()/nMilliseconds);
 			if (lastInstantShown+1<currentSecond) {
-				graph.addValue(currentSecond-firstInstant,lp.listOfErrors.size());				
+				graph.addValue(currentSecond-firstInstant,lp.getListOfErrorsSize()-getNumberOfNonErrors());				
 				lastInstantShown=currentSecond;
 			}
 		}	
@@ -143,56 +124,15 @@ public class YetiGUIFaultsOverTime extends YetiLogProcessor{
 			firstInstant = lastInstantShown;
 			called = true;
 			// and add the value
-			graph.addValue(firstInstant,lp.listOfErrors.size());
+			graph.addValue(firstInstant,lp.getListOfErrorsSize()-getNumberOfNonErrors());
 		} else {
 			// otherwise, we remove the offset and add the offsetted value
 			int currentSecond = (int) (new Date().getTime()/nMilliseconds);
 			if (lastInstantShown+1<currentSecond) {
-				graph.addValue(currentSecond-firstInstant,lp.listOfErrors.size());				
+				graph.addValue(currentSecond-firstInstant,lp.getListOfErrorsSize()-getNumberOfNonErrors());				
 				lastInstantShown=currentSecond;
 			}
 		}	
 	}
 
-	/* 
-	 * The call is wrapped and visual output requested.
-	 * 
-	 * @see yeti.YetiLogProcessor#printThrowableNoLogs(java.lang.Throwable)
-	 */
-	@Override
-	public void printThrowableNoLogs(Throwable t) {
-		lp.printThrowableNoLogs(t);
-	}
-
-	/* 
-	 * Shows the correct value of the list of errors and call the regular RawLogs. 
-	 * 
-	 * (non-Javadoc)
-	 * @see yeti.YetiLogProcessor#printThrowableRawLogs(java.lang.Throwable)
-	 */
-	@Override
-	public void printThrowableRawLogs(Throwable t) {
-		lp.printThrowableRawLogs(t);
-	}
-	
-	/* 
-	 * Shows the correct value of the list of errors and call the regular RawLogs. 
-	 * 
-	 * (non-Javadoc)
-	 * @see yeti.YetiLogProcessor#printThrowableLogs(java.lang.Throwable)
-	 */
-	@Override
-	public void printThrowableLogs(Throwable t) {
-		lp.printThrowableLogs(t);
-	}
-
-	/* 
-	 * Returns the wrapped call
-	 * 
-	 * @see yeti.YetiLogProcessor#processLogs()
-	 */
-	@Override
-	public Vector<String> processLogs() {
-		return lp.processLogs();
-	}
 }

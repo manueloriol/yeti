@@ -1,6 +1,8 @@
 package yeti;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -10,6 +12,7 @@ import java.util.Vector;
  * @date Jun 22, 2009
  *
  */
+@SuppressWarnings("serial")
 public abstract class YetiLogProcessor {
 	
 	/**
@@ -38,10 +41,50 @@ public abstract class YetiLogProcessor {
 	private String currentLog = "";
 
 	/**
+	 * A list of traces for new relevant detected errors. 
+	 */
+	public HashMap<String,Object> listOfNewErrors = new HashMap<String, Object>();
+
+	/**
 	 * A list of traces for relevant detected errors. 
 	 */
-	public HashMap<String,Object> listOfErrors = new HashMap<String, Object>();
+	private HashMap<String,Object> listOfErrors = new HashMap<String, Object>();
 	
+	/**
+	 * Wrapping call to add a new trace in the list of errors.
+	 * 
+	 * @param trace the trace to add.
+	 * @param d the date to add.
+	 */
+	public void putNewTrace(String trace, Date d) {
+		listOfErrors.put(trace, d);
+		listOfNewErrors.put(trace, d);	
+	}
+	/**
+	 * Wrapping call to add an old trace in the list of errors.
+	 * 
+	 * @param trace the trace to add.
+	 */
+	public void putOldTrace(String trace) {
+		listOfErrors.put(trace, 0);
+	}
+	/**
+	 * Wrapping call to get the size of the list of errors.
+	 *
+	 * @return the size of the list of errors.
+	 */
+	public int getListOfErrorsSize() {
+		return listOfErrors.size();
+	}
+	
+	/**
+	 * Wrapping call to check whether the list of errors contains a trace.
+	 * 
+	 * @return true if the list contains the error.
+	 */
+	public boolean listOfErrorsContainsTrace(String trace) {
+		return listOfErrors.containsKey(trace);
+	}
 	
 	/**
 	 * The number of errors in the listOfErrors that are actually acceptable errors. 
@@ -54,6 +97,19 @@ public abstract class YetiLogProcessor {
 	public YetiLogProcessor() {
 		super();
 	}
+
+	/**
+	 * Constructor of the YetiLogProcessor with an initial list of errors.
+	 */
+	public YetiLogProcessor(HashMap<String,Object> listOfErrors) {
+		super();
+		if (listOfErrors!=null) {
+			this.listOfErrors = listOfErrors;
+			this.numberOfNonErrors = listOfErrors.size();
+			YetiLog.printDebugLog("NumberOfNonErrors = "+this.numberOfNonErrors, this);
+		}
+	}
+
 	
 	/**
 	 * Add the parameter at the end of the currentLog.
@@ -197,5 +253,31 @@ public abstract class YetiLogProcessor {
 	public void printThrowableLogs(Throwable t, boolean isFailure) {
 		if (isFailure) this.printThrowableLogs(t);
 	}
+
+	/**
+	 * Getter for the number of non-errors;
+	 * 
+	 * @return the number of non errors;
+	 */
+	public int getNumberOfNonErrors() {
+		return this.numberOfNonErrors;
+	}
+	/**
+	 * Getter for the number of unique faults.
+	 * 
+	 * @return the number of non errors;
+	 */
+	public int getNumberOfUniqueFaults() {
+		return this.listOfErrors.size()-this.numberOfNonErrors;
+	}
 	
+	
+	/**
+	 * A simple getter for the list of errors
+	 * 
+	 * @return the list of errors.
+	 */
+	public HashMap<String,Object> getListOfErrors() {
+		return this.listOfErrors;
+	}	
 }

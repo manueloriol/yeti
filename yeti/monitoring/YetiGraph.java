@@ -158,4 +158,6 @@ public class YetiGraph extends JPanel {
 		series[0] = new ArrayList<Double>();
 		series[1] = new ArrayList<Double>();
 	}
+
+
 }
