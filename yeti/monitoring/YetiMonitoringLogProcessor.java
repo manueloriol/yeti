@@ -4,6 +4,15 @@ import java.util.Vector;
 
 import yeti.YetiLogProcessor;
 
+/**
+ * Class that represents a composable log processor.
+ * Basically this class implements the proxy pattern for log processors.
+ * It is used in the GUI for combining the several inspectors on the GUI.
+ * 
+ * @author Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date Aug 31, 2009
+ *
+ */
 public abstract class YetiMonitoringLogProcessor extends YetiLogProcessor {
 
 	/**

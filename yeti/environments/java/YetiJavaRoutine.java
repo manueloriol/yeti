@@ -15,7 +15,8 @@ import yeti.environments.YetiSecurityException;
 
 
 /**
- * Class that represents... 
+ * Class that represents a routine in Java. A routine is supposed to be either a constructor or a 
+ * method.
  * 
  * @author Manuel Oriol (manuel@cs.york.ac.uk)
  * @date Jun 22, 2009
