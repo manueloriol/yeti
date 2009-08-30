@@ -71,11 +71,6 @@ public class Yeti {
 	public static String yetiPath = System.getProperty("java.class.path");
 
 	/**
-	 * The path to store Yeti Exception traces at in nologs mode
-	 */
-	public static File path=null;
-
-	/**
 	 * Main method of Yeti. It serves YetiRun the arguments it receives.
 	 * Arguments are numerous. Here is a list of the current ones:
 	 * <br>
@@ -99,7 +94,6 @@ public class Yeti {
 	 * -gui : shows the standard graphical user interface for monitoring yeti.<br>
 	 * -noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.<br>
 	 * -instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.<br>
-	 * -path=X : the path on local disk where all the unique exception traces will be stored (currenlty in nologs mode only).<br>
 	 * -tracesOutputFile=X : the file where to output traces on disk<br>
 	 * -tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').
 	 * @param args the arguments of the program
@@ -295,13 +289,7 @@ public class Yeti {
 				traceInputFiles = s1.split(":");
 				continue;
 			}
-			//setting up the path to store exception traces in nologs mode
-			if(s0.toLowerCase().startsWith("-path=")){
-				String s1= s0.substring(6);
-				path = new File (s1);
-				continue;
-			}
-
+	
 			System.out.println("Yeti could not understand option: "+s0);
 			Yeti.printHelp();
 			return;
@@ -521,18 +509,7 @@ public class Yeti {
 
 			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
 			System.out.println("/** Unique relevant bugs: "+lp.getNumberOfUniqueFaults()+" **/");
-
-			// MO: should disappear, please use the traceOutputFile option now...
-			if(path!=null){
-				try{
-					writeExceptionTracesToFile(lp.getListOfErrors());
-				}catch(IOException e)
-				{
-					System.err.println("Exception traces could not be written to disk");
-				}
-			}
-
-
+	
 		}
 		if (isProcessed) {
 			System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");
@@ -543,24 +520,6 @@ public class Yeti {
 		if ((tracesOutputFile!=null)&&(logProcessor!=null)) {
 			Yeti.outputTracesToFile(logProcessor.listOfNewErrors, tracesOutputFile,logProcessor.numberOfNonErrors);
 		}
-
-	}
-
-	public static void writeExceptionTracesToFile(HashMap<String,Object> listOfErrors) throws IOException{
-
-		Collection<String> colKey = listOfErrors.keySet();
-		Collection<Object> colVal = listOfErrors.values();
-		Iterator<String> itKey = colKey.iterator();
-		Iterator<Object> itVal = colVal.iterator();
-
-		//create a unique file each time		
-		File file= File.createTempFile("yetiExceptionTraces", ".txt", path);
-		FileWriter yetiOutputFile = new FileWriter(file);
-
-		while(itKey.hasNext() && itVal.hasNext()){
-			yetiOutputFile.write("**EXCEPTION START**\n"+itKey.next().toString()+" Found at: "+itVal.next()+"\n**EXCEPTION END**\n");
-		}
-		yetiOutputFile.close();
 
 	}
 
@@ -701,7 +660,6 @@ public class Yeti {
 		System.out.println("\t-gui : shows the standard graphical user interface for monitoring yeti.");
 		System.out.println("\t-noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.");
 		System.out.println("\t-instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.");
-		System.out.println("\t-path=X : sets the path on local disk for yeti to output unique exceptions traces in nologs mode.");
 		System.out.println("\t-tracesOutputFile=X : the file where to output traces on disk.");
 		System.out.println("\t-tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').");
 
