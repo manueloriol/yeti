@@ -1,5 +1,9 @@
 yeti
+yeti.cloud
 yeti.environments
+yeti.environments.csharp
 yeti.environments.java
+yeti.environments.jml
+yeti.monitoring
 yeti.strategies
 yeti.test
