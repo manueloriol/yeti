@@ -15,7 +15,7 @@ import yeti.YetiVariable;
 
 
 /**
- * Class that represents a constructor in Csharp.
+ * Class that represents a constructor of a .NET compatible language.
  *
  * @author Sotirios Tassis (st552@cs.york.ac.uk)
  * @date Jul 21, 2009
@@ -115,6 +115,7 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
             	msg="";
             	for (String s0: a)
             		msg=msg+s0+"\n";
+            	YetiLog.printDebugLog("The LOG: "+log, this);
             	//we throw the exception of an not successful call   
             	//YetiLog.printDebugLog(log+"><"+msg, this, true);
             	throw new YetiCallException(log+"><"+msg,new Throwable());
@@ -140,8 +141,8 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
         	}
         	
         	// print the log
-        		System.out.println("The LOG: "+log);
-        		YetiLog.printYetiLog(log, this);        		                            
+    		YetiLog.printDebugLog("The LOG: "+log, this);        		
+        	YetiLog.printYetiLog(log, this);        		                            
         
         return log;
     }     

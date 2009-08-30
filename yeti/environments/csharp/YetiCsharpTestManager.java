@@ -1,6 +1,7 @@
 package yeti.environments.csharp;
 
 //import java.io.IOException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -51,15 +52,15 @@ public class YetiCsharpTestManager extends YetiTestManager {
 
 		// if there is a routine...
 		if (r != null) {
-		// we make the actual call
-				try {
-					r.makeCall(strategy.getAllCards(r));
-				} catch (ImpossibleToMakeConstructorException e) {
-					// TODO Auto-generated catch block
-					//e.printStackTrace();
-				}
+			// we make the actual call
+			try {
+				r.makeCall(strategy.getAllCards(r));
+			} catch (ImpossibleToMakeConstructorException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
 		}
-		
+
 
 	}
 
@@ -71,14 +72,20 @@ public class YetiCsharpTestManager extends YetiTestManager {
 	 */
 	@Override
 	public void stopTesting() {
-		
-			YetiServerSocket.sendData("! STOP TESTING !");
-			 @SuppressWarnings("unused")
-			ArrayList<String> a = YetiServerSocket.getData();
+
+		YetiServerSocket.sendData("! STOP TESTING !");
+		@SuppressWarnings("unused")
+		ArrayList<String> a = YetiServerSocket.getData();
+		try {
+			YetiServerSocket.clientSocket.close();
+			YetiServerSocket.s.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
 
 
-		
-		
+
 	}
 
 }

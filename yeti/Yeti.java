@@ -376,8 +376,7 @@ public class Yeti {
 			logProcessor = new YetiCsharpLogProcessor(initialListOfErrors);
 			YetiServerSocket socketConnector = new YetiServerSocket();
 			pl=new YetiCsharpProperties(initializer, testManager, logProcessor, socketConnector);
-			System.out.println("\nMaking the .NET test-case calls...\n");
-			System.out.println("The LOGS of the calls are: \n");
+			System.out.println("\nMaking the .NET test-case calls...\n");			
 			System.out.println("----------------------------------------");
 
 		}

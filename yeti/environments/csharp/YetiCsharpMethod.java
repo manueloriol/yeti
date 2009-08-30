@@ -3,7 +3,6 @@ package yeti.environments.csharp;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import yeti.YetiCallException;
 import yeti.YetiCard;
@@ -17,24 +16,20 @@ import yeti.environments.csharp.YetiCsharpRoutine;
 
 
 /**
- * Class that represents a Csharp method.
+ * Class that represents a method of a .NET compatible language.
  * 
  * @author Sotirios Tassis (st552@cs.york.ac.uk)
  * @date Jun 22, 2009
  *
  */
 public class YetiCsharpMethod extends YetiCsharpRoutine {
-
-	/**
-	 * a list of methods not to test. Typically will contain wait, notify, notifyAll
-	 */
-	public static HashMap<String,Object> methodsNotToAdd ;	
+	
 
 	/**
 	 * The actual method to call.
 	 */
-	protected String m;
-	protected String originatingClass;
+	private String m;
+	private String originatingClass;
 
 	/**
 	 * Checks whether this method is a static method or not. 
@@ -114,7 +109,7 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 			
 			if (isSimpleReturnType) {
 				isValue=true;
-				log1 = this.returnType.toString()+" "+ id.getValue()+";";
+				log1 = this.returnType.toString()+" "+ id.getValue();
 			} else
 				log = this.returnType.toString()+" "+ id.getValue() + "="+ prefix +"."+ m+"(";			
 
@@ -160,7 +155,7 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 		if ("Void".equals(this.returnType.getName()))
     		returnType=YetiType.allTypes.get(returnType.getName());
     	
-    	if(isValue) log=log1;
+    	
     	
 		String valuestring="";	
 		YetiLog.printDebugLog(msg,this);
@@ -177,6 +172,7 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
             	msg="";
             	for (String s0: a)
             		msg=msg+s0+"\n";
+            	YetiLog.printDebugLog("The LOG: "+log, this);
             	//we throw the exception of a not successful call
             	YetiLog.printDebugLog(log+"><"+msg, this);
             	throw new YetiCallException(log+"><"+msg,new Throwable());
@@ -186,7 +182,8 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
             	String[] helps = s.split(":");
      			if(helps.length>=2)
     			{
-    				valuestring = helps[1].trim();
+     				String[] h = helps[1].split("@"); 
+    				valuestring = h[0].trim();
     			}
             }
             YetiLog.printDebugLog(log+"><"+msg, this);                            	        	        	        	              
@@ -199,9 +196,9 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
         		
         		this.lastCallResult=new YetiVariable(id, returnType, valuestring);
         	}        	                	    
-        	
+        	if(isValue) log=log1+" = "+valuestring+";";
         	// finally we print the log.
-        		System.out.println("The LOG: "+log);        		
+        		YetiLog.printDebugLog("The LOG: "+log, this);        		
         		YetiLog.printYetiLog(log, this); 
 
 		return log;

@@ -120,6 +120,7 @@ public class YetiCsharpInitializer extends YetiInitializer {
 			// which exists in st[2] each time
 			if(!(YetiModule.allModules.containsKey(st[2].trim())))
 			{
+				YetiLog.printDebugLog("Added module: "+st[2].trim(),this);
 				YetiModule mod = this.makeModuleFromClass(st[2].trim());
 				YetiModule.allModules.put(st[2].trim(), mod);
 			}
