@@ -2,7 +2,6 @@ package yeti;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -12,7 +11,6 @@ import java.util.Vector;
  * @date Jun 22, 2009
  *
  */
-@SuppressWarnings("serial")
 public abstract class YetiLogProcessor {
 
 	/**

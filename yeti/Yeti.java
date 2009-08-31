@@ -13,9 +13,7 @@ import java.io.InputStream;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.HashMap;
-import java.io.FileWriter;
 import java.util.Iterator;
-import java.util.Collection;
 
 import yeti.environments.YetiInitializer;
 import yeti.environments.YetiLoader;
@@ -31,7 +29,6 @@ import yeti.environments.java.YetiJavaLogProcessor;
 import yeti.environments.java.YetiJavaPrefetchingLoader;
 import yeti.environments.java.YetiJavaProperties;
 import yeti.environments.java.YetiJavaTestManager;
-import yeti.environments.jml.YetiJMLInitializer;
 import yeti.environments.jml.YetiJMLPrefetchingLoader;
 import yeti.monitoring.YetiGUIFaultsOverTime;
 import yeti.monitoring.YetiGUINumberOfCallsOverTime;
@@ -321,7 +318,7 @@ public class Yeti {
 		//test of options to set up the YetiProperties for JML
 		if (isJML) {
 			YetiLoader prefetchingLoader = new YetiJMLPrefetchingLoader(yetiPath);
-			YetiInitializer initializer = new YetiJMLInitializer(prefetchingLoader);
+			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader);
 			YetiTestManager testManager = new YetiJavaTestManager();
 			logProcessor = new YetiJavaLogProcessor(initialListOfErrors);
 			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
