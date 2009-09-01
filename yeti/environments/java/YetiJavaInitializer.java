@@ -54,6 +54,7 @@ public class YetiJavaInitializer extends YetiInitializer {
 
 		// we try to load classes that will certainly be used
 		try {
+			loader.loadClass("java.lang.Object");
 			loader.loadClass("java.lang.String");
 		} catch (ClassNotFoundException e1) {
 			// should never happen

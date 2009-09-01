@@ -66,7 +66,7 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	public static void initPrimitiveTypes(){
 
-		// we create the primitive types
+		// we create the primitive types		
 		YetiJavaSpecificType tBoolean=new YetiJavaSpecificType("boolean");
 		tBoolean.setSimpleType(true);
 		YetiJavaSpecificType tByte=new YetiJavaSpecificType("byte");

@@ -28,7 +28,7 @@ public abstract class YetiRoutine {
 	/**
 	 * The module in which the routine is defined.
 	 */
-	protected YetiModule originatingModule;
+	protected YetiModule originatingModule;	
 	
 	/**
 	 * Adds the routine as a creator for its return type.
@@ -73,12 +73,36 @@ public abstract class YetiRoutine {
 	public abstract String makeEffectiveCall(YetiCard[] arg) throws Throwable;
 	
 	/**
-	 * GEtter for the name of the routine.
+	 * Getter for the name of the routine.
 	 * 
 	 * @return the name of the routine.
 	 */
 	public YetiName getName() {
 		return name;
+	}
+
+	/**
+	 * Returns the signature of the routine.
+	 * 
+	 * @return the signature of the routine.
+	 */
+	public String getSignature() {
+		String arguments = null;
+		
+		// we aggregate the arguments types.
+		for (YetiType type: this.openSlots) {
+			if (arguments==null) {
+				arguments=type.getName().toString();
+			}
+			arguments = arguments+" x "+type.getName().toString();
+		}
+		// if no argument the chain is empty
+		if (arguments==null) {
+			arguments="";
+		}
+		
+		// we return the signature
+		return (this.toString()+": ("+arguments+")->"+this.returnType.getName());
 	}
 
 	/**

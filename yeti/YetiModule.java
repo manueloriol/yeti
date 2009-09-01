@@ -96,7 +96,7 @@ public class YetiModule {
 	 */
 	public YetiRoutine getRoutineAtRandom(){
 		double d=Math.random();
-		int i=(int) Math.floor(d*routinesInModule.size());
+		int i=(int) Math.floor(d*(routinesInModule.size()));
 		
 		return (YetiRoutine)(routinesInModule.values().toArray()[i]);
 	}

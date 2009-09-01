@@ -93,6 +93,7 @@ public class Yeti {
 	 * -instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.<br>
 	 * -tracesOutputFile=X : the file where to output traces on disk<br>
 	 * -tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').
+	 * -printNumberOfCallsPerMehtod : prints the number of calls per method.<br>
 	 * @param args the arguments of the program
 	 */
 	public static void main (String[] args) {
@@ -119,6 +120,7 @@ public class Yeti {
 		boolean isNoLogs = false;
 		boolean isRandomPlus = false;
 		boolean showMonitoringGui = false;
+		boolean printNumberOfCallsPerMehtod = false;
 		int nTests=0;
 		String []modulesToTest=null;
 		int callsTimeOut=75;
@@ -286,7 +288,13 @@ public class Yeti {
 				traceInputFiles = s1.split(":");
 				continue;
 			}
-	
+
+			// If we want to gather the number of calls per method
+			if (s0.equals("-printNumberOfCallsPerMehtod")) {
+				printNumberOfCallsPerMehtod = true;
+				continue;	
+			}
+
 			System.out.println("Yeti could not understand option: "+s0);
 			Yeti.printHelp();
 			return;
@@ -422,8 +430,7 @@ public class Yeti {
 			mod=YetiModule.allModules.get(modulesToTest[0]);
 
 			//check
-			System.out.println(modulesToTest[0]);
-			System.out.println(mod);
+			YetiLog.printDebugLog("Loading:"+modulesToTest[0], Yeti.class);
 
 			// if it does not exist we stop
 			if(mod==null) {
@@ -506,7 +513,7 @@ public class Yeti {
 
 			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
 			System.out.println("/** Unique relevant bugs: "+lp.getNumberOfUniqueFaults()+" **/");
-	
+
 		}
 		if (isProcessed) {
 			System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");
@@ -517,6 +524,15 @@ public class Yeti {
 		if ((tracesOutputFile!=null)&&(logProcessor!=null)) {
 			Yeti.outputTracesToFile(logProcessor.listOfNewErrors, tracesOutputFile,logProcessor.numberOfNonErrors);
 		}
+		
+		if (printNumberOfCallsPerMehtod) {
+			System.out.println("Trace of number of calls per method:");
+			for (YetiRoutine r: Yeti.testModule.routinesInModule.values()) {
+				System.out.println(r.getSignature()+": "+r.nTimesCalled);
+			}
+		}
+		System.out.println("/** Testing finished **/");
+
 
 	}
 
@@ -539,12 +555,12 @@ public class Yeti {
 			DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
 			// we print all the traces in the file
 			for (int i=0; i<listOfErrors.size();i++) {
-					Object traceDate = dates.next();
-					if (traceDate instanceof Date) {
-						ps.println("Trace "+(i+1+nNonErrors)+" discovered on "+df.format(((Date)traceDate))+":\n"+traces.next());
-					} else {
-						ps.println("Trace "+(i+1+nNonErrors)+" discovered on "+traceDate.toString()+":\n"+traces.next());					
-					}
+				Object traceDate = dates.next();
+				if (traceDate instanceof Date) {
+					ps.println("Trace "+(i+1+nNonErrors)+" discovered on "+df.format(((Date)traceDate))+":\n"+traces.next());
+				} else {
+					ps.println("Trace "+(i+1+nNonErrors)+" discovered on "+traceDate.toString()+":\n"+traces.next());					
+				}
 			}
 
 			// we close the stream
@@ -659,6 +675,7 @@ public class Yeti {
 		System.out.println("\t-instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.");
 		System.out.println("\t-tracesOutputFile=X : the file where to output traces on disk.");
 		System.out.println("\t-tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').");
+		System.out.println("\t-printNumberOfCallsPerMehtod : prints the number of calls per method.");
 
 	}
 
