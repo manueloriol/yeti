@@ -14,29 +14,29 @@ public abstract class YetiRoutine {
 	 * The name of the routine.
 	 */
 	protected YetiName name; 
-	
+
 	/**
 	 * The openslots of the routine.
 	 */
 	protected YetiType []openSlots;
-	
+
 	/**
 	 * The return type of the routine.
 	 */
 	protected YetiType returnType;
-	
+
 	/**
 	 * The module in which the routine is defined.
 	 */
 	protected YetiModule originatingModule;	
-	
+
 	/**
 	 * Adds the routine as a creator for its return type.
 	 */
 	public void addRoutineAsCreatorForType(){
 		returnType.addCreationRoutine(this);
 	}
-	
+
 	/**
 	 * Just to verify that arguments fit the actual routine.
 	 * 
@@ -44,13 +44,13 @@ public abstract class YetiRoutine {
 	 * @return true if the arguments fit, false otherwise.
 	 */
 	public abstract boolean checkArguments(YetiCard []arg);
-	
+
 
 	/**
 	 * Tracks how many calls were made to this routine. 
 	 */
 	public int nTimesCalled = 0;
-	
+
 	/**
 	 * 
 	 * Make a call of this routine if arguments fit the routine.
@@ -71,7 +71,7 @@ public abstract class YetiRoutine {
 	 * @throws Throwable 
 	 */
 	public abstract String makeEffectiveCall(YetiCard[] arg) throws Throwable;
-	
+
 	/**
 	 * Getter for the name of the routine.
 	 * 
@@ -88,19 +88,20 @@ public abstract class YetiRoutine {
 	 */
 	public String getSignature() {
 		String arguments = null;
-		
+
 		// we aggregate the arguments types.
 		for (YetiType type: this.openSlots) {
 			if (arguments==null) {
 				arguments=type.getName().toString();
+			} else {
+				arguments = arguments+" x "+type.getName().toString();
 			}
-			arguments = arguments+" x "+type.getName().toString();
 		}
 		// if no argument the chain is empty
 		if (arguments==null) {
 			arguments="";
 		}
-		
+
 		// we return the signature
 		return (this.toString()+": ("+arguments+")->"+this.returnType.getName());
 	}
@@ -167,5 +168,5 @@ public abstract class YetiRoutine {
 	public void setReturnType(YetiType returnType) {
 		this.returnType = returnType;
 	}
-	
+
 }
