@@ -72,6 +72,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 
 			try {
 				makeEffectiveCall(arg);
+				this.incnTimesCalledSuccessfully();
 			} catch(YetiCallException e) {
 				log = e.getLog();
 				throw e.getOriginalThrowable();
@@ -92,17 +93,22 @@ public class YetiJavaRoutine extends YetiRoutine {
 			if ((e.getCause() instanceof RuntimeException && !isAcceptable(e.getCause())) || e.getCause() instanceof Error  ) {
 				if (e.getCause() instanceof ThreadDeath) {
 					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
+					this.incnTimesCalledUndecidable();
 				} else {
 					if (e.getCause() instanceof YetiSecurityException) {
 						YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: "+e.getCause().getMessage()+" **/", this);
-					} else
+						this.incnTimesCalledUndecidable();
+					} else {
 						YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
+						this.incnTimesCalledUnsuccessfully();
+					}
 				}
 				YetiLog.printYetiThrowable(e.getCause(), this,true);
 			}
 			else {
 				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
 				YetiLog.printYetiThrowable(e.getCause(), this,false);
+				this.incnTimesCalledSuccessfully();
 			}
 		} catch (Error e){
 			// if we are here there was a serious error
@@ -110,7 +116,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 			YetiLog.printYetiLog(log+");", this);
 			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
 			YetiLog.printYetiThrowable(e.getCause(), this,true);
-
+			this.incnTimesCalledUnsuccessfully();
 		}
 		catch (Throwable e){
 			// should never happen

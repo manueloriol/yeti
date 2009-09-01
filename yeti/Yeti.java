@@ -528,7 +528,7 @@ public class Yeti {
 		if (printNumberOfCallsPerMehtod) {
 			System.out.println("Trace of number of calls per method:");
 			for (YetiRoutine r: Yeti.testModule.routinesInModule.values()) {
-				System.out.println(r.getSignature()+": "+r.nTimesCalled);
+				System.out.println(r.getSignature()+": Called: "+r.getnTimesCalled()+", Successfully: "+r.getnTimesCalledSuccessfully()+", Undecidable: "+r.getnTimesCalledUndecidable()+", Unsuccessfully: "+r.getnTimesCalledUnsuccessfully());
 			}
 		}
 		System.out.println("/** Testing finished **/");

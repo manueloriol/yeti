@@ -52,6 +52,122 @@ public abstract class YetiRoutine {
 	public int nTimesCalled = 0;
 
 	/**
+	 * Simple getter for the number of times this routine was called.
+	 * 
+	 * @return the number of times this routine was called.
+	 */
+	public int getnTimesCalled() {
+		return nTimesCalled;
+	}
+
+	/**
+	 * Simple Setter for the number of times this routine was called.
+	 * 
+	 * @param nTimesCalled the number of time this routine was called.
+	 */
+	public void setnTimesCalled(int nTimesCalled) {
+		this.nTimesCalled = nTimesCalled;
+	}
+	/**
+	 * Simple incrementer for the number of times this routine was called.
+	 * 
+	 */
+	public void incnTimesCalled() {
+		this.nTimesCalled++;
+	}
+
+	/**
+	 * Tracks how many successful calls were made to this routine. 
+	 */
+	public int nTimesCalledSuccessfully = 0;
+
+	/**
+	 * Simple getter for the number of times this routine was called successfully.
+	 * 
+	 * @return the number of times this routine was called successfully.
+	 */
+	public int getnTimesCalledSuccessfully() {
+		return nTimesCalledSuccessfully;
+	}
+
+	/**
+	 * Simple Setter for the number of times this routine was called successfully.
+	 * 
+	 * @param nTimesCalledSuccessfully the number of time this routine was called successfully.
+	 */
+	public void setnTimesCalledSuccessfully(int nTimesCalledSuccessfully) {
+		this.nTimesCalledSuccessfully = nTimesCalledSuccessfully;
+	}
+	/**
+	 * Simple incrementer for the number of times this routine was called.
+	 * 
+	 */
+	public void incnTimesCalledSuccessfully() {
+		this.nTimesCalledSuccessfully++;
+	}
+
+	/**
+	 * Tracks how many unsuccessfully calls were made to this routine. 
+	 */
+	public int nTimesCalledUnsuccessfully = 0;
+
+	/**
+	 * Simple getter for the number of times this routine was called unsuccessfully.
+	 * 
+	 * @return the number of times this routine was called unsuccessfully.
+	 */
+	public int getnTimesCalledUnsuccessfully() {
+		return nTimesCalledUnsuccessfully;
+	}
+
+	/**
+	 * Simple Setter for the number of times this routine was called unsuccessfully.
+	 * 
+	 * @param nTimesCalledSuccessfully the number of time this routine was called unsuccessfully.
+	 */
+	public void setnTimesCalledUnsuccessfully(int nTimesCalledUnsuccessfully) {
+		this.nTimesCalledUnsuccessfully = nTimesCalledUnsuccessfully;
+	}
+	/**
+	 * Simple incrementer for the number of times this routine was called unsuccessfully.
+	 * 
+	 */
+	public void incnTimesCalledUnsuccessfully() {
+		this.nTimesCalledUnsuccessfully++;
+	}
+	
+	/**
+	 * Tracks how many undecidable calls were made to this routine. 
+	 */
+	public int nTimesCalledUndecidable = 0;
+
+	/**
+	 * Simple getter for the number of times this routine was called undecidable.
+	 * 
+	 * @return the number of times this routine was called undecidable.
+	 */
+	public int getnTimesCalledUndecidable() {
+		return nTimesCalledUndecidable;
+	}
+
+	/**
+	 * Simple Setter for the number of times this routine was called undecidable.
+	 * 
+	 * @param nTimesCalledSuccessfully the number of time this routine was called undecidable.
+	 */
+	public void setnTimesCalledUndecidable(int nTimesCalledUndecidable) {
+		this.nTimesCalledUndecidable = nTimesCalledUndecidable;
+	}
+	/**
+	 * Simple incrementer for the number of times this routine was called undecidable.
+	 * 
+	 */
+	public void incnTimesCalledUndecidable() {
+		this.nTimesCalledUndecidable++;
+	}
+	
+	
+	/**
 	 * 
 	 * Make a call of this routine if arguments fit the routine.
 	 * Can be used to code a specific oracle.
@@ -60,7 +176,8 @@ public abstract class YetiRoutine {
 	 * @return the result of the call.
 	 */
 	public Object makeCall(YetiCard []arg) {
-		return nTimesCalled++;
+		this.incnTimesCalled();
+		return null;
 	}
 
 	/**
