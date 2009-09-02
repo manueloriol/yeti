@@ -6,10 +6,8 @@ import java.util.Vector;
 
 /**
  * Class that represents a processor for logs coming from Yeti.
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public abstract class YetiLogProcessor {
 
@@ -44,7 +42,7 @@ public abstract class YetiLogProcessor {
 	public HashMap<String,Object> listOfNewErrors = new HashMap<String, Object>();
 
 	/**
-	 * A list of traces for relevant detected errors. 
+	 * A list of traces for relevant detected errors.
 	 */
 	private HashMap<String,Object> listOfErrors = new HashMap<String, Object>();
 
@@ -90,7 +88,7 @@ public abstract class YetiLogProcessor {
 	}
 
 	/**
-	 * The number of errors in the listOfErrors that are actually acceptable errors. 
+	 * The number of errors in the listOfErrors that are actually acceptable errors.
 	 */
 	public int numberOfNonErrors = 0;
 
@@ -136,8 +134,7 @@ public abstract class YetiLogProcessor {
 	}	
 	/**
 	 * Simple setter for the current logs.
-	 * 
-	 * @param currentLog the logs to set.
+	 * @param currentLog  the logs to set.
 	 */
 	public void setCurrentLog(String currentLog) {
 		this.currentLog = currentLog;
@@ -160,8 +157,7 @@ public abstract class YetiLogProcessor {
 
 	/**
 	 * Getter for the currentLog variable.
-	 * 
-	 * @return The value of currentLog
+	 * @return  The value of currentLog
 	 */
 	public String getCurrentLog() {
 		return currentLog;
@@ -169,8 +165,7 @@ public abstract class YetiLogProcessor {
 
 	/**
 	 * Getter for logs.
-	 * 
-	 * @return the value of the older logs.
+	 * @return  the value of the older logs.
 	 */
 	public Vector<String> getLogs() {
 		return logs;
@@ -259,8 +254,7 @@ public abstract class YetiLogProcessor {
 
 	/**
 	 * Getter for the number of non-errors;
-	 * 
-	 * @return the number of non errors;
+	 * @return  the number of non errors;
 	 */
 	public int getNumberOfNonErrors() {
 		return this.numberOfNonErrors;
@@ -277,8 +271,7 @@ public abstract class YetiLogProcessor {
 
 	/**
 	 * A simple getter for the list of errors
-	 * 
-	 * @return the list of errors.
+	 * @return  the list of errors.
 	 */
 	public HashMap<String,Object> getListOfErrors() {
 		return this.listOfErrors;

@@ -5,18 +5,15 @@ import java.util.Date;
 import yeti.environments.YetiTestManager;
 
 /**
- * This class is here to manage how the tests are run.
- * It contains several methods that have have several ways of stopping testing. 
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * This class is here to manage how the tests are run. It contains several methods that have have several ways of stopping testing. 
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public class YetiEngine {
 	
 		
 		/**
-		 * The strategy that will be used 
+		 * The strategy that will be used
 		 */
 		protected YetiStrategy strategy;
 		
@@ -100,8 +97,7 @@ public class YetiEngine {
 
 		/**
 		 * Getter for the manager.
-		 * 
-		 * @return the manager of this engine
+		 * @return  the manager of this engine
 		 */
 		public YetiTestManager getManager() {
 			return manager;
@@ -110,8 +106,7 @@ public class YetiEngine {
 
 		/**
 		 * Setter for the manager.
-		 * 
-		 * @param manager the manager to set.
+		 * @param manager  the manager to set.
 		 */
 		public void setManager(YetiTestManager manager) {
 			this.manager = manager;
@@ -120,8 +115,7 @@ public class YetiEngine {
 
 		/**
 		 * Getter for the strategy.
-		 * 
-		 * @return the strategy.
+		 * @return  the strategy.
 		 */
 		public YetiStrategy getStrategy() {
 			return strategy;
@@ -130,8 +124,7 @@ public class YetiEngine {
 
 		/**
 		 * Setter for the strategy.
-		 * 
-		 * @param strategy the strategy to set.
+		 * @param strategy  the strategy to set.
 		 */
 		public void setStrategy(YetiStrategy strategy) {
 			this.strategy = strategy;

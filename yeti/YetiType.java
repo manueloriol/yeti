@@ -6,10 +6,8 @@ import java.util.Vector;
 
 /**
  * Class that represents types in Yeti.
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public class YetiType {
 
@@ -34,8 +32,7 @@ public class YetiType {
 	public int maximumNumberOfDirectInstances;
 	
 	/**
-	 * The name of the type. Note that this can be a class name, 
-	 * a type with a generic instantiation, or an interface.
+	 * The name of the type. Note that this can be a class name,  a type with a generic instantiation, or an interface.
 	 */
 	protected String name;
 
@@ -57,7 +54,6 @@ public class YetiType {
 	
 	/**
 	 * Return the creation routines of this type.
-	 * 
 	 * @return
 	 */
 	public Vector<YetiRoutine> getCreationRoutines(){
@@ -128,8 +124,7 @@ public class YetiType {
 	}
 	/**
 	 * Returns all instances of this type
-	 * 
-	 * @return all instances of this type.
+	 * @return  all instances of this type.
 	 */
 	public Vector<YetiVariable> getInstances(){
 		return instances;
@@ -198,8 +193,7 @@ public class YetiType {
 	
 	/**
 	 * Returns the name of the YetiType.
-	 * 
-	 * @return the name of the type
+	 * @return  the name of the type
 	 */
 	public String getName(){
 		return name;
@@ -219,14 +213,13 @@ public class YetiType {
 	}
 	
 	/**
-	 * The vector of interestingValues. 
+	 * The vector of interestingValues.
 	 */
 	private Vector<Object> interestingValues = new Vector<Object>();
 	
 	/**
 	 * Simple getter for interesting values.
-	 * 
-	 * @return the vector of interesting values.
+	 * @return  the vector of interesting values.
 	 */
 	public Vector<Object> getInterestingValues() {
 		return interestingValues;
@@ -266,8 +259,7 @@ public class YetiType {
 
 	/**
 	 * A simple setter to say that a type has interesting values.
-	 * 
-	 * @param hasInterestingValues true if it has interesting values, false otherwise.
+	 * @param hasInterestingValues  true if it has interesting values, false otherwise.
 	 */
 	public void setHasInterestingValues(boolean hasInterestingValues) {
 		this.hasInterestingValues = hasInterestingValues;
@@ -281,7 +273,7 @@ public class YetiType {
 	/**
 	 * Defines whether this type has interesting values.
 	 * 
-	 * @return
+	 * @return true if it has interesting values.
 	 */
 	public boolean hasInterestingValues() {
 		return hasInterestingValues;

@@ -1,18 +1,25 @@
 package yeti;
 
 /**
- * Class that manages logging in Yeti. 
- * The generated test cases are also part of the logging mechanism. 
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * Class that manages logging in Yeti.  The generated test cases are also part of the logging mechanism. 
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public class YetiLog {
 
+	/**
+	 * The pocessor to use in these logs. 
+	 */
 	public static YetiLogProcessor proc = null;
 
+	/**
+	 * The total number of calls.
+	 */
 	public static long numberOfCalls =0;
+
+	/**
+	 * The total number of errors.
+	 */
 	public static long numberOfErrors =0;
 
 	/**

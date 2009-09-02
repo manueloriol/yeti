@@ -2,10 +2,8 @@ package yeti;
 
 /**
  * Class that represents a name in Yeti.
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public class YetiName {
 	/**
@@ -39,8 +37,7 @@ public class YetiName {
 
 	/**
 	 * Getter for the value of this name.
-	 * 
-	 * @return the value of this name.
+	 * @return  the value of this name.
 	 */
 	public String getValue() {
 		return value;
@@ -48,8 +45,7 @@ public class YetiName {
 
 	/**
 	 * Setter for the value of this name.
-	 * 
-	 * @param value the value to set.
+	 * @param value  the value to set.
 	 */
 	public void setValue(String value) {
 		this.value = value;

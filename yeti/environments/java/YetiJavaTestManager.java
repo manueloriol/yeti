@@ -10,19 +10,15 @@ import yeti.environments.YetiTestManager;
 
 /**
  * Class that represents a test manager for Java
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public class YetiJavaTestManager extends YetiTestManager {
 
 	/**
 	 * Class that represents a thread that makes the next method call.
-	 * 
-	 * @author Manuel Oriol (manuel@cs.york.ac.uk)
-	 * @date Jul 9, 2009
-	 *
+	 * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+	 * @date  Jul 9, 2009
 	 */
 	private static class CallerThread extends Thread{
 
@@ -54,8 +50,7 @@ public class YetiJavaTestManager extends YetiTestManager {
 
 		/**
 		 * Gets the YetiStrategy for the next method call.
-		 * 
-		 * @return the strategy previously set.
+		 * @return  the strategy previously set.
 		 */
 		@SuppressWarnings("unused")
 		public YetiStrategy getStrategy() {
@@ -65,8 +60,7 @@ public class YetiJavaTestManager extends YetiTestManager {
 
 		/**
 		 * Sets the YetiStrategy for the next method call.
-		 * 
-		 * @param strategy the new strategy.
+		 * @param strategy  the new strategy.
 		 */
 		@SuppressWarnings("unused")
 		public void setStrategy(YetiStrategy strategy) {
@@ -88,8 +82,7 @@ public class YetiJavaTestManager extends YetiTestManager {
 
 		/**
 		 * Gets the YetiModule to use to make the call.
-		 * 
-		 * @return the YetiModule used to pick the next method to test.
+		 * @return  the YetiModule used to pick the next method to test.
 		 */
 		@SuppressWarnings("unused")
 		public YetiModule getMod() {
@@ -99,8 +92,7 @@ public class YetiJavaTestManager extends YetiTestManager {
 
 		/**
 		 * Sets the YetiModule for picking the next method to call.
-		 * 
-		 * @param mod the YetiModule to set.
+		 * @param mod  the YetiModule to set.
 		 */
 		@SuppressWarnings("unused")
 		public void setMod(YetiModule mod) {
@@ -186,7 +178,7 @@ public class YetiJavaTestManager extends YetiTestManager {
 	}
 
 	/**
-	 * The current caller thread. 
+	 * The current caller thread.
 	 */
 	private CallerThread ct;
 

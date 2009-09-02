@@ -3,10 +3,8 @@ package yeti;
 
 /**
  * Class that represents an identity on Yeti
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public class YetiIdentifier {
 	
@@ -59,8 +57,7 @@ public class YetiIdentifier {
 
 	/**
 	 * Getter for the index.
-	 * 
-	 * @return The current index.
+	 * @return  The current index.
 	 */
 	public static long getCurrentIndex() {
 		return currentIndex;
@@ -70,8 +67,7 @@ public class YetiIdentifier {
 
 	/**
 	 * Setter for the current index.
-	 * 
-	 * @param currentIndex the index to set.
+	 * @param currentIndex  the index to set.
 	 */
 	public static void setCurrentIndex(long currentIndex) {
 		YetiIdentifier.currentIndex = currentIndex;
@@ -81,8 +77,7 @@ public class YetiIdentifier {
 
 	/**
 	 * Getter for the value of the identifier.
-	 * 
-	 * @return the value of the identifier.
+	 * @return  the value of the identifier.
 	 */
 	public String getValue() {
 		return value;
@@ -92,8 +87,7 @@ public class YetiIdentifier {
 
 	/**
 	 * Setter for the value of the identifier.
-	 * 
-	 * @param value the value of the identifier.
+	 * @param value  the value of the identifier.
 	 */
 	public void setValue(String value) {
 		this.value = value;

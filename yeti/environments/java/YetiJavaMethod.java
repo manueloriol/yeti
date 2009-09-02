@@ -15,10 +15,8 @@ import yeti.YetiVariable;
 
 /**
  * Class that represents a Java method.
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public class YetiJavaMethod extends YetiJavaRoutine {
 
@@ -206,7 +204,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			throw new YetiCallException(log,t);
 		}
 
-		// if the reurn type is void, we look it up
+		// if the return type is void, we look it up
 		if (returnType==null)
 			returnType=YetiType.allTypes.get(method.getReturnType().getName());
 		// if there is a result, we store it and create the variable
@@ -298,8 +296,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 
 	/**
 	 * Getter for the implementation of the method.
-	 * 
-	 * @return the implementation of the method.
+	 * @return  the implementation of the method.
 	 */
 	public Method getMethod() {
 		return method;
@@ -307,8 +304,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 
 	/**
 	 * Setter for the implementation of the method.
-	 * 
-	 * @param m the method to set.
+	 * @param m  the method to set.
 	 */
 	public void setMethod(Method m) {
 		this.method = m;

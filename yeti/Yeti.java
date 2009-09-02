@@ -15,6 +15,8 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.swing.JFrame;
+
 import yeti.environments.YetiInitializer;
 import yeti.environments.YetiLoader;
 import yeti.environments.YetiProgrammingLanguageProperties;
@@ -34,15 +36,16 @@ import yeti.monitoring.YetiGUIFaultsOverTime;
 import yeti.monitoring.YetiGUINumberOfCallsOverTime;
 import yeti.monitoring.YetiGUINumberOfFailuresOverTime;
 import yeti.monitoring.YetiGUINumberOfVariablesOverTime;
+import yeti.monitoring.YetiGraph;
+import yeti.monitoring.YetiRoutineGraph;
 import yeti.strategies.YetiRandomPlusStrategy;
 import yeti.strategies.YetiRandomStrategy;
 
 
 /**
  * Class that represents the main launching class of Yeti
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public class Yeti {
 
@@ -471,6 +474,17 @@ public class Yeti {
 		// Creating the log processor
 		if (showMonitoringGui) {
 			YetiLog.proc=new YetiGUINumberOfVariablesOverTime(new YetiGUINumberOfFailuresOverTime(new YetiGUINumberOfCallsOverTime(new YetiGUIFaultsOverTime(pl.getLogProcessor(),100),100),100),100);
+
+			//The routine tracker
+			
+/**			JFrame f = new JFrame();
+			f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			YetiRoutineGraph graph = new YetiRoutineGraph(mod.getRoutineAtRandom());
+			f.add(graph);
+			f.setSize(400,200);
+			f.setLocation(200,200);
+			f.setVisible(true);**/
+			
 		} else {
 			YetiLog.proc=pl.getLogProcessor();
 		}

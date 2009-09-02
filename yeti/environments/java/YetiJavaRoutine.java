@@ -15,12 +15,9 @@ import yeti.environments.YetiSecurityException;
 
 
 /**
- * Class that represents a routine in Java. A routine is supposed to be either a constructor or a 
- * method.
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * Class that represents a routine in Java. A routine is supposed to be either a constructor or a  method.
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public class YetiJavaRoutine extends YetiRoutine {
 
@@ -132,8 +129,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 	public HashMap <String, Class> acceptableExceptionTypes = new HashMap <String, Class>();
 	
 	/**
-	 * 
-	 * @return the types of exceptions that are considered "acceptable"
+	 * @return  the types of exceptions that are considered "acceptable"
 	 */
 	@SuppressWarnings("unchecked")
 	public HashMap<String, Class> getAcceptableExceptionTypes() {

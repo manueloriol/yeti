@@ -5,10 +5,8 @@ import yeti.environments.YetiLoader;
 
 /**
  * Class that represents primitive types.
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public class YetiJavaSpecificType extends YetiType {
 
@@ -43,8 +41,7 @@ public class YetiJavaSpecificType extends YetiType {
 
 	/**
 	 * Is this type a simple type?
-	 * 
-	 * @return the fact it is a simple type.
+	 * @return  the fact it is a simple type.
 	 */
 	public boolean isSimpleType() {
 		return isSimpleType;
@@ -53,8 +50,7 @@ public class YetiJavaSpecificType extends YetiType {
 
 	/**
 	 * Sets the reason it is a simple type.
-	 * 
-	 * @param isSimpleType true if it is a simple type.
+	 * @param isSimpleType  true if it is a simple type.
 	 */
 	public void setSimpleType(boolean isSimpleType) {
 		this.isSimpleType = isSimpleType;

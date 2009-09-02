@@ -8,10 +8,8 @@ import yeti.environments.YetiTestManager;
 
 /**
  * Class that represents a testing strategy. 
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public abstract class YetiStrategy {
 

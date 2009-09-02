@@ -3,10 +3,8 @@ package yeti;
 
 /**
  * Class that represents a routine in Yeti 
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public abstract class YetiRoutine {
 
@@ -47,14 +45,13 @@ public abstract class YetiRoutine {
 
 
 	/**
-	 * Tracks how many calls were made to this routine. 
+	 * Tracks how many calls were made to this routine.
 	 */
 	public int nTimesCalled = 0;
 
 	/**
 	 * Simple getter for the number of times this routine was called.
-	 * 
-	 * @return the number of times this routine was called.
+	 * @return  the number of times this routine was called.
 	 */
 	public int getnTimesCalled() {
 		return nTimesCalled;
@@ -62,8 +59,7 @@ public abstract class YetiRoutine {
 
 	/**
 	 * Simple Setter for the number of times this routine was called.
-	 * 
-	 * @param nTimesCalled the number of time this routine was called.
+	 * @param nTimesCalled  the number of time this routine was called.
 	 */
 	public void setnTimesCalled(int nTimesCalled) {
 		this.nTimesCalled = nTimesCalled;
@@ -77,14 +73,13 @@ public abstract class YetiRoutine {
 	}
 
 	/**
-	 * Tracks how many successful calls were made to this routine. 
+	 * Tracks how many successful calls were made to this routine.
 	 */
 	public int nTimesCalledSuccessfully = 0;
 
 	/**
 	 * Simple getter for the number of times this routine was called successfully.
-	 * 
-	 * @return the number of times this routine was called successfully.
+	 * @return  the number of times this routine was called successfully.
 	 */
 	public int getnTimesCalledSuccessfully() {
 		return nTimesCalledSuccessfully;
@@ -92,8 +87,7 @@ public abstract class YetiRoutine {
 
 	/**
 	 * Simple Setter for the number of times this routine was called successfully.
-	 * 
-	 * @param nTimesCalledSuccessfully the number of time this routine was called successfully.
+	 * @param nTimesCalledSuccessfully  the number of time this routine was called successfully.
 	 */
 	public void setnTimesCalledSuccessfully(int nTimesCalledSuccessfully) {
 		this.nTimesCalledSuccessfully = nTimesCalledSuccessfully;
@@ -107,14 +101,13 @@ public abstract class YetiRoutine {
 	}
 
 	/**
-	 * Tracks how many unsuccessfully calls were made to this routine. 
+	 * Tracks how many unsuccessfully calls were made to this routine.
 	 */
 	public int nTimesCalledUnsuccessfully = 0;
 
 	/**
 	 * Simple getter for the number of times this routine was called unsuccessfully.
-	 * 
-	 * @return the number of times this routine was called unsuccessfully.
+	 * @return  the number of times this routine was called unsuccessfully.
 	 */
 	public int getnTimesCalledUnsuccessfully() {
 		return nTimesCalledUnsuccessfully;
@@ -122,8 +115,7 @@ public abstract class YetiRoutine {
 
 	/**
 	 * Simple Setter for the number of times this routine was called unsuccessfully.
-	 * 
-	 * @param nTimesCalledSuccessfully the number of time this routine was called unsuccessfully.
+	 * @param nTimesCalledSuccessfully  the number of time this routine was called unsuccessfully.
 	 */
 	public void setnTimesCalledUnsuccessfully(int nTimesCalledUnsuccessfully) {
 		this.nTimesCalledUnsuccessfully = nTimesCalledUnsuccessfully;
@@ -137,14 +129,13 @@ public abstract class YetiRoutine {
 	}
 	
 	/**
-	 * Tracks how many undecidable calls were made to this routine. 
+	 * Tracks how many undecidable calls were made to this routine.
 	 */
 	public int nTimesCalledUndecidable = 0;
 
 	/**
 	 * Simple getter for the number of times this routine was called undecidable.
-	 * 
-	 * @return the number of times this routine was called undecidable.
+	 * @return  the number of times this routine was called undecidable.
 	 */
 	public int getnTimesCalledUndecidable() {
 		return nTimesCalledUndecidable;
@@ -152,8 +143,7 @@ public abstract class YetiRoutine {
 
 	/**
 	 * Simple Setter for the number of times this routine was called undecidable.
-	 * 
-	 * @param nTimesCalledSuccessfully the number of time this routine was called undecidable.
+	 * @param nTimesCalledSuccessfully  the number of time this routine was called undecidable.
 	 */
 	public void setnTimesCalledUndecidable(int nTimesCalledUndecidable) {
 		this.nTimesCalledUndecidable = nTimesCalledUndecidable;
@@ -184,15 +174,14 @@ public abstract class YetiRoutine {
 	 * Makes the effective call (lets return the exceptions and Errors).
 	 * 
 	 * @param arg the arguments of the call.
-	 * @return the logs.
-	 * @throws Throwable 
+	 * @return the logs
+	 * @throws Throwable an exception to tell "make_call" what was the actual error. 
 	 */
 	public abstract String makeEffectiveCall(YetiCard[] arg) throws Throwable;
 
 	/**
 	 * Getter for the name of the routine.
-	 * 
-	 * @return the name of the routine.
+	 * @return  the name of the routine.
 	 */
 	public YetiName getName() {
 		return name;
@@ -225,8 +214,7 @@ public abstract class YetiRoutine {
 
 	/**
 	 * Setter of the name of the routine.
-	 * 
-	 * @param name the name to set.
+	 * @param name  the name to set.
 	 */
 	public void setName(YetiName name) {
 		this.name = name;
@@ -234,8 +222,7 @@ public abstract class YetiRoutine {
 
 	/**
 	 * Getter of the open slots of the routine.
-	 * 
-	 * @return the open slots of the routine.
+	 * @return  the open slots of the routine.
 	 */
 	public YetiType[] getOpenSlots() {
 		return openSlots;
@@ -243,8 +230,7 @@ public abstract class YetiRoutine {
 
 	/**
 	 * Setter of the open slots.
-	 * 
-	 * @param openSlots the slots that are open on the routine.
+	 * @param openSlots  the slots that are open on the routine.
 	 */
 	public void setOpenSlots(YetiType[] openSlots) {
 		this.openSlots = openSlots;
@@ -252,8 +238,7 @@ public abstract class YetiRoutine {
 
 	/**
 	 * Getter of the module where the routine is defined.
-	 * 
-	 * @return the module where the routine is defined.
+	 * @return  the module where the routine is defined.
 	 */
 	public YetiModule getOriginatingModule() {
 		return originatingModule;
@@ -261,8 +246,7 @@ public abstract class YetiRoutine {
 
 	/**
 	 * Setter of the defining module of the routine.
-	 * 
-	 * @param originatingModule the module where the routine is defined.
+	 * @param originatingModule  the module where the routine is defined.
 	 */
 	public void setOriginatingModule(YetiModule originatingModule) {
 		this.originatingModule = originatingModule;
@@ -270,8 +254,7 @@ public abstract class YetiRoutine {
 
 	/**
 	 * Get the return type of the routine.
-	 * 
-	 * @return the return type of the routine.
+	 * @return  the return type of the routine.
 	 */
 	public YetiType getReturnType() {
 		return returnType;
@@ -279,8 +262,7 @@ public abstract class YetiRoutine {
 
 	/**
 	 * Setter for the return type of the routine.
-	 * 
-	 * @param returnType the return type to set.
+	 * @param returnType  the return type to set.
 	 */
 	public void setReturnType(YetiType returnType) {
 		this.returnType = returnType;

@@ -13,10 +13,8 @@ import yeti.environments.YetiSecurityException;
 
 /**
  * Class that represents the initialiser for Java.
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public class YetiJavaInitializer extends YetiInitializer {
 

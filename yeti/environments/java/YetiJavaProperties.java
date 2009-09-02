@@ -7,10 +7,8 @@ import yeti.environments.YetiTestManager;
 
 /**
  * Class that represents the Java specific properties 
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public class YetiJavaProperties extends YetiProgrammingLanguageProperties {
 
@@ -29,6 +27,13 @@ public class YetiJavaProperties extends YetiProgrammingLanguageProperties {
 	 */
 	protected YetiLogProcessor logProcessor = null;
 	
+	/**
+	 * A simple constructor for the Java properties.
+	 * 
+	 * @param initializer the initializer for the Java session.
+	 * @param testManager the test manager for the session.
+	 * @param logProcessor the log processor for the session.
+	 */
 	public YetiJavaProperties(YetiInitializer initializer, YetiTestManager testManager, YetiLogProcessor logProcessor) {
 		this.initializer = initializer;
 		this.testManager = testManager;

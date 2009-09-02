@@ -3,12 +3,9 @@ package yeti;
 import java.util.HashMap;
 
 /**
- * Class that represents a unit of testing. Typically for Java this would be a class or a package, for C a header file.
- * A module contains a list of routines to test. The strategy will iterate through them.
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * Class that represents a unit of testing. Typically for Java this would be a class or a package, for C a header file. A module contains a list of routines to test. The strategy will iterate through them.
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public class YetiModule {
 	
@@ -24,8 +21,7 @@ public class YetiModule {
 	
 	/**
 	 * Gets the modules from which it was combined.
-	 * 
-	 * @return the array containing all modules, null if not composed.
+	 * @return  the array containing all modules, null if not composed.
 	 */
 	public YetiModule[] getCombiningModules() {
 		return combiningModules;
@@ -33,8 +29,7 @@ public class YetiModule {
 
 	/**
 	 * Sets the modules that were combined to obtain this one. 
-	 * 
-	 * @param combiningModules the array of combined modules.
+	 * @param combiningModules  the array of combined modules.
 	 */
 	public void setCombiningModules(YetiModule[] combiningModules) {
 		this.combiningModules = combiningModules;
@@ -104,8 +99,7 @@ public class YetiModule {
 	
 	/**
 	 * Getter for the module name.
-	 * 
-	 * @return the module name.
+	 * @return  the module name.
 	 */
 	public String getModuleName(){
 		return moduleName;
@@ -113,8 +107,7 @@ public class YetiModule {
 
 	/**
 	 * Setter for the module name.
-	 * 
-	 * @param name the name to set.
+	 * @param name  the name to set.
 	 */
 	public void setModuleName(String name){
 		moduleName=name;

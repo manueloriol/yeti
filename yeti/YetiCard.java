@@ -2,12 +2,9 @@ package yeti;
 
 
 /**
- * Class that represents cards. A card is a placeholder either for variables or wildcards.
- * A wildcard for example, can be used to generate primitive types values on-the-fly.
- * 
- * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Jun 22, 2009
- *
+ * Class that represents cards. A card is a placeholder either for variables or wildcards. A wildcard for example, can be used to generate primitive types values on-the-fly.
+ * @author  Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date  Jun 22, 2009
  */
 public class YetiCard {
 	
@@ -28,8 +25,7 @@ public class YetiCard {
 	
 	/**
 	 * Getter for the identity.
-	 * 
-	 * @return the identity of the card.
+	 * @return  the identity of the card.
 	 */
 	public YetiIdentifier getIdentity(){
 		return identity;
@@ -37,8 +33,7 @@ public class YetiCard {
 	
 	/**
 	 * Getter for the type.
-	 * 
-	 * @return the type of this card.
+	 * @return  the type of this card.
 	 */
 	public YetiType getType(){
 		return type;
@@ -47,8 +42,7 @@ public class YetiCard {
 	
 	/**
 	 * Getter for the value of this card.
-	 * 
-	 * @return the value of the card.
+	 * @return  the value of the card.
 	 */
 	public Object getValue(){
 		return value;
@@ -80,8 +74,7 @@ public class YetiCard {
 
 	/**
 	 * Setter for the identity of the card
-	 * 
-	 * @param identity the identity of the card
+	 * @param identity  the identity of the card
 	 */
 	public void setIdentity(YetiIdentifier identity) {
 		this.identity = identity;
@@ -89,8 +82,7 @@ public class YetiCard {
 
 	/**
 	 * Setter for the type of the card.
-	 * 
-	 * @param type the type of the card.
+	 * @param type  the type of the card.
 	 */
 	public void setType(YetiType type) {
 		this.type = type;
@@ -98,8 +90,7 @@ public class YetiCard {
 
 	/**
 	 * Setter for the value of the card.
-	 * 
-	 * @param value the value of the card.
+	 * @param value  the value of the card.
 	 */
 	public void setValue(Object value) {
 		this.value = value;
