@@ -3,6 +3,7 @@ package yeti.monitoring;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -17,7 +18,7 @@ import yeti.YetiRoutine;
  * @author  Manuel Oriol (manuel@cs.york.ac.uk)
  * @date  Sep 2, 2009
  */
-public class YetiRoutineGraph extends JPanel {
+public class YetiRoutineGraph extends JPanel implements YetiUpdatable {
 
 	/**
 	 * The routine to read data from.
@@ -88,8 +89,12 @@ public class YetiRoutineGraph extends JPanel {
 	public YetiRoutineGraph(YetiRoutine yt) {
 		super();
 		this.yt = yt;
-		this.name = yt.toString();
+		this.name = yt.getSignature();
 		this.setBackground(Color.white);
+		
+		// we set a tooltip at the beginning to activate the functionality.
+		// the actual tooltip will be decided by the getToolTip method.
+		this.setToolTipText(this.name+" // Passed: "+(int)this.passed+", Undecided: "+(int)this.inconclusive+", Failed: "+(int)this.failed);
 	}
 
 	/* (non-Javadoc)
@@ -98,17 +103,32 @@ public class YetiRoutineGraph extends JPanel {
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 	 */
 	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
+		// this is not useful:
+		//		super.paintComponent(g);
 		// we get the graph component
 		Graphics2D g2 = (Graphics2D)g;
 		// we get the size of the area to paint 
 		double w = getWidth();
 		double h = getHeight();
+		// we paint the background
+		g2.setPaint(Color.white);
+		g2.fill(new Rectangle2D.Double(0,0,w, h));
 		// we draw the name of the routine
+		g2.setPaint(Color.black);
 		g2.drawString(name, leftBorder , this.topBorder-5);
-		int nDigits=(int)Math.floor(Math.log10(this.total))+1;
-		g2.drawString(((int)this.total)+"", (int) (w-rightBorder-(nDigits*7)-1), this.topBorder-5);
 
+		// we draw the number of calls
+		int nDigits=(int)Math.floor(Math.log10(this.total))+1;
+		// first we mask a part of the name that was shown before
+		int xString = (int) (w-rightBorder-(nDigits*7.5)-1);
+		int yString = this.topBorder-5;
+		g2.setPaint(Color.white);
+		g2.fill(new Rectangle2D.Double( xString-5, yString-10,w-rightBorder, 15));
+		// then we write the number
+		g2.setPaint(Color.black);
+		g2.drawString(((int)this.total)+"", xString , yString);
+
+		
 		// we draw the boxes
 		double xMin = this.leftBorder;
 		double yMin = this.topBorder;
@@ -128,10 +148,20 @@ public class YetiRoutineGraph extends JPanel {
 			g2.fill(new Rectangle2D.Double( x1+x2+xMin, yMin, x3, yMax));
 
 		} else {
+			// if there was no call we draw only one box
 			g2.fill(new Rectangle2D.Double( xMin, yMin, xMax, yMax));
 		}
 	}
 
+	/* (non-Javadoc)
+	 * Returns a custom tooltip
+	 * 
+	 * @see javax.swing.JComponent#getToolTipText()
+	 */
+	@Override
+	public String getToolTipText(MouseEvent event) {
+		return this.name+" // Passed: "+(int)this.passed+", Undecided: "+(int)this.inconclusive+", Failed: "+(int)this.failed;
+	}
 	/**
 	 * Call this method to update the component.
 	 * 

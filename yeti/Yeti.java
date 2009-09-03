@@ -32,6 +32,7 @@ import yeti.environments.java.YetiJavaPrefetchingLoader;
 import yeti.environments.java.YetiJavaProperties;
 import yeti.environments.java.YetiJavaTestManager;
 import yeti.environments.jml.YetiJMLPrefetchingLoader;
+import yeti.monitoring.YetiGUI;
 import yeti.monitoring.YetiGUIFaultsOverTime;
 import yeti.monitoring.YetiGUINumberOfCallsOverTime;
 import yeti.monitoring.YetiGUINumberOfFailuresOverTime;
@@ -48,6 +49,12 @@ import yeti.strategies.YetiRandomStrategy;
  * @date  Jun 22, 2009
  */
 public class Yeti {
+
+	
+	/**
+	 * The main gui for Yeti.
+	 */
+	public static YetiGUI gui =null;
 
 	/**
 	 * The properties of the programming language.
@@ -96,7 +103,7 @@ public class Yeti {
 	 * -instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.<br>
 	 * -tracesOutputFile=X : the file where to output traces on disk<br>
 	 * -tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').
-	 * -printNumberOfCallsPerMehtod : prints the number of calls per method.<br>
+	 * -printNumberOfCallsPerMethod : prints the number of calls per method.<br>
 	 * @param args the arguments of the program
 	 */
 	public static void main (String[] args) {
@@ -123,7 +130,7 @@ public class Yeti {
 		boolean isNoLogs = false;
 		boolean isRandomPlus = false;
 		boolean showMonitoringGui = false;
-		boolean printNumberOfCallsPerMehtod = false;
+		boolean printNumberOfCallsPerMethod = false;
 		int nTests=0;
 		String []modulesToTest=null;
 		int callsTimeOut=75;
@@ -145,7 +152,6 @@ public class Yeti {
 				continue;
 			}
 			// if JML
-			//TODO somebody could also set -java
 			if (s0.toLowerCase().equals("-jml")) {
 				isJML = true;
 				continue;
@@ -293,8 +299,8 @@ public class Yeti {
 			}
 
 			// If we want to gather the number of calls per method
-			if (s0.equals("-printNumberOfCallsPerMehtod")) {
-				printNumberOfCallsPerMehtod = true;
+			if (s0.equals("-printNumberOfCallsPerMethod")) {
+				printNumberOfCallsPerMethod = true;
 				continue;	
 			}
 
@@ -476,14 +482,8 @@ public class Yeti {
 			YetiLog.proc=new YetiGUINumberOfVariablesOverTime(new YetiGUINumberOfFailuresOverTime(new YetiGUINumberOfCallsOverTime(new YetiGUIFaultsOverTime(pl.getLogProcessor(),100),100),100),100);
 
 			//The routine tracker
-			
-/**			JFrame f = new JFrame();
-			f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			YetiRoutineGraph graph = new YetiRoutineGraph(mod.getRoutineAtRandom());
-			f.add(graph);
-			f.setSize(400,200);
-			f.setLocation(200,200);
-			f.setVisible(true);**/
+			YetiGUI g = new YetiGUI(100);
+
 			
 		} else {
 			YetiLog.proc=pl.getLogProcessor();
@@ -539,7 +539,7 @@ public class Yeti {
 			Yeti.outputTracesToFile(logProcessor.listOfNewErrors, tracesOutputFile,logProcessor.numberOfNonErrors);
 		}
 		
-		if (printNumberOfCallsPerMehtod) {
+		if (printNumberOfCallsPerMethod) {
 			System.out.println("Trace of number of calls per method:");
 			for (YetiRoutine r: Yeti.testModule.routinesInModule.values()) {
 				System.out.println(r.getSignature()+": Called: "+r.getnTimesCalled()+", Successfully: "+r.getnTimesCalledSuccessfully()+", Undecidable: "+r.getnTimesCalledUndecidable()+", Unsuccessfully: "+r.getnTimesCalledUnsuccessfully());
