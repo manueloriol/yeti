@@ -33,10 +33,10 @@ import yeti.environments.java.YetiJavaProperties;
 import yeti.environments.java.YetiJavaTestManager;
 import yeti.environments.jml.YetiJMLPrefetchingLoader;
 import yeti.monitoring.YetiGUI;
-import yeti.monitoring.YetiGUIFaultsOverTime;
-import yeti.monitoring.YetiGUINumberOfCallsOverTime;
-import yeti.monitoring.YetiGUINumberOfFailuresOverTime;
-import yeti.monitoring.YetiGUINumberOfVariablesOverTime;
+import yeti.monitoring.YetiGraphFaultsOverTime;
+import yeti.monitoring.YetiGraphNumberOfCallsOverTime;
+import yeti.monitoring.YetiGraphNumberOfFailuresOverTime;
+import yeti.monitoring.YetiGraphNumberOfVariablesOverTime;
 import yeti.monitoring.YetiGraph;
 import yeti.monitoring.YetiRoutineGraph;
 import yeti.strategies.YetiRandomPlusStrategy;
@@ -479,10 +479,10 @@ public class Yeti {
 
 		// Creating the log processor
 		if (showMonitoringGui) {
-			YetiLog.proc=new YetiGUINumberOfVariablesOverTime(new YetiGUINumberOfFailuresOverTime(new YetiGUINumberOfCallsOverTime(new YetiGUIFaultsOverTime(pl.getLogProcessor(),100),100),100),100);
-
+			YetiLog.proc=pl.getLogProcessor();
+			
 			//The routine tracker
-			YetiGUI g = new YetiGUI(100);
+			gui = new YetiGUI(100);
 
 			
 		} else {

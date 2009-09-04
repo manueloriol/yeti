@@ -21,6 +21,11 @@ import yeti.YetiRoutine;
 public class YetiRoutineGraph extends JPanel implements YetiUpdatable {
 
 	/**
+	 * The color of the background of this graph.
+	 */
+	Color backgroundColor = Color.white;
+	
+	/**
 	 * The routine to read data from.
 	 */
 	YetiRoutine yt = null;
@@ -94,7 +99,7 @@ public class YetiRoutineGraph extends JPanel implements YetiUpdatable {
 		
 		// we set a tooltip at the beginning to activate the functionality.
 		// the actual tooltip will be decided by the getToolTip method.
-		this.setToolTipText(this.name+" // Passed: "+(int)this.passed+", Undecided: "+(int)this.inconclusive+", Failed: "+(int)this.failed);
+		this.setToolTipText(this.name+" // Passed: "+(int)this.passed+" , Undecided: "+(int)this.inconclusive+", Failed: "+(int)this.failed);
 	}
 
 	/* (non-Javadoc)
@@ -111,7 +116,7 @@ public class YetiRoutineGraph extends JPanel implements YetiUpdatable {
 		double w = getWidth();
 		double h = getHeight();
 		// we paint the background
-		g2.setPaint(Color.white);
+		g2.setPaint(this.backgroundColor);
 		g2.fill(new Rectangle2D.Double(0,0,w, h));
 		// we draw the name of the routine
 		g2.setPaint(Color.black);
@@ -160,7 +165,11 @@ public class YetiRoutineGraph extends JPanel implements YetiUpdatable {
 	 */
 	@Override
 	public String getToolTipText(MouseEvent event) {
-		return this.name+" // Passed: "+(int)this.passed+", Undecided: "+(int)this.inconclusive+", Failed: "+(int)this.failed;
+		if (this.total==0)
+			return this.name+" // Passed: "+(int)this.passed+", Undecided: "+(int)this.inconclusive+", Failed: "+(int)this.failed;
+		else 
+			return this.name+" // Passed: "+(int)this.passed+" ("+Math.round(this.passed/this.total*100)+"%), Undecided: "+(int)this.inconclusive+" ("+Math.round(this.inconclusive/this.total*100)+"%), Failed: "+(int)this.failed+" ("+Math.round(this.failed/this.total*100)+"%)";
+			
 	}
 	/**
 	 * Call this method to update the component.

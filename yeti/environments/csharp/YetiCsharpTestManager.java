@@ -72,6 +72,8 @@ public class YetiCsharpTestManager extends YetiTestManager {
 	 */
 	@Override
 	public void stopTesting() {
+		// we call the parent
+		super.stopTesting();
 
 		YetiServerSocket.sendData("! STOP TESTING !");
 		@SuppressWarnings("unused")

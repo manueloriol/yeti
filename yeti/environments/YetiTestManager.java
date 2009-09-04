@@ -1,5 +1,6 @@
 package yeti.environments;
 
+import yeti.Yeti;
 import yeti.YetiModule;
 import yeti.YetiStrategy;
 
@@ -54,7 +55,11 @@ public abstract class YetiTestManager {
 	 * Stop the testing. Especially useful in multithreaded environment.
 	 * 
 	 */
-	public void stopTesting() {};
+	public void stopTesting() {
+		if (Yeti.gui!=null) {
+			Yeti.gui.stopRoutine();
+		}
+	};
 	
 
 }

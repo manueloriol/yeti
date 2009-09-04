@@ -2,6 +2,8 @@ package yeti;
 
 import java.util.HashMap;
 
+import yeti.environments.YetiLoader;
+
 /**
  * Class that represents a variable in Yeti. 
  * 
@@ -15,7 +17,7 @@ public class YetiVariable extends YetiCard{
 	 * The probability to use a null value instead of a normal value.
 	 */
 	public static double PROBABILITY_TO_USE_NULL_VALUE = .01;
-	
+
 	/**
 	 * Contains all variables available.
 	 */
@@ -25,8 +27,8 @@ public class YetiVariable extends YetiCard{
 	 * The number of variables created in the system (instances used for testing)
 	 */
 	public static long nVariables = 0;
-	
-	
+
+
 	/**
 	 * Creates a variable in Yeti. Note that the creation procedure automatically adds 
 	 * the instance to the types it has.
@@ -41,13 +43,12 @@ public class YetiVariable extends YetiCard{
 		allId.put(id.value, this);
 		YetiLog.printDebugLog("type: "+type, this);
 		// if the type was not created before we create it on the fly
-// TODO this is innocuously removed
-//		if (type==null){
-//			YetiLog.printDebugLog("value's type: "+value.getClass().getName(), this);
-//			YetiLoader.yetiLoader.addDefinition(value.getClass());
-//			this.type=YetiType.allTypes.get(value.getClass().getName());
-//			
-//		}
+		if (type==null){
+			YetiLog.printDebugLog("value's type: "+value.getClass().getName(), this);
+			YetiLoader.yetiLoader.addDefinition(value.getClass());
+			this.type=YetiType.allTypes.get(value.getClass().getName());
+
+		}
 		YetiLog.printDebugLog("type: "+this.type.name, this);
 		// we add the instance to the type
 		this.type.addInstance(this);
@@ -80,7 +81,7 @@ public class YetiVariable extends YetiCard{
 		this.identity = id;
 	}
 
-	
+
 	/* (non-Javadoc)
 	 * Getter for the type.
 	 * 

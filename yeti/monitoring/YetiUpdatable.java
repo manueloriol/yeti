@@ -9,6 +9,9 @@ package yeti.monitoring;
  */
 public interface YetiUpdatable {
 	
+	/**
+	 * Method to update values.
+	 */
 	public void updateValues();
 
 }

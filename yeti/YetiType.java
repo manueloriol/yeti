@@ -105,6 +105,7 @@ public class YetiType {
 			t.addInstance(v);
 	}
 	
+	
 	/**
 	 * Removes an instance to the type in question and all supertypes
 	 *
@@ -222,6 +223,7 @@ public class YetiType {
 	 * @return  the vector of interesting values.
 	 */
 	public Vector<Object> getInterestingValues() {
+		
 		return interestingValues;
 	}
 
@@ -248,7 +250,7 @@ public class YetiType {
 	/**
 	 * Returns an interesting value and removes it from the list of interesting values.
 	 * 
-	 * @param interestingValue the value to add.
+	 * @param interestingValue the interesting value.
 	 */
 	public Object removeInterestingValue() {
 		if (interestingValues.size()==1) 		
@@ -257,6 +259,16 @@ public class YetiType {
 		return this.interestingValues.remove(interestingValues.size()-1);
 	}
 
+	/**
+	 * Returns an interesting value and does not remove it from the list of interesting values.
+	 * 
+	 * @param interestingValue the interesting value.
+	 */
+	public Object getRandomInterestingValue() {
+		double d=Math.random();
+		int i=(int) Math.floor(d*this.interestingValues.size());
+		return this.interestingValues.get(i);
+	}
 	/**
 	 * A simple setter to say that a type has interesting values.
 	 * @param hasInterestingValues  true if it has interesting values, false otherwise.

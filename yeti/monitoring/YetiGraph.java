@@ -19,7 +19,7 @@ import yeti.YetiLog;
  *
  */
 @SuppressWarnings({ "serial", "unchecked" })
-public class YetiGraph extends JPanel {
+public class YetiGraph extends JPanel implements YetiUpdatable, YetiSamplable{
 
 	/**
 	 * The list of points.
@@ -137,8 +137,6 @@ public class YetiGraph extends JPanel {
 		// we add the point to the graph
 		series[0].add(x);
 		series[1].add(y);
-		// we repaint the component
-		repaint();
 	}
 
 	/**
@@ -157,6 +155,24 @@ public class YetiGraph extends JPanel {
 		this.setBackground(Color.white);
 		series[0] = new ArrayList<Double>();
 		series[1] = new ArrayList<Double>();
+	}
+	
+	/* (non-Javadoc)
+	 * Update this component.
+	 * 
+	 * @see yeti.monitoring.YetiUpdatable#updateValues()
+	 */
+	public void updateValues() {
+		repaint();
+	}
+	
+	/* (non-Javadoc)
+	 * Method to rewrite when subclassing this class.
+	 * 
+	 * @see yeti.monitoring.YetiSamplable#sample()
+	 */
+	public void sample() {
+		
 	}
 
 

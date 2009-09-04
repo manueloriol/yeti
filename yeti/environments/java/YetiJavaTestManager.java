@@ -291,7 +291,8 @@ public class YetiJavaTestManager extends YetiTestManager {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void stopTesting() {
-
+		// we call the parent
+		super.stopTesting();
 		// we offset the timeout time.
 		long timeout = getTimeoutInMilliseconds()/10;
 		if (timeout>50L) {
