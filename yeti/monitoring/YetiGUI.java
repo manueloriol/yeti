@@ -45,6 +45,7 @@ public class YetiGUI implements Runnable {
 	 */
 	public void stopRoutine() {
 		this.isToUpdate = false;
+		this.sampler.setToUpdate(false);
 	}
 
 	/**
