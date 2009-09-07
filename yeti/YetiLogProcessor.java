@@ -92,6 +92,21 @@ public abstract class YetiLogProcessor {
 	 */
 	public int numberOfNonErrors = 0;
 
+	
+	/**
+	 * The list of non-errors initially loaded.
+	 */
+	public HashMap<String,Object> listOfNonErrors = null;
+
+	/**
+	 * A simple routine to check that a trace is in the list of non-errors.
+	 * 
+	 * @param trace the trace to check
+	 * @return true if it is in it.
+	 */
+	public boolean isInListOfNonErrors(String trace) {
+		return listOfNonErrors.containsKey(trace);
+	}
 	/**
 	 * Constructor of the YetiLogProcessor.
 	 */
@@ -102,11 +117,13 @@ public abstract class YetiLogProcessor {
 	/**
 	 * Constructor of the YetiLogProcessor with an initial list of errors.
 	 */
+	@SuppressWarnings("unchecked")
 	public YetiLogProcessor(HashMap<String,Object> listOfErrors) {
 		super();
 		if (listOfErrors!=null) {
 			this.listOfErrors = listOfErrors;
 			this.numberOfNonErrors = listOfErrors.size();
+			this.listOfNonErrors = (HashMap<String, Object>)(listOfErrors.clone());
 			YetiLog.printDebugLog("NumberOfNonErrors = "+this.numberOfNonErrors, this);
 		}
 	}
@@ -276,4 +293,15 @@ public abstract class YetiLogProcessor {
 	public HashMap<String,Object> getListOfErrors() {
 		return this.listOfErrors;
 	}	
+	
+	/**
+	 * Return true if the error is a real error.
+	 * 
+	 * @param t the Throwable that might be a real error
+	 * @return true if this is a real error.
+	 */
+	public boolean isAccountableFailure(Throwable t) {
+		return true;
+	}
+	
 }

@@ -1,8 +1,10 @@
 package yeti.environments.java;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 import java.util.HashMap;
 
+import yeti.Yeti;
 import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiLog;
@@ -52,7 +54,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 	 */
 	@Override
 	public boolean checkArguments(YetiCard[] arg) {
-			
+
 		return true;
 	}
 
@@ -87,7 +89,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 			// we first print the log
 			YetiLog.printYetiLog(log+");", this);
 			// then print the exception
-			if ((e.getCause() instanceof RuntimeException && !isAcceptable(e.getCause())) || e.getCause() instanceof Error  ) {
+			if ((e.getCause() instanceof RuntimeException  || e.getCause() instanceof Error) && !isAcceptable(e.getCause())) {
 				if (e.getCause() instanceof ThreadDeath) {
 					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
 					this.incnTimesCalledUndecidable();
@@ -96,8 +98,15 @@ public class YetiJavaRoutine extends YetiRoutine {
 						YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: "+e.getCause().getMessage()+" **/", this);
 						this.incnTimesCalledUndecidable();
 					} else {
-						YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
-						this.incnTimesCalledUnsuccessfully();
+						if (YetiLog.isAccountableFailure(e.getCause())) {
+							YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
+							this.incnTimesCalledUnsuccessfully();
+							e.getCause().printStackTrace();
+						}
+						else {
+							YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
+							this.incnTimesCalledSuccessfully();
+						}
 					}
 				}
 				YetiLog.printYetiThrowable(e.getCause(), this,true);
@@ -111,9 +120,16 @@ public class YetiJavaRoutine extends YetiRoutine {
 			// if we are here there was a serious error
 			// we print it
 			YetiLog.printYetiLog(log+");", this);
-			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
-			YetiLog.printYetiThrowable(e.getCause(), this,true);
-			this.incnTimesCalledUnsuccessfully();
+			if (!YetiLog.isAccountableFailure(e.getCause())) {
+				YetiLog.printYetiLog("/**BUG FOUND: ERROR**/", this);
+				YetiLog.printYetiThrowable(e.getCause(), this,true);
+				this.incnTimesCalledUnsuccessfully();
+			}
+			else {
+				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
+				YetiLog.printYetiThrowable(e.getCause(), this,true);
+				this.incnTimesCalledSuccessfully();
+			}
 		}
 		catch (Throwable e){
 			// should never happen
@@ -121,13 +137,13 @@ public class YetiJavaRoutine extends YetiRoutine {
 		}
 		return this.lastCallResult;
 	}
-	
+
 	/**
 	 * A hashmap of acceptable exception types.
 	 */
 	@SuppressWarnings("unchecked")
 	public HashMap <String, Class> acceptableExceptionTypes = new HashMap <String, Class>();
-	
+
 	/**
 	 * @return  the types of exceptions that are considered "acceptable"
 	 */
@@ -150,7 +166,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 			YetiLog.printDebugLog(e.getMessage(), this);
 		}
 	}
-	
+
 	/**
 	 * This method returns true if and only if the throwable 
 	 * is considered acceptable for the routine.
@@ -164,11 +180,11 @@ public class YetiJavaRoutine extends YetiRoutine {
 		if (acceptableExceptionTypes.isEmpty()) return false;
 		// for all classes, we check that the Throwable is not an instance 
 		// of a subclass of an acceptable Throwable
-		
+
 		YetiLog.printDebugLog("Class of the cause of the Throwable: "+cause.getClass().getName()+ "for method: "+this.getName().getValue(), this);
 		for (Class c: acceptableExceptionTypes.values()) {
 			YetiLog.printDebugLog("Matching: _"+c.getName()+ "_ with: _"+cause.getClass().getName(), this);
-			
+
 			if (c.getName().equals(cause.getClass().getName())) return true;
 		}
 		return false;

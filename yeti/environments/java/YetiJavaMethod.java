@@ -126,6 +126,14 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		String prefix;
 		boolean isValue= false;
 
+		// use this to monitor a method if needed...
+//		boolean isIndexOf = false;
+//		int k = 0;
+//		if (this.toString().equals("indexOf")) {
+//			isIndexOf=true;
+//		}
+//		YetiLog.printDebugLog("indexOf "+k++, this, isIndexOf);
+		
 		// if the method is static, we need to adjust the arguments
 		// there is no target in the open slots.
 		if (isStatic){
@@ -136,10 +144,13 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			prefix = arg[0].getIdentity().toString();
 		}
 
+
 		Object []initargs=new Object[length];
 		// we start generating the log as well as the identifier to use to store the 
 		// result if there is one.
 		YetiIdentifier id=null;
+
+
 		if (method.getReturnType()!= void.class) {
 			// if there is a result to be expected
 			YetiLog.printDebugLog("return type is "+method.getReturnType().getName(), this);
@@ -174,11 +185,12 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		if (isStatic){
 			offset=0;
 		} else {
-			target= arg[0].getValue();			
+			target= arg[0].getValue();
 		}
+
 		for (int i = offset;i<arg.length; i++){
 			// if we should replace it by a null value, we do it
-			if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&&!(((YetiJavaSpecificType)arg[i].getType()).isSimpleType())) {
+			if ((YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random())&&!(((YetiJavaSpecificType)arg[i].getType()).isSimpleType())) {
 				initargs[i-offset]=null;
 				log=log+"null";
 			} else {
@@ -191,16 +203,17 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 
 		}
 
+
 		// we  make the call
 		if (target!=null)
-			YetiLog.printDebugLog("trying to call "+method.getName()+" on a "+target.getClass().getName(), this);
+			YetiLog.printDebugLog("trying to call "+method.getName()+" on a "+target.getClass().getName()+", target ="+target, this);
 		else 
 			YetiLog.printDebugLog("trying to call statically "+method.getName()+" of "+method.getDeclaringClass().getName(), this);				
 
 		Object o=null;
 		try {
 			o = method.invoke(target,initargs);
-		} catch (Throwable t) {
+		} catch (Throwable t) {	
 			throw new YetiCallException(log,t);
 		}
 
@@ -211,6 +224,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		if (id!=null&&o!=null){
 			this.lastCallResult=new YetiVariable(id, returnType, o);
 		}
+
 		// if this is a value, we print it directly
 		if (isValue) {
 			// we escape the values
@@ -289,6 +303,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		}
 		else
 			log=log+");";
+		
 		// finally we print the log.
 		YetiLog.printYetiLog(log, this);
 		return log;

@@ -130,7 +130,10 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 		// we add all methods
 		Method[] methods = clazz.getMethods();
 		for (Method method: methods){
+			
+			if (method.isSynthetic()) continue;
 			boolean usable = true;
+			
 			Class []classes=method.getParameterTypes();
 		
 			// check if method is static

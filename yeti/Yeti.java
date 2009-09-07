@@ -206,7 +206,7 @@ public class Yeti {
 			if (s0.startsWith("-probabilityToUseNullValue=")) {
 				int size = s0.length();
 				// if the time value is in seconds
-				YetiVariable.PROBABILITY_TO_USE_NULL_VALUE=(Integer.parseInt(s0.substring(27, size)))/100d;
+				YetiVariable.PROBABILITY_TO_USE_NULL_VALUE=((double)Integer.parseInt(s0.substring(27, size)))/100d;
 				if ((YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>1.0)||(YetiVariable.PROBABILITY_TO_USE_NULL_VALUE<0)) {
 					Yeti.printHelp();
 					return;
@@ -659,7 +659,7 @@ public class Yeti {
 				// e.printStackTrace();
 			}
 		}
-		YetiLog.printDebugLog("Imported "+result.size()+" traces", Yeti.class,true);
+		System.out.println("/** Yeti imported "+result.size()+" traces **/");
 		return result;
 
 	}

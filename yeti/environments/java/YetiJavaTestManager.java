@@ -318,7 +318,7 @@ public class YetiJavaTestManager extends YetiTestManager {
 			// e.printStackTrace();
 		}
 
-		YetiLog.printDebugLog(" nThreadStarted: "+nThreadsStarted+" nThreadStopped: "+nThreadsStopped, this, true);
+		System.out.println("/** Yeti Threads::  nThreadStarted: "+nThreadsStarted+" nThreadStopped: "+nThreadsStopped+" **/");
 	}
 
 

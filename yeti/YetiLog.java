@@ -129,4 +129,8 @@ public class YetiLog {
 	}
 
 
+	public static synchronized boolean isAccountableFailure(Throwable t) {
+		return proc.isAccountableFailure(t);
+	}
+
 }
