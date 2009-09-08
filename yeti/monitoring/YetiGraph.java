@@ -68,6 +68,12 @@ public class YetiGraph extends JPanel implements YetiUpdatable, YetiSamplable{
 		// we get the size of the area to paint 
 		double w = getWidth();
 		double h = getHeight();
+		
+		// the step between points
+		int pointStep = 1;
+		if ((w!=0)&&(series[0]!=null)&&(series[0].size()>w))
+			pointStep = (int) (series[0].size()/w);
+		
 		// Draw y-axis.
 		g2.draw(new Line2D.Double(leftBorder, horizontalBorder, leftBorder, h-horizontalBorder));
 		// Draw x-axis.
@@ -106,7 +112,7 @@ public class YetiGraph extends JPanel implements YetiUpdatable, YetiSamplable{
 		try {
 			g2.setPaint(Color.red);
 			int size = series[0].size();
-			for(int i = 0; i < size; i++) {
+			for(int i = 0; i < size; i+=pointStep) {
 				double x = leftBorder + (w-leftBorder-rightBorder)*series[0].get(i)/maxX;
 				double y =  h - horizontalBorder - (h-2*horizontalBorder)*series[1].get(i)/maxY;
 				g2.fill(new Ellipse2D.Double(x-2, y-2, 4, 4));

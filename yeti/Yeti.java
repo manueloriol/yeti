@@ -507,7 +507,7 @@ public class Yeti {
 
 		// for logging purposes
 		if (isTimeout) {
-			System.out.println("\n/** Testing Session finished, time: "+(endTestingTime-startTestingTime)+"ms **/");
+			System.out.println("/** Testing Session finished, time: "+(endTestingTime-startTestingTime)+"ms **/");
 		}
 
 		boolean isProcessed = false;
