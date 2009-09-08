@@ -99,7 +99,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 						if (YetiLog.isAccountableFailure(e.getCause())) {
 							YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
 							this.incnTimesCalledUnsuccessfully();
-							e.getCause().printStackTrace();
+							//e.getCause().printStackTrace();
 						}
 						else {
 							YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
@@ -131,7 +131,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 		}
 		catch (Throwable e){
 			// should never happen
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return this.lastCallResult;
 	}

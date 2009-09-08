@@ -105,7 +105,10 @@ public abstract class YetiLogProcessor {
 	 * @return true if it is in it.
 	 */
 	public boolean isInListOfNonErrors(String trace) {
-		return listOfNonErrors.containsKey(trace);
+		if (listOfNonErrors!=null)
+			return listOfNonErrors.containsKey(trace);
+		else 
+			return false;
 	}
 	/**
 	 * Constructor of the YetiLogProcessor.
