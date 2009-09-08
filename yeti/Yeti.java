@@ -15,7 +15,6 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.swing.JFrame;
 
 import yeti.environments.YetiInitializer;
 import yeti.environments.YetiLoader;
@@ -33,12 +32,6 @@ import yeti.environments.java.YetiJavaProperties;
 import yeti.environments.java.YetiJavaTestManager;
 import yeti.environments.jml.YetiJMLPrefetchingLoader;
 import yeti.monitoring.YetiGUI;
-import yeti.monitoring.YetiGraphFaultsOverTime;
-import yeti.monitoring.YetiGraphNumberOfCallsOverTime;
-import yeti.monitoring.YetiGraphNumberOfFailuresOverTime;
-import yeti.monitoring.YetiGraphNumberOfVariablesOverTime;
-import yeti.monitoring.YetiGraph;
-import yeti.monitoring.YetiRoutineGraph;
 import yeti.strategies.YetiRandomPlusStrategy;
 import yeti.strategies.YetiRandomStrategy;
 
@@ -668,7 +661,7 @@ public class Yeti {
 	 * This is a simple help printing utility function.
 	 */
 	public static void printHelp() {
-		System.out.println("Yeti Usage:\n java yeti.Yeti [-java|-Java] [[-time=Xs|-time=Xmn]|[-nTests=X]][-testModules=M1:M2:...:Mn][-help|-h][-rawlog]");
+		System.out.println("Yeti Usage:\n java yeti.Yeti [-java|-Java] [[-time=Xs|-time=Xmn]|[-nTests=X]][-testModules=M1:M2:...:Mn][-help|-h][-rawlogs]");
 		System.out.println("\t-java, -Java : for calling it on Java.");
 		System.out.println("\t-jml, -JML : for calling it on JML annotated code.");
 		System.out.println("\t-dotnet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts.");

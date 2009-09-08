@@ -1,10 +1,8 @@
 package yeti.environments.java;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 import java.util.HashMap;
 
-import yeti.Yeti;
 import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiLog;
