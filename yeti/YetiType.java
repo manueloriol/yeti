@@ -48,8 +48,10 @@ public class YetiType {
 	 */
 	public synchronized void addCreationRoutine(YetiRoutine v){
 		creationRoutines.add(v);
-		for (YetiType t: directSuperTypes.values()) 
+		for (YetiType t: directSuperTypes.values()) {
 			t.addCreationRoutine(v);
+			YetiLog.printDebugLog("Adding creation routine "+v.getName()+" to "+this.getName(),this);
+		}
 	}
 	
 	/**
@@ -309,11 +311,11 @@ public class YetiType {
 	 * Prints all creation routines listed for all types.  
 	 */
 	public static void printCreationProcedureList(){
-		YetiLog.printDebugLog("Constructors per type: ", YetiType.class);			
+		YetiLog.printDebugLog("Constructors per type: ", YetiType.class, true );			
 		for(YetiType yt: YetiType.allTypes.values()){
-			YetiLog.printDebugLog(" "+yt.name+":", YetiType.class);
+			YetiLog.printDebugLog(" "+yt.name+":", YetiType.class, true);
 			for (YetiRoutine r : yt.creationRoutines){
-				YetiLog.printDebugLog("     "+r.name.value, YetiType.class);
+				YetiLog.printDebugLog("     "+r.name.value+r.getSignature(), YetiType.class, true);
 			}
 		}
 	}

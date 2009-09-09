@@ -37,8 +37,6 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	private boolean isSimpleType=false;
 
-
-
 	/**
 	 * Is this type a simple type?
 	 * @return  the fact it is a simple type.
@@ -54,6 +52,31 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	public void setSimpleType(boolean isSimpleType) {
 		this.isSimpleType = isSimpleType;
+	}
+
+
+	/**
+	 * Did it go through the init phase in the custom class loader.
+	 */
+	private boolean isProperlyInitialized=false;
+
+
+	/**
+	 * Simple getter.
+	 * 
+	 * @return true if it went through the proper class loader initialization.
+	 */
+	public boolean isProperlyInitialized() {
+		return isProperlyInitialized;
+	}
+
+	/**
+	 * Simple setter.
+	 * 
+	 * @parameter isProperlyInitialized put true if it went through the proper class loader initialization.
+	 */
+	public void setProperlyInitialized(boolean isProperlyInitialized) {
+		this.isProperlyInitialized = isProperlyInitialized;
 	}
 
 

@@ -1,7 +1,17 @@
 package yeti;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
 import java.util.Vector;
 
 /**
@@ -306,5 +316,118 @@ public abstract class YetiLogProcessor {
 	public boolean isAccountableFailure(Throwable t) {
 		return true;
 	}
+
 	
+	/**
+	 * Method that reads exception traces from a file where they were stored.
+	 * The exceptions are supposed to be of the format:<br>
+	 * "Trace ...\n..."
+	 * 
+	 * The method also supports comments inserted in the form of a line starting with "//"
+	 * 
+	 * @param fileName the file to read
+	 * @return an ArrayList containing all decoded traces 
+	 */
+	public static ArrayList<String> readTracesFromFile(String fileName) {
+		ArrayList<String> result = new ArrayList<String>();
+		BufferedReader br=null;
+		// we first check that the file exists
+		if (new File(fileName).exists()) {
+			try {
+				// we create a reader to read line by line the traces
+				br = new BufferedReader(new FileReader(fileName));
+				boolean isValid = true;
+
+				// we read line by line
+				String currentLine = br.readLine();
+				while(isValid) {
+					if (currentLine==null) 
+						break;
+					// we have to remove comments
+					if (!currentLine.startsWith("//")) {
+						// the first line of the exception trace should start with "Trace "
+						if (currentLine.startsWith("Trace ")) {
+							currentLine=br.readLine();
+							String trace = null;
+							// we read the trace itself
+							while((currentLine!=null)&&!currentLine.startsWith("Trace ")) {
+								if (currentLine.startsWith("\t")) {
+									if (trace == null) {
+										trace = currentLine;
+									} else {
+										trace = trace + "\n" + currentLine;
+									}
+								}
+								currentLine = br.readLine();
+							}
+							// once read we add it to the result
+							result.add(trace);
+							YetiLog.printDebugLog("Imported trace:\n"+trace, Yeti.class);
+						} else {
+							isValid = false;
+						}
+					}else {
+						// in case the file started by a comment
+						currentLine = br.readLine();
+					}
+				}
+			} catch (FileNotFoundException e) {
+				// Should never happen unless somebody removed it between our two tests!!!
+				// e.printStackTrace();
+			} catch (IOException e) {
+				// Should never happen either
+				// e.printStackTrace();
+			}
+		} else {
+			// just in case the file cannot be open, we print a message
+			System.err.println("Trying to read exception trace from "+fileName+": file not found, continuing with execution");
+		}
+		// we close the streams when we are finished
+		if (br!=null) {
+			try {
+				br.close();
+			} catch (IOException e) {
+				// Should never happen
+				// e.printStackTrace();
+			}
+		}
+		System.out.println("/** Yeti imported "+result.size()+" traces **/");
+		return result;
+
+	}
+	/**
+	 * Outputs traces into a file passed as an argument. This method is coded to work with method readTracesFromFile 
+	 * 
+	 * @param listOfErrors the list of errors to output.
+	 * @param fileName the name of the file in which to write them.
+	 */
+	public static void outputTracesToFile(HashMap<String,Object> listOfErrors,String fileName, int nNonErrors) {
+		try {
+			// we open the file
+			PrintStream ps = new PrintStream(fileName);
+
+			// we get our values
+			Iterator<String> traces = listOfErrors.keySet().iterator();
+			Iterator<Object> dates = listOfErrors.values().iterator();
+
+
+			DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
+			// we print all the traces in the file
+			for (int i=0; i<listOfErrors.size();i++) {
+				Object traceDate = dates.next();
+				if (traceDate instanceof Date) {
+					ps.println("Trace "+(i+1+nNonErrors)+" discovered on "+df.format(((Date)traceDate))+":\n"+traces.next());
+				} else {
+					ps.println("Trace "+(i+1+nNonErrors)+" discovered on "+traceDate.toString()+":\n"+traces.next());					
+				}
+			}
+
+			// we close the stream
+			ps.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("Trying to write exception trace to "+fileName+": cannot open or create file");
+		}
+
+	}
+
 }

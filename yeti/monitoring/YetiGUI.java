@@ -2,15 +2,19 @@ package yeti.monitoring;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 
 import yeti.Yeti;
@@ -26,6 +30,15 @@ import yeti.YetiRoutine;
  */
 public class YetiGUI implements Runnable {
 
+	/**
+	 * The dimensions of the screen. 
+	 */
+	Dimension screenDimensions = null;
+
+	/**
+	 * The usable dimensions on the screen. 
+	 */
+	Dimension usableDimensions = null;
 	/**
 	 * The sampler to update the samplable objects.
 	 */
@@ -61,70 +74,31 @@ public class YetiGUI implements Runnable {
 	 */
 	public YetiGUI(long nMSBetweenUpdates) {
 
+		// we set the size of the window to fill in the screen
+		screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();
+		
+		// we set up the dimensions of the tool
+		usableDimensions=new Dimension(screenDimensions.width,screenDimensions.height-100);
+
 		// we create the sampler
 		this.nMSBetweenUpdates = nMSBetweenUpdates;
 		sampler = new YetiSampler(nMSBetweenUpdates);
 
 		// we create the panel with the methods
-		JPanel p = generateMethodPane();
+		JComponent p = this.generateMainPanel();
 		
 		// we create a frame for it and show the frame
 		JFrame f = new JFrame();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.add(new JScrollPane(p),BorderLayout.CENTER);
-		f.setSize(400,400);
-		f.setLocation(1000,200);
+		f.add(p,BorderLayout.CENTER);
+
+		// we set the size
+		f.setSize(screenDimensions);
+		f.setLocation(0,0);
 		f.setVisible(true);
 
 		
-		// we add the number of faults over time	
-		YetiGraph graph0 = new YetiGraphFaultsOverTime(YetiLog.proc,nMSBetweenUpdates);
-		sampler.addSamplable(graph0);
-		this.allComponents.add(graph0);
-
-		JFrame f0 = new JFrame();
-		f0.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f0.add(graph0);
-		f0.setSize(400,200);
-		f0.setLocation(200,200);
-		f0.setVisible(true);
-
-		// we add the number of calls over time
-		YetiGraph graph1 = new YetiGraphNumberOfCallsOverTime(YetiLog.proc,nMSBetweenUpdates);
-		sampler.addSamplable(graph1);
-		this.allComponents.add(graph1);
-
-		JFrame f1 = new JFrame();
-		f1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f1.add(graph1);
-		f1.setSize(400,200);
-		f1.setLocation(600,200);
-		f1.setVisible(true);
-
-		// we add the number of failures over time
-		JFrame f2 = new JFrame();
-		f2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		YetiGraph graph2 = new YetiGraphNumberOfFailuresOverTime(YetiLog.proc,nMSBetweenUpdates);
-		sampler.addSamplable(graph2);
-		this.allComponents.add(graph2);
-
-		f2.add(graph2);
-		f2.setSize(400,200);
-		f2.setLocation(200,400);
-		f2.setVisible(true);
-
-
-		// we add the number of failures over time
-		YetiGraph graph3 = new YetiGraphNumberOfVariablesOverTime(YetiLog.proc,nMSBetweenUpdates);
-		sampler.addSamplable(graph3);
-		this.allComponents.add(graph3);
-
-		JFrame f3 = new JFrame();
-		f3.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f3.add(graph3);
-		f3.setSize(400,200);
-		f3.setLocation(600,400);
-		f3.setVisible(true);
+		
 
 		new Thread(this).start();
 		new Thread(sampler).start();
@@ -133,9 +107,11 @@ public class YetiGUI implements Runnable {
 
 
 	/**
-	 * @return
+	 * A method that generates a panel for monitoring methods.
+	 * 
+	 * @return a panel that has a panel with all methods being tested 
 	 */
-	public JPanel generateMethodPane() {
+	public JComponent generateMethodPane() {
 		JPanel p = new JPanel();
 		p.setLayout(new GridLayout(0,3));
 
@@ -179,7 +155,12 @@ public class YetiGUI implements Runnable {
 			p.add(graph);
 			this.allComponents.add(graph);
 		}
-		return p;
+		
+		
+		JToolBar toolbar = new JToolBar("Method Monitor");
+		toolbar.add(new JScrollPane(p));
+     
+		return toolbar;
 	}
 
 
@@ -207,6 +188,100 @@ public class YetiGUI implements Runnable {
 		}
 	}
 
+	public JPanel generatePropertyPane() {
+		return new JPanel();
+	}
+	
+	public JComponent generateRightSubpanel() {
+		
+		 //Create a split pane with the two scroll panes in it.
+		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+				generateRightCentralSubpanel(), generateLowerRightSubpanel());
+		splitPane.setOneTouchExpandable(true);
+		// reestablish when finalized
+//		splitPane.setDividerLocation(screenDimensions.height-300);
+		splitPane.setDividerLocation(screenDimensions.height);
+		
+		return splitPane;
+	}
+	
+	
+	public JComponent generateRightCentralSubpanel() {
+		
+		// create a panel with methods monitor
+		JPanel pMeth = new JPanel(new BorderLayout());
+		JComponent pMInt = generateMethodPane();
+		// to set up the dimensions to the screen size
+		pMInt.setPreferredSize(this.usableDimensions);
+		pMeth.add(pMInt, BorderLayout.CENTER);
+		
+		 //Create a split pane with the two scroll panes in it.
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+				generateGraphsPane(), pMeth );
+		
+		splitPane.setOneTouchExpandable(true);
+		// reestablish when finalized
+//		splitPane.setDividerLocation(screenDimensions.width-650);
+		splitPane.setDividerLocation(screenDimensions.width-400);
+		
+		return splitPane;
+	}
+	
 
+	public JComponent generateGraphsPane() {
+	
+
+		// we add the number of faults over time	
+		YetiGraph graph0 = new YetiGraphFaultsOverTime(YetiLog.proc,nMSBetweenUpdates);
+		sampler.addSamplable(graph0);
+		this.allComponents.add(graph0);
+		
+		// we add the number of calls over time
+		YetiGraph graph1 = new YetiGraphNumberOfCallsOverTime(YetiLog.proc,nMSBetweenUpdates);
+		sampler.addSamplable(graph1);
+		this.allComponents.add(graph1);
+
+		// we add the number of failures over time
+		YetiGraph graph2 = new YetiGraphNumberOfFailuresOverTime(YetiLog.proc,nMSBetweenUpdates);
+		sampler.addSamplable(graph2);
+		this.allComponents.add(graph2);
+
+
+		// we add the number of failures over time
+		YetiGraph graph3 = new YetiGraphNumberOfVariablesOverTime(YetiLog.proc,nMSBetweenUpdates);
+		sampler.addSamplable(graph3);
+		this.allComponents.add(graph3);
+
+		// the panel containing the graphs
+		JPanel p = new JPanel();
+		p.setLayout(new GridLayout(0,2));
+
+		// we add all the graphs
+		p.add(graph0);
+		p.add(graph1);
+		p.add(graph2);
+		p.add(graph3);
+
+		return p;
+	}
+
+
+	public JComponent generateLowerRightSubpanel() {
+		return new JPanel();
+	}
+
+	public JSplitPane generateMainPanel() {
+		
+		 //Create a split pane with the two scroll panes in it.
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                generatePropertyPane(), generateRightSubpanel());
+		splitPane.setOneTouchExpandable(true);
+		// reestablish when finalized:
+		//	splitPane.setDividerLocation(250);
+		splitPane.setDividerLocation(0);
+		
+		return splitPane;
+
+	}
 
 }
