@@ -16,7 +16,7 @@ public class YetiVariable extends YetiCard{
 	/**
 	 * The probability to use a null value instead of a normal value.
 	 */
-	public static double PROBABILITY_TO_USE_NULL_VALUE = .01;
+	public static double PROBABILITY_TO_USE_NULL_VALUE = .10;
 
 	/**
 	 * Contains all variables available.

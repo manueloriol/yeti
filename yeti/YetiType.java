@@ -14,22 +14,22 @@ public class YetiType {
 	/**
 	 *	True if there is a maximum to the number of instances by default.
 	 */
-	public static boolean defaultTypesHaveCapOnNumberOfDirectInstances = true;
+	public static boolean TYPES_HAVEMAXIMUM_NUMBER_OF_INSTANCES = true;
 	
 	/**
 	 *	The default maximum to the number of instances.
 	 */
-	public static int defaultMaximumNumberOfDirectInstances = 1000;
+	public static int DEFAULT_MAXIMUM_NUMBER_OF_INSTANCES = 1000;
 	
 	/**
-	 *	True if there is a maximum to the number of instances of this type.
+	 *	True if there is a maximum to the number of instances specific to this type.
 	 */
-	public boolean hasMaximumNumberOfDirectInstances;
+	public boolean hasSpecificMaximumNumberOfDirectInstances=false;
 	
 	/**
 	 *	The maximum to the number of instances of this type.
 	 */
-	public int maximumNumberOfDirectInstances;
+	public int specificMaximumNumberOfDirectInstances;
 	
 	/**
 	 * The name of the type. Note that this can be a class name,  a type with a generic instantiation, or an interface.
@@ -97,7 +97,9 @@ public class YetiType {
 		// if there is a cap on the number of instances, we will remove one at random to make room
 		if (v.getType().equals(this)) {
 			// if there is a cap and we got to it
-			if (this.hasMaximumNumberOfDirectInstances&&directInstances.size()>=this.maximumNumberOfDirectInstances) {
+			while ((this.hasSpecificMaximumNumberOfDirectInstances&&directInstances.size()>=this.specificMaximumNumberOfDirectInstances)
+					||((!this.hasSpecificMaximumNumberOfDirectInstances)&&(YetiType.TYPES_HAVEMAXIMUM_NUMBER_OF_INSTANCES
+							&&(directInstances.size()>=YetiType.DEFAULT_MAXIMUM_NUMBER_OF_INSTANCES)))) {
 				this.removeInstance(this.getRandomDirectInstance());
 			}
 			directInstances.add(v);
@@ -181,8 +183,6 @@ public class YetiType {
 	public YetiType(String name){
 		this.name=name;
 		allTypes.put(name, this);
-		this.maximumNumberOfDirectInstances=YetiType.defaultMaximumNumberOfDirectInstances;
-		this.hasMaximumNumberOfDirectInstances = defaultTypesHaveCapOnNumberOfDirectInstances;
 	}
 
 	/**

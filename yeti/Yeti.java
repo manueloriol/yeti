@@ -255,14 +255,14 @@ public class Yeti {
 
 			// we have no limits for the number of instances
 			if (s0.equals("-noInstancesCap")) {
-				YetiType.defaultTypesHaveCapOnNumberOfDirectInstances = true;
+				YetiType.TYPES_HAVEMAXIMUM_NUMBER_OF_INSTANCES = true;
 				continue;	
 			}
 
 
 			// we read a new limit for the number of instances (default is 1000)
 			if (s0.startsWith("-instancesCap=")) {
-				YetiType.defaultMaximumNumberOfDirectInstances=(Integer.parseInt(s0.substring(14)));
+				YetiType.DEFAULT_MAXIMUM_NUMBER_OF_INSTANCES=(Integer.parseInt(s0.substring(14)));
 				continue;	
 			}
 
