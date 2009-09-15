@@ -10,8 +10,6 @@ import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
 
-import com.sun.xml.internal.bind.v2.TODO;
-
 /**
  * Class that represents the Reducer for Yeti to run on cloud. 
  * It will append the result of each MapJob to a file on disk at the output location specified at start of job.
