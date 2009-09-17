@@ -33,6 +33,7 @@ import yeti.environments.java.YetiJavaTestManager;
 import yeti.environments.jml.YetiJMLPrefetchingLoader;
 import yeti.monitoring.YetiGUI;
 import yeti.strategies.YetiRandomPlusStrategy;
+import yeti.strategies.YetiRandomPlusPeriodicProbabilitiesStrategy;
 import yeti.strategies.YetiRandomStrategy;
 
 
@@ -91,11 +92,12 @@ public class Yeti {
 	 * -newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100. <br>
 	 * -probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100 default is 1.<br>
 	 * -randomPlus : uses the random+ strategy that injects interesting values every now and then.<br>
+	 * -randomPlusPeriodic : uses the random+ strategy and periodically change the values of the standard probalilities (null values, new instances, interesting values).<br>
 	 * -gui : shows the standard graphical user interface for monitoring yeti.<br>
 	 * -noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.<br>
 	 * -instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.<br>
 	 * -tracesOutputFile=X : the file where to output traces on disk<br>
-	 * -tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').
+	 * -tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').<br>
 	 * -printNumberOfCallsPerMethod : prints the number of calls per method.<br>
 	 * @param args the arguments of the program
 	 */
@@ -122,6 +124,7 @@ public class Yeti {
 		boolean isRawLog = false;
 		boolean isNoLogs = false;
 		boolean isRandomPlus = false;
+		boolean isRandomPlusPeriodic = false;
 		boolean showMonitoringGui = false;
 		boolean printNumberOfCallsPerMethod = false;
 		int nTests=0;
@@ -252,7 +255,11 @@ public class Yeti {
 				isRandomPlus = true;
 				continue;	
 			}
-
+			// we can use the randomPlus strategy
+			if (s0.equals("-randomPlusPeriodic")) {
+				isRandomPlusPeriodic = true;
+				continue;	
+			}			
 			// we have no limits for the number of instances
 			if (s0.equals("-noInstancesCap")) {
 				YetiType.TYPES_HAVEMAXIMUM_NUMBER_OF_INSTANCES = true;
@@ -309,7 +316,7 @@ public class Yeti {
 			initialListOfErrors = new HashMap<String, Object>();
 			// for each file to use, we read the traces and add them to our initial list
 			for (String fileName: traceInputFiles) {
-				for (String trace: YetiLogProcessor.readTracesFromFile(fileName)) {
+				for (String trace: YetiLog.proc.readTracesFromFile(fileName)) {
 					initialListOfErrors.put(trace, 0);
 				}
 			}
@@ -416,10 +423,14 @@ public class Yeti {
 		}
 
 		// We set the strategy
-		if (isRandomPlus) {
-			strategy= new YetiRandomPlusStrategy(testManager);
+		if (isRandomPlusPeriodic) {
+			strategy= new YetiRandomPlusPeriodicProbabilitiesStrategy(testManager);
 		} else {
-			strategy= new YetiRandomStrategy(testManager);
+			if (isRandomPlus) {
+				strategy= new YetiRandomPlusStrategy(testManager);				
+			} else {		
+				strategy= new YetiRandomStrategy(testManager);
+			}
 		}
 
 
@@ -529,7 +540,7 @@ public class Yeti {
 		}
 		// if users want to print the traces in an outputFile, we do it now
 		if ((tracesOutputFile!=null)&&(logProcessor!=null)) {
-			YetiLogProcessor.outputTracesToFile(logProcessor.listOfNewErrors, tracesOutputFile,logProcessor.numberOfNonErrors);
+			YetiLog.proc.outputTracesToFile(logProcessor.listOfNewErrors, tracesOutputFile,logProcessor.numberOfNonErrors);
 		}
 		
 		if (printNumberOfCallsPerMethod) {
@@ -555,7 +566,7 @@ public class Yeti {
 		System.out.println("\t-nTests=X : for calling Yeti to attempt X method calls.");
 		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules.");
 		System.out.println("\t-help, -h: prints the help out.");
-		System.out.println("\t-initClass=X : this will use a user class to initialize the system this class will be a subclass of yeti.environments.YetiInitializer\n");
+		System.out.println("\t-initClass=X : this will use a user class to initialize the system this class will be a subclass of yeti.environments.YetiInitializer");
 		System.out.println("\t-rawlogs: prints the logs directly instead of processing them at the end.");
 		System.out.println("\t-nologs : does not print logs, only the final result.");
 		System.out.println("\t-msCalltimeout=X : sets the timeout (in milliseconds) for a method call to X.Note that too low values may result in blocking Yeti (use at least 30ms for good performances)");
@@ -563,6 +574,7 @@ public class Yeti {
 		System.out.println("\t-newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100, default is 25.");
 		System.out.println("\t-probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100, default is 1.");
 		System.out.println("\t-randomPlus : uses the random+ strategy that injects interesting values every now and then.");
+		System.out.println("\t-randomPlusPeriodic : uses the random+ strategy and periodically change the values of the standard probalilities (null values, new instances, interesting values).");
 		System.out.println("\t-gui : shows the standard graphical user interface for monitoring yeti.");
 		System.out.println("\t-noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.");
 		System.out.println("\t-instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.");

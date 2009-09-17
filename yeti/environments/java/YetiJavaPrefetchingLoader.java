@@ -120,7 +120,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 		YetiModule.allModules.put(clazz.getName(), mod);
 
 		// we add the constructors to the type information	
-		addConstructors(clazz, type, mod);
+		if (!clazz.getName().equals("yeti.environments.java.YetiJavaSpecificType")) addConstructors(clazz, type, mod);
 
 		// we add methods to the module in which they were defined		
 		addMethods(clazz, mod);
@@ -197,8 +197,9 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 			YetiLog.printDebugLog("adding method "+method.getName()+" in module "+module.getModuleName(), this);
 			// add it as a creation routine for the return type
 			YetiType returnType = YetiType.allTypes.get(method.getReturnType().getName());
-			if (returnType==null)
+			if (returnType==null) {
 				returnType = new YetiJavaSpecificType(method.getReturnType().getName());
+			}
 			YetiRoutine methodRoutine = generateRoutineFromMethod(module , method, paramTypes , returnType);
 			// add it as a creation routine for the type
 			returnType.addCreationRoutine(methodRoutine);

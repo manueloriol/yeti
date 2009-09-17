@@ -198,9 +198,9 @@ public abstract class YetiRoutine {
 		// we aggregate the arguments types.
 		for (YetiType type: this.openSlots) {
 			if (arguments==null) {
-				arguments=type.getName().toString();
+				arguments=type.toString();
 			} else {
-				arguments = arguments+" x "+type.getName().toString();
+				arguments = arguments+" x "+type.toString();
 			}
 		}
 		// if no argument the chain is empty
@@ -209,7 +209,7 @@ public abstract class YetiRoutine {
 		}
 
 		// we return the signature
-		return (this.toString()+": ("+arguments+")->"+this.returnType.getName());
+		return (this.toString()+": ("+arguments+")->"+this.returnType.toString());
 	}
 
 	/**

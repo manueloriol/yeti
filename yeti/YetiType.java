@@ -1,5 +1,6 @@
 package yeti;
 
+import java.security.Permission;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -15,22 +16,22 @@ public class YetiType {
 	 *	True if there is a maximum to the number of instances by default.
 	 */
 	public static boolean TYPES_HAVEMAXIMUM_NUMBER_OF_INSTANCES = true;
-	
+
 	/**
 	 *	The default maximum to the number of instances.
 	 */
 	public static int DEFAULT_MAXIMUM_NUMBER_OF_INSTANCES = 1000;
-	
+
 	/**
 	 *	True if there is a maximum to the number of instances specific to this type.
 	 */
 	public boolean hasSpecificMaximumNumberOfDirectInstances=false;
-	
+
 	/**
 	 *	The maximum to the number of instances of this type.
 	 */
 	public int specificMaximumNumberOfDirectInstances;
-	
+
 	/**
 	 * The name of the type. Note that this can be a class name,  a type with a generic instantiation, or an interface.
 	 */
@@ -53,7 +54,7 @@ public class YetiType {
 			YetiLog.printDebugLog("Adding creation routine "+v.getName()+" to "+this.getName(),this);
 		}
 	}
-	
+
 	/**
 	 * Return the creation routines of this type.
 	 * @return
@@ -61,7 +62,7 @@ public class YetiType {
 	public Vector<YetiRoutine> getCreationRoutines(){
 		return creationRoutines;
 	}
-	
+
 	/**
 	 * Returns a routine of this type at random.
 	 * 
@@ -75,7 +76,7 @@ public class YetiType {
 		YetiLog.printDebugLog("trying to get routine for: "+this.name, this);
 		return creationRoutines.get(i);
 	}
-	
+
 	/**
 	 * Structure that stores all instances of this type
 	 */
@@ -86,36 +87,40 @@ public class YetiType {
 	 */
 	public Vector<YetiVariable> directInstances=new Vector<YetiVariable>();
 
-	
+
 	/**
 	 * Adds an instance to the type in question and all supertypes
 	 *
 	 * @param v the instance to add.
 	 */
 	public synchronized void addInstance(YetiVariable v){
-		instances.add(v);
+
 		// if there is a cap on the number of instances, we will remove one at random to make room
 		if (v.getType().equals(this)) {
 			// if there is a cap and we got to it
 			while ((this.hasSpecificMaximumNumberOfDirectInstances&&directInstances.size()>=this.specificMaximumNumberOfDirectInstances)
 					||((!this.hasSpecificMaximumNumberOfDirectInstances)&&(YetiType.TYPES_HAVEMAXIMUM_NUMBER_OF_INSTANCES
 							&&(directInstances.size()>=YetiType.DEFAULT_MAXIMUM_NUMBER_OF_INSTANCES)))) {
-				this.removeInstance(this.getRandomDirectInstance());
+				YetiVariable v0 =  this.getRandomDirectInstance();
+				this.removeInstance(v0);
 			}
 			directInstances.add(v);
 		}
+		YetiLog.printDebugLog("Adding "+v.toString()+" to: "+this.name+" number of instances: "+directInstances.size()+" number of types: "+YetiType.allTypes.size(), this);
+		instances.add(v);
 		// we add the instance to all parents
 		for (YetiType t: directSuperTypes.values()) 
 			t.addInstance(v);
 	}
-	
-	
+
+
 	/**
 	 * Removes an instance to the type in question and all supertypes
 	 *
 	 * @param v the instance to add.
 	 */
 	public synchronized void removeInstance(YetiVariable v){
+		YetiLog.printDebugLog("Removing "+v.toString()+" from: "+this.name+" all instances: "+YetiVariable.allId.size(), this);
 		instances.remove(v);
 		// if we are in the type that defined the instance
 		if (v.getType().equals(this)) {
@@ -134,7 +139,7 @@ public class YetiType {
 	public Vector<YetiVariable> getInstances(){
 		return instances;
 	}
-	
+
 	/**
 	 * Returns an instance of this type at random.
 	 * 
@@ -145,7 +150,7 @@ public class YetiType {
 		int i=(int) Math.floor(d*instances.size());
 		return instances.get(i);
 	}
-	
+
 	/**
 	 * Returns an instance of this type at random.
 	 * 
@@ -156,7 +161,7 @@ public class YetiType {
 		int i=(int) Math.floor(d*this.directInstances.size());
 		return this.directInstances.get(i);
 	}
-	
+
 	/**
 	 * A HashMap that stores direct super types. This might be used 
 	 * by specific implementations.
@@ -193,7 +198,7 @@ public class YetiType {
 	public synchronized void addSubtype(YetiType yt){
 		allSubtypes.put(yt.getName(), yt);
 	}
-	
+
 	/**
 	 * Returns the name of the YetiType.
 	 * @return  the name of the type
@@ -201,9 +206,9 @@ public class YetiType {
 	public String getName(){
 		return name;
 	}
-	
-	
-	
+
+
+
 	/* (non-Javadoc)
 	 * 
 	 * Used for pretty-print of the type
@@ -214,18 +219,18 @@ public class YetiType {
 	public String toString() {
 		return name;
 	}
-	
+
 	/**
 	 * The vector of interestingValues.
 	 */
 	private Vector<Object> interestingValues = new Vector<Object>();
-	
+
 	/**
 	 * Simple getter for interesting values.
 	 * @return  the vector of interesting values.
 	 */
 	public Vector<Object> getInterestingValues() {
-		
+
 		return interestingValues;
 	}
 
@@ -283,7 +288,7 @@ public class YetiType {
 	 * Indicates whether this type has interesting values.
 	 */
 	private boolean hasInterestingValues = false;
-	
+
 	/**
 	 * Defines whether this type has interesting values.
 	 * 
@@ -302,11 +307,11 @@ public class YetiType {
 		if (directSuperTypes.containsValue(yt)) return true;
 		for (YetiType t: directSuperTypes.values()) 
 			if (t.isSubtype(yt)) return true; 
-			
+
 		return false;
-		
+
 	}
-	
+
 	/**
 	 * Prints all creation routines listed for all types.  
 	 */
@@ -320,5 +325,5 @@ public class YetiType {
 		}
 	}
 
-	
+
 }

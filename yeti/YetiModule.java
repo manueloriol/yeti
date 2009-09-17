@@ -146,4 +146,22 @@ public class YetiModule {
 		}
 		return false;
 	}
+
+	/**
+	 * Checks that the modules contain the moduleName
+	 * 
+	 * @param moduleName the name of the module to check
+	 * @return true if the module contains it.
+	 */
+	public boolean containsModuleName(String moduleName) {
+		YetiModule []combModules = this.combiningModules;
+		if (combModules!=null) {
+			for (YetiModule mod: combModules) {
+				YetiLog.printDebugLog(mod.getModuleName(), this);
+				if (mod.getModuleName().equals(moduleName)) return true;
+			}
+		} 
+		return moduleName.equals(this.getModuleName());
+	}
+
 }

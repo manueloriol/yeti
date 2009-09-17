@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -109,7 +110,7 @@ public class YetiGUI implements Runnable {
 		sampler = new YetiSampler(nMSBetweenUpdates);
 
 		// we create the panel with the methods
-		JComponent p = this.generateMainPanel();
+		JComponent p = this.generateToolsAndMainPanel();
 
 		// we create a frame for it and show the frame
 		JFrame f = new JFrame();
@@ -124,8 +125,6 @@ public class YetiGUI implements Runnable {
 		// we set the menubar
 		f.setJMenuBar(this.generateMainMenuBar());
 		f.setVisible(true);
-
-
 
 
 		new Thread(this).start();
@@ -239,26 +238,28 @@ public class YetiGUI implements Runnable {
 	 * 
 	 * @return the panel containing the whole set of properties. 
 	 */
-	public JPanel generatePropertyPane() {
+	public JToolBar generatePropertyPane() {
 		// the panel containing the graphs
 		JPanel p = new JPanel();
-		p.setLayout(new BoxLayout(p,BoxLayout.PAGE_AXIS));
-		p.setBackground(Color.white);
+		
+		p.setLayout(new BoxLayout(p,BoxLayout.LINE_AXIS));
 
 		// we add the slider for null values
-		p.add(new JLabel(" "));
 		p.add(this.generateNullValuesSlider());
+		p.add(Box.createRigidArea(new Dimension(15,0)));		
 		
 		// we add the slider for new instances
-		p.add(new JLabel(" "));
 		p.add(this.generateNewInstancesSlider());
+		p.add(Box.createRigidArea(new Dimension(15,0)));		
 
 		// we add the instance cap
-		p.add(new JLabel(" "));
 		JPanel pan = generateInstanceCapTextField();
 		p.add(pan);
 		
-		return p;
+		JToolBar p1 = new JToolBar();
+		p1.add(p);
+		
+		return p1;
 	}
 
 
@@ -288,10 +289,9 @@ public class YetiGUI implements Runnable {
 			}
 		});
 		JPanel pan = new JPanel();
-		pan.setBackground(Color.white);
-		pan.setLayout(new BoxLayout(pan,BoxLayout.PAGE_AXIS));
+		pan.setLayout(new BoxLayout(pan,BoxLayout.LINE_AXIS));
 		
-		pan.setMaximumSize(new Dimension(350,60));
+		pan.setMaximumSize(new Dimension(200,50));
 		
 		// we generate the label
 		pan.add(new JLabel("Max variables per type: "));
@@ -406,14 +406,52 @@ public class YetiGUI implements Runnable {
 
 		//Create a split pane with the two scroll panes in it.
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				generatePropertyPane(), generateRightSubpanel());
+				generateLeftPanel(), generateRightSubpanel());
 		splitPane.setOneTouchExpandable(true);
+		
 		// reestablish when finalized:
 		splitPane.setDividerLocation(250);
 
 		return splitPane;
 
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public JSplitPane generateToolsAndMainPanel() {
+
+		// create a panel with tools monitor
+		JPanel p = new JPanel(new BorderLayout());
+
+		// we generate the property pane
+		JComponent props = generatePropertyPane();
+		p.add(props, BorderLayout.CENTER);
+		
+		//Create a split pane with the two scroll panes in it.
+		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+				p , generateMainPanel());
+		splitPane.setOneTouchExpandable(true);
+		// reestablish when finalized:
+		splitPane.setDividerLocation(50);
+
+		return splitPane;
+	}
+	
+	/**
+	 * Generates the left panel.
+	 * 
+	 * @return the generated panel.
+	 */
+	public JPanel generateLeftPanel() {
+		YetiModuleGraph graph = new YetiModuleGraph(240,this.screenDimensions.height-250);
+		graph.setMinimumSize(new Dimension(247,this.screenDimensions.height-250));
+		this.allComponents.add(graph.getModel());
+		return graph;
+	}
+	
+	
 
 	/**
 	 * Generates the slider for null values.
@@ -425,9 +463,8 @@ public class YetiGUI implements Runnable {
 		
 		// we generate a panel to contain both the label and the slider
 		JPanel p = new JPanel();
-		p.setLayout(new BoxLayout(p,BoxLayout.PAGE_AXIS));
-		p.setBackground(Color.white);
-		p.add(new JLabel("% to use null values"));
+		p.setLayout(new BoxLayout(p,BoxLayout.LINE_AXIS));
+		p.add(new JLabel("% null values: "));
 
 		
 		// we create the slider, this slider is updated both ways
@@ -445,7 +482,7 @@ public class YetiGUI implements Runnable {
 
 			}
 		};
-
+		
 		// we set up the listener that updates the value
 		useNullValuesSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -465,6 +502,7 @@ public class YetiGUI implements Runnable {
 
 		this.allComponents.add(useNullValuesSlider);
 		p.add(useNullValuesSlider);
+		p.setMaximumSize(new Dimension(300,50));
 		return p;
 	}
 
@@ -477,9 +515,8 @@ public class YetiGUI implements Runnable {
 	public JComponent generateNewInstancesSlider() {
 
 		JPanel p = new JPanel();
-		p.setLayout(new BoxLayout(p,BoxLayout.PAGE_AXIS));
-		p.setBackground(Color.white);		
-		p.add(new JLabel("% to generate new variables"));
+		p.setLayout(new BoxLayout(p,BoxLayout.LINE_AXIS));
+		p.add(new JLabel("% new variables: "));
 		
 		// we create the slider, this slider is updated both ways
 		YetiUpdatableSlider generateNewInstancesSlider = new YetiUpdatableSlider(JSlider.HORIZONTAL, 
@@ -518,6 +555,7 @@ public class YetiGUI implements Runnable {
 
 		this.allComponents.add(generateNewInstancesSlider);
 		p.add(generateNewInstancesSlider);
+		p.setMaximumSize(new Dimension(300,50));
 		return p;
 	}
 	
@@ -590,14 +628,14 @@ public class YetiGUI implements Runnable {
 				// if users click on OK, we try to open the file
 				if (result==JFileChooser.APPROVE_OPTION) {
 					File f = chooser.getSelectedFile();
-					// TODO read the file
+					
 				}
 				
 			}
 		});
 		filemenu.add(openTraceFile);
 		
-		// we add filemenu to the menu bar
+		// we add file menu to the menu bar
 		bar.add(filemenu);
 		return bar;
 	}

@@ -3,11 +3,22 @@ package yeti.monitoring;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
+import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
 import yeti.YetiLog;
 
@@ -19,8 +30,31 @@ import yeti.YetiLog;
  *
  */
 @SuppressWarnings({ "serial", "unchecked" })
-public class YetiGraph extends JPanel implements YetiUpdatable, YetiSamplable{
+public class YetiGraph extends JPanel implements YetiUpdatable, YetiSamplable, ActionListener{
 
+	/**
+	 * Class that represents a popup listener.
+	 * 
+	 * @author Manuel Oriol (manuel@cs.york.ac.uk)
+	 * @date Sep 16, 2009
+	 *
+	 */
+	class PopupListener extends MouseAdapter {
+	    public void mousePressed(MouseEvent e) {
+	        showPopup(e);
+	    }
+
+	    public void mouseReleased(MouseEvent e) {
+	        showPopup(e);
+	    }
+
+	    private void showPopup(MouseEvent e) {
+	        if (e.isPopupTrigger()) {
+	            popup.show(e.getComponent(),
+	                       e.getX(), e.getY());
+	        }
+	    }
+	}
 	/**
 	 * The list of points.
 	 */
@@ -60,6 +94,13 @@ public class YetiGraph extends JPanel implements YetiUpdatable, YetiSamplable{
 	 * The number of digits of the scale of Y.
 	 */
 	int nDigitsY = 1;
+	
+	
+	/**
+	 * Popup menu on this graph.
+	 */
+	JPopupMenu popup=null;
+
 
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -149,6 +190,21 @@ public class YetiGraph extends JPanel implements YetiUpdatable, YetiSamplable{
 	 * Stores the title of the graph.
 	 */
 	public String name = "";
+	
+	/**
+	 * A menu item to save the values in comma-separated values.
+	 */
+	JMenuItem saveAsCSV=null;
+
+	/**
+	 * A menu item to save the values in space-separated values vertically (2 columns).
+	 */
+	JMenuItem saveAsSSV=null;
+
+	/**
+	 * A menu item to save the values in space-separated values horizontally (2 lines).
+	 */
+	JMenuItem saveAsHSSV=null;
 
 	/**
 	 * Simple constructor, stores the name of the graph.
@@ -161,7 +217,26 @@ public class YetiGraph extends JPanel implements YetiUpdatable, YetiSamplable{
 		this.setBackground(Color.white);
 		series[0] = new ArrayList<Double>();
 		series[1] = new ArrayList<Double>();
+
+		
+		//Create the popup menu.
+	    popup = new JPopupMenu();
+	    saveAsCSV = new JMenuItem("Export as comma-separated values");
+	    saveAsCSV.addActionListener(this);
+	    popup.add(saveAsCSV);
+	    saveAsSSV = new JMenuItem("Export as space-separated values (vertical, 2 columns)");
+	    saveAsSSV.addActionListener(this);
+	    popup.add(saveAsSSV);
+
+	    saveAsHSSV = new JMenuItem("Export as space-separated values (horizontal, 2 lines)");
+	    saveAsHSSV.addActionListener(this);
+	    popup.add(saveAsHSSV);
+
+	    //Add listener to components that can bring up popup menus.
+	    MouseListener popupListener = new PopupListener();
+	    this.addMouseListener(popupListener);
 	}
+
 	
 	/* (non-Javadoc)
 	 * Update this component.
@@ -181,5 +256,136 @@ public class YetiGraph extends JPanel implements YetiUpdatable, YetiSamplable{
 		
 	}
 
+	/**
+	 * Routine used to save the current values of this graph in a file as comma-separated values.
+	 * 
+	 * @param fileName the name of the file in which save the values.
+	 */
+	public void saveAsCSV(String fileName) {
+		File f0 = new File(fileName);
+		try {
+			// we check that the file is good
+			if (f0.canWrite()||f0.createNewFile()) {
+				YetiLog.printDebugLog("Saving as CSV "+this.name+" in "+fileName, this,true);
+				int max = this.series[1].size();
+				// we print all values in the file
+				PrintStream ps = new PrintStream(f0);
+				for (int i = 0; i<max; i++) {
+					ps.println(this.series[0].get(i)+","+this.series[1].get(i));
+				}
+				ps.close();
+			
+			} else {
+				YetiLog.printDebugLog("Impossible to save as CSV "+this.name+" in "+fileName+" File unwritable", this,true);			
+			}
+		} catch (IOException e) {
+			// Auto-generated catch block
+			YetiLog.printDebugLog("Impossible to save as CSV "+this.name+" in "+fileName+" File unwritable", this,true);			
+		}
+	}
+
+	/**
+	 * Routine used to save the current values of this graph in a file as space-separated values (2 columns).
+	 * 
+	 * @param fileName the name of the file in which save the values.
+	 */
+	public void saveAsSSV(String fileName) {
+		File f0 = new File(fileName);
+		try {
+			// we check that the file is good
+			if (f0.canWrite()||f0.createNewFile()) {
+				YetiLog.printDebugLog("Saving as SSV "+this.name+" in "+fileName, this,true);
+				int max = this.series[1].size();
+				// we print all values in the file
+				PrintStream ps = new PrintStream(f0);
+				for (int i = 0; i<max; i++) {
+					ps.println(this.series[0].get(i)+" "+this.series[1].get(i));
+				}
+				ps.close();
+				
+			} else {
+				YetiLog.printDebugLog("Impossible to save as SSV "+this.name+" in "+fileName+" File unwritable", this,true);			
+			}
+		} catch (IOException e) {
+			// Auto-generated catch block
+			YetiLog.printDebugLog("Impossible to save as SSV "+this.name+" in "+fileName+" File unwritable", this,true);			
+		}
+	}	
+
+	/**
+	 * Routine used to save the current values of this graph in a file as space-separated values (2 lines).
+	 * 
+	 * @param fileName the name of the file in which save the values.
+	 */
+	public void saveAsHSSV(String fileName) {
+		File f0 = new File(fileName);
+		try {
+			// we check that the file is good
+			if (f0.canWrite()||f0.createNewFile()) {
+				YetiLog.printDebugLog("Saving as SSV "+this.name+" in "+fileName, this,true);
+				int max = this.series[1].size();
+				// we print all values in the file
+				PrintStream ps = new PrintStream(f0);
+				for (int i = 0; i<max; i++) {
+					ps.print(this.series[0].get(i)+" ");
+				}
+				ps.print("\n");
+				for (int i = 0; i<max; i++) {
+					ps.print(this.series[1].get(i)+" ");
+				}
+				
+			} else {
+				YetiLog.printDebugLog("Impossible to save as SSV "+this.name+" in "+fileName+" File unwritable", this,true);			
+			}
+		} catch (IOException e) {
+			// Auto-generated catch block
+			YetiLog.printDebugLog("Impossible to save as SSV "+this.name+" in "+fileName+" File unwritable", this,true);			
+		}
+	}	
+
+	/* (non-Javadoc)
+	 * The action listener for the graphs.
+	 * 
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	public void actionPerformed(ActionEvent e) {
+		
+		// if the source is the item hor saving in SSV we call the corresponding routine
+		if (e.getSource().equals(this.saveAsCSV)) {
+			JFileChooser chooser = new JFileChooser();
+			int returnVal=chooser.showSaveDialog(this);
+		    if(returnVal == JFileChooser.APPROVE_OPTION) {
+
+				String fileName = chooser.getSelectedFile().getName();
+				this.saveAsCSV(fileName);
+
+		    }
+		}
+		// if the source is the item hor saving in SSV we call the corresponding routine
+		if (e.getSource().equals(this.saveAsSSV)) {
+			JFileChooser chooser = new JFileChooser();
+			int returnVal=chooser.showSaveDialog(this);
+		    if(returnVal == JFileChooser.APPROVE_OPTION) {
+
+				String fileName = chooser.getSelectedFile().getName();
+				this.saveAsSSV(fileName);
+
+		    }
+		}
+		// if the source is the item hor saving in HSSV we call the corresponding routine
+		if (e.getSource().equals(this.saveAsHSSV)) {
+			JFileChooser chooser = new JFileChooser();
+			int returnVal=chooser.showSaveDialog(this);
+		    if(returnVal == JFileChooser.APPROVE_OPTION) {
+
+				String fileName = chooser.getSelectedFile().getName();
+				this.saveAsHSSV(fileName);
+
+		    }
+		}
+
+	}
+
+	
 
 }

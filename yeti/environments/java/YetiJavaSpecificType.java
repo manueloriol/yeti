@@ -1,5 +1,6 @@
 package yeti.environments.java;
 
+import yeti.YetiLog;
 import yeti.YetiType;
 import yeti.environments.YetiLoader;
 
@@ -203,6 +204,8 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	public YetiJavaSpecificType(String name) {
 		super(name);
+		
+		YetiLog.printDebugLog("Creating type: "+name, this);
 		String uglyName=name, prettyName="";
 		while (uglyName.startsWith("[")){
 			this.isArrayType=true;

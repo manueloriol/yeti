@@ -141,6 +141,7 @@ public abstract class YetiLogProcessor {
 		}
 	}
 
+	
 
 	/**
 	 * Add the parameter at the end of the currentLog.
@@ -318,6 +319,7 @@ public abstract class YetiLogProcessor {
 	}
 
 	
+	
 	/**
 	 * Method that reads exception traces from a file where they were stored.
 	 * The exceptions are supposed to be of the format:<br>
@@ -401,7 +403,7 @@ public abstract class YetiLogProcessor {
 	 * @param listOfErrors the list of errors to output.
 	 * @param fileName the name of the file in which to write them.
 	 */
-	public static void outputTracesToFile(HashMap<String,Object> listOfErrors,String fileName, int nNonErrors) {
+	public void outputTracesToFile(HashMap<String,Object> listOfErrors,String fileName, int nNonErrors) {
 		try {
 			// we open the file
 			PrintStream ps = new PrintStream(fileName);
