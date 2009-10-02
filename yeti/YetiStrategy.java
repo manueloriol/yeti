@@ -3,6 +3,8 @@
  */
 package yeti;
 
+import javax.swing.JPanel;
+
 import yeti.environments.YetiTestManager;
 
 
@@ -61,5 +63,22 @@ public abstract class YetiStrategy {
 	 */
 	public abstract YetiCard getNextCard(YetiRoutine routine, int argumentNumber) throws ImpossibleToMakeConstructorException;
 
+	/**
+	 * This is to provide the GUI with a preference panel.
+	 * 
+	 * @return the associated panel
+	 */
+	public JPanel getPreferencePane() {
+		return null;
+	}
+	
+	/**
+	 * Returns a nice representation of the strategy name
+	 * 
+	 * @return the nice name
+	 */
+	public String getName() {
+		return "Generic Strategy";
+	}
 
 }

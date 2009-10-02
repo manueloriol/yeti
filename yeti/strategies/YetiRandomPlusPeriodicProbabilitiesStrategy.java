@@ -53,7 +53,12 @@ public class YetiRandomPlusPeriodicProbabilitiesStrategy extends YetiRandomPlusS
 
 	public YetiRandomPlusPeriodicProbabilitiesStrategy(YetiTestManager ytm) {
 		super(ytm);
-		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	public String getName() {
+		return "Random Plus Periodic Strategy";
+	}
+
+	
 }

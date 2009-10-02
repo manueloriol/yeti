@@ -90,7 +90,7 @@ public class YetiGUI implements Runnable {
 	/**
 	 * All the components in the current GUI.
 	 */
-	public ArrayList<YetiUpdatable> allComponents= new ArrayList<YetiUpdatable>();
+	public static ArrayList<YetiUpdatable> allComponents= new ArrayList<YetiUpdatable>();
 
 	/**
 	 * Simple creation procedure for YetiGUI.
@@ -124,6 +124,7 @@ public class YetiGUI implements Runnable {
 		
 		// we set the menubar
 		f.setJMenuBar(this.generateMainMenuBar());
+		f.pack();
 		f.setVisible(true);
 
 
@@ -445,10 +446,31 @@ public class YetiGUI implements Runnable {
 	 * @return the generated panel.
 	 */
 	public JPanel generateLeftPanel() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
+
+		/////////////////////////
+		// we add the strategy panel if any
+		/////////////////////////
+		JPanel stratPanel = Yeti.strategy.getPreferencePane();
+		if (stratPanel!=null) {
+			panel.add(stratPanel);
+			if (panel instanceof YetiUpdatable)
+				this.allComponents.add((YetiUpdatable)stratPanel);
+			
+		}
+
+		
+		/////////////////////////
+		// add a module graph
+		/////////////////////////
 		YetiModuleGraph graph = new YetiModuleGraph(240,this.screenDimensions.height-250);
-		graph.setMinimumSize(new Dimension(247,this.screenDimensions.height-250));
 		this.allComponents.add(graph.getModel());
-		return graph;
+		panel.add(graph);
+		
+		
+		panel.setMinimumSize(new Dimension(247,this.screenDimensions.height-250));
+		return panel;
 	}
 	
 	

@@ -174,5 +174,10 @@ public class YetiRandomStrategy extends YetiStrategy{
 		
 	}
 	
+	@Override
+	public String getName() {
+		return "Random Strategy";
+	}
+
 
 }
