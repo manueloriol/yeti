@@ -1,5 +1,7 @@
 package yeti.environments;
 
+import javax.swing.JOptionPane;
+
 import yeti.YetiInitializationException;
 
 /**
@@ -19,4 +21,14 @@ public abstract class YetiInitializer {
 	 */
 	public abstract void initialize(String []args) throws YetiInitializationException;
 
+	
+	/** 
+	 * Add a module to the loaded modules.
+	 * 
+	 * @param s the name of the module to add.
+	 */
+	public void addModule(String s) {
+		JOptionPane.showMessageDialog(null, "Not supported for this language");
+
+	}
 }

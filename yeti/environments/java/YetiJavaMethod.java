@@ -256,7 +256,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 					break;
 				}
 				default :{
-					// if this is not a standard charcter from the old time ISO set
+					// if this is not a standard character from the old time ISO set
 					int i = ((Character)o).charValue();
 					if (!(i<128 && Character.isLetter(i))) {
 						value = "\\u";

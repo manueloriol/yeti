@@ -2,10 +2,13 @@ package yeti.monitoring;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -49,6 +52,23 @@ public class YetiModuleGraph extends JPanel {
 		scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		this.addModule.setAlignmentX(Component.CENTER_ALIGNMENT);
+		this.addModule.setActionCommand("AddModule");
+		// we add the part to load the module to load
+		this.addModule.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// we ask the user which module to load
+			    if ("AddModule".equals(e.getActionCommand())) {
+			    	String value = JOptionPane.showInputDialog(null,
+			    			"Enter the name of the module to add:",
+			    			"Add module",
+			    			JOptionPane.PLAIN_MESSAGE);
+			    	// if the module is not null, we call the delegated method.
+			    	if (value!=null) {
+			    		Yeti.pl.getInitializer().addModule(value);
+			    	}
+			    }				
+			}
+		});
 
 		// we add the two components
 		this.add(scrollPane);
@@ -59,7 +79,6 @@ public class YetiModuleGraph extends JPanel {
 		return moduleTableModel;
 	}
 
-	@SuppressWarnings("serial")
 	class ModuleTableModel extends AbstractTableModel implements YetiUpdatable {
 		private String[] columns = {"","Module Name"};
 		private Object[][] values = null;

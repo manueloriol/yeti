@@ -76,9 +76,14 @@ public class YetiJavaRoutine extends YetiRoutine {
 			}
 
 		} catch (IllegalArgumentException e) {
+			YetiLog.printDebugLog(this.getSignature()+" IllegalArgumentException", this,true);
+			for(YetiCard c: arg) {
+				YetiLog.printDebugLog("YetiType: "+c.getType().toString()+", real type: "+c.getValue().getClass()+", value: "+c.getValue().toString(),this,true);
+			}
 			// should never happen
 			//e.printStackTrace();
 		} catch (IllegalAccessException e) {
+			YetiLog.printDebugLog(this.getSignature()+" IllegalAccessException", this,true);
 			// should never happen
 			// e.printStackTrace();
 		} catch (InvocationTargetException e) {

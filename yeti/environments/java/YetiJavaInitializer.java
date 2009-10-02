@@ -3,6 +3,8 @@ package yeti.environments.java;
 import java.io.FilePermission;
 import java.security.Permission;
 
+import javax.swing.JOptionPane;
+
 import yeti.YetiInitializationException;
 import yeti.YetiLog;
 import yeti.YetiModule;
@@ -113,6 +115,16 @@ public class YetiJavaInitializer extends YetiInitializer {
 			}
 		});
 
+	}
+
+	@Override
+	public void addModule(String s) {
+	
+		try {
+			loader.loadClass(s);
+		} catch (ClassNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "could not find class");
+		}
 	}
 
 }
