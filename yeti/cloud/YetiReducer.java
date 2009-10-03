@@ -1,7 +1,6 @@
 package yeti.cloud;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.hadoop.io.*;
@@ -18,20 +17,25 @@ import org.apache.hadoop.mapred.Reporter;
  * @date August 20, 2009
  */
 
-public class YetiReducer extends MapReduceBase implements Reducer<Text, IntWritable, Text, IntWritable> {
+public class YetiReducer extends MapReduceBase implements Reducer<Text, Text, Text, IntWritable> {
 	
 	/**
-	 * The reduce method, which will take the output of each Map and write it out to disk as final output after doing any processing
+	 * The reduce method, which will take the output of each Map and write it out to disk as final output after performing any processing
 	 * 
 	 */ 
-	public void reduce(Text key, Iterator<IntWritable> values, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
+	public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
 		
+		String[] list= null;
 		String traces = "";
-		int sum = values.next().get();
-
-		traces+=key.toString();
 		
-		output.collect(new Text(traces+"\n\nNumber of Bugs Found in Job: "), new IntWritable(sum));
-//		output.collect(new Text(YetiJob.uniqueListOfErrors.keySet()+"\nNon-Unique Errors: "+sum+"\nUnique Errors"), new IntWritable (YetiJob.uniqueListOfErrors.size()));	
+		Text className = key;
+			
+		while(values.hasNext())
+			traces+=values.next();
+		
+		list = traces.split("@");
+		
+		output.collect(new Text(className+"\n"+traces+"\n\n"), new IntWritable(list.length));
 	}
+	
 }

@@ -58,7 +58,7 @@ public class YetiJob {
 		//the output of Yeti would be Text for the Key
 		conf.setOutputKeyClass(Text.class);
 		//the output of Yeti would be a Number for the Value
-		conf.setOutputValueClass(IntWritable.class);
+		conf.setOutputValueClass(Text.class);
 		//The Input path for YetiMap to read file(s) containingthe input parameters
 		FileInputFormat.setInputPaths(conf, new Path (args[0]));
 			

@@ -3,6 +3,7 @@ package yeti.cloud;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -17,14 +18,16 @@ import yeti.YetiLogProcessor;
 
 /**
  * Class that represents the Maper for Yeti to run on cloud. 
- * It reads the contents of file containing all the parameters for YETI one line at a time and passes them on to YETI 
+ * It reads the contents of file(s) containing all the parameters for YETI one line at a time and passes them on to YETI 
  * 
  * @author Faheem Ullah (fu500@cs.york.ac.uk)
  * @date August 20, 2009
  */
 
-public class YetiMap extends MapReduceBase implements Mapper<LongWritable, Text, Text, IntWritable>  {
+public class YetiMap extends MapReduceBase implements Mapper<LongWritable, Text, Text, Text>  {
 	
+	public static HashMap<String, Object> listOfExceptions= new HashMap<String,Object>();
+	public static String moduleName;
 	/**
 	 * The map method, this will serve as a single map job and will be run on a single machine within the cloud
 	 * Each machine will get a map job to run YETI with the specified line of parameters
@@ -35,9 +38,9 @@ public class YetiMap extends MapReduceBase implements Mapper<LongWritable, Text,
 	 * OutputCollector = Output will be collected in the form of <Text, Int><br>
 	 * Reporter = to report the status of current process<br>
 	 */
-	public synchronized void map(LongWritable key, Text value, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
-
-		//spliting the lines into parameters based on whitespaces
+	public synchronized void map(LongWritable key, Text value, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
+		
+		//splitting the lines into parameters based on white spaces
 		String params [] = value.toString().split("\\x20");
 		
 		//passing parameters (Command line arguments) to Yeti
@@ -46,14 +49,17 @@ public class YetiMap extends MapReduceBase implements Mapper<LongWritable, Text,
 		String outputKey="";
 
 		//Reading the files back from disk		
-		ArrayList<String> traces = YetiLogProcessor.readTracesFromFile("YetiTraces");
+//		ArrayList<String> traces = YetiLogProcessor.readTracesFromFile("yetiTraces");
 		
-		for (String str: traces)
-			outputKey+=str+"\n";
-				
-		//output the number of traces, actual traces for this job (i.e. one line of parameters)
-		output.collect(new Text (outputKey), new IntWritable(traces.size()));
+//		for (String str: traces)
+//			outputKey+=str+"\n";
+		Iterator it =listOfExceptions.keySet().iterator(); 
+		while(it.hasNext())
+			outputKey+=it.next().toString()+"@\n";
 		
-		
+//		output.collect(new Text (outputKey), new Text(traces.size()));
+		// output the class(s) name being tested in the current map job and the exceptions found.
+		output.collect(new Text (moduleName), new Text(outputKey));
 	}
+	
 }
