@@ -25,6 +25,7 @@ import yeti.monitoring.YetiGUI;
 import yeti.strategies.YetiRandomPlusStrategy;
 import yeti.strategies.YetiRandomPlusPeriodicProbabilitiesStrategy;
 import yeti.strategies.YetiRandomStrategy;
+import yeti.cloud.YetiMap;
 
 
 /**
@@ -102,7 +103,7 @@ public class Yeti {
 	 * This will receive the same arguments as described for method main and process them
 	 * @param args the list of arguments passed on either by main or Map Method in YetiMap
 	 */	
-	public static void YetiRun(String[] args){
+	public static synchronized void YetiRun(String[] args){
 		YetiEngine engine;
 		YetiInitializer secondaryInitializer = null;
 		boolean isJava = false;
@@ -210,6 +211,7 @@ public class Yeti {
 			if (s0.startsWith("-testModules=")) {
 				String s1=s0.substring(13);
 				modulesToTest=s1.split(":");
+				YetiMap.moduleName=modulesToTest[0];
 				continue;
 			}
 			// we want to have only logs in standard form
@@ -539,6 +541,9 @@ public class Yeti {
 				System.out.println(r.getSignature()+": Called: "+r.getnTimesCalled()+", Successfully: "+r.getnTimesCalledSuccessfully()+", Undecidable: "+r.getnTimesCalledUndecidable()+", Unsuccessfully: "+r.getnTimesCalledUnsuccessfully());
 			}
 		}
+		YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
+		YetiMap.listOfExceptions.putAll(lp.getListOfErrors());
+		
 		System.out.println("/** Testing finished **/");
 
 
