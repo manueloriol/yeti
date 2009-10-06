@@ -1,5 +1,7 @@
 package yeti.environments.csharp;
 
+import java.util.Date;
+
 import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiLog;
@@ -8,6 +10,7 @@ import yeti.YetiName;
 import yeti.YetiRoutine;
 import yeti.YetiType;
 import yeti.YetiVariable;
+import yeti.Yeti;
 
 
 /**
@@ -23,8 +26,8 @@ public class YetiCsharpRoutine extends YetiRoutine {
 	/**
 	 * Result of the last call.
 	 */
-	protected YetiVariable lastCallResult=null;
-
+	protected YetiVariable lastCallResult=null;	
+	protected boolean firstFaultFlag=false;
 
 	/**
 	 * 
@@ -90,6 +93,14 @@ public class YetiCsharpRoutine extends YetiRoutine {
 					String exceMessage = /*exception[2].trim()+*/"\t"+exception[1].trim();
 					//System.out.println("BUG FOUND: ERROR");
 					//System.out.println(exceMessage);
+					if(!this.firstFaultFlag)
+					{
+						double d = ((new Date()).getTime()-Yeti.st);
+					System.out.println("Time: "+d+ "\ttest case: "+Yeti.testCaseCount);
+					//System.out.println("%%%%%%%\n"+exceMessage);
+					this.firstFaultFlag=true;
+					}
+					
 					YetiLog.printYetiLog(exception[2].trim(),this);
 					YetiLog.printYetiLog("/**BUG FOUND: ERROR**/", this);
 					YetiLog.printYetiThrowable(new Exception(exceMessage), this);

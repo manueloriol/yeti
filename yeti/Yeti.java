@@ -61,6 +61,9 @@ public class Yeti {
 	 * Stores the path to use for testing.
 	 */
 	public static String yetiPath = System.getProperty("java.class.path");
+	
+	public static long st;
+	public static long testCaseCount=0;
 
 	/**
 	 * Main method of Yeti. It serves YetiRun the arguments it receives.
@@ -487,6 +490,7 @@ public class Yeti {
 
 		// logging purposes:
 		long startTestingTime = new Date().getTime();
+		st=startTestingTime;
 		// depending of the options launch the testing
 		if (isNTests)
 			// if it is the number of states

@@ -13,6 +13,8 @@ import yeti.YetiName;
 import yeti.YetiType;
 import yeti.YetiVariable;
 import yeti.environments.csharp.YetiCsharpRoutine;
+import yeti.Yeti;
+
 
 
 /**
@@ -78,6 +80,7 @@ public class YetiCsharpMethod extends YetiCsharpRoutine {
 		String log="";
 		String log1="";
 		this.lastCallResult=null;
+		Yeti.testCaseCount++;
 		String prefix,target="";
 		boolean isValue= false;
 		String msg="Method:";

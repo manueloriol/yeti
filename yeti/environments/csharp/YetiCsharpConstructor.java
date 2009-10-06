@@ -11,6 +11,7 @@ import yeti.YetiModule;
 import yeti.YetiName;
 import yeti.YetiType;
 import yeti.YetiVariable;
+import yeti.Yeti;
 
 
 
@@ -72,7 +73,7 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
         String log;
         String msg="";
         this.lastCallResult=null;
-        
+        Yeti.testCaseCount++;
         //Object []initargs=new Object[arg.length];
        
         msg+="Constructor:";
