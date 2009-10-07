@@ -1,0 +1,134 @@
+\section{Model}\label{sec:model}
+
+YETI uses four main notions (see Figure~\ref{fig:def}): \textit{routines}, \textit{types}, 
+\textit{variables}, and \textit{modules}. A type is a collection 
+of variables and routines that return values (of that type). A 
+routine is a computation unit that uses variables of a given type and 
+returns values of a given type. A variable is a couple between a 
+label and a value. A module is a collection of routines. 
+
+\begin{figure}[h]
+\[
+\begin{array}{l c l r}
+\multicolumn{3}{l}{v,v_{0},...,v_{k}}&~~values\\
+\multicolumn{3}{l}{n,n_{0},...,n_{k},r}&~~names\\
+\multicolumn{3}{l}{f,f_{0},...,f_{k},r}&~~failures\\
+R&::=&(v_{1}:T_{1} \times...\times v_{k}:T_{k}) \rightarrow v_{0}:T_{0}&~~routines\\
+V&::=&(n,v)&~~variables\\
+M&::=&(R_{1},...,R_{k})&~~modules\\
+T&::=&((R_{1},...,R_{k}),(V_{1},...,V_{l}))&~~types\\
+data &::=&R|V|M|T&~~data\\
+L&::=&()|(data_{1},...,data_{n})|L_{1} \oplus L_{2}|L \oplus data&~~lists\\
+\end{array}
+\]
+\caption{YETI meta-model definitions.}\label{fig:def}
+\end{figure}
+
+Note that routines contain typing indications. These are the information needed 
+by the infrastructure to make calls and query it to create or store instances. 
+
+Subtyping ($\subtype$) is a relationship between two types and implies
+that the two types conform as shown in the lower part of Figure~\ref{fig:subtype} (PROP).
+
+\begin{figure}[h]
+\begin{center}
+\[
+\begin{array}{c}
+T_{1}\subtype T_{2}~~~T_{2}\subtype T_{3}\\
+\hline
+{T_{1}\subtype T_{3}} \\
+\end{array}~~(TRANS)
+\]\[
+T\subtype T~~(REFL)
+\]
+
+\[
+\begin{array}{c}
+T_{1}\subtype T_{2}~~~T_{1}=((R_{11},...,R_{1k}),(V_{11},...,V_{1l}))~~~T_{2}=((R_{21},...,R_{2m}),(V_{21},...,V_{2n}))\\ 
+\hline
+{\forall i \exists j | R_{1i}\in R_{2j}~~~\forall i \exists j | V_{1i}\in V_{2j}}\\
+\end{array}~~(PROP)
+\]
+\end{center}
+\caption{Subtyping.}\label{fig:subtype}
+\end{figure}
+
+Note that the rule $(PROP)$ is non-standard for the reason that our model is descriptive 
+of the actual programs and valid type indications rather than actual types. As an example,
+a variable could be classified as an instance of a super type of its defining type and not 
+as an instance of its defining type. 
+If this model defined a programming 
+language it would be incomplete. In our case, it is however irrelevant as we do not intend 
+to be complete: we only aim at soundness -- to make calls that would not fail because of typing 
+issues.
+
+\subsection{Modelling Random Testing}
+To model random testing we add primitives to the simple model outlined above.
+Figure \ref{fig:inst} presents the primitives needed by random testing.
+Unless specified otherwise, each instruction has a usual definition.
+
+\begin{figure}[h]
+\[
+\begin{array}{r c l}
+primitive &::=& selectVariableFromType(T)\\
+&|& addVariableToType(T,V)\\
+&|& selectRoutineFromModule(M)\\
+&|& executeRoutineWithArguments(R,l)\\
+&|& oracle(primitive)\\
+&|& report(f)\\
+instruction&::=& primitive\\
+&|& n \textbf{:=} primitive | n \textbf{:=} data |n \textbf{:=} L\\
+&|& instruction~\textbf{;}~instruction\\
+&|&\textbf{forall}~n~\textbf{in}~list~\textbf{do}~instruction~\textbf{end}\\
+&|&\textbf{ifIsFailure}~instruction~\textbf{then}~instruction~\textbf{else}~instruction\\
+&|&\textbf{whileNotFinished} \{ instruction \}
+\end{array}
+\]
+\[
+\begin{array}{r l}
+selectVariableFromType:& T \mapsto V\\
+addVariableToType:& T\times V\mapsto T\\
+selectRoutineFromModule:& M\mapsto R\\
+executeRoutineWithArguments:& R\times l \mapsto V|f\\
+oracle:& V | f \mapsto V | f\\
+report:& f \mapsto \emptyset\\
+\end{array}
+\]
+\caption{YETI primitives and instructions.}\label{fig:inst}
+\end{figure}
+
+Figure~\ref{fig:randtest} shows how YETI tests code at random using the model defined in Figure~\ref{fig:inst}. 
+
+\begin{figure}[h]
+\[
+\begin{array}{l}
+whileNotFinished\{\\
+~~r\textbf{:=}selectRoutineFromModule(M_{underTest});\\
+~~l\textbf{:=}();\\
+~~\textbf{forall}~t~\textbf{in}~(T_{1}... T_{n})|i\neq 0~and~r==(v_{1}:T_{1} \times...\times v_{k}:T_{k})\rightarrow v_{0}:T_{0}\\
+~~\textbf{do}~\\
+~~~l\textbf{:=}l\oplus selectVariableFromType(t)~\\
+~~\textbf{end};\\
+~~res\textbf{:=}oracle(executeRoutineWithArguments(r,l));\\
+~~\textbf{ifIsFailure}~res~\textbf{then}~report(res)~\textbf{else}~addVariableToType(T_{0})\\
+\}\\
+\end{array}
+\]
+\caption{Main random testing algorithm.}\label{fig:randtest}
+\end{figure}
+
+While instructions have a precise semantics we assume that primitives are actually user-defined.
+This allows the easy definition of user-specific strategies and bindings.
+For example, in the case of a pure random strategy on Java, the primitives would 
+have the following semantics: 
+\begin{itemize}
+\item $selectVariableFromType(T)$ selects one of the variables of $T$ at random and returns it.
+\item $addVariableToType(T,V)$ adds $V$ to $T$ and returns the result.
+\item $selectRoutineFromModule(M)$ returns one of the routines in $M$ at random.
+\item $executeRoutineWithArguments(R,l)$ makes the actual execution of the code and returns a created variable (if any).
+\item $oracle(V|f)$ decides on the validity of a failure or a value according to the semantics of the target programming language.
+\item $report(f)$ aggregates failures and only actually report unique failures.
+\end{itemize}
+
+Other semantics are however possible. For example Random+~\cite{} either picks selects values in the existing pool of object, generate new ones on the fly, or take interesting values. This would then mean a different semantics for $selectVariableFromType$.
+

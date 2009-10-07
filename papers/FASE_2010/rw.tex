@@ -1,0 +1,47 @@
+\section{Related Work}\label{sec:rw}
+In a comprehensive overview of random testing~\cite{Hamlet1994} Hamlet stresses the point that it is exactly
+the lack of system in choosing inputs that makes random testing the
+only strategy that can offer any statistical prediction of
+significance of the results. Hence, if such a measure of reliability
+is necessary, random testing is the only option. Furthermore, random
+testing is also the only option in cases when information is lacking
+to make systematic choices~\cite{Hamlet2006}.
+
+The intuition that, for most programs, random testing stands little chance of 
+coming across ``interesting'' and meaningful inputs is contradicted by several 
+reports on practical applications of the method: random testing has been used 
+to uncover faults in Java libraries and 
+programs~\cite{Pacheco2005,Csallner2004}, in Haskell 
+programs~\cite{Claessen2000}, in utilities for various operating 
+systems~\cite{Forrester2000,Miller1990}. All these reports show that random 
+testing does find defects in various types of software , but they do not 
+investigate its predictability.
+
+Perhaps due to this, the interest in random testing of O-O programs has increased greatly
+in recent years. Proof of this are the numerous testing tools using this
+strategy developed recently such as: JCrasher~\cite{Csallner2004},
+Eclat~\cite{Pacheco2005}, Jtest~\cite{Jtest},
+Jartege~\cite{Oriat2004}, or RUTE-J~\cite{Andrews2006a}. The
+evaluations of these tools are focused on various quality estimation
+methods for the tools themselves: finding real errors in existing
+software (JCrasher, Eclat, RUTE-J), in code created by the authors
+(Jartege), in code written by students (JCrasher), the number of
+false positives reported (JCrasher), mutation testing (RUTE-J), code
+coverage (RUTE-J). As such, the studies of the behaviors of these
+tools stand witness for the ability of random testing to find
+defects in mature and widely used software and to detect up to 100\%
+of generated mutants for a class. These studies do not, however,
+employ any statistical analysis which would allow drawing more
+general conclusions from them about the nature of random testing.
+
+Random input generation delivers the best results when combined with
+an automated oracle, due to the numerous and untargeted tests that
+it produces. For a human it would be tedious to wade through these
+tests, out of which only a small proportion are fault-revealing. The
+power of random testing can be fully exploited only if the pass/fail
+decision is automated. A great part of the existing work on fully
+automated testing
+\cite{Boyapati2002,Csallner2006,Pacheco2005,Pacheco2007,Oriat2004}
+thus uses built-in test oracles in the form of contracts. These can
+either be written by developers or inferred by a tool
+\cite{Ernst2000} from runs of the system under test. 
