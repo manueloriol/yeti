@@ -311,10 +311,8 @@ public class YetiGUI implements Runnable {
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
 				generateRightCentralSubpanel(), generateLowerRightSubpanel());
 		splitPane.setOneTouchExpandable(true);
-		// reestablish when finalized
-		//		splitPane.setDividerLocation(screenDimensions.height-300);
-		splitPane.setDividerLocation(screenDimensions.height);
-
+		splitPane.setDividerLocation(screenDimensions.height-500);
+		
 		return splitPane;
 	}
 
@@ -395,7 +393,16 @@ public class YetiGUI implements Runnable {
 	 * @return the panel at the bottom of the interface.
 	 */
 	public JComponent generateLowerRightSubpanel() {
-		return new JPanel();
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
+	
+		/////////////////////////
+		// add a module graph
+		/////////////////////////
+		YetiUniqueFaultsGraph graph = new YetiUniqueFaultsGraph(240,this.screenDimensions.height-250);
+		this.allComponents.add(graph.getModel());
+		panel.add(graph);
+		return panel;
 	}
 
 	/**

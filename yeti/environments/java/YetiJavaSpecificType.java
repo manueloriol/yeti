@@ -109,22 +109,22 @@ public class YetiJavaSpecificType extends YetiType {
 		tBoolean.addInterestingValues(false);
 		YetiJavaSpecificType tByte=new YetiJavaSpecificType("byte");
 		tByte.setSimpleType(true);
-		tByte.addInterestingValues(0);
-		tByte.addInterestingValues(1);
-		tByte.addInterestingValues(2);
-		tByte.addInterestingValues(255);
-		tByte.addInterestingValues(254);
-		tByte.addInterestingValues(253);
+		tByte.addInterestingValues((byte)0);
+		tByte.addInterestingValues((byte)1);
+		tByte.addInterestingValues((byte)2);
+		tByte.addInterestingValues((byte)255);
+		tByte.addInterestingValues((byte)254);
+		tByte.addInterestingValues((byte)253);
 
 		YetiJavaSpecificType tShort=new YetiJavaSpecificType("short");
 		tShort.setSimpleType(true);
 		for (short j = -10; j<11;j++)
-			tShort.addInterestingValues(j);
+			tShort.addInterestingValues((short)j);
 		tShort.addInterestingValues(Short.MAX_VALUE);
-		tShort.addInterestingValues(Short.MAX_VALUE-1);
-		tShort.addInterestingValues(Short.MAX_VALUE-2);
-		tShort.addInterestingValues(Short.MIN_VALUE+2);
-		tShort.addInterestingValues(Short.MIN_VALUE+1);
+		tShort.addInterestingValues((short) (Short.MAX_VALUE-1));
+		tShort.addInterestingValues((short)(Short.MAX_VALUE-2));
+		tShort.addInterestingValues((short)(Short.MIN_VALUE+2));
+		tShort.addInterestingValues((short)(Short.MIN_VALUE+1));
 		tShort.addInterestingValues(Short.MIN_VALUE);
 
 
@@ -226,7 +226,7 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	public static short __yetiValue_createRandomShort(){
 		double d=Math.random();
-		return((short) (Math.floor(65535*d)-32767));
+		return((short) (Math.floor(65535*d)-32768));
 	}
 
 	/**

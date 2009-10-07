@@ -579,7 +579,7 @@ public class Yeti {
 		System.out.println("\t-instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.");
 		System.out.println("\t-tracesOutputFile=X : the file where to output traces on disk.");
 		System.out.println("\t-tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').");
-		System.out.println("\t-printNumberOfCallsPerMehtod : prints the number of calls per method.");
+		System.out.println("\t-printNumberOfCallsPerMethod : prints the number of calls per method.");
 
 	}
 
