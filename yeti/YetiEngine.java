@@ -11,7 +11,31 @@ import yeti.environments.YetiTestManager;
  */
 public class YetiEngine {
 	
-		
+		/**
+		 * A progress value between 1 and 100.
+		 */
+		int progress = 0;
+	
+		/**
+		 * Simple getter for the progress.
+		 * 
+		 * @return the value of the progress variable (between 0 and 100).
+		 */
+		public int getProgress() {
+			return progress;
+		}
+
+
+		/**
+		 * A simple setter for the progress variable.
+		 * 
+		 * @param progress the value of the progress variable.
+		 */
+		public void setProgress(int progress) {
+			this.progress = progress;
+		}
+
+
 		/**
 		 * The strategy that will be used
 		 */
@@ -35,7 +59,7 @@ public class YetiEngine {
 			this.manager=manager;
 		}
 		
-		
+	
 		/**
 		 * Method allowing to test a module for a number of minutes.
 		 * 

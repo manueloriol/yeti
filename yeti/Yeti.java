@@ -66,6 +66,10 @@ public class Yeti {
 	public static long testCaseCount=0;
 
 	/**
+	 * The engine used to make tests.
+	 */
+	public static YetiEngine engine;
+	/**
 	 * Main method of Yeti. It serves YetiRun the arguments it receives.
 	 * Arguments are numerous. Here is a list of the current ones:
 	 * <br>
@@ -107,7 +111,6 @@ public class Yeti {
 	 * @param args the list of arguments passed on either by main or Map Method in YetiMap
 	 */	
 	public static synchronized void YetiRun(String[] args){
-		YetiEngine engine;
 		YetiInitializer secondaryInitializer = null;
 		boolean isJava = false;
 		boolean isJML = false;
@@ -214,7 +217,8 @@ public class Yeti {
 			if (s0.startsWith("-testModules=")) {
 				String s1=s0.substring(13);
 				modulesToTest=s1.split(":");
-				YetiMap.moduleName=modulesToTest[0];
+				// TODO: check that this is useful
+				//YetiMap.moduleName=modulesToTest[0];
 				continue;
 			}
 			// we want to have only logs in standard form

@@ -22,7 +22,9 @@ public class YetiUniqueFaultsGraph extends JPanel {
 	 * The model for the JTable
 	 */
 	public UniqueFaultsTableModel uniqueFaultsTableModel = new UniqueFaultsTableModel();
-	
+
+	int currentSize = -1;
+
 
 	public YetiUniqueFaultsGraph(int width, int height) {
 
@@ -32,14 +34,14 @@ public class YetiUniqueFaultsGraph extends JPanel {
 		this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		moduleTable.getColumn("").setMaxWidth(25);
 		moduleTable.getColumn("Date").setMaxWidth(200);
-		
+
 		moduleTable.setPreferredScrollableViewportSize(new Dimension(width, height));
 		moduleTable.setFillsViewportHeight(true);
 		// we encapsulate the table in a scroll pane
 		JScrollPane scrollPane = new JScrollPane(moduleTable);
 		this.setPreferredSize(new Dimension(250,0));
 		scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
+
 		// we add the two components
 		this.add(scrollPane);
 	}
@@ -50,7 +52,7 @@ public class YetiUniqueFaultsGraph extends JPanel {
 
 	@SuppressWarnings("serial")
 	class UniqueFaultsTableModel extends AbstractTableModel implements YetiUpdatable {
-		private String[] columns = {"", "Date","Unique Fault"};
+		private String[] columns = {"", "Date","Unique Faults"};
 		private Object[][] values = null;
 
 		public UniqueFaultsTableModel() {
@@ -59,16 +61,18 @@ public class YetiUniqueFaultsGraph extends JPanel {
 
 		public void updateValues() {
 			int nUnique =  YetiLog.proc.listOfNewErrors.size();
-			if ((values == null) || (nUnique!=values.length)) {
-				Object[] keys = YetiLog.proc.listOfNewErrors.keySet().toArray(); 
-				values =  new Object[nUnique][3];
-				for (int i=0; i<nUnique; i++) {
-					values[i][0] = (i+1)+" ";
-					values[i][1] = YetiLog.proc.listOfNewErrors.get(keys[i]);
-					values[i][2] = keys[i];
+			if (nUnique!=currentSize)
+				if ((values == null) || (nUnique!=values.length)) {
+					Object[] keys = YetiLog.proc.listOfNewErrors.keySet().toArray(); 
+					values =  new Object[nUnique][3];
+					for (int i=0; i<nUnique; i++) {
+						values[i][0] = (i+1)+" ";
+						values[i][1] = YetiLog.proc.listOfNewErrors.get(keys[i]);
+						values[i][2] = keys[i];
+					}
+					this.fireTableDataChanged();
 				}
-				this.fireTableDataChanged();
-			}
+				currentSize = nUnique;
 		}
 
 		public int getColumnCount() {
@@ -76,6 +80,8 @@ public class YetiUniqueFaultsGraph extends JPanel {
 		}
 
 		public int getRowCount() {
+			if (values==null)
+				return 0;
 			return values.length;
 		}
 
