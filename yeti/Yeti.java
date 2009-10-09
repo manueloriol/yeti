@@ -550,10 +550,11 @@ public class Yeti {
 			}
 		}
 		YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
-		YetiMap.listOfExceptions.putAll(lp.getListOfErrors());
+		// TODO check that.
+		//YetiMap.listOfExceptions.putAll(lp.getListOfErrors());
 		
 		System.out.println("/** Testing finished **/");
-
+		
 
 	}
 

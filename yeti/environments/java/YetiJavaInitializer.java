@@ -24,7 +24,7 @@ public class YetiJavaInitializer extends YetiInitializer {
 	 * The custom class loader that is going to be used.
 	 */
 	protected YetiLoader loader = null;
-	
+
 	/**
 	 * Default constructor 
 	 * @param loader the class loader to use.
@@ -32,7 +32,7 @@ public class YetiJavaInitializer extends YetiInitializer {
 	public YetiJavaInitializer(YetiLoader loader) {
 		this.loader = loader;
 	}
-	
+
 	/**
 	 * A simple helper routine that ignores the parameter String.
 	 * 
@@ -68,33 +68,43 @@ public class YetiJavaInitializer extends YetiInitializer {
 			else {
 
 				try {
+
 					// we load all classes in path and String
 					loader.loadAllClassesInPath();
-					loader.loadClass("java.lang.String");
-					// we want to test these modules
-					String []modulesToTest=null;
-					for (String s0: args) {
-						if (s0.startsWith("-testModules=")) {
-							String s1=s0.substring(13);
-							modulesToTest=s1.split(":");
-							break;
-						}
-					}
 
-					// we iterate through the modules
-					// if the module does not exist we load it
-					for(String moduleToTest : modulesToTest) {
-						YetiModule yetiModuleToTest = YetiModule.allModules.get(moduleToTest);
-						if(yetiModuleToTest==null) {
-							loader.loadClass(moduleToTest);
-						} 
-					}
+					loader.loadClass("java.lang.String");
 
 				} catch (ClassNotFoundException e) {
 					// Should not happen, but... we ignore it...
 					YetiLog.printDebugLog(e.toString(), this, true);
 					// e.printStackTrace();
+				}catch (Throwable t) {}
+				// we want to test these modules
+				String []modulesToTest=null;
+				for (String s0: args) {
+					if (s0.startsWith("-testModules=")) {
+						String s1=s0.substring(13);
+						modulesToTest=s1.split(":");
+						break;
+					}
 				}
+
+				// we iterate through the modules
+				// if the module does not exist we load it
+				for(String moduleToTest : modulesToTest) {
+					YetiModule yetiModuleToTest = YetiModule.allModules.get(moduleToTest);
+					if(yetiModuleToTest==null) {
+						try {
+							loader.loadClass(moduleToTest);
+						} catch (ClassNotFoundException e) {
+							// could happen, but... we ignore it...
+							YetiLog.printDebugLog(e.toString(), this, true);
+							// e.printStackTrace();
+						} catch (Throwable t) {}
+					} 
+				}
+
+
 			}
 		}
 		System.setSecurityManager(new SecurityManager() {
@@ -119,7 +129,7 @@ public class YetiJavaInitializer extends YetiInitializer {
 
 	@Override
 	public void addModule(String s) {
-	
+
 		try {
 			loader.loadClass(s);
 		} catch (ClassNotFoundException e) {
