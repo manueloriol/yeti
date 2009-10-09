@@ -18,14 +18,15 @@ Oracles are language-dependent. In the presence of specifications YETI checks
 inconsistencies between the code and the specifications. In the case of 
 languages such as plain Java, if programmers use \texttt{assert} statements 
 violations are interpreted as failures. If programmers do not use assert 
-statements a testing session with YETI is then  robustness test that
-consider undeclared runtime exceptions thrown as failures.
+statements a testing session with YETI is then a robustness test that
+considers undeclared runtime exceptions thrown as failures.
 
 Unlike competitors, YETI also support a graphical user interface that 
 allows test engineers to monitor the testing session and modify some 
 of its characteristics while testing. To validate our approach we made 
-one million calls at random on each considered class and tested 
-all classes in \texttt{java.lang} as well as in ...
+one million calls at random on each classe in \texttt{java.lang} where 
+it discovered 45 faults. We also tested a package of iText where it 
+discovered 119 faults. 
 
 
 Section~\ref{sec:model} presents YETI's meta-model and its main algorithms.

@@ -25,7 +25,7 @@ L&::=&()|(data_{1},...,data_{n})|L_{1} \oplus L_{2}|L \oplus data&~~lists\\
 \end{figure}
 
 Note that routines contain typing indications. These are the information needed 
-by the infrastructure to make calls and query it to create or store instances. 
+by the infrastructure to make calls and to create or store instances. 
 
 Subtyping ($\subtype$) is a relationship between two types and implies
 that the two types conform as shown in the lower part of Figure~\ref{fig:subtype} (PROP).
@@ -53,19 +53,19 @@ T_{1}\subtype T_{2}~~~T_{1}=((R_{11},...,R_{1k}),(V_{11},...,V_{1l}))~~~T_{2}=((
 \caption{Subtyping.}\label{fig:subtype}
 \end{figure}
 
-Note that the rule $(PROP)$ is non-standard for the reason that our model is descriptive 
-of the actual programs and valid type indications rather than actual types. As an example,
+The rule $(PROP)$ is non-standard because our model is descriptive 
+of the actual programs rather than actual types. As an example,
 a variable could be classified as an instance of a super type of its defining type and not 
 as an instance of its defining type. 
 If this model defined a programming 
-language it would be incomplete. In our case, it is however irrelevant as we do not intend 
+language it would be incomplete. In our case, it is however sufficient as we do not intend 
 to be complete: we only aim at soundness -- to make calls that would not fail because of typing 
 issues.
 
 \subsection{Modelling Random Testing}
 To model random testing we add primitives to the simple model outlined above.
 Figure \ref{fig:inst} presents the primitives needed by random testing.
-Unless specified otherwise, each instruction has a usual definition.
+Unless specified otherwise, each instruction has an intuitive definition.
 
 \begin{figure}[h]
 \[
@@ -130,5 +130,7 @@ have the following semantics:
 \item $report(f)$ aggregates failures and only actually report unique failures.
 \end{itemize}
 
-Other semantics are however possible. For example Random+~\cite{} either picks selects values in the existing pool of object, generate new ones on the fly, or take interesting values. This would then mean a different semantics for $selectVariableFromType$.
+Other semantics are however possible. For example Random+~\cite{CMOP:08:FFMTRTUR} either picks selects values in the existing pool of object, generate new ones on the fly, or take interesting values. This would then mean a different semantics for $selectVariableFromType$.
+
+As previously shown, several specializations of the model are possible. The next chapter will present the both the implementation of the core of YETI and the implemenation of the Java binding.
 

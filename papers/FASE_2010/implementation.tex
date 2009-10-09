@@ -1,10 +1,10 @@
 \section{Implementation}\label{sec:implem}
 
-YETI is an application coded in Java, that allows to test programs at random in a fully automated manner.
+YETI is an application coded in Java, allowing to test programs at random in a fully automated manner.
 It is designed to support various programming languages -- for example, functional, procedural and object-oriented languages can easily be supported.
  It contains three parts: the core infrastructure, the strategy, and the language-specific bindings. 
 YETI is a lightweight platform with around 5000 lines of code for the core, strategies and the Java binding.
- As explained in Section~\ref{sec:model}, the core infrastructure provides extendibility trough the specialization. 
+ As explained in Section~\ref{sec:model}, the core infrastructure provides extendibility trough specialization. 
  To create specific strategies or language bindings, one subclasses abstract Java classes.
 
 \subsection{Using YETI}
@@ -24,7 +24,7 @@ classes in the current directory (and its subdirectories) will be preloaded,
 \texttt{-testModules=java.lang.String} indicates that both \texttt{String} and
 \texttt{StringBuilder} will both be tested.
 
-While testing traces of faults found are reproduced in the terminal. For example:
+While testing, traces of faults found are output in the terminal. For example:
 
 {\small
 \begin{verbatim}
@@ -75,27 +75,27 @@ By specifying the \texttt{-gui} option, YETI shows a graphical user interface
 that allows test engineers to interact directly with the system while the testing 
 session proceeds. 
 
-\begin{figure}[h]
+\begin{figure}[h!]
 \begin{center}
-%\begin{sideways}
-\includegraphics[width=13cm]{images/YetiComplete.png}
-%\end{sideways}
+\begin{sideways}
+\includegraphics[width=16cm]{images/YetiComplete.png}
+\end{sideways}
 \end{center}
-\caption{Yeti graphical user interface.}\label{fig:gui}
+\caption{YETI graphical user interface.}\label{fig:gui}
 \end{figure}
 
 Figure~\ref{fig:gui} shows YETI's graphical user interface when using 
 the random+ strategy. At the top of the interface, two sliders correspond to 
 the percentage of null values and the percentage of new variables to use when testing.
-In short each time a test is made, each paramater of the routine to test can either 
-be void, be newly generated or a new variable. These sliders indicate which possibility 
+In short, each time a test is made, each paramater of the routine to test can either 
+be void, be newly generated or a new variable. These sliders indicate which probability 
 to use. In the top part there is also a text field to limit the number of instances per 
 type in the system (which is necessary for long-running sessions).
 
 The left panel contains a panel specific to the current strategy (in the example, the 
 considers using ``interesting'' values when possible) and a list of modules loaded in 
 the system. The modules being tested are ticked, while others can be used as helpers to 
-create variables to use when making routine calls. A button is available to add modules 
+create variables to use on-demand making a routine calls. A button is available to add modules 
 at runtime for programming languages that support it. This last part is useful in cases 
 where a module is missing for being able to test routine. 
 
@@ -112,7 +112,7 @@ of routines tested successfully, yellow represents routine calls that cannot be 
 The bottom panel reports unique failures as they are found: each line is a unique failure.
 
 In order for the graphical interface not to slow down the testing process, we use two threads.
-The first one samples data for building graphs every .1 seconds, the second one updates the graphical user interfaces and waits .1 second between two updates. A special care has also been taken for not showing all samples in the graphs when not needed: we only show one point per pixel on the x-axis. In ten minutes testing sessions  of \texttt{java.lang.String} on a dual core MacBook Pro, the slowdown incurred by the GUI was measured to be $4.4\%$. 
+The first one samples data for building graphs every .1 seconds, the second one updates the graphical user interfaces and waits .1 second between two updates. A special care has also been taken for not showing all samples in the graphs when not needed: we only show one point per pixel on the x-axis. In ten minutes testing sessions  of \texttt{java.lang.String} on a dual core MacBook Pro, the slowdown incurred by the GUI was $4.4\%$. 
 
 \subsection{Core Architecture}
 The core architecture of YETI is very consistent with the model described in Section~\ref{sec:model}.
@@ -155,10 +155,10 @@ exiting the program. Note also that we forbid the system to test \texttt{wait}, 
 \subsection{Strategies}
 By default YETI contains four main strategies:
 \begin{description}
-\item[Pure random] is a strategy that generates calls and selects values at random two main probabilities can be used: the percentage of null values, and the percentage of newly created objects to use when testing.
-\item[Random+] that adds the utilisation of ``interesting'' values. For the Java binding such values for integers contain \texttt{MAX\_INT}, \texttt{MIN\_INT}, all values between $-10$ and $10$ etc. It also defines the probability to use such interesting values.
+\item[Pure random] is a strategy that generates calls and selects values at random. Two main probabilities can be used: the percentage of null values, and the percentage of newly created objects to use when testing.
+\item[Random+] adds the utilisation of ``interesting'' values. For the Java binding such values for integers contain \texttt{MAX\_INT}, \texttt{MIN\_INT}, all values between $-10$ and $10$ etc. It also defines the probability to use such interesting values.
 \item[Random Decreasing] is a random+ strategy where all three probabilities start at $100\%$ and then linearly decrease until they are at $0$ at the end of the session.
 \item[Random Periodic] is a random+ strategy where all three probabilities periodically decrease and increase over the testing session.
 \end{description}
 
-While the first two strategies were described previously in literature~\cite{}, the last two are new as nobody thought of modifying the probabilities over time.
+While the first two strategies were described previously in literature~\cite{CMOP:08:FFMTRTUR}, the last two are new as nobody thought of modifying the probabilities over time.

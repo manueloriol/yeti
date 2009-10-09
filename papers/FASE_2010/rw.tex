@@ -1,47 +1,35 @@
 \section{Related Work}\label{sec:rw}
-In a comprehensive overview of random testing~\cite{Hamlet1994} Hamlet stresses the point that it is exactly
-the lack of system in choosing inputs that makes random testing the
-only strategy that can offer any statistical prediction of
-significance of the results. Hence, if such a measure of reliability
-is necessary, random testing is the only option. Furthermore, random
-testing is also the only option in cases when information is lacking
-to make systematic choices~\cite{Hamlet2006}.
 
-The intuition that, for most programs, random testing stands little chance of 
-coming across ``interesting'' and meaningful inputs is contradicted by several 
-reports on practical applications of the method: random testing has been used 
-to uncover faults in Java libraries and 
+With programs becoming increasingly complex, the process of testing 
+them has to become smarter and more efficient. Automated random testing
+is a technique that is cheap to run and proved to find bugs in Java libraries and 
 programs~\cite{Pacheco2005,Csallner2004}, in Haskell 
-programs~\cite{Claessen2000}, in utilities for various operating 
-systems~\cite{Forrester2000,Miller1990}. All these reports show that random 
-testing does find defects in various types of software , but they do not 
-investigate its predictability.
+programs~\cite{Claessen00quickcheck:a}.
 
-Perhaps due to this, the interest in random testing of O-O programs has increased greatly
-in recent years. Proof of this are the numerous testing tools using this
-strategy developed recently such as: JCrasher~\cite{Csallner2004},
-Eclat~\cite{Pacheco2005}, Jtest~\cite{Jtest},
-Jartege~\cite{Oriat2004}, or RUTE-J~\cite{Andrews2006a}. The
-evaluations of these tools are focused on various quality estimation
-methods for the tools themselves: finding real errors in existing
-software (JCrasher, Eclat, RUTE-J), in code created by the authors
-(Jartege), in code written by students (JCrasher), the number of
-false positives reported (JCrasher), mutation testing (RUTE-J), code
-coverage (RUTE-J). As such, the studies of the behaviors of these
-tools stand witness for the ability of random testing to find
-defects in mature and widely used software and to detect up to 100\%
-of generated mutants for a class. These studies do not, however,
-employ any statistical analysis which would allow drawing more
-general conclusions from them about the nature of random testing.
+YETI is the latest in a serie of recent random testing tools like
+JCrasher~\cite{Csallner2004}, Eclat~\cite{Pacheco2005}, Jtest~\cite{Jtest},
+Jartege~\cite{Oriat2004}, RUTE-J~\cite{Andrews2006a}, and in particular 
+AutoTest~\cite{Ciupa2007,CLOM:08:AARTOO,CPLOM:08:PRTOOS}. YETI is however 
+different from these tools in at least three important ways: (1) it is made to 
+easily support multiple programming languages, (2) 
+it is intended to allow test engineers to modify the parameters of the 
+testing during the testing session itself, and (3) it is at least 3 orders 
+of magnitude faster than competing tools. 
 
-Random input generation delivers the best results when combined with
-an automated oracle, due to the numerous and untargeted tests that
-it produces. For a human it would be tedious to wade through these
-tests, out of which only a small proportion are fault-revealing. The
-power of random testing can be fully exploited only if the pass/fail
-decision is automated. A great part of the existing work on fully
-automated testing
-\cite{Boyapati2002,Csallner2006,Pacheco2005,Pacheco2007,Oriat2004}
-thus uses built-in test oracles in the form of contracts. These can
-either be written by developers or inferred by a tool
-\cite{Ernst2000} from runs of the system under test. 
+The first characteristics comes from
+the meta-model that YETI uses that is not bound to a specific paradigm.
+It also implies that some domain-specific optimizations~\cite{Pacheco2007,Godefroid2005,Chen2004a,Chen2005} will not be possible 
+without additional support because YETI does not know values or language-specific
+constructs. 
+
+The second point is the truly innovative point. All other approaches
+considered the testing tool to be a component that would run by itself without 
+further interactions. In our experience the runtime monitoring has become 
+the main means of knowing how the testing session evolves and possibly to 
+improve it by modifying some parameters. 
+
+The last characteristics 
+clearly depends on the reference implementation being in Java and testing Java
+programs -- other bindings might exhibit slower performances. It is however 
+worth noting that this has a direct impact on the capability for the tool to 
+test thoroughly big amount of code in short period of time.
