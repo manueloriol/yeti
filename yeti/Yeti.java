@@ -110,7 +110,7 @@ public class Yeti {
 	 * This will receive the same arguments as described for method main and process them
 	 * @param args the list of arguments passed on either by main or Map Method in YetiMap
 	 */	
-	public static synchronized void YetiRun(String[] args){
+	public static void YetiRun(String[] args){
 		YetiInitializer secondaryInitializer = null;
 		boolean isJava = false;
 		boolean isJML = false;
