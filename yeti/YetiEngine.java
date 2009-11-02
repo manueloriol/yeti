@@ -33,6 +33,7 @@ public class YetiEngine {
 		 */
 		public void setProgress(int progress) {
 			this.progress = progress;
+			YetiLog.printDebugLog("YETI Testing session: "+progress+"%", this);
 		}
 
 
@@ -69,15 +70,7 @@ public class YetiEngine {
 		 * @param minutes the number of minutes to test it
 		 */
 		public void testModuleForNMinutes(YetiModule mod, int minutes){
-			// we generate the end time using a long representation
-			long endTime = new Date().getTime()+(long)(minutes)*60*1000;
-			
-			// at each iteration we test the current time
-			while (new Date().getTime()<endTime){
-				manager.makeNextCall(mod, strategy);
-			}
-			manager.stopTesting();
-
+			this.testModuleForNSeconds(mod, 60*minutes);
 		}
 
 		/**
@@ -89,13 +82,30 @@ public class YetiEngine {
 		 * @param seconds the number of seconds to test it
 		 */
 		public void testModuleForNSeconds(YetiModule mod, int seconds){
+			// we take the start time
+			long startTime = new Date().getTime();
 			// we generate the end time using a long representation
-			long endTime = new Date().getTime()+seconds*1000;
+			long endTime = startTime+seconds*1000;
+			
+			// steps
+			long step = (endTime-startTime)/100L;
+			
+			// the last step
+			long lastStep = startTime;
+			
+			// the current time
+			long currentTime = startTime;
 			
 			// at each iteration we test the current time
-			while (new Date().getTime()<endTime){
+			while (currentTime<endTime){
+				if (currentTime>lastStep+step) {
+					this.setProgress((int)((100L*(currentTime-startTime))/(endTime-startTime)));
+					lastStep = lastStep+step;
+				}
 				manager.makeNextCall(mod, strategy);
+				currentTime=new Date().getTime();
 			}
+			this.setProgress(100);
 			manager.stopTesting();
 		}
 
@@ -111,10 +121,21 @@ public class YetiEngine {
 		public void testModuleForNumberOfTests(YetiModule mod, int number){
 			int nTests=number;
 			
+			// steps
+			long step = number/100;
+			
+			// the last step
+			long lastStep = 0;
+	
 			// we simplty iterate through the calls
 			while (nTests-->0){
+				if ((number-nTests)>(lastStep+step)) {
+					this.setProgress(((number-nTests)*100)/number);
+					lastStep = lastStep+step;
+				}
 				manager.makeNextCall(mod, strategy);
 			}
+			this.setProgress(100);
 			manager.stopTesting();
 		}
 

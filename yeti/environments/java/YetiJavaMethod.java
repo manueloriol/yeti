@@ -227,79 +227,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 
 		// if this is a value, we print it directly
 		if (isValue) {
-			// we escape the values
-			if (o instanceof Character){
-				String value;
-				// in case we have space characters
-				switch (((Character)o).charValue()){
-
-				case '\r': {
-					value = "\\r"; 
-					break;
-				}
-
-				case ' ': {
-					value = " "; 
-					break;
-				}
-
-				case '\f': {
-					value = "\\f"; 
-					break;
-				}
-				case '\t': {
-					value = "\\t"; 
-					break;
-				}
-				case '\n': {
-					value = "\\n";
-					break;
-				}
-				default :{
-					// if this is not a standard character from the old time ISO set
-					int i = ((Character)o).charValue();
-					if (!(i<128 && Character.isLetter(i))) {
-						value = "\\u";
-						String value0="";
-						// we have to reconstruct the correct value
-						char hexDigit[] = {
-								'0', '1', '2', '3', '4', '5', '6', '7',
-								'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
-						};
-						// we iterate 4 times (only)
-						for (int j = 0;j<4;j++){
-							value0 = hexDigit[i & 0x0f]+value0;
-							i = i>>4;
-						}
-						value = value+value0;
-					} else
-						// otherwise, we simply show it as is
-						value = ""+((Character)o).charValue();
-				}
-
-				}
-				log1=log1+"'"+value+"'"+";";
-			} else {
-				// just in case we have a NaN value we are able to make it again...
-				// we also add the correct modifier to indicate Longs, floats, and double
-				if (o instanceof Float) {
-					if (((Float)o).isNaN()) {
-						log1 = log1+"0.0/0.0f;";
-					} else
-						log1 = log1+o.toString()+"f;";
-				} else
-					if (o instanceof Double) {
-						if (((Double)o).isNaN()) {
-							log1 = log1+"0.0/0.0d;";
-						} else
-							log1 = log1+o.toString()+"d;";
-					} else
-						if (o instanceof Long) {
-							log1 = log1+o.toString()+"L;";
-						} else
-							log1=log1+o.toString()+";";
-			}
-			log = log1;
+			log = generateLogForValues(log1, o);
 		}
 		else
 			log=log+");";
@@ -308,6 +236,94 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		YetiLog.printYetiLog(log, this);
 		return log;
 	}
+
+	/**
+	 * Takes a log and adds the litteral value in the case this is a value type.
+	 * 
+	 * @param log1
+	 * @param o
+	 * @return
+	 */
+	public static String generateLogForValues(String log1, Object o) {
+		String log;
+		// we escape the values
+		if (o instanceof Character){
+			String value;
+			// in case we have space characters
+			switch (((Character)o).charValue()){
+
+			case '\r': {
+				value = "\\r"; 
+				break;
+			}
+
+			case ' ': {
+				value = " "; 
+				break;
+			}
+
+			case '\f': {
+				value = "\\f"; 
+				break;
+			}
+			case '\t': {
+				value = "\\t"; 
+				break;
+			}
+			case '\n': {
+				value = "\\n";
+				break;
+			}
+			default :{
+				// if this is not a standard character from the old time ISO set
+				int i = ((Character)o).charValue();
+				if (!(i<128 && Character.isLetter(i))) {
+					value = "\\u";
+					String value0="";
+					// we have to reconstruct the correct value
+					char hexDigit[] = {
+							'0', '1', '2', '3', '4', '5', '6', '7',
+							'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+					};
+					// we iterate 4 times (only)
+					for (int j = 0;j<4;j++){
+						value0 = hexDigit[i & 0x0f]+value0;
+						i = i>>4;
+					}
+					value = value+value0;
+				} else
+					// otherwise, we simply show it as is
+					value = ""+((Character)o).charValue();
+			}
+
+			}
+			log1=log1+"'"+value+"'"+";";
+		} else {
+			// just in case we have a NaN value we are able to make it again...
+			// we also add the correct modifier to indicate Longs, floats, and double
+			if (o instanceof Float) {
+				if (((Float)o).isNaN()) {
+					log1 = log1+"0.0/0.0f;";
+				} else
+					log1 = log1+o.toString()+"f;";
+			} else
+				if (o instanceof Double) {
+					if (((Double)o).isNaN()) {
+						log1 = log1+"0.0/0.0d;";
+					} else
+						log1 = log1+o.toString()+"d;";
+				} else
+					if (o instanceof Long) {
+						log1 = log1+o.toString()+"L;";
+					} else
+						log1=log1+o.toString()+";";
+		}
+		log = log1;
+		return log;
+	}
+	
+	
+	
 
 	/**
 	 * Getter for the implementation of the method.

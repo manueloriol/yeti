@@ -269,13 +269,28 @@ public class YetiType {
 	/**
 	 * Returns an interesting value and does not remove it from the list of interesting values.
 	 * 
-	 * @param interestingValue the interesting value.
+	 * @return an object conataining the value.
 	 */
 	public Object getRandomInterestingValue() {
 		double d=Math.random();
 		int i=(int) Math.floor(d*this.interestingValues.size());
 		return this.interestingValues.get(i);
 	}
+
+	/**
+	 * Returns an interesting value in a variable and does not remove it from the list of interesting values.
+	 * 
+	 * @param interestingValue the interesting value.
+	 */
+	public YetiVariable getRandomInterestingVariable() {
+		Object value =this.getRandomInterestingValue();
+		YetiLog.printDebugLog("Interesting variable: "+value, this);
+		YetiIdentifier id=YetiIdentifier.getFreshIdentifier();
+		return new YetiVariable(id, this, value);
+
+	}
+
+	
 	/**
 	 * A simple setter to say that a type has interesting values.
 	 * @param hasInterestingValues  true if it has interesting values, false otherwise.

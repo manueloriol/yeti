@@ -232,6 +232,11 @@ public class YetiGUI implements Runnable {
 			}
 
 		}
+		// we update one last time
+		for (YetiUpdatable u: allComponents) {
+			u.updateValues();
+		}
+		
 	}
 
 	/**
@@ -257,6 +262,16 @@ public class YetiGUI implements Runnable {
 		JPanel pan = generateInstanceCapTextField();
 		p.add(pan);
 		
+		// INSERT NEW PANES HERE
+
+
+		// we add some glue stuff here
+		p.add(Box.createHorizontalGlue());
+		
+		// we add the progress bar
+		JPanel progress = new YetiUpdatableProgressBar();
+		p.add(progress);
+		
 		JToolBar p1 = new JToolBar();
 		p1.add(p);
 		
@@ -273,7 +288,7 @@ public class YetiGUI implements Runnable {
 		// we generate the textfield, the textfield is going to be formated
 		// to receive only integers
 		JFormattedTextField tf = new JFormattedTextField();
-		tf.setColumns(30);
+		tf.setColumns(10);
 		tf.setFocusLostBehavior(JFormattedTextField.COMMIT_OR_REVERT);
 		tf.setValue(YetiType.DEFAULT_MAXIMUM_NUMBER_OF_INSTANCES);
 		tf.setMaximumSize(tf.getPreferredSize());

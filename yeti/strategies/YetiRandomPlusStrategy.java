@@ -64,10 +64,7 @@ public class YetiRandomPlusStrategy extends YetiRandomStrategy {
 		YetiType cardType = routine.getOpenSlots()[argumentNumber];
 		if (cardType.hasInterestingValues())
 			if (Math.random()<INTERESTING_VALUE_INJECTION_PROBABILITY) {
-				Object value =cardType.getRandomInterestingValue();
-				YetiLog.printDebugLog("Interesting value: "+value, this);
-				YetiIdentifier id=YetiIdentifier.getFreshIdentifier();
-				return new YetiVariable(id, cardType, value);
+				return cardType.getRandomInterestingVariable();
 			}
 
 		return super.getNextCard(routine, argumentNumber, recursiveRank);
@@ -154,7 +151,7 @@ public class YetiRandomPlusStrategy extends YetiRandomStrategy {
 	}
 	@Override
 	public String getName() {
-		return "Random Plus Strategy";
+		return "Random+ Strategy";
 	}
 
 }

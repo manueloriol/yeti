@@ -3,10 +3,12 @@ package yeti.environments.java;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 
+import yeti.YetiIdentifier;
 import yeti.YetiLog;
 import yeti.YetiModule;
 import yeti.YetiName;
 import yeti.YetiType;
+import yeti.YetiVariable;
 import yeti.environments.YetiLoader;
 
 /**
@@ -397,7 +399,20 @@ public class YetiJavaSpecificType extends YetiType {
 		this.prettyPrintTypeName=prettyName;
 	}
 
+	/**
+	 * Returns an interesting value in a variable and does not remove it from the list of interesting values.
+	 * 
+	 * @param interestingValue the interesting value.
+	 */
+	public YetiVariable getRandomInterestingVariable() {
+		Object value =this.getRandomInterestingValue();
+		YetiLog.printDebugLog("Interesting variable: "+value, this);
+		YetiIdentifier id=YetiIdentifier.getFreshIdentifier();
+		YetiLog.printYetiLog(YetiJavaMethod.generateLogForValues(this.prettyPrintTypeName+" "+id.getValue()+"=",value), this);
+		return new YetiVariable(id, this, value);
 
+	}
+	
 	/* (non-Javadoc)
 	 * 
 	 * Returns the prettyPrint version of the name

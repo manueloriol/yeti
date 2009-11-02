@@ -22,6 +22,7 @@ import yeti.environments.java.YetiJavaProperties;
 import yeti.environments.java.YetiJavaTestManager;
 import yeti.environments.jml.YetiJMLPrefetchingLoader;
 import yeti.monitoring.YetiGUI;
+import yeti.strategies.YetiRandomPlusDecreasing;
 import yeti.strategies.YetiRandomPlusStrategy;
 import yeti.strategies.YetiRandomPlusPeriodicProbabilitiesStrategy;
 import yeti.strategies.YetiRandomStrategy;
@@ -91,6 +92,7 @@ public class Yeti {
 	 * -probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100 default is 1.<br>
 	 * -randomPlus : uses the random+ strategy that injects interesting values every now and then.<br>
 	 * -randomPlusPeriodic : uses the random+ strategy and periodically change the values of the standard probalilities (null values, new instances, interesting values).<br>
+	 * -randomPlusDecreasing : uses the random+ strategy and decreases the values of the standard probalilities (null values, new instances, interesting values).<br>
 	 * -gui : shows the standard graphical user interface for monitoring yeti.<br>
 	 * -noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.<br>
 	 * -instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.<br>
@@ -122,6 +124,7 @@ public class Yeti {
 		boolean isNoLogs = false;
 		boolean isRandomPlus = false;
 		boolean isRandomPlusPeriodic = false;
+		boolean isRandomPlusDecreasing = false;
 		boolean showMonitoringGui = false;
 		boolean printNumberOfCallsPerMethod = false;
 		int nTests=0;
@@ -254,11 +257,17 @@ public class Yeti {
 				isRandomPlus = true;
 				continue;	
 			}
-			// we can use the randomPlus strategy
+			// we can use the randomPlusPeriodic strategy
 			if (s0.equals("-randomPlusPeriodic")) {
 				isRandomPlusPeriodic = true;
 				continue;	
 			}			
+			// we can use the randomPlusDecreasing strategy
+			if (s0.equals("-randomPlusDecreasing")) {
+				isRandomPlusDecreasing = true;
+				continue;	
+			}			
+
 			// we have no limits for the number of instances
 			if (s0.equals("-noInstancesCap")) {
 				YetiType.TYPES_HAVEMAXIMUM_NUMBER_OF_INSTANCES = true;
@@ -422,15 +431,16 @@ public class Yeti {
 		}
 
 		// We set the strategy
+		strategy= new YetiRandomStrategy(testManager);
+		if (isRandomPlus) {
+			strategy= new YetiRandomPlusStrategy(testManager);				
+		}
 		if (isRandomPlusPeriodic) {
 			strategy= new YetiRandomPlusPeriodicProbabilitiesStrategy(testManager);
-		} else {
-			if (isRandomPlus) {
-				strategy= new YetiRandomPlusStrategy(testManager);				
-			} else {		
-				strategy= new YetiRandomStrategy(testManager);
-			}
-		}
+		}			
+		if (isRandomPlusDecreasing) {
+			strategy= new YetiRandomPlusDecreasing(testManager);
+		}			
 
 
 		// getting the module(s) to test
@@ -579,6 +589,8 @@ public class Yeti {
 		System.out.println("\t-probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100, default is 1.");
 		System.out.println("\t-randomPlus : uses the random+ strategy that injects interesting values every now and then.");
 		System.out.println("\t-randomPlusPeriodic : uses the random+ strategy and periodically change the values of the standard probalilities (null values, new instances, interesting values).");
+		System.out.println("\t-randomPlusDecreasing : uses the random+ strategy and decreases the values of the standard probalilities (null values, new instances, interesting values).<br>");
+
 		System.out.println("\t-gui : shows the standard graphical user interface for monitoring yeti.");
 		System.out.println("\t-noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.");
 		System.out.println("\t-instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.");

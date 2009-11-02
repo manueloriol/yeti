@@ -1,0 +1,40 @@
+\section{Introduction}\label{sec:intro}
+
+Automated random testing is a methodology often neglected by 
+programmers and software testers because it is deemed as overly
+simple. It has, however, advantages over other techniques because 
+it is completely unbiased and allows the execution of a high number 
+of calls over a short period of time.
+
+
+The York Extendible Testing Infrastructure (YETI) provides a framework 
+for executing random testing sessions. The main characteristics of 
+YETI is that it supports multiple programming languages through a 
+language-agnostic meta model. Various testing strategies apply
+to all supported languages thanks to a strong decoupling between the 
+strategies used and the programming language binding. 
+
+Oracles are language-dependent. In the presence of specifications YETI checks 
+inconsistencies between the code and the specifications. In the case of 
+languages such as .NET, code-contracts~\cite{} can be used to direct the testing 
+of the code. In case a precondition of the method under test is violated, then we 
+do not interpret it as a failure. In case no precondition is violated, any 
+exception can be interpreted as a bug if it is not declared in the documentation. 
+If programmers do not use contracts, a testing session of .NET programs with YETI 
+is then a robustness test that reports all runtime exceptions. Because .NET does 
+not declare runtime exceptions, all triggered must then be compared with exceptions 
+declared in the documentation 
+ 
+
+Unlike competitors, YETI also support a graphical user interface that 
+allows test engineers to monitor the testing session and modify some 
+of its characteristics while testing. To validate our approach we classes using 
+code-contracts and tried to find seeded bugs in those classes. We also applied 
+our technique to the .NET System library. 
+
+
+Section~\ref{sec:model} presents informally YETI's meta-model and its main algorithms.
+Section~\ref{sec:implem} describes its current implementation for .NET.
+Section~\ref{sec:evaluation} evaluates the YETI binding for .NET.
+Section~\ref{sec:rw} presents related work.
+We eventually conclude in Section~\ref{sec:conc}.

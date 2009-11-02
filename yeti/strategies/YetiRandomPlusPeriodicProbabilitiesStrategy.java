@@ -57,7 +57,7 @@ public class YetiRandomPlusPeriodicProbabilitiesStrategy extends YetiRandomPlusS
 
 	@Override
 	public String getName() {
-		return "Random Plus Periodic Strategy";
+		return "Random+ Periodic Strategy";
 	}
 
 	

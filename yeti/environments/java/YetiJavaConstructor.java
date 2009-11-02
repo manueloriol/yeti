@@ -102,6 +102,7 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 		log=log+");";
 		// print the log
 		YetiLog.printYetiLog(log, this);
+		YetiLog.printDebugLog(log, this);
 		return log;
 	}
 
