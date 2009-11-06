@@ -17,25 +17,19 @@ import org.apache.hadoop.mapred.Reporter;
  * @date August 20, 2009
  */
 
-public class YetiReducer extends MapReduceBase implements Reducer<Text, Text, Text, IntWritable> {
+public class YetiReducer extends MapReduceBase implements Reducer<Text, IntWritable, Text, IntWritable> {
 	
 	/**
 	 * The reduce method, which will take the output of each Map and write it out to disk as final output after performing any processing
 	 * 
 	 */ 
-	public void reduce(Text key, Iterator<Text> values, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
+	public void reduce(Text exceptionTraces, Iterator<IntWritable> values, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
 		
-		String[] list= null;
-		String traces = "";
-		
-		Text className = key;
-			
+		int totalBugs=0;	
 		while(values.hasNext())
-			traces+=values.next();
+			totalBugs+=values.next().get();
 		
-		list = traces.split("@");
-		
-		output.collect(new Text(className+"\n"+traces+"\n\n"), new IntWritable(list.length));
+		output.collect(new Text(exceptionTraces+"\n\n"), new IntWritable(totalBugs));
 	}
 	
 }
