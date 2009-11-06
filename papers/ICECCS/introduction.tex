@@ -16,7 +16,7 @@ strategies used and the programming language binding.
 
 Oracles are language-dependent. In the presence of specifications YETI checks 
 inconsistencies between the code and the specifications. In the case of 
-languages such as .NET, code-contracts~\cite{} can be used to direct the testing 
+languages such as .NET, code-contracts\footnote{http://research.microsoft.com/en-us/projects/contracts/} can be used to direct the testing 
 of the code. In case a precondition of the method under test is violated, then we 
 do not interpret it as a failure. In case no precondition is violated, any 
 exception can be interpreted as a bug if it is not declared in the documentation. 
@@ -30,11 +30,12 @@ Unlike competitors, YETI also support a graphical user interface that
 allows test engineers to monitor the testing session and modify some 
 of its characteristics while testing. To validate our approach we classes using 
 code-contracts and tried to find seeded bugs in those classes. We also applied 
-our technique to the .NET System library. 
+our technique to the .NET system libraries. 
 
 
 Section~\ref{sec:model} presents informally YETI's meta-model and its main algorithms.
 Section~\ref{sec:implem} describes its current implementation for .NET.
 Section~\ref{sec:evaluation} evaluates the YETI binding for .NET.
 Section~\ref{sec:rw} presents related work.
+Section~\ref{sec:fut} describes future work.
 We eventually conclude in Section~\ref{sec:conc}.

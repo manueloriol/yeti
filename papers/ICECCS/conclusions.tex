@@ -1,18 +1,19 @@
 \section{Conclusions}\label{sec:conc}
-This article presented YETI, a new tool to run automated random testing 
-sessions on multiple programming languages. The current  reference 
-implementation works on Java but other bindings exist for JML and 
-for .NET. 
+This article presented the .NET binding of YETI. The binding allows YETI to 
+test .NET programs in an automated and random way. It is the first random system 
+to interpret failures of code contracts in a correct way automatically.
 
-On Java code, YETI runs with unparalleled speed --Êaround $10^{6}$ 
-calls per minute on fast code -- to date and 
+On .NET code, YETI runs with unparalleled speed --Êaround $10^{6}$ 
+calls in 3 minutes on fast code -- to date and 
 provides a graphical user interface that allows test engineers to
 diagnose what happens while testing and thus be able to change 
-parameters and types used in the testing session while it proceeds.
+parameters used in the testing session while it proceeds.
 
-To validate our approach we used YETI on \texttt{java.lang} and on a package
-of a popular open source library. This lead to exhibit 45 faults in 
-\texttt{java.lang} and 119 in the open source library.
+To validate our approach we used YETI on code in which we seeded bugs and showed that
+we were able to find 77\% of the seeded bugs. This allowed us to identify some types of bugs 
+that YETI cannot find in .NET. We also tested core .NET libraries and showed 
+some limitations of YETI.
 
-Future work will focus on bringing more languages into YETI and improve further
-its interface as well as its strategies.
+Future work will fix a couple of issues found through experiments. In particular, 
+we plan to enrich YETI with an automated parser for documentation in order to help 
+with the automated identifications of bugs.

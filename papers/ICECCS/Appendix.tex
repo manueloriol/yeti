@@ -1,0 +1,201 @@
+\section*{Appendix}
+\begin{verbatim}
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+
+namespace YetiTestAssembly1
+{
+    class Object1
+    {
+        public double doubleAttr1;
+        public String s1;
+
+        public Object1()
+        {
+            doubleAttr1 = 10.00;
+            s1 = "";
+        }
+
+        public int methodReturnInt1(int r, int t)
+        {
+            Contract.Ensures(Contract.Result<int>() != 0);
+            r = t;
+            return r;
+        }
+
+        public void setDoubleAttr1(double d)
+        {
+            Contract.Ensures(d > 10.5);
+            doubleAttr1 = d;
+        }
+
+        public String returnStringValue1()
+        {
+            return "A test String Object1";
+        }
+
+        public float methodForFloat1(Object1 ob, char c, long l)
+        {
+            Contract.Requires(ob != null && c != 'm');
+            Contract.Ensures(l > 100);
+            float f = (Single)l;
+            return f;
+        }
+
+        public static void addingTwoInts1(int a, int b)
+        {
+            a = a + b;
+        }
+
+        public char returnCharValue1()
+        {
+            return 'c';
+        }
+
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Starting Object1 Main method");
+        }
+    }
+}
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+
+namespace YetiTestAssembly2
+{
+    class Object2
+    {
+        public double doubleAttr2;
+        public Object2 ob2;
+
+        public Object2()
+        {
+            doubleAttr2 = 55.22;
+            ob2 = null;
+        }
+
+        public int methodReturnInt2(int r, int t)
+        {
+            Contract.Ensures(Contract.Result<int>() > 5);
+            r = t;
+            return r;
+        }
+
+        public void setOb2Attr(Object2 d)
+        {
+            Contract.Ensures(d !=null);
+            ob2 = d;
+        }
+
+        public String returnStringValue2()
+        {
+            return "A test String Object2 fffff///***";
+        }
+
+        public float methodForFloat2(double ob, int l)
+        {
+            Contract.Requires(ob != 0.0);
+            Contract.Ensures(Contract.Result<float>() != 0);
+            float f = (Single)(l*ob);
+            return f;
+        }
+
+        public static void addingTwoShorts2(short a, short b)
+        {
+            int h = a + b;           
+        }
+
+        public char returnCharValue2()
+        {
+            return 'U';
+        }
+
+        public Object2 genOb2()
+        {
+            return new Object2();
+        }
+
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Starting Object2 Main method");
+        }
+    }
+}
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+namespace YetiTestAssembly3
+{
+    class Object3
+    {
+        public double doubleAttr3;
+        public int intAttr3;
+        public Object3 ob3;
+
+        public Object3()
+        {
+            doubleAttr3 = 333.333;
+            intAttr3 = 1;
+            ob3 = null;
+        }
+
+        public Object3(int t, double d, Object3 o)
+        {
+            doubleAttr3 = d;
+            intAttr3 = t;
+            ob3 = o;
+        }
+
+        public static int methodReturnInt3(int r, int t)
+        {
+            Contract.Requires(t != 4);
+            Contract.Ensures(Contract.Result<int>() > 1);
+            r = t;
+            return r;
+        }
+
+        public void setOb3Attr(Object3 d, char c, String s)
+        {
+            Contract.Ensures(d !=null && c!='m');
+            ob3 = d;
+        }
+
+        public String returnStringValue3()
+        {
+            return "ggg333nnn";
+        }
+
+        public float methodForFloat3(double ob, int l)
+        {
+            Contract.Requires(ob != 0.0);
+            Contract.Ensures(Contract.Result<float>() != 100);
+            float f = (Single)(l*ob);
+            return f;
+        }
+
+        public static void dividingTwoShorts3(short a, short b)
+        {
+            Contract.Assert(b!=0);
+            short h;
+            h = Convert.ToInt16(a/b);
+        }
+
+        public char returnCharValue3()
+        {
+            return 'Y';
+        }
+
+        public Object3 genOb3()
+        {
+            return new Object3();
+        }
+
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Starting Object3 Main method");
+        }
+    }
+}
+\end{verbatim}

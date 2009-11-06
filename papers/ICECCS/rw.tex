@@ -9,7 +9,8 @@ programs~\cite{Claessen00quickcheck:a}.
 YETI is the latest in a serie of recent random testing tools like
 JCrasher~\cite{Csallner2004}, Eclat~\cite{Pacheco2005}, Jtest~\cite{Jtest},
 Jartege~\cite{Oriat2004}, RUTE-J~\cite{Andrews2006a}, and in particular 
-AutoTest~\cite{Ciupa2007,CLOM:08:AARTOO,CPLOM:08:PRTOOS}. YETI is however 
+AutoTest~\cite{Ciupa2007,CLOM:08:AARTOO,CPLOM:08:PRTOOS}. 
+YETI is however 
 different from these tools in at least three important ways: (1) it is made to 
 easily support multiple programming languages, (2) 
 it is intended to allow test engineers to modify the parameters of the 
@@ -28,8 +29,11 @@ further interactions. In our experience the runtime monitoring has become
 the main means of knowing how the testing session evolves and possibly to 
 improve it by modifying some parameters. 
 
-The last characteristics 
-clearly depends on the reference implementation being in Java and testing Java
-programs -- other bindings might exhibit slower performances. It is however 
-worth noting that this has a direct impact on the capability for the tool to 
-test thoroughly big amount of code in short period of time.
+To illustrate the last point, Randoop~\cite{1390643} produced 4 millions test of .NET 
+programs in 150 hours. While the intent is a bit different because we do not use 
+feedback to generate test cases, it takes around 12mn to perform the same amount of method 
+calls on .NET programs in YETI -- in an admittedly uncontrolled way. Further 
+evaluations should be conducted to compare effectiveness of both approaches.
+
+The .NET binding of YETI is however the first random testing tool to interpret correctly 
+code-contracts violations and to leverage on that to filter bugs.
