@@ -56,6 +56,10 @@ public class Yeti {
 	 * The tested modules.
 	 */
 	public static YetiModule testModule = null;
+	/**
+	 * The mode of operation 
+	 */
+	public static boolean isDistributed= false;
 
 
 	/**
@@ -220,8 +224,6 @@ public class Yeti {
 			if (s0.startsWith("-testModules=")) {
 				String s1=s0.substring(13);
 				modulesToTest=s1.split(":");
-				// TODO: check that this is useful
-				//YetiMap.moduleName=modulesToTest[0];
 				continue;
 			}
 			// we want to have only logs in standard form
@@ -559,13 +561,19 @@ public class Yeti {
 				System.out.println(r.getSignature()+": Called: "+r.getnTimesCalled()+", Successfully: "+r.getnTimesCalledSuccessfully()+", Undecidable: "+r.getnTimesCalledUndecidable()+", Unsuccessfully: "+r.getnTimesCalledUnsuccessfully());
 			}
 		}
-		YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
-		// TODO check that.
-		//YetiMap.listOfExceptions.putAll(lp.getListOfErrors());
+		
+		//If distributed mode of operation
+		if (isDistributed){
+			YetiMap.moduleName=modulesToTest[0];
+			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
+			YetiMap.listOfExceptions.putAll(lp.getListOfErrors());
+
+			
+		}
 		
 		System.out.println("/** Testing finished **/");
 		
-
+		
 	}
 
 	/**
