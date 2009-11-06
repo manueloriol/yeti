@@ -1,13 +1,10 @@
 package yeti.cloud;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.io.*;
-import org.apache.hadoop.mapred.lib.ChainMapper;
 
 /**
  * Class that represents the main launching class of Yeti in distributed mode
@@ -47,14 +44,6 @@ public class YetiJob {
 		conf.setMapperClass(YetiMap.class);
 		conf.setReducerClass(YetiReducer.class);
 		
-//		JobConf mapAConf = new JobConf(false);
-//		mapAConf.setJobName("First Map");
-//		ChainMapper.addMapper(conf, YetiMapperFirst.class, LongWritable.class, Text.class, Text.class, Text.class, true, mapAConf);
-//
-//		JobConf mapBConf = new JobConf(false);
-//		mapAConf.setJobName("Second Map");
-//		ChainMapper.addMapper(conf, YetiMapperSecond.class, Text.class, Text.class, Text.class, IntWritable.class, true, mapBConf);
-
 		//the output of Yeti would be Text for the Key
 		conf.setOutputKeyClass(Text.class);
 		//the output of Yeti would be a Number for the Value
@@ -66,12 +55,11 @@ public class YetiJob {
 		FileOutputFormat.setOutputPath(conf, new Path(args[1]));
 		
 		
-//		conf.setNumReduceTasks(0);
+		conf.setNumReduceTasks(0);
 		
 		try{
 			
 			JobClient jc= new JobClient(conf);
-			
 			RunningJob job = jc.runJob(conf);
 				
 		}catch (IOException e){
