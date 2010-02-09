@@ -355,8 +355,8 @@ public class YetiGraph extends JPanel implements YetiUpdatable, YetiSamplable, A
 			JFileChooser chooser = new JFileChooser();
 			int returnVal=chooser.showSaveDialog(this);
 		    if(returnVal == JFileChooser.APPROVE_OPTION) {
-
-				String fileName = chooser.getSelectedFile().getName();
+		    	File f = chooser.getSelectedFile();
+				String fileName = f.getAbsolutePath();
 				this.saveAsCSV(fileName);
 
 		    }
