@@ -1,10 +1,13 @@
 \section{Model}\label{sec:model}
 
+This section presents the meta-model of YETI. THis meta-model describes 
+elements of a programming language from a random testing perspective.
+
 YETI uses four main notions (see Figure~\ref{fig:def}): \textit{routines}, \textit{types}, 
 \textit{variables}, and \textit{modules}. A type is a collection 
 of variables and routines that return values (of that type). A 
 routine is a computation unit that uses variables of a given type and 
-returns values of a given type. A variable is a couple between a 
+returns values of a given type. A variable is a couple made of a 
 label and a value. A module is a collection of routines. 
 
 \begin{figure}[h]
@@ -60,7 +63,7 @@ as an instance of its defining type.
 If this model defined a programming 
 language it would be incomplete. In our case, it is however sufficient as we do not intend 
 to be complete: we only aim at soundness -- to make calls that would not fail because of typing 
-issues.
+issues, failures should be only due to bugs.
 
 \subsection{Modelling Random Testing}
 To model random testing we add primitives to the simple model outlined above.
@@ -130,7 +133,7 @@ have the following semantics:
 \item $report(f)$ aggregates failures and only actually report unique failures.
 \end{itemize}
 
-Other semantics are however possible. For example Random+~\cite{CMOP:08:FFMTRTUR} either picks selects values in the existing pool of object, generate new ones on the fly, or take interesting values. This would then mean a different semantics for $selectVariableFromType$.
+Other semantics are however possible. For example Random+~\cite{CMOP:08:FFMTRTUR} either selects values in the existing pool of object, generate new ones on the fly, or take interesting values. This would then mean a different semantics for $selectVariableFromType$.
 
-As previously shown, several specializations of the model are possible. The next chapter will present the both the implementation of the core of YETI and the implemenation of the Java binding.
+As previously shown, several specializations of the model are possible. The next chapter will present the both the implementation of the core of YETI and the implementation of the Java binding.
 
