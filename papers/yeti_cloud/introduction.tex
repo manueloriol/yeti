@@ -1,1 +1,28 @@
 \section{Introduction}
+The York Extensible Testing Infrastructure (YETI) is a language agnostic 
+random testing tool. Its reference implementation is testing Java programs
+and is able to perform over one million method calls per minute on fast library
+code. YETI found bugs in the \texttt{java.lang}, iText\footnote{} and many more 
+programs. YETI, however, suffers from two issues:
+\begin{enumerate}
+\item \textbf{Performances.} On slow code, the performances can drop as low as $10^{3}$
+method calls per minute.\footnote{Observed while testing the iText library in 
+September 2009} While this might seem to be reasonable performances, experience shows 
+that a stable number of faults found for a given class is generally only reached after 
+$10^{5}$ method calls. For large projects (100+ classes) this might mean that testing 
+code on a single computer might not reach a stable point overnight.
+\item \textbf{Security.} the Java binding of YETI relies on the Java security model to forbid 
+undesirable side-effects. This is a reasonable assumption in most cases. It is however
+sometimes undesirable because some programs need to access files, sockets, or drivers 
+directly. It is obviously not possible to make such assumptions in case YETI is testing 
+programs written in C.
+\end{enumerate}
+
+Distributing YETI over the cloud solves these two issues: (1) testing classes in parallel
+allows to distribute the testing of 100 classes on 100 cores, resulting in a 10mn test 
+rather than a 1000-minute one; (2) testing classes in a dedicated VM devoid of sensitive 
+information means that security restrictions cna be greatly relaxed.
+
+This article presents a prototype of the cloud implementation of YETI. The prototype relies
+on the map/reduce implementation of Hadoop to distribute testing sessions on remote machines 
+and recombine them at the end of a desired testing time.

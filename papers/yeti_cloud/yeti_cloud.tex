@@ -336,13 +336,14 @@
 
 
 
+\usepackage{cite}
+\usepackage{times,graphics,epsfig, enumerate, pifont, amsfonts, amssymb, rotating}
 
 % *** Do not adjust lengths that control margins, column widths, etc. ***
 % *** Do not use packages that alter fonts (such as pslatex).         ***
 % There should be no need to do such things with IEEEtran.cls V1.6 and later.
 % (Unless specifically asked to do so by the journal or conference you plan
 % to submit to, of course. )
-
 
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -352,24 +353,24 @@
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{YETI on Cloud}
+\title{YETI on the Cloud}
 
 
 % author names and affiliations
 % use a multiple column layout for up to two different
 % affiliations
 
-\author{\IEEEauthorblockN{Authors Name/s per 1st Affiliation (Author)}
-\IEEEauthorblockA{line 1 (of Affiliation): dept. name of organization\\
-line 2: name of organization, acronyms acceptable\\
-line 3: City, Country\\
-line 4: Email: name@xyz.com}
+\author{\IEEEauthorblockN{Manuel Oriol}
+\IEEEauthorblockA{Department of Computer Science\\
+University of York\\
+York, United Kingdom\\
+Email: manuel@york.ac.uk}
 \and
-\IEEEauthorblockN{Authors Name/s per 2nd Affiliation (Author)}
-\IEEEauthorblockA{line 1 (of Affiliation): dept. name of organization\\
-line 2: name of organization, acronyms acceptable\\
-line 3: City, Country\\
-line 4: Email: name@xyz.com}
+\IEEEauthorblockN{Faheem Ullah}
+\IEEEauthorblockA{Department of Computer Science\\
+ETH Zurich\\
+Zurich, Switzerland\\
+Email: Faheem.Ullah@ethz.ch}
 }
 
 % conference papers do not typically use \thanks and this command
@@ -410,7 +411,7 @@ line 4: Email: name@xyz.com}
 \input{abstract}
 
 \begin{IEEEkeywords}
-component; formatting; style; styling;
+Software Testing; Distributed Systems
 \end{IEEEkeywords}
 
 
@@ -427,7 +428,6 @@ component; formatting; style; styling;
 
 
 \input{introduction}
-\input{model}
 \input{implementation}
 \input{evaluation}
 \input{rw}
@@ -546,15 +546,9 @@ more thanks here
 % <OR> manually copy in the resultant .bbl file
 % set second argument of \begin to the number of references
 % (used to reserve space for the reference number labels box)
-\begin{thebibliography}{1}
-
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
-
-\end{thebibliography}
-
-
+\bibliographystyle{IEEEtran}
+% argument is your BibTeX string definitions and bibliography database(s)
+\bibliography{Biblio}
 
 
 % that's all folks
