@@ -51,32 +51,31 @@ way to use YETI.
 \end{figure*}
 
 
-As figure~\ref{fig:architecture} shows, the main architecture of YETI ont he clouds 
-relies on Hadoop, Apache's implementation of map/reduce. 
+As figure~\ref{fig:architecture} shows, the main architecture of YETI on the clouds 
+relies on Hadoop, Apache's implementation of Google's map/reduce framework. 
 
 The main idea is that we use a very simple approach where testing jobs 
-are described by simple command-line that would each launch YETI in standalone mode. 
-Such jobs are then mapped to machines in the cloud. The order for the mapping 
-is determined by the order used to write lines. 
+are described by typical YETI calls stored in normal text files, that would each launch YETI in standalone mode. 
+Commands from within each file are then mapped to different machines in the cloud. 
 
-The job is sent to the master as a jar file and then individual testing machines 
-receive individual jobs to perform.
+After setting up the map/reduce cluster. These text files and YETI (bundled as a Jar) are then uploaded to the 
+distributed file system (DFS) on the map/reduce cluster master, which then launches individual testing machines 
+for each text file executing the commands contained within the file in the order they appear.
 
-At the end of the testing session, all exception traces are sent back to the 
-user machine through the reduce step by storing them into the Hadoop Distributed File 
-System. Each of the traces is then stored separately and available to the software 
-tester.
+At the end of the testing session, all exception traces are written back to the DFS during reduce step, which can then be downloaded to the 
+user machine and made available to the software tester for evaluation.
 
 
 \subsection{Evaluation}
 
 We only ran preliminary evaluations.
 
-We evaluated our approach using the Amazon EC2 cloud\footnote{}.
-We performed 20-minute jobs in less than 5 minutes, with outputting 
-comparable results with executing standalone versions.
+We evaluated our approach using the Amazon Elastic Computing Cloud (EC2) \footnote{}.
+We performed 5 jobs of 20-minutes each (a total testing time of 100 minutes) in less than 21 minutes, with outputting 
+comparable results with executing YETI in standalone version.
 
-By using the cloud we can drastically improve the performances of YETI.
+By using the cloud we can drastically improve the performances of YETI and reduce the testing time by 
+employing more machines and distributing the jobs.
 While we did not run experiments with more open security models, 
 YETI jobs were run on one-shot Ubuntu virtual machines. This also solves
 the potential security issues for random testing.
