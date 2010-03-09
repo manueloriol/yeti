@@ -1,8 +1,29 @@
 \section{Related Work}
-Distributing software testing over multiple computers has received very little attention in the research community. Some of the efforts resulted in tools like Joshua %~\cite{Kapfhammer},% 
-which uses Jini for distributing the execution of a regression test suite across a number of CPUs and writes the results back to a centralised repository; and 
-GridUnit %~\cite{Duarte1, Duarte2}% 
-which employs a computational Grid to speed up the testing process. A single master distributes test cases for execution across machines in a Grid and then waits for the results.
-Both these approaches extend the JUnit testing framework and the test cases have to be manualy created beforehand. 
+Distributing software testing over multiple computers has received very little attention in the research community. 
+Some of the earliest work advocating the use of parallel and distributed technologies for software testing systems 
+is presented in ~\cite{stark}, where the general advantages of parallelizing software testing systems are presented and some
+approaches to achieve parallelism by distributing execution are explained. Following up on the work in ~\cite{stark}, 
+~\cite{lasto} presents a case for testing of a distributed programming system where serial execution of a regression test 
+suite would on the average take at least 90 hours per bug detected, whereas Parallelizing the execution on a number of local 
+UNIX machines resulted in a speed up of up to 7.7 on two 4-processor workstations, which meant the test suite could be run multiple 
+times in a single day.
+
+Some follow up work resulted in tools like Joshua ~\cite{Kap}, and GridUnit~\cite{Duarte1, Duarte2, Duarte3}. 
+Joshua uses Jini for distributing the execution of a regression test suite across a number of CPUs and 
+writes the results back to a centralized repository, whereas GridUnit employs a computational Grid to speed up the testing process. 
+A single master distributes test cases for execution across machines in a Grid and then waits for the results.
+Both Joshua and GridUnit extend the JUnit testing framework. Following up on Duarte's work in ~\cite{Duarte3}, ~\cite{yao} presents 
+the implementation of a grid-based unit testing framework and present some preliminary results based on simulation. 
+The framework  differs from Joshua and GridUnit in its support for NUnit and dbUnit apart from JUnit, extending its support for C\# and database-driven projects.
+
+However, some of the limitations of the approaches described so far include the requirement that a test cases be manually created beforehand, 
+and their execution on either a local LAN or a Grid. A LAN has limited number of machines whereas, in a Grid, nodes might have different 
+computational capacities varying from supercomputers to a low-end personal computer ~\cite{yao}. This would seriously affect the performance 
+of some test cases and work would have to be assigned according to the workers capacity. 
+
+
+YETI creates the test cases on the fly, executes them against the target code and reports bugs. The use of a computational Cloud by YETI resolves the issues 
+outlined above, since each node has the same processing power and new nodes can be added dynamically, if more processing power is required. 
+
 
 
