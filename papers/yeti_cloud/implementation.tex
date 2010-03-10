@@ -57,7 +57,7 @@ The main idea is that we use a very simple approach where testing jobs
 are described by typical YETI calls stored in normal text files, that would each launch YETI in standalone mode. 
 Commands from within each file are then mapped to different machines in the cloud. 
 
-After setting up the map/reduce cluster. These text files and YETI (bundled as a jar files) are then uploaded to the 
+After setting up the map/reduce cluster. These text files and YETI (bundled as a jar file) are then uploaded to the 
 distributed file system (DFS) on the map/reduce cluster master, which then launches individual testing machines 
 for each text file executing the commands contained within the file in the order they appear.
 
@@ -71,8 +71,7 @@ We only ran preliminary evaluations.
 
 We evaluated our approach using the Amazon Elastic Computing Cloud (EC2) \footnote{}.
 We performed 5 jobs of 20-minutes each (a total testing time of 100 minutes) in less 
-than 21 minutes, with outputting comparable results with executing YETI in standalone version.
-Both tests exhibited comparable results.
+than 21 minutes, outputting comparable results with YETI's standalone execution.
 
 By using the cloud we clearly improved the performances of YETI and reduce the testing time by 
 employing more machines and distributing the jobs.
