@@ -1,10 +1,37 @@
-\section{Future Work}\label{sec:fut}
+\section{Future Work}\label{sec:future}
 
 While this first experiment with YETI on the cloud was quite 
 conclusive, there are many areas that we would like to improve 
 in the future. In the next paragraphs, we explain some of these 
 areas and what in our opinion we would need to do.
 
-\paragraph{Real-time feedback on the distributed testing sessions.}
+\paragraph{Define automated mappings for jobs}
+It is still unclear what the best job mappings would be for large 
+amount of classes. So far, experiments have shown that testing classes
+independently is not the best way to uncover faults. In particular, 
+testing two classes that are used together (such as \texttt{String} and 
+\texttt{StringBuilder}) uncovers faults that are not uncovered when tested 
+independently. Grey-box testing might help in knowing which code is dependent 
+on which other and lead to understanding better this phenomenon to make
+the best mappings for testing sessions.
 
-\paragraph{}
+\paragraph{Define adequacy criteria for distributed random testing sessions}
+In all tests that were performed it seems that the testing sessions
+achieve a plateau if parameters of the testing session are unchanged. 
+Being able to detect such plateaus would lead to stopping the testing sessions
+when YETI does not have high chances to discover further faults. It could then
+lead to a better way of mapping jobs on a low number of nodes.
+
+
+\paragraph{Testing programs working over the cloud}
+One of the issues with programs working on the cloud is that testing such 
+programs requires to run tools that are themselves running on the cloud.
+YETI could be one of these testing tools.
+
+
+\paragraph{Real-time feedback on the distributed testing sessions}
+One of the most valuable aspects of YETI is its graphical user interface~\cite{} 
+which shows information about the testing session in real-time. The 
+map/reduce middleware does not however allows for sending results in real-time
+back to the master. This implies that a YETI on the cloud would benefit from a more 
+flexible middleware such as Multicast Objects~\cite{}.

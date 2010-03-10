@@ -15,7 +15,7 @@ indicates that the tested program is in Java, \texttt{-yetiPath=.} indicate that
 classes in the current directory (and its subdirectories) will be preloaded, 
 \texttt{-time=10mn} indicates that the testing session will last 10 minutes, 
 \texttt{-randomPlus} indicates that the strategy random+ will be used, and 
-\texttt{-testModules=String:...} indicates that 
+\texttt{-testModules=String:StringBuilder} indicates that 
 both \texttt{String} and \texttt{StringBuilder} will be tested.
 
 While testing, traces of faults found are output to the terminal. For example:
@@ -35,8 +35,8 @@ Note that it is possible to avoid the overhead of keeping the
 traces in the system (and calculating the minimal test cases) by specifying 
 \texttt{-nologs} to throw away all logs except exception traces, or 
 \texttt{-rawlogs} to output the logs to the terminal. This comes at the cost of
-not being able to generate test cases reproducing the failures, but only the 
-exception traces. In an exploratory phase of the testing, this is generally the
+not being able to generate test cases reproducing the failures, but still provides 
+the exception traces. In an exploratory phase of the testing, this is generally the
 way to use YETI.
 
 
@@ -50,14 +50,14 @@ way to use YETI.
 \end{figure*}
 
 
-As figure~\ref{fig:architecture} shows, the main architecture of YETI on the clouds 
+As figure~\ref{fig:architecture} shows, the main architecture of YETI on the cloud 
 relies on Hadoop, Apache's implementation of Google's map/reduce framework. 
 
 The main idea is that we use a very simple approach where testing jobs 
 are described by typical YETI calls stored in normal text files, that would each launch YETI in standalone mode. 
 Commands from within each file are then mapped to different machines in the cloud. 
 
-After setting up the map/reduce cluster. These text files and YETI (bundled as a Jar) are then uploaded to the 
+After setting up the map/reduce cluster. These text files and YETI (bundled as a jar files) are then uploaded to the 
 distributed file system (DFS) on the map/reduce cluster master, which then launches individual testing machines 
 for each text file executing the commands contained within the file in the order they appear.
 
@@ -70,10 +70,11 @@ user machine and made available to the software tester for evaluation.
 We only ran preliminary evaluations.
 
 We evaluated our approach using the Amazon Elastic Computing Cloud (EC2) \footnote{}.
-We performed 5 jobs of 20-minutes each (a total testing time of 100 minutes) in less than 21 minutes, with outputting 
-comparable results with executing YETI in standalone version.
+We performed 5 jobs of 20-minutes each (a total testing time of 100 minutes) in less 
+than 21 minutes, with outputting comparable results with executing YETI in standalone version.
+Both tests exhibited comparable results.
 
-By using the cloud we can drastically improve the performances of YETI and reduce the testing time by 
+By using the cloud we clearly improved the performances of YETI and reduce the testing time by 
 employing more machines and distributing the jobs.
 While we did not run experiments with more open security models, 
 YETI jobs were run on one-shot Ubuntu virtual machines. This also solves
