@@ -10,7 +10,9 @@ method calls per minute.\footnote{Observed while testing the iText library in
 September 2009} While this might seem to be reasonable performances, experience shows 
 that a plateau in the number of faults found for a given class is generally only reached after 
 $10^{5}$ method calls. For large projects (100+ classes) this might mean that testing 
-code on a single computer might not reach a stable point overnight.
+code on a single computer might not reach a stable point overnight. It also has the advantage of
+using multiple seeds for the pseudo-random number generator, which previously showed better
+performances than using only one seed over long running sessions~\cite{CPLOM:08:PRTOOS}.
 \item \textbf{Security.} The Java binding of YETI relies on the Java security model to forbid 
 undesirable side-effects. This is a reasonable assumption in most cases. It is however
 sometimes undesirable because some programs need to access files, sockets, or drivers 
