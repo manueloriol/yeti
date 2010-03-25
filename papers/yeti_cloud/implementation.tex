@@ -1,7 +1,17 @@
 \section{Architecture and implementation}\label{sec:architecture}
 
 \subsection{YETI standalone application}
-YETI is usually launched on the command-line. A typical call of YETI is:
+YETI is an automated random testing tool for Java. 
+A YETI testing session consists in a sequence of calls made to methods at
+random using arguments generated at random. 
+The oracle for the tests are either contracts --Êwhen available -- or runtime 
+exceptions/failures.
+
+When a failure is detected the logs of the testing session are minimised to 
+produce test cases that reproduce the failure. Such unit tests can then be stored and 
+be executed later by a unit test framework.
+
+YETI is usually launched on the command-line. A typical call to YETI is:
 {\small
 \begin{verbatim}
 java yeti.Yeti -Java -yetiPath=. 
@@ -54,7 +64,7 @@ As figure~\ref{fig:architecture} shows, the main architecture of YETI on the clo
 relies on Hadoop, Apache's implementation of Google's map/reduce framework. 
 
 The main idea is that we use a very simple approach where testing jobs 
-are described by typical YETI calls stored in normal text files, that would each launch YETI in standalone mode. 
+are described by calls to YETI stored in normal text files by the user, that will each launch YETI in standalone mode. 
 Commands from within each file are then mapped to different machines in the cloud. 
 
 After setting up the map/reduce cluster. These text files and YETI (bundled as a jar file) are then uploaded to the 
@@ -72,10 +82,14 @@ We only ran preliminary evaluations.
 We evaluated our approach using the Amazon Elastic Computing Cloud (EC2) \footnote{http://aws.amazon.com/ec2/}.
 We performed 5 jobs of 20-minutes each (a total testing time of 100 minutes) in less 
 than 21 minutes, outputting comparable results with YETI's standalone execution. 
+Test cases all tested classes from \texttt{java.lang}.
 The number of faults found in each tested class in the distributed mode were the same as those found during standalone execution of YETI. 
 
 By using the cloud we clearly improved the performances of YETI and reduce the testing time by 
-employing more machines and distributing the jobs.
+employing more machines and distributing the jobs. 
+Because what was distributed over the cloud was very small -- a file containing the 
+options for YETI for as many jobs as YETI performs and the code in class files -- the cost 
+of setting up virtual machines and testing sessions is negligible.
 While we did not run experiments with more open security models, 
 YETI jobs were run on one-shot Ubuntu virtual machines. This also solves
 the potential security issues for random testing.
