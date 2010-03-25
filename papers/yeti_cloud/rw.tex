@@ -16,7 +16,7 @@ of some test cases and work would have to be assigned according to the workers c
 The only approach that is somewhat similiar to our implementatin for distributing execution is outlined in ~\cite{parveen}, where a prototype distributed execution framework for 
 JUnit test cases called HadoopUnit is presented. They also use the MapReduce primitives for distributing test cases. Before execution can begin, an Ant task is run 
 to produce input for the map function from uploaded files and stores them in a file to be later read by the Mapper. The Reducer then collects the test case results from each Mapper 
-and outpputs them to a file on the DFS. A speed of 30x in execution time is reported on a 150-node cluster. 
+and outputs them to a file on the DFS. A speed of 30x in execution time is reported on a 150-node cluster. 
 However, HadoopUnit too only supports execution of JUnit test cases and requires them be created manually beforehand. 
 
 YETI creates test cases on the fly, executes them against the target code and reports bugs. The use of a computational Cloud by YETI resolves the issues outlined above, 
