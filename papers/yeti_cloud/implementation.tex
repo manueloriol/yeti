@@ -88,11 +88,10 @@ The number of faults found in each tested class in the distributed mode were the
 By using the cloud we clearly improved the performances of YETI and reduce the testing time by 
 employing more machines and distributing the jobs. 
 Distributing YETI over the cloud requires uploading the files containing typical YETI calls for launching YETI in standalone mode(multiple 
-YETI calls can be placed in a file resulting in the same machine testing different or the same files with different options/strategies), and 
-YETI itself (bundled as a Jar along with the classes to be tested). Setting up Hadoop cluster on EC2  and uploading all the required files to the 
-MapReduce Master would then need under a few minutes. However, setting up the EC2 cluster for the first time might 
-take some  extra time(up to 10 minutes), but subsequent testing sessions would require under a few minutes to start, making it a suitable 
-candidate for regression testing. 
+YETI calls can be placed in a file resulting in the same machine testing several programs or the same program with potentially specific options/strategies for each machine), and 
+YETI itself (bundled as a Jar along with the classes to be tested). Setting up a Hadoop cluster on EC2  and uploading all the required files to the 
+MapReduce Master then takes under a few minutes. However, setting up the EC2 cluster for the first time might 
+take some  extra time (up to 10 minutes in our tests), but subsequent testing sessions require less than a few minutes to start. 
 The execution can be performed on a locally set up Hadoop cluster as well. While we did not run experiments with 
-more open security models, YETI jobs were run on one-shot Ubuntu virtual machines. This also solves
+more open security models, YETI jobs were run on one-shot Ubuntu virtual machines, which solves
 the potential security issues for random testing.
