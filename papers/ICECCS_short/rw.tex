@@ -1,0 +1,41 @@
+\section{Related Work}\label{sec:rw}
+
+%With programs becoming increasingly complex, the process of testing 
+%them has to become smarter and more efficient. Automated random testing
+%is a technique that is cheap to run and proved to find bugs in Java libraries and 
+%programs~\cite{Pacheco2005,Csallner2004}, in Haskell 
+%programs~\cite{Claessen00quickcheck:a}.
+
+YETI is the latest in a serie of recent random testing tools like
+JCrasher~\cite{Csallner2004}, Jartege~\cite{Oriat2004},
+Eclat~\cite{Pacheco2005}, or
+%Jtest~\cite{Jtest}, or
+% RUTE-J~\cite{Andrews2006a}, particular 
+AutoTest~\cite{CPLOM:08:PRTOOS}. 
+YETI is however 
+different from these tools in at least three important ways: (1) it is made to 
+easily support multiple programming languages, (2) 
+it is intended to allow test engineers to modify the parameters of the 
+testing during the testing session itself, and (3) it is at least 3 orders 
+of magnitude faster than competing tools. 
+
+%The first characteristics comes from
+%the meta-model that YETI uses that is not bound to a specific paradigm.
+%It also implies that some domain-specific optimizations~\cite{Pacheco2007,Godefroid2005,Chen2004a,Chen2005} will not be possible 
+%without additional support because YETI does not know values or language-specific
+%constructs. 
+
+%The second point is the truly innovative point. All other approaches
+%considered the testing tool to be a component that would run by itself without 
+%further interactions. In our experience the runtime monitoring has become 
+%the main means of knowing how the testing session evolves and possibly to 
+%improve it by modifying some parameters. 
+
+%To illustrate the last point, Randoop~\cite{1390643} produced 4 millions test of .NET 
+%programs in 150 hours. While the intent is a bit different because we do not use 
+%feedback to generate test cases, it takes around 12mn to perform the same amount of method 
+%calls on .NET programs in YETI -- in an admittedly uncontrolled way. Further 
+%evaluations should be conducted to compare effectiveness of both approaches.
+
+The .NET binding of YETI is however the first random testing tool to interpret correctly 
+code-contracts violations and to leverage on that to filter bugs.

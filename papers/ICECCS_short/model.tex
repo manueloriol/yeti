@@ -1,0 +1,71 @@
+\section{Model}\label{sec:model}
+
+This section describes the meta-model used by YETI to represent programs 
+and data. The actual model was previously describe in an article describing the Java 
+binding of YETI~\cite{Oriol:10:YETI}, please refer to it for a complete definition of the 
+model.
+
+YETI uses four main notions: 
+
+\begin{description}
+\item{\textbf{Routines:}} A routine is a computation unit that uses variables of a given type and 
+returns values of a given type:
+\begin{equation}
+\ensuremath{R::=(T_{1} \times...\times T_{k}) \rightarrow T_{0}}
+\label{equ:routine}
+\end{equation}
+\item{\textbf{Types:}} A type is a collection of variables and a collection of routines that
+return values (of that type):
+\begin{equation}
+\ensuremath{T::=((R_{1},...,R_{k}),(V_{1},...,V_{l}))}
+\label{equ:type}
+\end{equation}
+\item{\textbf{Variables:}} A variable is a couple between a 
+label and a value:
+\begin{equation}
+\ensuremath{V::=(n,v)}
+\label{equ:variable}
+\end{equation}
+\item{\textbf{Modules:}}   A module is a collection of routines:
+\begin{equation}
+\ensuremath{M::=(R_{1},...,R_{k})}
+\label{equ:module}
+\end{equation}
+\end{description}  
+
+This model is used by YETI as the backbone of any binding. Note that types can be organized 
+through a subtyping relationship which imposes that all variables of a subtype are also present 
+in the super type and that all types constructors of the subtype are also constructors of the 
+supertype. YETI ensures that the these properties are verified.
+
+While these definitions model a program from a high level that is not concerned with actual values
+and computation, it is enough for devising strategies. As an example,  Figure~\ref{fig:rand} shows the algorithm -- in C\#-like pseudo code -- of the pure random strategy.
+
+\begin{figure}[h]
+\begin{verbatim}
+M0 = .../** module to test **/
+while (not endReached){
+  R0=M0.getRandomRoutine();
+  Vector<Variables> arguments = 
+           new Vector<Variable>();
+  for(T in R0.getArguments()){
+   arguments.addLast(
+         T.getArgumentAtRandom());
+  }
+  try {
+    new Variable(R0.call(arguments));
+  } catch (Exception e) {
+    if (not 
+         (e is PreconditionViolation)){
+     foundBugs.add(e);
+    }
+  }
+}
+\end{verbatim}
+\caption{Algorithm for the random strategy.}\label{fig:rand}
+\end{figure}
+
+What Figure~\ref{fig:rand} does not show is the generation of new variables other than through making calls.
+In this example, we assume that this happens in \verb+T.getArgumentAtRandom()+. It could however be added to the algorithm without any issue.
+
+Other strategies are however possible. For example Random+~\cite{CMOP:08:FFMTRTUR} either picks selects values in the existing pool of object, generate new ones on the fly, or take interesting values. This implies that the model should be enriched to take into account a set of interesting values in each type. In practice, this is exactly what happens, and up to now, we always managed to introduce backward compatible changes.

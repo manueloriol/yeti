@@ -1,0 +1,38 @@
+\section{Introduction}\label{sec:intro}
+
+Automated random testing is a methodology often neglected by 
+programmers and software testers because it is deemed as overly
+simple. It has, however, advantages over other techniques because 
+it is completely unbiased and allows the execution of a high number 
+of calls over a short period of time.
+
+
+The York Extendible Testing Infrastructure (YETI) provides a framework 
+for executing random testing sessions in a language agnostic way. At its core lies a testing engine that performs 
+calls one after the other on methods picked at random with arguments generated at random.
+%
+%The main characteristics of 
+%YETI is that it supports multiple programming languages through a 
+%language-agnostic meta model. Various testing strategies apply
+%to all supported languages thanks to a strong decoupling between the 
+%strategies used and the programming language binding. 
+
+Oracles are however language-dependent. In the presence of specifications YETI checks 
+inconsistencies between the code and the specifications. In the case of 
+languages such as .NET, YETI uses code-contracts\footnote{http://research.microsoft.com/en-us/projects/contracts/} as oracles.
+In case a precondition of the method under test is violated, then it 
+does not interpret it as a failure. In case no precondition is violated, any 
+exception can be interpreted as a bug if it is not declared in the documentation. 
+If programmers do not use contracts, a testing session of .NET programs with YETI 
+is then a robustness test that reports all runtime exceptions. Because .NET does 
+not declare runtime exceptions, all triggered must then be compared with exceptions 
+declared in the documentation to check whether they were expected or they are faults.
+ 
+
+Unlike competitors, YETI also supports a graphical user interface that 
+allows test engineers to monitor the testing session and modify some 
+of its characteristics while testing. 
+
+Section~\ref{sec:implem} describes its current implementation for .NET.
+Section~\ref{sec:rw} presents related work.
+We eventually conclude in Section~\ref{sec:conc}.

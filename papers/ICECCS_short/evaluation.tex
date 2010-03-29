@@ -1,0 +1,184 @@
+\section{Evaluation}\label{sec:evaluation}
+
+This section presents the evaluation of the .NET binding of YETI.
+In this evaluation, we first tested examples that we coded with code contracts and in which we seeded bugs, 
+we then show the results for testing \verb+System.dll+ for a short amount of time.
+
+\subsection{Evaluating through seeded bugs}
+
+We tested five assemblies instrumented with Code-Contracts -- pre-conditions, post-conditions, assertions and object invariants. This strategy focused on measuring performance, its fault finding ability and any limitations that the binding has. We repeated all experiments 30 times to ensure that the outcomes holds statistical validity.  The experiment used a computer equipped with an Intel Core 2 Duo T5750 at 2.00 GHz with 3.00GB memory running under Windows Vista Home Premium Service Pack 1.
+
+Table~\ref{tab:seed} presents an overview the number of faults seeded and found by YETI. On average, with testing sessions of 100 seconds, YETI found 77\% of the seeded bugs.
+
+\begin{table*}
+\caption{Number of seeded faults found by Yeti. Testing sessions of 100 seconds.}\label{tab:seed}
+\begin{center}
+\begin{tabular} {l c c c c}
+\hline
+Class	&\# methods	&\# attributes&\# Seeded Faults&Max \# Faults YETI found\\
+\hline
+YetiTestAssembly1.exe&6	&2	&3&	2 (67\%)\\
+YetiTestAssembly2.exe	&7	&2	&3&	2 (67\%)\\
+YetiTestAssembly3.exe	&7	&3&	3	&3 (100\%)\\
+YetiTestAssembly4.exe	&14	&5	&7	&5 (71\%)\\
+YetiTestAssembly5.exe	&20	&5	&10	&8 (80\%)\\
+\hline
+Total&	54	&17	&26	&20 (77\%)\\
+\end{tabular}
+\end{center}
+\end{table*}
+
+
+\begin{table*}
+\caption{Statistics about tests with seeded faults. Testing sessions of 100 seconds.}\label{tab:statseeded}
+\begin{center}
+\begin{tabular} {l c c c c}
+\hline
+Class	&\# Method calls to first fault	& Time to first fault (ms)&\# Failures &\# method calls\\
+\hline
+YetiTestAssembly1.exe&18.2	&41.9	&28734&	508114\\
+YetiTestAssembly2.exe	&138.9	&93.3	&5673&	563401\\
+YetiTestAssembly3.exe	&83.6	&73.4&	8549	&534354\\
+YetiTestAssembly4.exe	&72.2	&93.3	&5104	&368856\\
+YetiTestAssembly5.exe	&41.7	&62.5	&8030	&447874\\
+\hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+Table~\ref{tab:statsseeded} also presents statistics about testing seeded code: the number of calls to first fault, the time to first fault, the total number of failures (redundant) and the number of method calls in 10s testing sessions. Note that in each case the testing session reached a plateau and it was not expected to find further faults. The main interesting result is that on similar classes, the Java binding of YETI performed around 800'000 calls per minute~\cite{Oriol:10:YETI} (1'120'000 method calls for 100 seconds). Therefore the overhead of using sockets incurs around 100\% penalty over making native calls.
+
+
+\begin{figure}[h]
+{\scriptsize
+\begin{verbatim}
+namespace YetiTestAssembly1{...
+public int methodReturnInt1(int r, int t)
+{
+    Contract.Ensures(Contract.Result<int>() != 0);
+    r = t;
+    return r;
+}
+
+public void setDoubleAttr1(double d)
+{
+    Contract.Ensures(d > 10.5);
+    doubleAttr1 = d;
+}
+public float methodForFloat1(Object1 ob, char c, 
+                                          long l)
+{
+    Contract.Requires(ob != null && c != 'm');
+    Contract.Ensures(l > 100);
+    float f = (Single)l;
+    return f;
+}}
+\end{verbatim}
+\begin{verbatim}
+namespace YetiTestAssembly2{...
+public int methodReturnInt2(int r, int t)
+{
+    Contract.Ensures(Contract.Result<int>() > 5);
+    r = t;
+    return r;
+}
+
+public void setOb2Attr(Object2 d)
+{
+    Contract.Ensures(d !=null);
+    ob2 = d;
+}
+public float methodForFloat2(double ob, int l)
+{
+    Contract.Requires(ob != 0.0);
+    Contract.Ensures(Contract.Result<float>() != 0);
+    float f = (Single)(l*ob);
+    return f;
+}}
+\end{verbatim}
+
+\begin{verbatim}
+namespace YetiTestAssembly3{...
+public static int methodReturnInt3(int r, int t)
+{
+    Contract.Requires(t != 4);
+    Contract.Ensures(Contract.Result<int>() > 1);
+    r = t;
+    return r;
+}
+
+public void setOb3Attr(Object3 d, char c, String s)
+{
+    Contract.Ensures(d !=null && c!='m');
+    ob3 = d;
+}
+public float methodForFloat3(double ob, int l)
+{
+    Contract.Requires(ob != 0.0);
+    Contract.Ensures(Contract.Result<float>() != 100);
+    float f = (Single)(l*ob);
+    return f;
+}}
+\end{verbatim}
+}
+\caption{Seeded bugs examples.}\label{fig:seededcode}
+\end{figure}
+
+Figure~\ref{fig:seededcode} presents the seeded bugs for the first three assemblies. The last two are omitted because of their complexity. All the code is available online.\footnote{http://www-users.cs.york.ac.uk/\~manuel/yetidocs\\/dotnet/YetiTestAssemblies.zip}
+
+Overall, seeding bugs helped with discovering the difficulties that the random strategy has to find certain types of faults:
+\begin{itemize}
+\item Post-conditions that break only with specific values:
+\\
+ \verb+Contract.Ensures(+
+ \verb+Contract.Result<int>() != 0)+
+\item Post-conditions that break only on values that exist in a small ranges:
+\\
+\verb+Contract.Ensures(r<222 && r>200)+ 
+\item Post-conditions that break if specific conditions hold simultaneously:
+\\
+\verb+Contract.Ensures(!(o == null &&+ 
+\verb+s.Equals("End Of Evaluation") &&+
+\verb+l == 12000))+ 
+\item Faults that require a specific sequence of method calls in order to raise an exception. 
+\end{itemize}
+
+In addition, we deduce that the performance of the binding tool is satisfactory and the use of sockets is reasonable. When YETI performed testing, neither the Java application (i.e. yeti.environments.csharp) nor the CsharpReflexiveLayer ever crashed or raised an exception at any of the testing sessions on the YetiTestAssemblies.
+
+
+
+
+\subsubsection{Testing real-world assemblies}
+
+We tested the limitations of the binding, its performance and if it could recognize non Code-Contracts exceptions of real usable assemblies. The benchmarks that the second strategy used are System.dll and mscorlib.dll, which are the basic libraries of C\# and C++ programming languages, respectively. 
+The experiment used a computer equipped with an Intel Core 2 CPU 6600 2 at 2.40 GHz with 3.24GB memory running under Windows XP Professional Service Pack 3. Each test was run 10 times and consisted of a 10-second testing session.
+
+
+
+One of the issues with testing such libraries is that they contain calls that make the system quit. As a consequence CsharpReflexiveLayer crashed many times due to random system calls -- such as Process.Kill() --forced it  to quit. Another reason was that calls could affected the design and implementation of ChsarpReflexiveLayer. For example the testing procedure made calls to the System.IO.StreamWriter class and these calls always affected the part of CsharpReflexiveLayer code that writes the created values in the report file. Testing these assemblies was however the best way to discover any limitations of the tool.
+
+
+\begin{table*}
+\caption{Statistics about tests of System.dll and msccorlib.dll. Testing sessions of 10 seconds.}\label{tab:statreal}
+\begin{center}
+\begin{tabular} {l c c c c}
+\hline
+Class	&\# Method calls to first fault	& Time to first fault (ms)&\# Failures &\# method calls\\
+\hline
+System.dll&14	&107.8	&487.9&	2269\\
+mscorlib.dll	&14.4	&146.8	&553&	2231.7\\
+\hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+The graphs in Table~\ref{tab:statreal} depict plausible “faults” and not certain faults as each fault should be double checked with what the documentation specifies for each class. Such testing sessions are simple robustness testing and in a production environment, all valid exception traces should be kept and reused later on to indicate that they do not correspond to a real fault.
+
+When testing System.dll no plateau was reached due to the length of the testing session. THis was however necessary to obtain testing sessions that did not crash.
+
+ 
+Testing the mscorlib.dll assembly did not result in many crashes of the CsharpReflexiveLayer. The tool shows similar performances. The main difference is the fact that the Relevant Failures number is relatively small in comparison to the equivalent when testing System.dll and it also reaches a plateau very quickly. The reason for this is that the traces of the exceptions raised by mscorlib.dll had a significant number of reandom characters and strings that confused the communication layer. 
+ 
+Testing System.dll and mscorlib.dll outlined the need for YETI to process automatically documentation in order to extract information about expected exceptions because such information is not available through C\# interfaces.  YETI cannot thus decide definitively if an exception of a method call should be characterised as a bug or not.
+
+It is worth mentioning that the Java application of the binding never crashed or raised any exception at any testing execution.

@@ -1,0 +1,18 @@
+\section{Limitations and Future Work}\label{sec:fut}
+
+The approach currently has a few limitations:
+\begin{itemize}
+\item The socket communication can mess up with special characters used in exception traces. As we previously mentioned special characters might interfere with the regular process of the socket communication because it is text-based. It is likely that another format might be better for such communications. This will be investigated in the future.
+\item There is no way of stopping infinite loops in the .NET binding. This is a serious limitation for the .NET binding at the moment as it is not possible to test some classes due to that limitation. A clean implementation is however much more difficult to realize, but we are planning to do it in the near future.
+\item There is no restart of the system after the .NET part crashed. Currently, if the .NET part crashes, we do not restart the program. This is a limitation we need to overcome in order to test realistically the system libraries.
+\item It is time-consuming to interpret failures as there is no parsing of the textual documentation.
+Such a parsing is going to be necessary if we want to provide a significant support for .NET users.
+It would also benefit other languages users (even Java) and make the interpretation of the testing much more reliable. It is however a challenging problem as documentation is typically informally written.
+\end{itemize}
+
+The efficiency of the socket-based communication also made clear that 
+using socket-based communication between the program under test and the 
+testing infrastructure was a viable alternative (100\% overhead only). 
+This means that even in the Java biding it could be interesting to use 
+such an approach for testing classes that may quit the program. While this 
+is seldom the case for libraries, this might be useful for end-user classes.

@@ -1,5 +1,39 @@
 package yeti.environments.java;
 
+/**
+ 
+ YETI - York Extensible Testing Infrastructure
+ 
+ Copyright (c) 2009-2010, Manuel Oriol <manuel.oriol@gmail.com> - University of York
+ All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ 1. Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in the
+ documentation and/or other materials provided with the distribution.
+ 3. All advertising materials mentioning features or use of this software
+ must display the following acknowledgement:
+ This product includes software developed by the University of York.
+ 4. Neither the name of the University of York nor the
+ names of its contributors may be used to endorse or promote products
+ derived from this software without specific prior written permission.
+ 
+ THIS SOFTWARE IS PROVIDED BY <COPYRIGHT HOLDER> ''AS IS'' AND ANY
+ EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ **/ 
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 
@@ -34,10 +68,6 @@ public class YetiJavaSpecificType extends YetiType {
 	 */
 	private int numDimensionsArray = 0;
 
-	/**
-	 * The number of elements in one dimension for an array.
-	 */
-	public static int MAX_LENGTH_FOR_NEW_ARRAYS = 10;
 	
 	/**
 	 * The base type if it is an array type.
@@ -282,39 +312,10 @@ public class YetiJavaSpecificType extends YetiType {
 		return (Math.random()*(10^i));
 	}
 
-	/**
-	 * An array generator for this array type.
-	 * 
-	 * @return an array of objects of the correct type, with the correct depth.
-	 */
-	public Object __yetiValue_createArrayOfCorrectLevel(){
-		Object oarray=null;
-		int [] dimensions = new int[this.numDimensionsArray];
-		for (int i=0;i<this.numDimensionsArray;i++) {
-			dimensions[i]=(int) Math.floor(Math.random()*MAX_LENGTH_FOR_NEW_ARRAYS);
-		}
-		
-		if (this.baseType!=null)
-			try {
-				oarray = Array.newInstance(this.baseType, dimensions);
-//				YetiType type = YetiType.allTypes.get(this.baseType.getName());
-//				if (type!=null&&type.getInstances().size()!=0) {
-//					boolean finished = false;
-//					int [] currentPosition = new int[this.numDimensionsArray];
-//					while (!finished) {
-//						//currentPosition 
-						// this is wrong fix with assigning things here
-//						Array.set(oarray, index, value);
-//					}
-//				}
-				
-			} catch (NegativeArraySizeException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			return oarray;
-	}
+	
+	
+	
+	
 
 
 	/**
@@ -387,6 +388,7 @@ public class YetiJavaSpecificType extends YetiType {
 		}
 //		if (isArrayType) {
 //			try {
+//			
 //				this.addCreationRoutine(new YetiJavaMethod(new YetiName("__yetiValue_createArrayOfCorrectLevel"), null, this, YetiModule.allModules.get("YetiJavaSpecificType"), this.getClass().getMethod("__yetiValue_createArrayOfCorrectLevel", (Class <?>[])null), true));
 //			} catch (SecurityException e) {
 //				// TODO Auto-generated catch block
