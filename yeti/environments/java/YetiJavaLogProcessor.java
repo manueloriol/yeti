@@ -111,7 +111,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		int i = 0;
 		for (String tc: tmp) {
 			i++;
-			result.add("@Test public static void test_"+i+"() throws Exception {\n"+tc+"\n}");
+			result.add("@Test public void test_"+i+"() throws Exception {\n"+tc+"\n}");
 		}
 		result.add("/** Non-Unique bugs: "+lastNumberOfNonUniqueBugs+", Unique Bugs: "+result.size()+", Logs size (locs): "+lastLogTotalSize+"**/");
 		return result;
