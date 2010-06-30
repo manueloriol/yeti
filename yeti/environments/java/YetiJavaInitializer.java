@@ -141,23 +141,8 @@ public class YetiJavaInitializer extends YetiInitializer {
 
 			}
 		}
-		System.setSecurityManager(new SecurityManager() {
-			// we set this security manager that filters file output/execution for worker threads
-			public void checkPermission(Permission perm) {
-				// if we are in the thread group of worker threads
-				if (this.getThreadGroup()==YetiJavaTestManager.workersGroup) {
-					// if we are trying to access a file permission
-					if (perm instanceof FilePermission) {
-						String action = perm.getActions();
-						// if any of those is in the permission requested, we throw the exception
-						if ((action.indexOf("write")>=0) || (action.indexOf("execute")>=0) || (action.indexOf("delete")>=0)) {
-							YetiLog.printDebugLog("Yeti did not grant permission: "+ perm, this);
-							throw new YetiSecurityException("Yeti did not grant the following file permission: "+perm.toString());
-						}
-					}
-				}
-			}
-		});
+		
+		System.setSecurityManager(new YetiJavaSecurityManager());
 
 	}
 
