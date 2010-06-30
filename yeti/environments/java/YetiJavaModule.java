@@ -34,7 +34,11 @@ package yeti.environments.java;
  
  **/ 
 
+import java.lang.reflect.Method;
+
 import yeti.YetiModule;
+import yeti.YetiNoCoverageException;
+import yeti.monitoring.YetiCoverageIndicator;
 
 
 /**
@@ -46,13 +50,16 @@ import yeti.YetiModule;
  */
 public class YetiJavaModule extends YetiModule {
 	
+	private Class c = null;
+	
 	/**
 	 * In this implementation we consider it to be a class name.
 	 * 
 	 * @param className the name of the class of this module.
 	 */
-	public YetiJavaModule(String className){
+	public YetiJavaModule(String className, Class c){
 		super(className);
+		this.c=c;
 	}
 
 
@@ -70,4 +77,80 @@ public class YetiJavaModule extends YetiModule {
 			return true;
 		return false;
 	}
+
+
+	/* (non-Javadoc)
+	 * @see yeti.monitoring.YetiBranchCoverageIndicator#__yeti_get_coverage()
+	 */
+	@SuppressWarnings("unchecked")
+	public double getCoverage() throws YetiNoCoverageException {
+		if (c!=null) {
+			Method m;
+			try {
+				double d;
+				Class []cc = {};
+				Object []oo= {};
+				m = c.getMethod("__yeti_get_coverage", cc);			
+				d = (Double) (m.invoke(null, oo));
+				return d;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				throw new YetiNoCoverageException(this.moduleName);
+			}
+		}
+		return 0;
+	}
+	
+	/** 
+	 * This method returns the type of coverage.
+	 * 
+	 * @see yeti.monitoring.YetiCoverageIndicator#getCoverageKind()
+	 */
+	public String getCoverageKind() throws YetiNoCoverageException {
+		return "Branch coverage";
+	}
+	/* (non-Javadoc)
+	 * @see yeti.monitoring.YetiCoverageIndicator#getNumberOfBranches()
+	 */
+	public long getNumberOfBranches() throws YetiNoCoverageException {
+		if (c!=null) {
+			Method m;
+			try {
+				double d;
+				Class []cc = {};
+				Object []oo= {};
+				m = c.getMethod("__yeti_get_n_branches", cc);			
+				return (Integer) (m.invoke(null, oo));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				throw new YetiNoCoverageException(this.moduleName);
+			}
+		}
+		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see yeti.monitoring.YetiCoverageIndicator#getNumberOfCoveredBranches()
+	 */
+	public long getNumberOfCoveredBranches() throws YetiNoCoverageException {
+		if (c!=null) {
+			Method m;
+			try {
+				double d;
+				Class []cc = {};
+				Object []oo= {};
+				m = c.getMethod("__yeti_get_covered_branches", cc);			
+				return (Integer) (m.invoke(null, oo));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				throw new YetiNoCoverageException(this.moduleName);
+			}
+		}
+		return 0;
+	}
+
+
 }

@@ -1,12 +1,12 @@
 package yeti.environments.java;
 
 /**
- 
+
  YETI - York Extensible Testing Infrastructure
- 
+
  Copyright (c) 2009-2010, Manuel Oriol <manuel.oriol@gmail.com> - University of York
  All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
  1. Redistributions of source code must retain the above copyright
@@ -20,7 +20,7 @@ package yeti.environments.java;
  4. Neither the name of the University of York nor the
  names of its contributors may be used to endorse or promote products
  derived from this software without specific prior written permission.
- 
+
  THIS SOFTWARE IS PROVIDED BY <COPYRIGHT HOLDER> ''AS IS'' AND ANY
  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -31,19 +31,31 @@ package yeti.environments.java;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
  **/ 
 
+import java.awt.BorderLayout;
 import java.io.*;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
+import javax.swing.JFrame;
+
+import javassist.CannotCompileException;
+import javassist.NotFoundException;
+import javassist.bytecode.BadBytecode;
+import yeti.Yeti;
 import yeti.YetiLog;
 import yeti.YetiModule;
 import yeti.YetiName;
 import yeti.YetiRoutine;
 import yeti.YetiType;
 import yeti.environments.YetiLoader;
+import yeti.monitoring.YetiCoverageIndicator;
+import yeti.monitoring.YetiGUI;
+import yeti.monitoring.YetiGraphCoverageOverTime;
 
 /**
  * Class that represents the custom class loader to load classes of the program.
@@ -82,16 +94,49 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 	@SuppressWarnings("unchecked")
 	public Class loadClass(String name, boolean resolve)	throws ClassNotFoundException{ 
 
+		YetiJavaBytecodeInstrumenter bi = new YetiJavaBytecodeInstrumenter();
+
 		Class clazz = findLoadedClass(name);
+
 		// has the class already been loaded
 		if (clazz!=null) return clazz;
 		// is it a standard Java Class
 		// TODO: check why this does not work properly...
-		//		if (name.startsWith("java.") || name.startsWith("javax.") || name.startsWith("sun.")) {
-		// we load it from within the standard loader
-		clazz=findSystemClass(name);
+
+
+		// Adding support for branch coverage
+		boolean instrumented = false;
+		if (!(name.startsWith("java.") || name.startsWith("javax.") || name.startsWith("sun."))&&Yeti.hasBranchCoverage) {
+			// we load it from within the standard loader
+			try {
+				byte[] classBytes = bi.loadAndInstrument(name);
+				clazz = this.defineClass(name, classBytes, 0, classBytes.length);
+				instrumented = true;
+			} catch (NotFoundException e) {
+				//e.printStackTrace();
+				// If this happens we load the class with the standard class loader.
+				clazz=findSystemClass(name);
+			} catch (CannotCompileException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				clazz=findSystemClass(name);
+			} catch (BadBytecode e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				clazz=findSystemClass(name);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				clazz=findSystemClass(name);
+			}
+		}
+		else 
+			clazz = findSystemClass(name);
+
 		YetiLog.printDebugLog("Class loaded in parent class loader: " + clazz.getName(), this);
 		resolveClass(clazz);
+
+
 		//		} else {
 		//			// otherwise, we try to find it...
 		//			clazz=findClass(name);
@@ -100,7 +145,8 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 		//				clazz=findSystemClass(name);
 		//			resolveClass(clazz);
 		//		}
-		return addDefinition(clazz);
+		addDefinition(clazz);
+		return clazz;
 	}
 
 	/**
@@ -182,9 +228,12 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 		for (Method method: methods){
 
 			if (method.isSynthetic()) continue;
+			if (method.getName().startsWith("__yeti_")) continue;
 			boolean usable = true;
 
 			Class []classes=method.getParameterTypes();
+
+
 
 			// check if method is static
 			boolean isStatic = Modifier.isStatic((method.getModifiers()));
@@ -338,7 +387,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 	 */
 	@SuppressWarnings("unchecked")
 	public YetiModule makeModuleFromClass(Class c){
-		YetiModule mod=new YetiJavaModule(c.getName());
+		YetiModule mod=new YetiJavaModule(c.getName(), c);
 
 		return mod;
 	}
@@ -449,4 +498,6 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 			}
 		}
 	}
+
+
 }

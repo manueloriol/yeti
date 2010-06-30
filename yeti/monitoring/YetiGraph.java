@@ -134,7 +134,7 @@ public class YetiGraph extends JPanel implements YetiUpdatable, YetiSamplable, A
 	 * Popup menu on this graph.
 	 */
 	JPopupMenu popup=null;
-
+	
 
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -187,11 +187,15 @@ public class YetiGraph extends JPanel implements YetiUpdatable, YetiSamplable, A
 		try {
 			g2.setPaint(Color.red);
 			int size = series[0].size();
+			double x=0;
+			double y=0;
 			for(int i = 0; i < size; i+=pointStep) {
-				double x = leftBorder + (w-leftBorder-rightBorder)*series[0].get(i)/maxX;
-				double y =  h - horizontalBorder - (h-2*horizontalBorder)*series[1].get(i)/maxY;
+				x = leftBorder + (w-leftBorder-rightBorder)*series[0].get(i)/maxX;
+				y =  h - horizontalBorder - (h-2*horizontalBorder)*series[1].get(i)/maxY;
 				g2.fill(new Ellipse2D.Double(x-2, y-2, 4, 4));
 			}
+			g2.setPaint(Color.black);
+			g2.drawString(""+((int)((double)series[1].get(size-1))), (int)x-1, (int)y-4);
 		} catch (NullPointerException e) {
 
 		}

@@ -95,6 +95,10 @@ public class Yeti {
 	 * The mode of operation 
 	 */
 	public static boolean isDistributed= false;
+	/**
+	 * The support for branch coverage. 
+	 */
+	public static boolean hasBranchCoverage= false;
 
 
 	/**
@@ -138,12 +142,16 @@ public class Yeti {
 	 * -tracesOutputFile=X : the file where to output traces on disk<br>
 	 * -tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').<br>
 	 * -printNumberOfCallsPerMethod : prints the number of calls per method.<br>
+	 * -branchCoverage : shows the branch coverage if available (in Java, this implies instrumenting the bytecode).");
 	 * @param args the arguments of the program
 	 */
 	public static void main (String[] args) {
-
-		Yeti.YetiRun(args);
-
+		try {
+			Yeti.YetiRun(args);
+		} catch (Exception e) {
+			System.out.println("Please check your options.");
+			printHelp();
+		}
 	}
 
 	/**
@@ -267,6 +275,12 @@ public class Yeti {
 			if (s0.startsWith("-nTests=")) {
 				isNTests=true;
 				nTests=(Integer.parseInt(s0.substring(8)));
+				continue;
+			}
+			
+			// if it is for a number of tests
+			if (s0.startsWith("-branchCoverage")) {
+				hasBranchCoverage = true;
 				continue;
 			}
 			// we want to test these modules
@@ -614,6 +628,19 @@ public class Yeti {
 			System.out.println(aggregationProcessing);
 
 		}
+		
+		if (Yeti.hasBranchCoverage) {
+			try {
+				System.out.println("/** " +
+						Yeti.testModule.getCoverageKind()+": "+
+						Yeti.testModule.getNumberOfCoveredBranches()+"/"+
+						Yeti.testModule.getNumberOfBranches()+"("+
+						((float)((int)(100*Yeti.testModule.getCoverage())))/100+"%)");
+			} catch (YetiNoCoverageException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		// if users want to print the traces in an outputFile, we do it now
 		if ((tracesOutputFile!=null)&&(logProcessor!=null)) {
 			YetiLog.proc.outputTracesToFile(logProcessor.listOfNewErrors, tracesOutputFile,logProcessor.numberOfNonErrors);
@@ -669,6 +696,7 @@ public class Yeti {
 		System.out.println("\t-tracesOutputFile=X : the file where to output traces on disk.");
 		System.out.println("\t-tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').");
 		System.out.println("\t-printNumberOfCallsPerMethod : prints the number of calls per method.");
+		System.out.println("\t-branchCoverage : shows the branch coverage if available (in Java, this implies instrumenting the bytecode).");
 
 	}
 

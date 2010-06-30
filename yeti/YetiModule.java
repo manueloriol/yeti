@@ -1,12 +1,12 @@
 package yeti;
 
 /**
- 
+
  YETI - York Extensible Testing Infrastructure
- 
+
  Copyright (c) 2009-2010, Manuel Oriol <manuel.oriol@gmail.com> - University of York
  All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
  1. Redistributions of source code must retain the above copyright
@@ -20,7 +20,7 @@ package yeti;
  4. Neither the name of the University of York nor the
  names of its contributors may be used to endorse or promote products
  derived from this software without specific prior written permission.
- 
+
  THIS SOFTWARE IS PROVIDED BY <COPYRIGHT HOLDER> ''AS IS'' AND ANY
  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -31,18 +31,20 @@ package yeti;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
  **/ 
 
 import java.util.HashMap;
+
+import yeti.monitoring.YetiCoverageIndicator;
 
 /**
  * Class that represents a unit of testing. Typically for Java this would be a class or a package, for C a header file. A module contains a list of routines to test. The strategy will iterate through them.
  * @author  Manuel Oriol (manuel@cs.york.ac.uk)
  * @date  Jun 22, 2009
  */
-public class YetiModule {
-	
+public class YetiModule implements YetiCoverageIndicator {
+
 	/**
 	 * The name of the module
 	 */
@@ -52,7 +54,7 @@ public class YetiModule {
 	 * The modules from which it was combined.
 	 */
 	private YetiModule []combiningModules = null;
-	
+
 	/**
 	 * Gets the modules from which it was combined.
 	 * @return  the array containing all modules, null if not composed.
@@ -78,7 +80,7 @@ public class YetiModule {
 	 * A HashMap of all routines in this module.
 	 */
 	public HashMap <String, YetiRoutine> routinesInModule =new HashMap<String,YetiRoutine>();
-	
+
 	/**
 	 * A simple Constructor.
 	 * 
@@ -97,7 +99,7 @@ public class YetiModule {
 	public void addRoutineInModule(YetiRoutine routine){
 		routinesInModule.put(routine.name.toString(),routine);
 	}
-	
+
 	/**
 	 * Return a routine from this module with a given name.
 	 * 
@@ -108,7 +110,7 @@ public class YetiModule {
 		return routinesInModule.get(name);
 	}
 
-	
+
 	/**
 	 * Adds a module to the general list of modules.
 	 * 
@@ -117,7 +119,7 @@ public class YetiModule {
 	public static void addModuleToAllModules(YetiModule module){
 		allModules.put(module.getModuleName(),module);
 	}
-	
+
 	/**
 	 * Get a routine at random.
 	 * 
@@ -126,11 +128,11 @@ public class YetiModule {
 	public YetiRoutine getRoutineAtRandom(){
 		double d=Math.random();
 		int i=(int) Math.floor(d*(routinesInModule.size()));
-		
+
 		return (YetiRoutine)(routinesInModule.values().toArray()[i]);
 	}
-	
-	
+
+
 	/**
 	 * Getter for the module name.
 	 * @return  the module name.
@@ -146,7 +148,7 @@ public class YetiModule {
 	public void setModuleName(String name){
 		moduleName=name;
 	}
-	
+
 	/**
 	 * Method used to to combine two modules into one.
 	 * 
@@ -163,7 +165,7 @@ public class YetiModule {
 		YetiModule.addModuleToAllModules(result);
 		return result;
 	}
-	
+
 	/**
 	 * Checks that the trace contains refers to the module(s) in its trace.
 	 * 
@@ -196,6 +198,68 @@ public class YetiModule {
 			}
 		} 
 		return moduleName.equals(this.getModuleName());
+	}
+
+	/**
+	 * This method either returns a value for the coverage or an exception if not supported.
+	 * 
+	 * @return the coverage (between 0.0 and 1.0).
+	 * @throws YetiNoCoverageException in case it does not support the coverage.
+	 */	
+	public double getCoverage() throws YetiNoCoverageException {
+		return (((double)getNumberOfCoveredBranches())/(double)getNumberOfBranches())*100;
+		
+	}
+
+	/** 
+	 * This method returns the type of coverage.
+	 * 
+	 * @see yeti.monitoring.YetiCoverageIndicator#getCoverageKind()
+	 */
+	public String getCoverageKind() throws YetiNoCoverageException {
+		if (combiningModules!=null) {
+			String kind = null;
+			for (YetiModule ym: combiningModules) {
+				if (kind==null) {
+					kind =	ym.getCoverageKind();
+				} else {
+					if (!kind.equals(ym.getCoverageKind()))
+						throw new YetiNoCoverageException(this.moduleName);
+				}
+			}
+			return kind;
+		}
+		throw new YetiNoCoverageException(this.moduleName);
+	}
+
+	/* (non-Javadoc)
+	 * @see yeti.monitoring.YetiCoverageIndicator#getNumberOfBranches()
+	 */
+	public long getNumberOfBranches() throws YetiNoCoverageException {
+		if (combiningModules!=null) {
+			long numberOfBranches = 0;
+			for (YetiModule ym: combiningModules) {
+				numberOfBranches += ym.getNumberOfBranches();
+			}
+			YetiLog.printDebugLog("/"+numberOfBranches+" total branches", this);
+			return numberOfBranches;
+		}
+		throw new YetiNoCoverageException(this.moduleName);	
+	}
+
+	/* (non-Javadoc)
+	 * @see yeti.monitoring.YetiCoverageIndicator#getNumberOfCoveredBranches()
+	 */
+	public long getNumberOfCoveredBranches() throws YetiNoCoverageException {
+		if (combiningModules!=null) {
+			long numberOfCoveredBranches = 0;
+			for (YetiModule ym: combiningModules) {
+				numberOfCoveredBranches += ym.getNumberOfCoveredBranches();
+			}
+			YetiLog.printDebugLog(numberOfCoveredBranches+" branches covered", this);
+			return numberOfCoveredBranches;
+		}
+		throw new YetiNoCoverageException(this.moduleName);	
 	}
 
 }

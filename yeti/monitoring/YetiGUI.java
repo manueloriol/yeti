@@ -75,10 +75,12 @@ import javax.swing.event.ChangeListener;
 import yeti.Yeti;
 import yeti.YetiLog;
 import yeti.YetiModule;
+import yeti.YetiNoCoverageException;
 import yeti.YetiRoutine;
 import yeti.YetiStrategy;
 import yeti.YetiType;
 import yeti.YetiVariable;
+import yeti.environments.java.YetiJavaPrefetchingLoader;
 
 /**
  * Class that represents the GUI for Yeti.
@@ -88,7 +90,7 @@ import yeti.YetiVariable;
  *
  */
 public class YetiGUI implements Runnable {
-
+	
 	/**
 	 * The dimensions of the screen. 
 	 */
@@ -101,7 +103,7 @@ public class YetiGUI implements Runnable {
 	/**
 	 * The sampler to update the samplable objects.
 	 */
-	public YetiSampler sampler = null;
+	public static YetiSampler sampler = new YetiSampler(100);
 
 	/**
 	 * Checks whether the update thread should be stopped or not.
@@ -126,6 +128,8 @@ public class YetiGUI implements Runnable {
 	 */
 	public static ArrayList<YetiUpdatable> allComponents= new ArrayList<YetiUpdatable>();
 
+	public static YetiJavaPrefetchingLoader branchCoverageIndicator = null;
+
 	/**
 	 * Simple creation procedure for YetiGUI.
 	 * 
@@ -141,7 +145,7 @@ public class YetiGUI implements Runnable {
 
 		// we create the sampler
 		this.nMSBetweenUpdates = nMSBetweenUpdates;
-		sampler = new YetiSampler(nMSBetweenUpdates);
+		//sampler = new YetiSampler(nMSBetweenUpdates);
 
 		// we create the panel with the methods
 		JComponent p = this.generateToolsAndMainPanel();
@@ -411,13 +415,23 @@ public class YetiGUI implements Runnable {
 		this.allComponents.add(graph1);
 
 		// we add the number of failures over time
-		YetiGraph graph2 = new YetiGraphNumberOfFailuresOverTime(YetiLog.proc,nMSBetweenUpdates);
+		boolean coverageEnabled = true;
+		try {
+			Yeti.testModule.getCoverage();
+		} catch (YetiNoCoverageException e) {
+			coverageEnabled=false;
+		}
+		YetiGraph graph2 = null;
+		if (coverageEnabled)
+			graph2 = new YetiGraphCoverageOverTime(Yeti.testModule,nMSBetweenUpdates);
+		else
+			graph2 = new YetiGraphNumberOfFailuresOverTime(YetiLog.proc,nMSBetweenUpdates);
 		sampler.addSamplable(graph2);
 		this.allComponents.add(graph2);
 
 
 		// we add the number of failures over time
-		YetiGraph graph3 = new YetiGraphNumberOfVariablesOverTime(YetiLog.proc,nMSBetweenUpdates);
+		YetiGraph graph3 = new YetiGraphNumberOfVariablesOverTime(YetiLog.proc,nMSBetweenUpdates);	
 		sampler.addSamplable(graph3);
 		this.allComponents.add(graph3);
 

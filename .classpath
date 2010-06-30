@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="lib/jmljunitruntime.jar"/>
 	<classpathentry kind="lib" path="lib/jmlmodelsnonrac.jar"/>
 	<classpathentry kind="lib" path="lib/hadoop-0.19.2-core.jar"/>
+	<classpathentry kind="lib" path="/Users/manueloriol/Documents/workspace/yeti_origo/lib/javassist.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

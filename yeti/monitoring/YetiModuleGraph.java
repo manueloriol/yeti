@@ -124,11 +124,25 @@ public class YetiModuleGraph extends JPanel {
 		public void updateValues() {
 			int nModules =  YetiModule.allModules.size();
 			if ((values == null) || (nModules!=values.length)) {
-				Object[] keys = YetiModule.allModules.keySet().toArray(); 
-				values =  new Object[nModules][2];
+				Object[] keys = YetiModule.allModules.keySet().toArray();
+				
+				int skip0 = 0;
 				for (int i=0; i<nModules; i++) {
-					values[i][0] = new Boolean(Yeti.testModule.containsModuleName((String)keys[i]));
-					values[i][1] = keys[i];
+					if (((String)keys[i]).startsWith("__yeti_")) {
+						skip0++;
+					}
+					
+				}
+				
+				values =  new Object[nModules-skip0][2];
+				
+				int skip = 0;
+				for (int i=0; i<nModules-skip0; i++) {
+					while (((String)keys[i+skip]).startsWith("__yeti_")||i+skip>=nModules) {
+						skip++;
+					}
+					values[i][0] = new Boolean(Yeti.testModule.containsModuleName((String)keys[i+skip]));
+					values[i][1] = keys[i+skip];
 				}
 				this.fireTableDataChanged();
 			}
