@@ -52,6 +52,8 @@ import javassist.bytecode.CodeIterator;
 import javassist.bytecode.Descriptor;
 import javassist.bytecode.MethodInfo;
 import javassist.bytecode.Mnemonic;
+import javassist.expr.ExprEditor;
+import javassist.expr.Handler;
 
 /**
  * Class that allows to instument the bytecode to allow branch coverage.
@@ -130,9 +132,20 @@ public class YetiJavaBytecodeInstrumenter {
 		for (CtMethod cm: allMeth) {
 			//		CtMethod cm = cc.getDeclaredMethod("test");
 			if (cm.isEmpty()) continue;
+			if (cm.getName().startsWith("__yeti_")) continue;
+			
 			cm.insertBefore("{__yeti_branch_visit("+ n++ +");}");
 			cm.setModifiers(Modifier.setPublic(cm.getModifiers()));
 
+			cm.instrument(
+				    new ExprEditor() {
+				        public void edit(Handler h)
+				                      throws CannotCompileException
+				        {	   
+				                h.insertBefore("{__yeti_branch_visit("+ n++ +");}");
+				        }
+				    });
+			
 			// we will add all branches in the bytecode
 			MethodInfo mi = cm.getMethodInfo();
 			CodeAttribute ca = mi.getCodeAttribute();
@@ -163,6 +176,7 @@ public class YetiJavaBytecodeInstrumenter {
 				// we recompute the max stack (needed)
 				ca.computeMaxStack();
 			}
+
 		}
 
 		CtConstructor []allcons = cc.getDeclaredConstructors();
@@ -174,6 +188,15 @@ public class YetiJavaBytecodeInstrumenter {
 			cm.insertBeforeBody("{__yeti_branch_visit("+ n++ +");}");
 			cm.setModifiers(Modifier.setPublic(cm.getModifiers()));
 
+			cm.instrument(
+				    new ExprEditor() {
+				        public void edit(Handler h)
+				                      throws CannotCompileException
+				        {		            
+				                h.insertBefore("{__yeti_branch_visit("+ n++ +");}");
+				        }
+				    });
+			
 			// we will add all branches in the bytecode
 			MethodInfo mi = cm.getMethodInfo();
 			CodeAttribute ca = mi.getCodeAttribute();
@@ -204,6 +227,7 @@ public class YetiJavaBytecodeInstrumenter {
 				// we recompute the max stack (needed)
 				ca.computeMaxStack();
 			}
+
 		}
 
 
