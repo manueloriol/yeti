@@ -135,16 +135,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 
 		YetiLog.printDebugLog("Class loaded in parent class loader: " + clazz.getName(), this);
 		resolveClass(clazz);
-
-
-		//		} else {
-		//			// otherwise, we try to find it...
-		//			clazz=findClass(name);
-		//			// if we could not find it we delegate to the system class loader
-		//			if (clazz==null)
-		//				clazz=findSystemClass(name);
-		//			resolveClass(clazz);
-		//		}
+		
 		addDefinition(clazz);
 		return clazz;
 	}

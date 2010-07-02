@@ -635,7 +635,7 @@ public class Yeti {
 						Yeti.testModule.getCoverageKind()+": "+
 						Yeti.testModule.getNumberOfCoveredBranches()+"/"+
 						Yeti.testModule.getNumberOfBranches()+"("+
-						((float)((int)(100*Yeti.testModule.getCoverage())))/100+"%)");
+						((float)((int)(100*Yeti.testModule.getCoverage())))/100+"%) **/");
 			} catch (YetiNoCoverageException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

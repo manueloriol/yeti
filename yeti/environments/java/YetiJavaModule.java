@@ -117,7 +117,6 @@ public class YetiJavaModule extends YetiModule {
 		if (c!=null) {
 			Method m;
 			try {
-				double d;
 				Class []cc = {};
 				Object []oo= {};
 				m = c.getMethod("__yeti_get_n_branches", cc);			
@@ -138,7 +137,6 @@ public class YetiJavaModule extends YetiModule {
 		if (c!=null) {
 			Method m;
 			try {
-				double d;
 				Class []cc = {};
 				Object []oo= {};
 				m = c.getMethod("__yeti_get_covered_branches", cc);			

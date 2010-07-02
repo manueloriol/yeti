@@ -91,7 +91,7 @@ public class YetiJavaBytecodeInstrumenter {
 				
 			}
 		} catch (ArrayIndexOutOfBoundsException e1) {
-			// nothing to do, we have just hit the end of the method and there is no banch recorded
+			// nothing to do, we have just hit the end of the method and there is no branch recorded
 		}
 				
 		Bytecode bc = new Bytecode(cc.getClassFile().getConstPool());
@@ -119,6 +119,10 @@ public class YetiJavaBytecodeInstrumenter {
 	 */
 	public CtClass instrument(CtClass cc) throws NotFoundException, CannotCompileException, BadBytecode, IOException {
 		CtMethod []allMeth = cc.getDeclaredMethods();
+		for (CtMethod m:allMeth) {
+			if (m.getName().startsWith("__yeti_"))
+				return cc;
+		}
 		// we attach the visiting static method
 		CtMethod m = CtNewMethod.make(
 				"public static void __yeti_branch_visit(int i) { " +		           
