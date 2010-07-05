@@ -105,7 +105,7 @@ public class Yeti {
 	/**
 	 * Stores the path to use for testing.
 	 */
-	public static String yetiPath = System.getProperty("java.class.path");
+	public static String yetiPath = ".";//System.getProperty("java.class.path");
 	
 	public static long st;
 	public static long testCaseCount=0;
@@ -149,7 +149,7 @@ public class Yeti {
 	public static void main (String[] args) {
 		try {
 			Yeti.YetiRun(args);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			System.out.println("Please check your options.");
 			printHelp();
 		}
