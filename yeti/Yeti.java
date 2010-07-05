@@ -36,6 +36,7 @@ package yeti;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -123,7 +124,7 @@ public class Yeti {
 	 * -dotnet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts.<br>
 	 * -time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).<br>
 	 * -nTests=X : for calling Yeti to attempt X method calls.<br>
-	 * -testModules=M1:M2:...:Mn : for testing one or several modules.<br>
+	 * -testModules=M1:M2:...:Mn : for testing one or several modules.Sub-packages of a system can also be specified with asteriks e.g. yeti.test.* will include all the classes in yeti.test + all the classes belonging to the sub-packages of yeti.test <br>
 	 * -initClass=X : this will use a user class to initialize the system this class will be a subclass of yeti.environments.YetiInitializer<br>
 	 * -help, -h: prints the help out.<br>
 	 * -rawlogs : prints the logs directly instead of processing them at the end. <br>
@@ -525,45 +526,40 @@ public class Yeti {
 
 		// getting the module(s) to test
 		YetiModule mod=null;
-
-		// if the modules to test is actually one module
-		if (modulesToTest.length==1) {
-			// we get the module
-			mod=YetiModule.allModules.get(modulesToTest[0]);
-
-			//check
-			YetiLog.printDebugLog("Loading:"+modulesToTest[0], Yeti.class);
-
-			// if it does not exist we stop
-			if(mod==null) {
-				System.err.println(modulesToTest[0] + " was not found. Please check");
-				System.err.println("Testing halted");
-				printHelp();
-				return;
+		
+		//we generate an array which will contain all the modules to be tested
+		ArrayList<YetiModule> modules=new ArrayList<YetiModule>();
+		
+		//we iterate through the list of testModules specified by user
+		for(String moduleToTest : modulesToTest) {
+		
+			//we check if sub-packages are to be included (test modules ending with asteriks specifies yes)
+			if (moduleToTest.endsWith(".*"))
+			{
+				//parse the name of parent package
+				String parentPackage = moduleToTest.replace(".*", "");
+				//iterate through all the loaded classes from classpaths
+				Iterator it = YetiModule.allModules.keySet().iterator();
+				while(it.hasNext()) 
+				{	
+					String moduleName = (String)it.next();
+					//if classname is same as the parent package, add it in the array of test modules
+					if (moduleName.startsWith(parentPackage))
+					{
+						addTestModuleInArray(moduleName, modules);
+					}
+				}	
 			}
-		} else {
-			// if the modules to test are many
-			ArrayList<YetiModule> modules=new ArrayList<YetiModule>(modulesToTest.length);
-			// we iterate through the modules
-			// if the module does not exist we omit it
-			for(String moduleToTest : modulesToTest) {
-				YetiModule yetiModuleToTest = YetiModule.allModules.get(moduleToTest);
-				if(yetiModuleToTest==null) {
-					System.err.println(moduleToTest + " was not found. Please check");
-					System.err.println(moduleToTest + " is skipped from testing");
-				} else {
-					modules.add(yetiModuleToTest);
-				}
+			else // a single test module with no sub-packages to be included (no asteriks)
+			{
+				// add the module in the collection array of test modules
+				addTestModuleInArray(moduleToTest, modules);
 			}
-			// if none rests at the end, we stop the program
-			if(modules.isEmpty()) {
-				System.err.println("Testing halted");
-				printHelp();
-				return;
-			}
-			// otherwise, we combine all modules
-			mod = YetiModule.combineModules(modules.toArray(new YetiModule[modules.size()]));
+		
 		}
+		//we combine all the modules in single structure
+		mod = YetiModule.combineModules(modules.toArray(new YetiModule[modules.size()]));
+		
 		// we let everybody use the tested module
 		Yeti.testModule = mod;
 
@@ -666,6 +662,23 @@ public class Yeti {
 		
 		
 	}
+	
+	/**
+	* Adds a single Yeti Module to the modules array
+	* @param moduleToTest the name of the module to be added
+	* @param modules the array in which the module is to be added
+	*
+	*/
+	private static void addTestModuleInArray(String moduleToTest, ArrayList<YetiModule> modules)
+	{
+		YetiModule yetiModuleToTest = YetiModule.allModules.get(moduleToTest);
+		if(yetiModuleToTest==null) {
+			System.err.println(moduleToTest + " was not found. Please check");
+			System.err.println(moduleToTest + " is skipped from testing");
+		} else {
+			modules.add(yetiModuleToTest);
+		}
+	}
 
 	/**
 	 * This is a simple help printing utility function.
@@ -677,7 +690,7 @@ public class Yeti {
 		System.out.println("\t-dotnet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts.");
 		System.out.println("\t-time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).");
 		System.out.println("\t-nTests=X : for calling Yeti to attempt X method calls.");
-		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules.");
+		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules. Sub-packages of a system can also be specified with asteriks e.g. yeti.test.* will include all the classes in yeti.test + all the classes belonging to the sub-packages of yeti.test");
 		System.out.println("\t-help, -h: prints the help out.");
 		System.out.println("\t-initClass=X : this will use a user class to initialize the system this class will be a subclass of yeti.environments.YetiInitializer");
 		System.out.println("\t-rawlogs: prints the logs directly instead of processing them at the end.");

@@ -54,6 +54,9 @@ import yeti.environments.YetiSecurityException;
  */
 public class YetiJavaSecurityManager extends SecurityManager {
 
+	/*
+	* We prevent the system under test from any file handling operations
+	*/
 	@Override
 	public void checkPermission(Permission perm) {
 		// if we are in the thread group of worker threads
@@ -70,6 +73,9 @@ public class YetiJavaSecurityManager extends SecurityManager {
 		}
 	}
 	
+	/*
+	* We prevent the system under test from exiting the VM
+	*/
 	@Override
 	public void checkExit(int status)
 	{

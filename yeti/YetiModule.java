@@ -154,16 +154,25 @@ public class YetiModule implements YetiCoverageIndicator {
 	 * 
 	 * @param modules the array of modules to combine.
 	 * @return a module that combined all modules.
+	 *
+	 * @remarks if the modules array contain only one module, then it is returned as it is
 	 */
 	public static YetiModule combineModules(YetiModule []modules) {
-		YetiModule result = new YetiModule(YetiName.getFreshNameFrom("__yeti_test_module").value);
-		result.setCombiningModules(modules);
-		for (YetiModule mod0: modules) {
-			for (YetiRoutine rout0: mod0.routinesInModule.values())
-				result.addRoutineInModule(rout0);
+		if (modules.length == 1)
+		{
+			return modules[0];
 		}
-		YetiModule.addModuleToAllModules(result);
-		return result;
+		else
+		{
+			YetiModule result = new YetiModule(YetiName.getFreshNameFrom("__yeti_test_module").value);
+			result.setCombiningModules(modules);
+			for (YetiModule mod0: modules) {
+				for (YetiRoutine rout0: mod0.routinesInModule.values())
+					result.addRoutineInModule(rout0);
+			}
+			YetiModule.addModuleToAllModules(result);
+			return result;
+		}
 	}
 
 	/**
