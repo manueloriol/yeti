@@ -1,0 +1,123 @@
+<!-- 
+ANT build script (ANT is a Java & XML based cross-platform build tool 
+and available at http://jakarta.apache.org/ant/). 
+
+author: whoschek@lbl.gov 
+
+See the target "usage" further below for instructions on how to build the software.
+-->
+
+
+<!-- ================================================================= -->
+<!-- NOTE: all directories are relative to YetiFreshCompile/           -->
+<!-- ================================================================= -->
+<project name="yeti" default="help" basedir="." >
+
+<property name="version" value="1.0.0"/>
+
+<property name="proj.title" value="Yeti"/>
+
+<!-- The directory where *.java files are stored. -->
+<property name="javac.src" value="."/>
+
+<!-- Destination for *.class files -->
+<property name="javac.dest" value="build"/>
+
+<!-- Location of jar files -->
+<property name="jar.dir" value="lib"/>
+
+<!-- Name of Yeti jar file to be generated -->
+<property name="jar.filename" value="yeti-${version}.jar"/>
+
+
+<!-- Construct classpath for compilation-->
+<path id="javac.classpath">
+	<fileset dir="${jar.dir}">
+		<include name="*.jar"/>
+		<exclude name="${jar.filename}"/>
+	</fileset>
+</path>
+
+<!-- The base directory relative to which most targets are built (not needed actually)-->
+<!-- <property name="base" value="."/> -->
+
+
+
+<!-- ================================================================= -->
+<!-- Default target                                                    -->
+<!-- ================================================================= -->
+<target name="help">
+<echo>
+First cd into the dir this build file is placed in:
+
+	cd YetiFreshCompile
+	 	
+Then type one of the following to build the software:
+
+	ant -help         - Print help on general ant usage		
+	ant help          - Print this help text		
+	ant build         - Compile, generate .classes, jar.
+	 	
+Further individual targets used internally by above targets:
+	
+	javac             - Compile all *.java files into .class files	
+	jar               - Generate jar file(s) from .class files	
+	
+</echo>
+</target>
+	
+
+<!-- ================================================================= -->
+<!-- Initialize variables                                              -->
+<!-- NOTE: all directories are relative to YetiFreshCompile            -->
+<!-- ================================================================= -->
+<target name="init">
+	<tstamp />
+</target>
+
+
+<!-- ================================================================= -->
+<!-- Remove all generated (compiled) class files.                      -->
+<!-- ================================================================= -->
+<target name="clean">
+	<delete dir="${javac.dest}" />
+</target>
+
+<!-- ================================================================= -->
+<!-- Build the software (without generating a distribution)            -->
+<!-- ================================================================= -->
+<target name="build" depends="javac, jar">
+</target>
+
+
+<!-- ================================================================= -->
+<!-- Compile all *.java files                                          -->
+<!-- ================================================================= -->
+<target name="javac" depends="clean">
+
+	<mkdir dir="${javac.dest}" />
+	<javac srcdir="${javac.src}" destdir="${javac.dest}"
+		includes="**/*.java"
+		excludes=".svn/*"
+		deprecation="on"
+		debug="on">
+		
+		<classpath refid="javac.classpath"/>
+	</javac>
+	
+</target>
+
+
+<!-- ================================================================= -->
+<!-- Generate jar file(s) from *.class files                           -->
+<!-- ================================================================= -->
+<target name="jar">
+
+	<delete file="${jar.dir}/${jar.filename}" />
+	
+	<jar jarfile="${jar.dir}/${jar.filename}" basedir="${javac.dest}"
+		index="yes"
+		compress="yes"
+	/>
+</target>
+</project>
