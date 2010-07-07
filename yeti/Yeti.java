@@ -152,6 +152,7 @@ public class Yeti {
 		} catch (Throwable e) {
 			System.out.println("Please check your options.");
 			printHelp();
+			//System.out.println(e.toString());
 		}
 	}
 
@@ -403,7 +404,7 @@ public class Yeti {
 			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader);
 			YetiTestManager testManager = new YetiJavaTestManager();
 			logProcessor = new YetiJavaLogProcessor(initialListOfErrors);
-			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
+			pl=new YetiJavaProperties(initializer, testManager, logProcessor);			
 		}
 
 		//test of options to set up the YetiProperties for JML
@@ -523,7 +524,6 @@ public class Yeti {
 			strategy= new YetiRandomPlusDecreasing(testManager);
 		}			
 
-
 		// getting the module(s) to test
 		YetiModule mod=null;
 		
@@ -534,21 +534,27 @@ public class Yeti {
 		for(String moduleToTest : modulesToTest) {
 		
 			//we check if sub-packages are to be included (test modules ending with asteriks specifies yes)
-			if (moduleToTest.endsWith(".*"))
+			if (moduleToTest.endsWith("*"))
 			{
+				boolean ignoreCriteria = false;
+				if (moduleToTest.equals("*")) ignoreCriteria = true; //include all the classes, ignore all criteria
+								
 				//parse the name of parent package
 				String parentPackage = moduleToTest.replace(".*", "");
+				
 				//iterate through all the loaded classes from classpaths
 				Iterator it = YetiModule.allModules.keySet().iterator();
 				while(it.hasNext()) 
 				{	
 					String moduleName = (String)it.next();
-					//if classname is same as the parent package, add it in the array of test modules
-					if (moduleName.startsWith(parentPackage))
+					
+					//if classname is same as the parent package or criteria is to be ignored, 
+					//add it in the array of test modules
+					if (moduleName.startsWith(parentPackage) || ignoreCriteria)
 					{
 						addTestModuleInArray(moduleName, modules);
 					}
-				}	
+				}
 			}
 			else // a single test module with no sub-packages to be included (no asteriks)
 			{
@@ -557,6 +563,15 @@ public class Yeti {
 			}
 		
 		}
+		//incase no test modules were successfully loaded
+		if (modules.size() == 0)
+		{
+			System.err.println("Testing halted: No test modules were successfully loaded");
+			printHelp();
+			return;
+		
+		}
+		
 		//we combine all the modules in single structure
 		mod = YetiModule.combineModules(modules.toArray(new YetiModule[modules.size()]));
 		
