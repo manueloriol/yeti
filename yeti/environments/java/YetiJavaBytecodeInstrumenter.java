@@ -32,7 +32,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-**/ 
+ **/ 
 
 import java.io.IOException;
 
@@ -65,7 +65,7 @@ import javassist.expr.Handler;
  *
  */
 public class YetiJavaBytecodeInstrumenter {
-	
+
 	/**
 	 * The number of branches in the class.
 	 */
@@ -77,25 +77,111 @@ public class YetiJavaBytecodeInstrumenter {
 	 * @param cc the class representation in Javassist.
 	 * @param ci the iterator on the code.
 	 * @param index the index at which the call should be added.
+	 * @return true if the branch was already covered, false otherwise.
 	 */
-	public void insertBranchVisit(CtClass cc, CodeIterator ci, int index) {
+	public int insertBranchVisit(CtClass cc, CodeIterator ci, int index) {
 		//System.out.println(index);
 		// we first build the code to add
 		try {
-			if (ci.byteAt(index)<9) {
-				if ((Mnemonic.OPCODE[ci.byteAt(index+1)].equals("invokestatic"))&&(cc.getClassFile().getConstPool().getMethodrefName(ci.u16bitAt(index+2)).equals("__yeti_branch_visit")))
-					return;
-			} else {
-				if ((Mnemonic.OPCODE[ci.byteAt(index+2)].equals("invokestatic"))&&(cc.getClassFile().getConstPool().getMethodrefName(ci.u16bitAt(index+3)).equals("__yeti_branch_visit")))
-					return;			
-				
-			}
+			// this is not useful anymore...
+			
+//			if (ci.byteAt(index)<9&&(Mnemonic.OPCODE[ci.byteAt(index+1)].equals("invokestatic"))&&(cc.getClassFile().getConstPool().getMethodrefName(ci.u16bitAt(index+2)).startsWith("__yeti_branch_visit"))) {
+//					while(ci.lookAhead()<index) {
+//						try {
+//							ci.next();
+//						} catch (BadBytecode e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					}
+//					Bytecode bc = new Bytecode(cc.getClassFile().getConstPool());
+//					bc.addIconst(n++);
+//					CtClass []args= { CtClass.intType };
+//					bc.addInvokestatic(cc, "__yeti_branch_visit", Descriptor.ofMethod(CtClass.voidType, args));
+//					bc.add(Bytecode.GOTO);
+//					int siz = bc.getSize();
+//					bc.addGap(3);
+//					bc.write16bit(siz, 8);
+//					// we finally insert the bytecode
+//					try {
+//						ci.insert(index, bc.get());
+//					} catch (BadBytecode e) {
+//						// should not happen
+//						e.printStackTrace();
+//					}
+//					return 5;
+//			} else {
+//				if (ci.byteAt(index)==16&&(Mnemonic.OPCODE[ci.byteAt(index+2)].equals("invokestatic"))&&(cc.getClassFile().getConstPool().getMethodrefName(ci.u16bitAt(index+3)).startsWith("__yeti_branch_visit"))) {
+//					while(ci.lookAhead()<index) {
+//						try {
+//							ci.next();
+//						} catch (BadBytecode e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					}
+//					Bytecode bc = new Bytecode(cc.getClassFile().getConstPool());
+//					bc.addIconst(n++);
+//					CtClass []args= { CtClass.intType };
+//					bc.addInvokestatic(cc, "__yeti_branch_visit", Descriptor.ofMethod(CtClass.voidType, args));
+//					bc.add(Bytecode.GOTO);
+//					int siz = bc.getSize();
+//					bc.addGap(3);
+//					bc.write16bit(siz, 9);
+//					// we finally insert the bytecode
+//					try {
+//						ci.insert(index, bc.get());
+//					} catch (BadBytecode e) {
+//						// should not happen
+//						e.printStackTrace();
+//					}
+//					return 6;
+//				} 
+//				else 				
+					if (ci.byteAt(index)==17&&(Mnemonic.OPCODE[ci.byteAt(index+3)].equals("invokestatic"))&&(cc.getClassFile().getConstPool().getMethodrefName(ci.u16bitAt(index+4)).startsWith("__yeti_branch_visit"))) {
+						while(ci.lookAhead()<index) {
+							try {
+								ci.next();
+							} catch (BadBytecode e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						Bytecode bc = new Bytecode(cc.getClassFile().getConstPool());
+						bc.add(Bytecode.SIPUSH);
+						int siz = bc.getSize();
+						bc.addGap(2);
+						bc.write16bit(siz, n++);
+						CtClass []args= { CtClass.intType };
+						bc.addInvokestatic(cc, "__yeti_branch_visit", Descriptor.ofMethod(CtClass.voidType, args));
+						bc.add(Bytecode.GOTO);
+						siz = bc.getSize();
+						bc.addGap(2);
+						bc.write16bit(siz, 9);
+						// we finally insert the bytecode
+						try {
+							ci.insert(index, bc.get());
+						} catch (BadBytecode e) {
+							// should not happen
+							e.printStackTrace();
+						}
+						return 9;
+					}
+
+
+
+//			}
 		} catch (ArrayIndexOutOfBoundsException e1) {
 			// nothing to do, we have just hit the end of the method and there is no branch recorded
 		}
-				
+
+
+
 		Bytecode bc = new Bytecode(cc.getClassFile().getConstPool());
-		bc.addIconst(n++);
+		bc.add(Bytecode.SIPUSH);
+		int siz = bc.getSize();
+		bc.addGap(2);
+		bc.write16bit(siz, n++);
 		CtClass []args= { CtClass.intType };
 		bc.addInvokestatic(cc, "__yeti_branch_visit", Descriptor.ofMethod(CtClass.voidType, args));
 		// we finally insert the bytecode
@@ -105,6 +191,7 @@ public class YetiJavaBytecodeInstrumenter {
 			// should not happen
 			e.printStackTrace();
 		}
+		return 0;
 	}
 
 	/**
@@ -132,24 +219,24 @@ public class YetiJavaBytecodeInstrumenter {
 		cc.addMethod(m);
 
 		// we add the first branch of the methods
-		
+
 		for (CtMethod cm: allMeth) {
 			//		CtMethod cm = cc.getDeclaredMethod("test");
 			if (cm.isEmpty()) continue;
 			if (cm.getName().startsWith("__yeti_")) continue;
-			
+
 			cm.insertBefore("{__yeti_branch_visit("+ n++ +");}");
 			cm.setModifiers(Modifier.setPublic(cm.getModifiers()));
 
 			cm.instrument(
-				    new ExprEditor() {
-				        public void edit(Handler h)
-				                      throws CannotCompileException
-				        {	   
-				                h.insertBefore("{__yeti_branch_visit("+ n++ +");}");
-				        }
-				    });
-			
+					new ExprEditor() {
+						public void edit(Handler h)
+						throws CannotCompileException
+						{	   
+							h.insertBefore("{__yeti_branch_visit("+ n++ +");}");
+						}
+					});
+
 			// we will add all branches in the bytecode
 			MethodInfo mi = cm.getMethodInfo();
 			CodeAttribute ca = mi.getCodeAttribute();
@@ -165,21 +252,24 @@ public class YetiJavaBytecodeInstrumenter {
 				// we add the call to __yeti_branch_visit just after that one
 				//System.out.println(cm.getName());
 
-				if (mo.startsWith("if")||mo.startsWith("goto")) {
+				if (mo.startsWith("if")) {
 					int i = index;
-					if (mo.startsWith("goto_w"))
-						i += ci.s32bitAt(index+1);											
-					else
-						i += ci.s16bitAt(index+1);	
-					insertBranchVisit(cc,ci,i);
-					if (mo.startsWith("if")) {
-						insertBranchVisit(cc,ci,ci.next());						
-					}
-					
+					i += ci.s16bitAt(index+1);	
+					ci.setMark(index);
+					int offset = insertBranchVisit(cc,ci,i);
+					ci.move(ci.getMark());
+					ci.next();
+					int i0 = ci.next();
+					//System.out.println("need offset "+cm.getName()+" "+offset);
+					ci.write16bit(i-index+offset, index+1);
+					insertBranchVisit(cc,ci,i0);						
+
 				}
 				// we recompute the max stack (needed)
+				//System.out.println(ci.lookAhead());
 				ca.computeMaxStack();
 			}
+
 
 		}
 
@@ -193,14 +283,14 @@ public class YetiJavaBytecodeInstrumenter {
 			cm.setModifiers(Modifier.setPublic(cm.getModifiers()));
 
 			cm.instrument(
-				    new ExprEditor() {
-				        public void edit(Handler h)
-				                      throws CannotCompileException
-				        {		            
-				                h.insertBefore("{__yeti_branch_visit("+ n++ +");}");
-				        }
-				    });
-			
+					new ExprEditor() {
+						public void edit(Handler h)
+						throws CannotCompileException
+						{		            
+							h.insertBefore("{__yeti_branch_visit("+ n++ +");}");
+						}
+					});
+
 			// we will add all branches in the bytecode
 			MethodInfo mi = cm.getMethodInfo();
 			CodeAttribute ca = mi.getCodeAttribute();
@@ -216,19 +306,21 @@ public class YetiJavaBytecodeInstrumenter {
 				// we add the call to __yeti_branch_visit just after that one
 				//System.out.println(cm.getName());
 
-				if (mo.startsWith("if")||mo.startsWith("goto")) {
+				if (mo.startsWith("if")) {
 					int i = index;
-					if (mo.startsWith("goto_w"))
-						i += ci.s32bitAt(index+1);											
-					else
-						i += ci.s16bitAt(index+1);	
-					insertBranchVisit(cc,ci,i);
-					if (mo.startsWith("if")) {
-						insertBranchVisit(cc,ci,ci.next());						
-					}
-					
+					i += ci.s16bitAt(index+1);	
+					ci.setMark(index);
+					int offset = insertBranchVisit(cc,ci,i);
+					ci.move(ci.getMark());
+					ci.next();
+					int i0 = ci.next();
+					//System.out.println("need offset "+cm.getName()+" "+offset);
+					ci.write16bit(i-index+offset, index+1);
+					insertBranchVisit(cc,ci,i0);						
+
 				}
 				// we recompute the max stack (needed)
+				//System.out.println(n);
 				ca.computeMaxStack();
 			}
 
@@ -260,35 +352,35 @@ public class YetiJavaBytecodeInstrumenter {
 				//"System.out.println($class.getName()+\"visited branch: \"+$1+\" coverage: \"+100*__yeti_coverage+\"%\");" +
 				"}" +
 		"");
-		
+
 		CtMethod m1 = CtNewMethod.make(
 				"public static double __yeti_get_coverage() { " +		           
 				"return __yeti_coverage;"+
 				"}",
 				cc);
 		cc.addMethod(m1);
-		
+
 		CtMethod m2 = CtNewMethod.make(
 				"public static int __yeti_get_covered_branches() { " +		           
 				"return __yeti_covered_branches;"+
 				"}",
 				cc);
 		cc.addMethod(m2);
-		
+
 		CtMethod m3 = CtNewMethod.make(
 				"public static int __yeti_get_n_branches() { " +		           
 				"return __yeti_n_branches;"+
 				"}",
 				cc);
 		cc.addMethod(m3);
-	
-		
+
+
 		// we print the number of branches we found
 		System.out.println(cc.getName()+", number of branches: "+n);		
 		return cc;
-		
+
 	}
-	
+
 	/**
 	 * Loads the class using the default loading mechanisms.
 	 * 
@@ -305,11 +397,11 @@ public class YetiJavaBytecodeInstrumenter {
 		CtClass cc = pool.get(className);
 
 		cc = instrument(cc);
-		
+
 		return cc.toBytecode();
-		
+
 	}
-	
+
 	/**
 	 * The main. Simply pass the name of the class to instrument as an argument.
 	 * The program is not resilient at all. Only use twice on the program otherwise there will be exceptions...
@@ -327,7 +419,7 @@ public class YetiJavaBytecodeInstrumenter {
 		CtClass cc = pool.get(className);
 
 		cc = new YetiJavaBytecodeInstrumenter().instrument(cc);
-		
+
 		cc.writeFile();
 	}
 }
