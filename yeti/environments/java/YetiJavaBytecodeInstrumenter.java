@@ -258,7 +258,7 @@ public class YetiJavaBytecodeInstrumenter {
 					ci.setMark(index);
 					int offset = insertBranchVisit(cc,ci,i);
 					ci.move(ci.getMark());
-					ci.next();
+					index = ci.next();
 					int i0 = ci.next();
 					//System.out.println("need offset "+cm.getName()+" "+offset);
 					ci.write16bit(i-index+offset, index+1);
