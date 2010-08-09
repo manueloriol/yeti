@@ -36,6 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import java.io.IOException;
 
+import yeti.Yeti;
+
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -139,14 +141,15 @@ public class YetiJavaBytecodeInstrumenter {
 //				} 
 //				else 				
 					if (ci.byteAt(index)==17&&(Mnemonic.OPCODE[ci.byteAt(index+3)].equals("invokestatic"))&&(cc.getClassFile().getConstPool().getMethodrefName(ci.u16bitAt(index+4)).startsWith("__yeti_branch_visit"))) {
-						while(ci.lookAhead()<index) {
-							try {
-								ci.next();
-							} catch (BadBytecode e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
+//						while(ci.lookAhead()<index) {
+//							try {
+//								ci.next();
+//							} catch (BadBytecode e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
+//						}
+//						ci.move(index);
 						Bytecode bc = new Bytecode(cc.getClassFile().getConstPool());
 						bc.add(Bytecode.SIPUSH);
 						int siz = bc.getSize();
@@ -226,7 +229,7 @@ public class YetiJavaBytecodeInstrumenter {
 			if (cm.getName().startsWith("__yeti_")) continue;
 
 			cm.insertBefore("{__yeti_branch_visit("+ n++ +");}");
-			cm.setModifiers(Modifier.setPublic(cm.getModifiers()));
+			if (Yeti.makeMethodsVisible) cm.setModifiers(Modifier.setPublic(cm.getModifiers()));
 
 			cm.instrument(
 					new ExprEditor() {
@@ -280,7 +283,7 @@ public class YetiJavaBytecodeInstrumenter {
 			//		CtMethod cm = cc.getDeclaredMethod("test");
 			if (cm.isEmpty()) continue;
 			cm.insertBeforeBody("{__yeti_branch_visit("+ n++ +");}");
-			cm.setModifiers(Modifier.setPublic(cm.getModifiers()));
+			if (Yeti.makeMethodsVisible) cm.setModifiers(Modifier.setPublic(cm.getModifiers()));
 
 			cm.instrument(
 					new ExprEditor() {

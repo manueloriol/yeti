@@ -100,6 +100,11 @@ public class Yeti {
 	 * The support for branch coverage. 
 	 */
 	public static boolean hasBranchCoverage= false;
+	
+	/**
+	 * The support for branch coverage. 
+	 */
+	public static boolean makeMethodsVisible = false;
 
 
 	/**
@@ -143,7 +148,8 @@ public class Yeti {
 	 * -tracesOutputFile=X : the file where to output traces on disk<br>
 	 * -tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').<br>
 	 * -printNumberOfCallsPerMethod : prints the number of calls per method.<br>
-	 * -branchCoverage : shows the branch coverage if available (in Java, this implies instrumenting the bytecode).");
+	 * -branchCoverage : shows the branch coverage if available (in Java, this implies instrumenting the bytecode)."); <br>
+	 * -makeMethodsVisible: converts all the protected and private methods into public for testing. 
 	 * @param args the arguments of the program
 	 */
 	public static void main (String[] args) {
@@ -280,9 +286,14 @@ public class Yeti {
 				continue;
 			}
 			
-			// if it is for a number of tests
+			// if collect branch coverage 
 			if (s0.startsWith("-branchCoverage")) {
 				hasBranchCoverage = true;
+				continue;
+			}
+			// if convert all methods to public
+			if (s0.startsWith("makeMethodsVisible")) {
+				makeMethodsVisible = true;
 				continue;
 			}
 			// we want to test these modules
@@ -725,6 +736,7 @@ public class Yeti {
 		System.out.println("\t-tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').");
 		System.out.println("\t-printNumberOfCallsPerMethod : prints the number of calls per method.");
 		System.out.println("\t-branchCoverage : shows the branch coverage if available (in Java, this implies instrumenting the bytecode).");
+		System.out.println("\t-makeMethodsVisible: converts all the protected and private methods into public for testing.");
 
 	}
 
