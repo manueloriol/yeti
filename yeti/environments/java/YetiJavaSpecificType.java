@@ -326,7 +326,7 @@ public class YetiJavaSpecificType extends YetiType {
 	public YetiJavaSpecificType(String name) {
 		super(name);
 
-		YetiLog.printDebugLog("Creating type: "+name, this);
+		YetiLog.printDebugLog("Creating type: "+name, this, true);
 		String uglyName=name, prettyName="";
 
 		// we remove the "[" (for array types)

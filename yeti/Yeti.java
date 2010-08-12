@@ -44,6 +44,10 @@ import yeti.environments.YetiInitializer;
 import yeti.environments.YetiLoader;
 import yeti.environments.YetiProgrammingLanguageProperties;
 import yeti.environments.YetiTestManager;
+import yeti.environments.commandline.YetiCLInitializer;
+import yeti.environments.commandline.YetiCLLogProcessor;
+import yeti.environments.commandline.YetiCLProperties;
+import yeti.environments.commandline.YetiCLTestManager;
 import yeti.environments.csharp.YetiCsharpInitializer;
 import yeti.environments.csharp.YetiCsharpLogProcessor;
 import yeti.environments.csharp.YetiCsharpProperties;
@@ -156,6 +160,7 @@ public class Yeti {
 		try {
 			Yeti.YetiRun(args);
 		} catch (Throwable e) {
+			e.printStackTrace();
 			System.out.println("Please check your options.");
 			printHelp();
 			//System.out.println(e.toString());
@@ -172,6 +177,7 @@ public class Yeti {
 		boolean isJava = false;
 		boolean isJML = false;
 		boolean isDotNet = false;
+		boolean isCommandLine = false;
 		boolean isPharo = false;
 		boolean isTimeout = false;
 		int timeOutSec=0;
@@ -221,6 +227,13 @@ public class Yeti {
 				isDotNet = true;
 				continue;
 			}
+			
+			//if .NET
+			if(s0.toLowerCase().equals("-cl")){		
+				isCommandLine = true;
+				continue;
+			}
+			
 			// if Pharo
 			if (s0.equals("-Pharo")) {
 				isPharo = true;
@@ -456,6 +469,8 @@ public class Yeti {
 				}
 			} );
 
+			
+			
 			th.start();
 
 
@@ -468,7 +483,16 @@ public class Yeti {
 			System.out.println("----------------------------------------");
 
 		}
+	
 		
+		//test of options to set up the YetiProperties for Java
+		if (isCommandLine) {
+			YetiInitializer initializer = new YetiCLInitializer();
+			YetiTestManager testManager = new YetiCLTestManager();
+			logProcessor = new YetiCLLogProcessor();
+			pl=new YetiCLProperties(initializer, testManager, logProcessor);			
+		}
+
 		//test of options to set up the YetiProperties for Java
 		if (isPharo) {
 			YetiPharoCommunicator initializer = new YetiPharoCommunicator();
@@ -544,7 +568,7 @@ public class Yeti {
 		//we iterate through the list of testModules specified by user
 		for(String moduleToTest : modulesToTest) {
 		
-			//we check if sub-packages are to be included (test modules ending with asteriks specifies yes)
+			//we check if sub-packages are to be included (test modules ending with asterisks specifies yes)
 			if (moduleToTest.endsWith("*"))
 			{
 				boolean ignoreCriteria = false;
@@ -574,7 +598,7 @@ public class Yeti {
 			}
 		
 		}
-		//incase no test modules were successfully loaded
+		//in case no test modules were successfully loaded
 		if (modules.size() == 0)
 		{
 			System.err.println("Testing halted: No test modules were successfully loaded");
