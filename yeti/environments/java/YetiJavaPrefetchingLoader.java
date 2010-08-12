@@ -93,7 +93,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 	 */
 	@SuppressWarnings("unchecked")
 	public Class loadClass(String name, boolean resolve)	throws ClassNotFoundException{ 
-
+		
 		YetiJavaBytecodeInstrumenter bi = new YetiJavaBytecodeInstrumenter();
 
 		Class clazz = findLoadedClass(name);
@@ -109,9 +109,18 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 		if (!(name.startsWith("java.") || name.startsWith("javax.") || name.startsWith("sun."))&&Yeti.hasBranchCoverage) {
 			// we load it from within the standard loader
 			try {
-				byte[] classBytes = bi.loadAndInstrument(name);
-				clazz = this.defineClass(name, classBytes, 0, classBytes.length);
-				instrumented = true;
+//				if (Yeti.testModule.containsModuleName(name))
+				if (exists(Yeti.testModulesName, name))
+				{
+					byte[] classBytes = bi.loadAndInstrument(name);
+					clazz = this.defineClass(name, classBytes, 0, classBytes.length);
+					instrumented = true;
+				}
+				else
+				{	
+					clazz=findSystemClass(name);
+				}
+				
 			} catch (NotFoundException e) {
 				//e.printStackTrace();
 				// If this happens we load the class with the standard class loader.
@@ -131,7 +140,9 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 			}
 		}
 		else 
+		{
 			clazz = findSystemClass(name);
+		}
 
 		YetiLog.printDebugLog("Class loaded in parent class loader: " + clazz.getName(), this);
 		resolveClass(clazz);
@@ -457,6 +468,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 		// we create the directory
 		File dir = new File(directoryName);
 		YetiLog.printDebugLog("loading from classpath: " + directoryName, this);
+		
 
 		if (dir.isDirectory()) {
 			// we iterate through the content
@@ -489,6 +501,13 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 			}
 		}
 	}
-
-
+	
+	private boolean exists(String[] array, String name)
+	{
+	    for ( int n = 0; n < array.length; n++ )
+        if ( array[ n ].equals(name) )
+        return true;
+       
+        return false;
+	}
 }

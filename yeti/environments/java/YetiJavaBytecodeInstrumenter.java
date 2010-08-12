@@ -269,7 +269,7 @@ public class YetiJavaBytecodeInstrumenter {
 
 				}
 				// we recompute the max stack (needed)
-				//System.out.println(ci.lookAhead());
+				
 				ca.computeMaxStack();
 			}
 
@@ -323,7 +323,7 @@ public class YetiJavaBytecodeInstrumenter {
 
 				}
 				// we recompute the max stack (needed)
-				//System.out.println(n);
+				
 				ca.computeMaxStack();
 			}
 
@@ -396,6 +396,7 @@ public class YetiJavaBytecodeInstrumenter {
 	 */
 	public byte[] loadAndInstrument(String className) throws NotFoundException, CannotCompileException, BadBytecode, IOException {
 		// we retrieve the class file into a Javassist utility class
+		//System.out.println("intrumenting: " + className);
 		ClassPool pool = ClassPool.getDefault();
 		CtClass cc = pool.get(className);
 

@@ -95,7 +95,8 @@ public class Yeti {
 	/**
 	 * The tested modules.
 	 */
-	public static YetiModule testModule = null;
+	public static YetiModule testModule = null; //combined form
+	public static String[] testModulesName = null; //string format names
 	/**
 	 * The mode of operation 
 	 */
@@ -163,7 +164,7 @@ public class Yeti {
 			e.printStackTrace();
 			System.out.println("Please check your options.");
 			printHelp();
-			//System.out.println(e.toString());
+			//e.printStackTrace();
 		}
 	}
 
@@ -305,7 +306,7 @@ public class Yeti {
 				continue;
 			}
 			// if convert all methods to public
-			if (s0.startsWith("makeMethodsVisible")) {
+			if (s0.startsWith("-makeMethodsVisible")) {
 				makeMethodsVisible = true;
 				continue;
 			}
@@ -313,6 +314,7 @@ public class Yeti {
 			if (s0.startsWith("-testModules=")) {
 				String s1=s0.substring(13);
 				modulesToTest=s1.split(":");
+				testModulesName = modulesToTest;
 				continue;
 			}
 			// we want to have only logs in standard form
