@@ -37,7 +37,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
 public class YetiCLModule extends YetiModule {
 
 	/**
-	 * Class that represents... 
+	 * Class that represents an XML parser for parsing the description.
 	 * 
 	 * @author Manuel Oriol (manuel@cs.york.ac.uk)
 	 * @date Aug 3, 2010
