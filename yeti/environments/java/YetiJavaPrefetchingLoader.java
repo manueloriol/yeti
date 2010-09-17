@@ -93,7 +93,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 	 */
 	@SuppressWarnings("unchecked")
 	public Class loadClass(String name, boolean resolve)	throws ClassNotFoundException{ 
-		
+
 		YetiJavaBytecodeInstrumenter bi = new YetiJavaBytecodeInstrumenter();
 
 		Class clazz = findLoadedClass(name);
@@ -109,7 +109,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 		if (!(name.startsWith("java.") || name.startsWith("javax.") || name.startsWith("sun."))&&Yeti.hasBranchCoverage) {
 			// we load it from within the standard loader
 			try {
-//				if (Yeti.testModule.containsModuleName(name))
+				//				if (Yeti.testModule.containsModuleName(name))
 				if (exists(Yeti.testModulesName, name))
 				{
 					byte[] classBytes = bi.loadAndInstrument(name);
@@ -120,24 +120,24 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 				{	
 					clazz=findSystemClass(name);
 				}
-				
+
 			} catch (NotFoundException e) {
 				//e.printStackTrace();
 				// If this happens we load the class with the standard class loader.
 				clazz=findSystemClass(name);
 			} catch (CannotCompileException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				clazz=findSystemClass(name);
 			} catch (BadBytecode e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				clazz=findSystemClass(name);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				clazz=findSystemClass(name);
-			}
+			} catch (java.lang.ClassFormatError e) {
+				System.out.println(name+" Contains a method too long to instrument. Loading uninstrumented instead.");
+				clazz=findSystemClass(name);
+			} 
 		}
 		else 
 		{
@@ -146,7 +146,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 
 		YetiLog.printDebugLog("Class loaded in parent class loader: " + clazz.getName(), this);
 		resolveClass(clazz);
-		
+
 		addDefinition(clazz);
 		return clazz;
 	}
@@ -468,7 +468,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 		// we create the directory
 		File dir = new File(directoryName);
 		YetiLog.printDebugLog("loading from classpath: " + directoryName, this);
-		
+
 
 		if (dir.isDirectory()) {
 			// we iterate through the content
@@ -501,13 +501,13 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 			}
 		}
 	}
-	
+
 	private boolean exists(String[] array, String name)
 	{
-	    for ( int n = 0; n < array.length; n++ )
-        if ( array[ n ].equals(name) )
-        return true;
-       
-        return false;
+		for ( int n = 0; n < array.length; n++ )
+			if ( array[ n ].equals(name) )
+				return true;
+
+		return false;
 	}
 }
