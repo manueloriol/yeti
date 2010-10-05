@@ -1,10 +1,14 @@
 package yeti.environments.commandline;
 
 import yeti.YetiCard;
+import yeti.YetiIdentifier;
 import yeti.YetiModule;
 import yeti.YetiName;
 import yeti.YetiRoutine;
 import yeti.YetiType;
+import yeti.YetiVariable;
+import yeti.environments.commandline.YetiCLSpecificType;
+import yeti.environments.commandline.YetiCLSpecificType.YetiCLRoutine;
 import yeti.environments.java.YetiJavaSpecificType;
 
 public class YetiCLSpecificType extends YetiType {
@@ -23,8 +27,15 @@ public class YetiCLSpecificType extends YetiType {
 
 		@Override
 		public Object makeCall(YetiCard[] arg) {
-			return null;
-			
+			try {
+				// make effecttive call to create the value of certain type 
+				makeEffectiveCall(arg);
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+			// create a yeti varivable by the value 
+			return new YetiVariable(YetiIdentifier.getFreshIdentifier(),
+					returnType, value);
 		}
 		
 		@Override
@@ -32,9 +43,45 @@ public class YetiCLSpecificType extends YetiType {
 			// TODO fix
 			//if (returnType.getName().equals("int"))
 			//	return __yetiValue_createRandomInt();
+			
+			// create value for certain type
+			if (returnType.getName().equals("int")){
+				System.out.println("creation routine is called for " + returnType.getName());
+				 value = __yetiValue_createRandomInt();
+			}else if (returnType.getName().equals("long")){
+				System.out.println("creation routine is called for " + returnType.getName());
+				 value = __yetiValue_createRandomLong();
+			}else if (returnType.getName().equals("boolean")){
+				System.out.println("creation routine is called for " + returnType.getName());
+				 value = __yetiValue_createRandomBoolean();
+			}else if (returnType.getName().equals("byte")){
+				System.out.println("creation routine is called for " + returnType.getName());
+				 value = __yetiValue_createRandomByte();
+			}else if (returnType.getName().equals("short")){
+				System.out.println("creation routine is called for " + returnType.getName());
+				 value = __yetiValue_createRandomShort();
+			}else if (returnType.getName().equals("char")){
+				System.out.println("creation routine is called for " + returnType.getName());
+				 value = __yetiValue_createRandomChar();
+			}else if (returnType.getName().equals("float")){
+				System.out.println("creation routine is called for " + returnType.getName());
+				 value = __yetiValue_createRandomFloat();
+			}else if (returnType.getName().equals("double")){
+				System.out.println("creation routine is called for " + returnType.getName());
+				 value = __yetiValue_createRandomDouble();
+			}else if (returnType.getName().equals("String")){
+				System.out.println("creation routine is called for " + returnType.getName());
+				 value = __yetiValue_createRandomString();
+			}else{
+				throw new Exception("Can not Create value for type " + returnType.getName());
+			}
 			return "";
 		}
 		
+		/**
+		 * return value of creation routine
+		 * */
+		Object value = null;
 	}
 	
 	
@@ -43,7 +90,11 @@ public class YetiCLSpecificType extends YetiType {
 		// FIX
 		//this.addCreationRoutine(name, this);
 		
+		// create and add the creation routine for this type
+		YetiCLRoutine cr = new YetiCLRoutine(name, this);
+		addCreationRoutine(cr);
 	}
+	
 	/**
 	 * A boolean random generator.
 	 * 
@@ -124,6 +175,27 @@ public class YetiCLSpecificType extends YetiType {
 		return (Math.random()*(10^i));
 	}
 
+	/**
+	 * A String random generator.
+	 * 
+	 * @return a random String.
+	 */
+	//TODO need review !!!
+	public static String __yetiValue_createRandomString(){
+		int len = (int)(Math.random()*50); // randomly create the length of the string
+		char c[] = new char [len];         // create a char array
+		int i = 0;
+		while(i < len){                    // randomly generate char value for each element in the char array
+			c[i] = __yetiValue_createRandomChar();
+			i ++;
+		}
+		
+		if(len < 5){					 // return null by chance  
+			return null;
+		}else{
+			return new String(c);        // return the string value of the char array
+		}
+	}
 
 	public static void initPrimitiveTypes() {
 
@@ -208,6 +280,14 @@ public class YetiCLSpecificType extends YetiType {
 		tFloat.addInterestingValues(Float.MIN_VALUE);
 		tFloat.addInterestingValues(Float.NaN);
 		tFloat.addInterestingValues(Float.POSITIVE_INFINITY);
-		tFloat.addInterestingValues(Float.NEGATIVE_INFINITY);		
+		tFloat.addInterestingValues(Float.NEGATIVE_INFINITY);	
+		
+		// add type String
+		YetiCLSpecificType tString=new YetiCLSpecificType("String");
+		// add interesing value (null) for type String
+		tString.addInterestingValues(null);
+		
+		// add type void
+		YetiCLSpecificType tVoid=new YetiCLSpecificType("void");
 	}
 }
