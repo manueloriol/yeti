@@ -24,6 +24,11 @@ import yeti.environments.java.YetiJavaSpecificType;
 public class YetiCLInitializer extends YetiInitializer {
 
 	/**
+	 * timeout million seconds for each command
+	 * */
+	static int timeout = 1000;
+	
+	/**
 	 * A simple helper routine that ignores the parameter String.
 	 * 
 	 * @param s the string to be ignored.
@@ -51,7 +56,19 @@ public class YetiCLInitializer extends YetiInitializer {
 						String s1=s0.substring(13);
 						yeti.YetiLog.printDebugLog("Has found modules to test: "+s1, this);
 						modulesToTest=s1.split(":");
-						break;
+						//break; //two options need to process 
+						continue;
+					}
+					
+					// get the timeout if user specified in launching option
+					if(s0.startsWith("-msCalltimeout")){
+						int size = s0.length();
+						timeout=(Integer.parseInt(s0.substring(15, size)));
+						if (timeout<=0) {
+							Yeti.printHelp();
+							return;
+						}
+						continue;
 					}
 				}
 
