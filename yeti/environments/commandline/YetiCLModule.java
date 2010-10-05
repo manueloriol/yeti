@@ -75,15 +75,16 @@ public class YetiCLModule extends YetiModule {
 			}
 			if (length>0&&nextIsReturnType) {
 				nextIsReturnType = false;
+				// do not need return type in command line (process always returns a integer value)
+				/*
 				String typeName = new String(ch).substring(start,start+length);
 				System.out.println("Return Type is: "+ typeName);
 				if (YetiType.allTypes.containsKey(typeName))
 					args.add(new YetiType(typeName));
 				else 
 					args.add(YetiType.allTypes.get(typeName));
+				*/
 			}
-
-			
 		}
 
 		public void startElement(String uri, String localName, String qName,
