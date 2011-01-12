@@ -1,46 +1,189 @@
 package yeti;
+
+/**
+
+YETI - York Extensible Testing Infrastructure
+
+Copyright (c) 2009-2010, Manuel Oriol <manuel.oriol@gmail.com> - University of York
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+3. All advertising materials mentioning features or use of this software
+must display the following acknowledgement:
+This product includes software developed by the University of York.
+4. Neither the name of the University of York nor the
+names of its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY <COPYRIGHT HOLDER> ''AS IS'' AND ANY
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+**/ 
+
+/**
+ * Class that represents Graphical User Interface of YETI. 
+ * @author  xyz (xyz@cs.york.ac.uk)
+ * @date  Jan 12, 2009
+ */
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class YetiLauncher extends JFrame {
 
-        private String[] langArray = {"-java", "-.Net", "-JML"};
-        private JComboBox timeComboBox;
-        private String[] timeArray = {"5", "10", "15", "20", "30", "40","50","60", "70", "80", "90", "100", "150", "200", "300", "400", "500", "1000"};
-        private String[] timeArray1 = {"mn", "sec"};
-        private String[] strategy = {"-randomPlus", "-randomPlusPeriodic", "-randomPlusDecreasing"};
-        private JLabel headingLabel;
-        private JLabel langLabel;
-        private JComboBox setLanguage;
-        private JLabel timeLabel;
-        private JComboBox setTime;
-        private JComboBox setMinSec;
-        private JLabel guiLabel;
-        private JCheckBox guiSession;
-        private JLabel logsLabel;
-        private JCheckBox testLogs;
-        private JLabel selectFilesLabel;
-        private JButton selectFiles;
-        private JButton runTest;
-        private String[] command = new String[6];
-        private String fileName;
-        private JTextField fileNameTextField;
-        private JButton exit;
-        private JLabel strategyLabel;
-        private JComboBox setStrategy;
+	/**
+	 * langArray contains the list of languages supported by YETI.
+	 */
+    private String[] langArray = {"-java", "-.Net", "-JML"};
+    
+    /**
+	 * Time Combobox allow users to select the test session times from the available list.
+	 */
+    private JComboBox timeComboBox;
+        
+    /**
+	 * TimeArray contain the values of times for test session.
+	 */
+    private String[] timeArray = {"5", "10", "15", "20", "30", "40","50","60", "70", "80", "90", "100", "150", "200", "300", "400", "500", "1000"};
+        
+    /**
+	 * Array containing the options of minute or seconds for a test session.
+	 */
+    private String[] timeArray1 = {"mn", "sc"};
+        
+    /**
+	 * strategy array stores the various strategies of testing.
+	 */
+    private String[] strategy = {"-randomPlus", "-randomPlusPeriodic", "-randomPlusDecreasing"};
+        
+    /**
+	 * Main Label on top of the GUI showing York Extensible Testing Infrastructure.
+	 */
+    private JLabel headingLabel;
+        
+    /**
+	 * The language label.
+	 */
+    private JLabel langLabel;
+        
+    /**
+	 * The combo box to set the language for the test sessions from the availble list.
+	 */
+    private JComboBox setLanguage;
+        
+    /**
+	 * The time label.
+	 */
+    private JLabel timeLabel;
+        
+    /**
+	 * The combobox to set time for the current test session.
+	 */
+    private JComboBox setTime;
+    
+    /**
+	 * The combobox to select the test session in seconds or minutes.
+	 */
+    private JComboBox setMinSec;
+        
+    /**
+	 * The label for GUI checkbox.
+	 */
+    private JLabel guiLabel;
+        
+    /**
+	 * The checkbox for GUI Session.
+	 */
+    private JCheckBox guiSession;
+        
+    /**
+	 * The label for logs.
+	 */
+    private JLabel logsLabel;
+        
+    /**
+	 * The checkbox for saving or not saving test logs.
+	 */
+    private JCheckBox testLogs;
+    
+    /**
+	 * The label for select test files.
+	 */
+    private JLabel selectFilesLabel;
+        
+    /**
+	 * The button to run test.
+	 */    
+    private JButton runTest;
+        
+    /**
+	 * The array to store user options.
+	 */
+    private String[] command = new String[6];
+        
+    /**
+	 * The string variable to store the test session file name.
+	 */
+    private String fileName;
+    
+    /**
+	 * The text field that allow user to type the file names to be tested. Files must be in the classpath.
+	 */        
+    private JTextField fileNameTextField;
+        
+    /**
+	 * The button to exit GUI.
+	 */
+    private JButton exit;
+    
+    /**
+	 * The label for strategy.
+	 */        
+    private JLabel strategyLabel;
+        
+    /**
+	 * The combobox to set the strategy from the given strategies.
+	 */
+    private JComboBox setStrategy;
+    
+    /**
+	 * The thread object to open the Test Execution window by a new thread for solving visibility problem.
+	 */
+    Thread t1 = new Thread(new Threado());
 
         //private BrowseButtonHandler browseBHandler;
         private RunButtonHandler runBHandler;
         private ExitButtonHandler exitBHandler;
 
-
+        /**
+    	 * The constructor defining the layout, frame, and default settings.
+    	 */
         public YetiLauncher () {
-                setLayout(new GridBagLayout());
+        	
+        	/**
+        	 * The GridbagLayout is used for GUI.
+        	 */
+            setLayout(new GridBagLayout());
 
                 GridBagConstraints c = new GridBagConstraints(); // for object position.
 
-
+                this.getContentPane().setBackground(Color.GREEN);
+                
                 setTitle("YETI-York Extensible Testing Infrastructure");
                 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 setVisible(true);
@@ -179,14 +322,37 @@ public class YetiLauncher extends JFrame {
 
         }
 
+        
+        /**
+    	 * The implementation of thread. The thread starts the test session and open another window showing the execution of test in real time.
+    	 */
+        private class Threado implements Runnable{
+        	public void run(){
+        		try{
+        			Yeti.YetiRun(command);
+        		}
+        		catch(Exception e){
+        			
+        		}
+        	}
+        }
+    
+        /**
+    	 * Main method of the class.
+    	 */
         public static void main(String[] args){
 
                 YetiLauncher gui = new YetiLauncher();
-
+               
+               
 
         }
-
-                private class RunButtonHandler implements ActionListener{
+        	
+        
+        /**
+    	 * The inner class to controll the action of run button. It takes selected values of all the components and store it in array command.
+    	 */
+                private class RunButtonHandler implements ActionListener {
 
                         public void actionPerformed(ActionEvent e) {
 
@@ -217,13 +383,16 @@ public class YetiLauncher extends JFrame {
 
                                 for (int i =0; i<command.length; i++)
                                         System.out.print(command[i]);
-
-                                Yeti.YetiRun(command);
-                                
+                                t1.start();
 
                         }
-                }
+                        
+                        
+                   }
 
+                /**
+            	 * The class to control the exit button and terminate the GUI once clicked.
+            	 */
                 private class ExitButtonHandler implements ActionListener{
 
                     public void actionPerformed(ActionEvent e) {
