@@ -64,7 +64,7 @@ public class YetiLauncher extends JFrame {
     /**
 	 * Array containing the options of minute or seconds for a test session.
 	 */
-    private String[] timeArray1 = {"mn", "sc"};
+    private String[] timeArray1 = {"mn", "s"};
         
     /**
 	 * strategy array stores the various strategies of testing.
