@@ -763,7 +763,7 @@ public class Yeti {
 		System.out.println("\t-printNumberOfCallsPerMethod : prints the number of calls per method.");
 		System.out.println("\t-branchCoverage : shows the branch coverage if available (in Java, this implies instrumenting the bytecode).");
 		System.out.println("\t-makeMethodsVisible: converts all the protected and private methods into public for testing.");
-
+		System.out.println("Example command to execute Yeti from command prompt is: >yeti.Yeti -java -time=15mn -testModules=yeti.test.YetiTest -nologs -randomPlus -gui");
 	}
 
 }
