@@ -62,6 +62,7 @@ import yeti.environments.jml.YetiJMLPrefetchingLoader;
 import yeti.environments.pharo.YetiPharoCommunicator;
 import yeti.environments.pharo.YetiPharoTestManager;
 import yeti.monitoring.YetiGUI;
+import yeti.strategies.YetiDSSStrategy;
 import yeti.strategies.YetiRandomPlusDecreasing;
 import yeti.strategies.YetiRandomPlusStrategy;
 import yeti.strategies.YetiRandomPlusPeriodicProbabilitiesStrategy;
@@ -147,6 +148,7 @@ public class Yeti {
 	 * -randomPlus : uses the random+ strategy that injects interesting values every now and then.<br>
 	 * -randomPlusPeriodic : uses the random+ strategy and periodically change the values of the standard probalilities (null values, new instances, interesting values).<br>
 	 * -randomPlusDecreasing : uses the random+ strategy and decreases the values of the standard probalilities (null values, new instances, interesting values).<br>
+	 * -DSS : uses the Dirt Spot Sweeping Strategy which extends the random plus strategy and check the boundries around the veriables that found bugs.<br>
 	 * -gui : shows the standard graphical user interface for monitoring yeti.<br>
 	 * -noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.<br>
 	 * -instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.<br>
@@ -188,6 +190,7 @@ public class Yeti {
 		boolean isRandomPlus = false;
 		boolean isRandomPlusPeriodic = false;
 		boolean isRandomPlusDecreasing = false;
+		boolean isDSS = false;
 		boolean showMonitoringGui = false;
 		boolean printNumberOfCallsPerMethod = false;
 		int nTests=0;
@@ -358,6 +361,11 @@ public class Yeti {
 			// we can use the randomPlusDecreasing strategy
 			if (s0.equals("-randomPlusDecreasing")) {
 				isRandomPlusDecreasing = true;
+				continue;	
+			}			
+			
+			if (s0.equals("-DSS")) {
+				isDSS = true;
 				continue;	
 			}			
 
@@ -559,7 +567,11 @@ public class Yeti {
 		}			
 		if (isRandomPlusDecreasing) {
 			strategy= new YetiRandomPlusDecreasing(testManager);
+		}		
+		if (isDSS) {
+			strategy= new YetiDSSStrategy(testManager);
 		}			
+
 
 		// getting the module(s) to test
 		YetiModule mod=null;
@@ -754,7 +766,7 @@ public class Yeti {
 		System.out.println("\t-randomPlus : uses the random+ strategy that injects interesting values every now and then.");
 		System.out.println("\t-randomPlusPeriodic : uses the random+ strategy and periodically change the values of the standard probalilities (null values, new instances, interesting values).");
 		System.out.println("\t-randomPlusDecreasing : uses the random+ strategy and decreases the values of the standard probalilities (null values, new instances, interesting values).<br>");
-
+		System.out.println("\t-DSS : initially uses random+ strategy and based on the results of random+ it uses dirt spot sweeping strategy.");
 		System.out.println("\t-gui : shows the standard graphical user interface for monitoring yeti.");
 		System.out.println("\t-noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.");
 		System.out.println("\t-instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.");
@@ -763,7 +775,8 @@ public class Yeti {
 		System.out.println("\t-printNumberOfCallsPerMethod : prints the number of calls per method.");
 		System.out.println("\t-branchCoverage : shows the branch coverage if available (in Java, this implies instrumenting the bytecode).");
 		System.out.println("\t-makeMethodsVisible: converts all the protected and private methods into public for testing.");
-		System.out.println("Example command to execute Yeti from command prompt is: >yeti.Yeti -java -time=15mn -testModules=yeti.test.YetiTest -nologs -randomPlus -gui");
+		System.out.println("Example command to execute Yeti from command prompt is: >Java yeti.Yeti -java -time=15mn -testModules=yeti.test.YetiTest -nologs -randomPlus -gui");
+	
 	}
 
 }
