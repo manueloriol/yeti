@@ -1,0 +1,423 @@
+This is pdfTeXk, Version 3.1415926-1.40.9 (Web2C 7.5.7) (format=pdflatex 2009.9.30)  30 NOV 2010 18:17
+entering extended mode
+\write18 enabled.
+ %&-line parsing enabled.
+**ICST_main.tex
+(./ICST_main.tex
+LaTeX2e <2005/12/01>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, german-x-2008-06-18, ngerman-x-2008-06-18, ancientgreek, ibycus, ar
+abic, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danish, dutc
+h, esperanto, estonian, farsi, finnish, french, galician, german, ngerman, mono
+greek, greek, hungarian, icelandic, indonesian, interlingua, irish, italian, la
+tin, lithuanian, mongolian, mongolian2a, bokmal, nynorsk, polish, portuguese, r
+omanian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, turki
+sh, ukenglish, ukrainian, uppersorbian, welsh, loaded.
+(./IEEEtran.cls
+Document Class: IEEEtran 2007/03/05 V1.7a by Michael Shell
+-- See the "IEEEtran_HOWTO" manual for usage information.
+-- http://www.michaelshell.org/tex/ieeetran/
+\@IEEEtrantmpdimenA=\dimen102
+\@IEEEtrantmpdimenB=\dimen103
+\@IEEEtrantmpcountA=\count79
+\@IEEEtrantmpcountB=\count80
+\@IEEEtrantmptoksA=\toks14
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 373.
+
+(/usr/local/texlive/2008/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+-- Using 8.5in x 11in (letter) paper.
+-- Using PDF output.
+\@IEEEnormalsizeunitybaselineskip=\dimen104
+-- This is a 10 point document.
+\CLASSINFOnormalsizebaselineskip=\dimen105
+\CLASSINFOnormalsizeunitybaselineskip=\dimen106
+\IEEEnormaljot=\dimen107
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <5> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <11> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <11> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <17> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <17> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <20> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <20> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <24> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 731.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 731.
+\IEEEilabelindentA=\dimen108
+\IEEEilabelindentB=\dimen109
+\IEEEilabelindent=\dimen110
+\IEEEelabelindent=\dimen111
+\IEEEdlabelindent=\dimen112
+\IEEElabelindent=\dimen113
+\IEEEiednormlabelsep=\dimen114
+\IEEEiedmathlabelsep=\dimen115
+\IEEEiedtopsep=\skip41
+\c@section=\count81
+\c@subsection=\count82
+\c@subsubsection=\count83
+\c@paragraph=\count84
+\c@IEEEsubequation=\count85
+\abovecaptionskip=\skip42
+\belowcaptionskip=\skip43
+\c@figure=\count86
+\c@table=\count87
+\@IEEEeqnnumcols=\count88
+\@IEEEeqncolcnt=\count89
+\@IEEEtmpitemindent=\dimen116
+\c@IEEEbiography=\count90
+\@IEEEtranrubishbin=\box26
+) (/usr/local/texlive/2008/texmf-dist/tex/latex/psnfss/times.sty
+Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
+)
+(/usr/local/texlive/2008/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2006/02/20 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2008/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/local/texlive/2008/texmf/tex/latex/config/graphics.cfg
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 90.
+
+(/usr/local/texlive/2008/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2008/09/08 v0.04l Graphics/color for pdfTeX
+\Gread@gobject=\count91
+))
+(/usr/local/texlive/2008/texmf-dist/tex/latex/graphics/epsfig.sty
+Package: epsfig 1999/02/16 v1.7a (e)psfig emulation (SPQR)
+
+(/usr/local/texlive/2008/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2008/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks15
+)
+\Gin@req@height=\dimen117
+\Gin@req@width=\dimen118
+)
+\epsfxsize=\dimen119
+\epsfysize=\dimen120
+)
+(/usr/local/texlive/2008/texmf-dist/tex/latex/tools/enumerate.sty
+Package: enumerate 1999/03/05 v3.00 enumerate extensions (DPC)
+\@enLab=\toks16
+)
+(/usr/local/texlive/2008/texmf-dist/tex/latex/psnfss/pifont.sty
+Package: pifont 2005/04/12 PSNFSS-v9.2a Pi font support (SPQR) 
+LaTeX Font Info:    Try loading font information for U+pzd on input line 63.
+
+(/usr/local/texlive/2008/texmf-dist/tex/latex/psnfss/upzd.fd
+File: upzd.fd 2001/06/04 font definitions for U/pzd.
+)
+LaTeX Font Info:    Try loading font information for U+psy on input line 64.
+
+(/usr/local/texlive/2008/texmf-dist/tex/latex/psnfss/upsy.fd
+File: upsy.fd 2001/06/04 font definitions for U/psy.
+))
+(/usr/local/texlive/2008/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2001/10/25 v2.2f
+\@emptytoks=\toks17
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 132.
+)
+(/usr/local/texlive/2008/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2002/01/22 v2.2d
+)
+(/usr/local/texlive/2008/texmf-dist/tex/latex/rotating/rotating.sty
+Package: rotating 2008/10/05 v2.15c rotated objects in LaTeX
+
+(/usr/local/texlive/2008/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+)
+\c@r@tfl@t=\count92
+\rotFPtop=\skip44
+\rotFPbot=\skip45
+\rot@float@box=\box27
+\rot@mess@toks=\toks18
+)
+(/usr/local/texlive/2008/texmf-dist/tex/latex/ltxmisc/boxedminipage.sty)
+(./ICST_main.aux)
+\openout1 = `ICST_main.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 353.
+LaTeX Font Info:    ... okay on input line 353.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 353.
+LaTeX Font Info:    ... okay on input line 353.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 353.
+LaTeX Font Info:    ... okay on input line 353.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 353.
+LaTeX Font Info:    ... okay on input line 353.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 353.
+LaTeX Font Info:    ... okay on input line 353.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 353.
+LaTeX Font Info:    ... okay on input line 353.
+
+(/usr/local/texlive/2008/texmf-dist/tex/context/base/supp-pdf.tex
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count93
+\scratchdimen=\dimen121
+\scratchbox=\box28
+\nofMPsegments=\count94
+\nofMParguments=\count95
+\everyMPshowfont=\toks19
+\MPscratchCnt=\count96
+\MPscratchDim=\dimen122
+\MPnumerator=\count97
+\everyMPtoPDFconversion=\toks20
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 403.
+ (./abstract.tex
+LaTeX Font Info:    Try loading font information for U+msa on input line 3.
+
+(/usr/local/texlive/2008/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2002/01/19 v2.2g AMS font definitions
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 3.
+
+(/usr/local/texlive/2008/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2002/01/19 v2.2g AMS font definitions
+))
+(./introduction.tex
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 27.
+
+(/usr/local/texlive/2008/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)) (./model.tex
+[1{/usr/local/texlive/2008/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+
+
+]
+Underfull \vbox (badness 4582) has occurred while \output is active []
+
+ [2])
+(./implementation.tex
+Underfull \hbox (badness 3039) in paragraph at lines 21--28
+\OT1/ptm/m/n/10 in the cur-rent di-rec-tory (and its sub-di-rec-to-ries) will
+ []
+
+
+Underfull \hbox (badness 4303) in paragraph at lines 21--28
+\OT1/ptm/m/n/10 be preloaded, \OT1/pcr/m/n/10 -time=10mn \OT1/ptm/m/n/10 in-di-
+cates that the test-
+ []
+
+
+Underfull \hbox (badness 1701) in paragraph at lines 21--28
+\OT1/ptm/m/n/10 ing ses-sion will last 10 min-utes, \OT1/pcr/m/n/10 -randomPlus
+ \OT1/ptm/m/n/10 in-
+ []
+
+
+Underfull \hbox (badness 2065) in paragraph at lines 21--28
+\OT1/ptm/m/n/10 di-cates that the strat-egy ran-dom+ will be used, and
+ []
+
+
+Overfull \hbox (15.28845pt too wide) in paragraph at lines 36--36
+[]   \OT1/pcr/m/n/9 at java.lang.String.replace(String.java:2207)[] 
+ []
+
+
+Overfull \hbox (20.68845pt too wide) in paragraph at lines 69--69
+[]\OT1/pcr/m/n/9 java.lang.String v1=java.lang.String.valueOf(v0);[] 
+ []
+
+
+Overfull \hbox (9.88846pt too wide) in paragraph at lines 69--69
+[]                          \OT1/pcr/m/n/9 // time:1254919729044[] 
+ []
+
+
+Overfull \hbox (9.88846pt too wide) in paragraph at lines 69--69
+[]                          \OT1/pcr/m/n/9 // time:1254919729106[] 
+ []
+
+
+Overfull \hbox (9.88846pt too wide) in paragraph at lines 69--69
+[]                          \OT1/pcr/m/n/9 // time:1254919729106[] 
+ []
+
+
+Overfull \hbox (9.88846pt too wide) in paragraph at lines 69--69
+[]                          \OT1/pcr/m/n/9 // time:1254919729114[] 
+ []
+
+
+Overfull \hbox (9.88846pt too wide) in paragraph at lines 69--69
+[]  \OT1/pcr/m/n/9 at java.lang.String.replace(String.java:2207)[] 
+ []
+
+[3] <images/YetiComplete.png, id=25, 1150.2975pt x 724.7075pt>
+File: images/YetiComplete.png Graphic file (type png)
+
+<use images/YetiComplete.png>
+Underfull \hbox (badness 10000) in paragraph at lines 149--151
+ \OT1/ptm/m/it/10 Re-flec-tion: [][] \OT1/ptm/m/n/10 The Java bind-ing sub-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 149--151
+\OT1/ptm/m/n/10 classes \OT1/pcr/m/n/10 YetiRoutine \OT1/ptm/m/n/10 with two cl
+asses:
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 149--151
+\OT1/pcr/m/n/10 YetiJavaConstructor \OT1/ptm/m/n/10 and \OT1/pcr/m/n/10 YetiJav
+aMethod\OT1/ptm/m/n/10 .
+ []
+
+[4] <ValueGeneration.pdf, id=30, 410.53375pt x 484.81125pt>
+File: ValueGeneration.pdf Graphic file (type pdf)
+
+<use ValueGeneration.pdf>
+
+LaTeX Warning: Text page 5 contains only floats.
+
+[5 <./images/YetiComplete.png> <./ValueGeneration.pdf>]) (./evaluation.tex
+<images/DriverWhiskers.pdf, id=103, 293.74504pt x 297.17322pt>
+File: images/DriverWhiskers.pdf Graphic file (type pdf)
+
+<use images/DriverWhiskers.pdf>
+<images/PerfWhiskers.pdf, id=104, 408.41563pt x 279.78539pt>
+File: images/PerfWhiskers.pdf Graphic file (type pdf)
+
+<use images/PerfWhiskers.pdf>
+<images/Ncalls.png, id=105, 615.29875pt x 288.07625pt>
+File: images/Ncalls.png Graphic file (type png)
+ <use images/Ncalls.png>
+LaTeX Font Info:    Font shape `OT1/pcr/m/it' in size <10> not available
+(Font)              Font shape `OT1/pcr/m/sl' tried instead on input line 63.
+
+[6 <./images/DriverWhiskers.pdf> <./images/PerfWhiskers.pdf> <./images/Ncalls.p
+ng>]
+Underfull \hbox (badness 10000) in paragraph at lines 131--132
+[]\OT1/ptm/m/n/10 The small num-ber of faults other than
+ []
+
+[7]
+Underfull \hbox (badness 10000) in paragraph at lines 162--163
+[]\OT1/ptm/m/n/10 It is worth not-ing that two classes --
+ []
+
+
+Underfull \hbox (badness 3657) in paragraph at lines 162--163
+\OT1/pcr/m/n/10 RectangleReadOnly \OT1/ptm/m/n/10 and \OT1/pcr/m/n/10 Document 
+\OT1/ptm/m/n/10 -- ex-hibit a
+ []
+
+<images/HelpMyClass.png, id=229, 385.44pt x 197.73875pt>
+File: images/HelpMyClass.png Graphic file (type png)
+
+<use images/HelpMyClass.png>
+<images/StringBuffer.png, id=230, 525.965pt x 373.395pt>
+File: images/StringBuffer.png Graphic file (type png)
+
+<use images/StringBuffer.png>) (./rw.tex [8 <./images/HelpMyClass.png>]
+Underfull \vbox (badness 3168) has occurred while \output is active []
+
+)
+(./conclusions.tex
+Underfull \vbox (badness 3168) has occurred while \output is active []
+
+ [9 <./images/StringBuffer.png>]) (./ICST_main.bbl
+Underfull \hbox (badness 10000) in paragraph at lines 56--59
+[]\OT1/ptm/m/n/9 ``Jtest. para-soft cor-po-ra-tion.
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 56--59
+\OT1/ptm/m/n/9 http://www.parasoft.com/.'' [On-line]. Avail-able:
+ []
+
+Missing character: There is no ´ in font ptmr7t!
+
+Underfull \hbox (badness 1917) in paragraph at lines 82--85
+[]\OT1/ptm/m/n/9 ------, ``AR-TOO: Adap-tive Ran-dom Test-ing for Object-
+ []
+
+
+Overfull \hbox (10.5573pt too wide) in paragraph at lines 108--115
+\OT1/ptm/m/n/9 http://ieeexplore.ieee.org/search/wrapper.jsp?arnumber=1357947 
+ []
+
+)
+
+** Conference Paper **
+Before submitting the final camera ready copy, remember to:
+
+ 1. Manually equalize the lengths of two columns on the last page
+ of your paper;
+
+ 2. Ensure that any PostScript and/or PDF output post-processing
+ uses only Type 1 fonts and that every step in the generation
+ process uses the appropriate paper size.
+
+[10] (./ICST_main.aux) ) 
+Here is how much of TeX's memory you used:
+ 2267 strings out of 493876
+ 34088 string characters out of 1150568
+ 106456 words of memory out of 3000000
+ 5474 multiletter control sequences out of 10000+50000
+ 49399 words of font info for 106 fonts, out of 3000000 for 5000
+ 717 hyphenation exceptions out of 8191
+ 30i,13n,22p,797b,335s stack positions out of 5000i,500n,10000p,200000b,50000s
+{/usr/local/texlive/2008/texmf-dist/fonts/enc/dvips/bas
+e/8r.enc}</usr/local/texlive/2008/texmf-dist/fonts/type1/bluesky/cm/cmmi10.pfb>
+</usr/local/texlive/2008/texmf-dist/fonts/type1/bluesky/cm/cmmi7.pfb></usr/loca
+l/texlive/2008/texmf-dist/fonts/type1/bluesky/cm/cmr10.pfb></usr/local/texlive/
+2008/texmf-dist/fonts/type1/bluesky/cm/cmr6.pfb></usr/local/texlive/2008/texmf-
+dist/fonts/type1/bluesky/cm/cmr7.pfb></usr/local/texlive/2008/texmf-dist/fonts/
+type1/bluesky/cm/cmr8.pfb></usr/local/texlive/2008/texmf-dist/fonts/type1/blues
+ky/cm/cmr9.pfb></usr/local/texlive/2008/texmf-dist/fonts/type1/bluesky/cm/cmsy1
+0.pfb></usr/local/texlive/2008/texmf-dist/fonts/type1/bluesky/cm/cmsy7.pfb></us
+r/local/texlive/2008/texmf-dist/fonts/type1/bluesky/cm/cmsy8.pfb></usr/local/te
+xlive/2008/texmf-dist/fonts/type1/bluesky/ams/msam10.pfb></usr/local/texlive/20
+08/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2008/texmf
+-dist/fonts/type1/urw/courier/ucrro8a.pfb></usr/local/texlive/2008/texmf-dist/f
+onts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2008/texmf-dist/fonts/type1
+/urw/times/utmbi8a.pfb></usr/local/texlive/2008/texmf-dist/fonts/type1/urw/time
+s/utmr8a.pfb></usr/local/texlive/2008/texmf-dist/fonts/type1/urw/times/utmri8a.
+pfb>
+Output written on ICST_main.pdf (10 pages, 517045 bytes).
+PDF statistics:
+ 298 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 131072)
+ 36 words of extra memory for PDF output out of 10000 (max. 10000000)
+
