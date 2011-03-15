@@ -6,7 +6,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
+/**
+ * 
+ * Class that represents a data set for evaluating the evolution of Yeti.
+ * 
+ * @author Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date Mar 15, 2011
+ *
+ */
 public class YetiDataSet {
+	
 	
 	public ArrayList<Double> xVector = null;
 	public ArrayList<Double> yVector = null;
