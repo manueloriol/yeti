@@ -269,7 +269,7 @@ public class YetiType {
 	}
 
 	/**
-	 * Adds an interesting value on this type.
+	 * Adds an interesting value of this type.
 	 * 
 	 * @param interestingValue the value to add.
 	 */
@@ -277,6 +277,7 @@ public class YetiType {
 		if (!this.hasInterestingValues())
 			this.setHasInterestingValues(true);
 		this.interestingValues.add(interestingValue);
+		YetiLog.printDebugLog("Added interesting value: "+ interestingValue, this, true);
 	}
 
 	/**

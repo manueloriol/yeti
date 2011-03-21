@@ -139,6 +139,7 @@ public class YetiJavaSpecificType extends YetiType {
 		tBoolean.setSimpleType(true);
 		tBoolean.addInterestingValues(true);
 		tBoolean.addInterestingValues(false);
+		
 		YetiJavaSpecificType tByte=new YetiJavaSpecificType("byte");
 		tByte.setSimpleType(true);
 		tByte.addInterestingValues((byte)0);

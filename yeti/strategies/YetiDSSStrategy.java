@@ -76,7 +76,7 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 	 * The probability to inject an interesting value (default is 10%).
 	 * 
 	 */
-	public static double INTERESTING_VALUE_INJECTION_PROBABILITY = 0.50;
+	public static double INTERESTING_VALUE_INJECTION_PROBABILITY = 0.70;
 
 	/**
 	 * Creates the RandomPlusStrategy using a test manager.
@@ -185,6 +185,15 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 		
 	}
 	
+	
+	
+	/** The following statements will check if error is found by the test or not, In case of any error found
+	 *  it will add that value + some constant to the list of interesting values and the probability to select
+	 *  interesting value is increased from 0.50 to 0.70 and thus more chances of utilization of intersting values.
+	 *  Each if statement will add a primitive type to the set on its demand.
+	 */
+	
+	
 	long oldFaults=0;
 	YetiCard[] oldyt=null;
 	public YetiCard[] getAllCards(YetiRoutine routine) throws ImpossibleToMakeConstructorException{
@@ -194,29 +203,53 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 		if (currentErrors>oldFaults){
 			 YetiLog.printDebugLog("found bug in the strategy", this);
 			 oldFaults = currentErrors;
+			
+			 
 			 for(YetiCard yc: oldyt){
 				 yc.getValue();
 				 
 				if (yc.getType().getName().equals("int")){
 					 int a = ((Integer)(yc.getValue())).intValue();
-					 YetiLog.printDebugLog("Added interesting value: "+(a+1), this, true);
 					 yc.getType().addInterestingValues(a+1);
 				 }
 				 
-				 //added by Mian.
+				
 				if (yc.getType().getName().equals("double")){
 						 double b = ((Double)(yc.getValue())).doubleValue();
-						 YetiLog.printDebugLog("Added interesting value: "+(b+1.45), this, true);
-						 yc.getType().addInterestingValues(b+1.23);
+						 yc.getType().addInterestingValues(b + 5.23);
 		
 				 }
 					 
-					 //added by Mian.
+				
 				if(yc.getType().getName().equals("String")){
 						 String c = (String) yc.getValue();
-						 YetiLog.printDebugLog("Added interesting value: " + (c), this, true);
 						 yc.getType().addInterestingValues(c);
 					 }
+				
+				if(yc.getType().getName().equals("byte")){
+					 byte d = (Byte) yc.getValue();
+					 yc.getType().addInterestingValues(d + 1);
+				 }
+				
+				if(yc.getType().getName().equals("short")){
+					 short e = (Short) yc.getValue();
+					 yc.getType().addInterestingValues(e + 2);
+				 }
+				
+				if(yc.getType().getName().equals("long")){
+					 long f = (Long) yc.getValue();
+					 yc.getType().addInterestingValues(f + 5);
+				 }
+				
+				if(yc.getType().getName().equals("char")){
+					 char g = (Character) yc.getValue();
+					 yc.getType().addInterestingValues(g+1);
+				 }
+				
+				if(yc.getType().getName().equals("float")){
+					 float g = (Float) yc.getValue();
+					 yc.getType().addInterestingValues(g + 2.37);
+				 }
 			 }
 
 		}
