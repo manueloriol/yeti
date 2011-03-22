@@ -138,7 +138,7 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 		
 		// we create the slider, this slider is updated both ways
 		YetiUpdatableSlider useInterestingValuesSlider = new YetiUpdatableSlider(JSlider.HORIZONTAL, 
-				0, 100, (int) YetiRandomPlusStrategy.INTERESTING_VALUE_INJECTION_PROBABILITY*100) {
+				0, 100, (int) YetiDSSStrategy.INTERESTING_VALUE_INJECTION_PROBABILITY*100) {
 
 			/* (non-Javadoc)
 			 * Updates the value by taking its value from the variable
@@ -147,7 +147,7 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 			 */
 			public void updateValues() {
 				super.updateValues();
-				this.setValue((int)(YetiRandomPlusStrategy.INTERESTING_VALUE_INJECTION_PROBABILITY*100));
+				this.setValue((int)(YetiDSSStrategy.INTERESTING_VALUE_INJECTION_PROBABILITY*100));
 
 			}
 		};
@@ -158,7 +158,7 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 				JSlider source = (JSlider)e.getSource();
 				if (!source.getValueIsAdjusting()) {
 					int nullValuesP = (int)source.getValue();
-					YetiRandomPlusStrategy.INTERESTING_VALUE_INJECTION_PROBABILITY = ((double)nullValuesP)/100;
+					YetiDSSStrategy.INTERESTING_VALUE_INJECTION_PROBABILITY = ((double)nullValuesP)/100;
 				}			
 			}
 		});
@@ -266,7 +266,7 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 	 * @return an array with all arguments.
 	 * @throws ImpossibleToMakeConstructorException when it is impossible to construct all argument givent hte level of recursion.
 	 */
-	/**public YetiCard[] getAllCards(YetiRoutine routine, int recursiveRank) throws ImpossibleToMakeConstructorException{
+	public YetiCard[] getAllCards(YetiRoutine routine, int recursiveRank) throws ImpossibleToMakeConstructorException{
 		long currentErrors = YetiLog.numberOfErrors;
 		if (currentErrors>oldFaults){
 			 YetiLog.printDebugLog("found bug in the strategy", this);
@@ -286,11 +286,11 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 
 		oldyt=super.getAllCards(routine, recursiveRank);
 		return oldyt;
-	}**/
+	}
 	
 	@Override
 	public String getName() {
-		return "Random+ Strategy";
+		return "Dirt Spot Sweeping Strategy";
 	}
 
 }
