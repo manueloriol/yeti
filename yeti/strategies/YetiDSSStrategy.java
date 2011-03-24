@@ -242,7 +242,7 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 				 }
 				
 				if(yc.getType().getName().equals("char")){
-					 char g = (Character) yc.getValue();
+					 char g = (char)(Character) yc.getValue();
 					 yc.getType().addInterestingValues(g+1);
 				 }
 				

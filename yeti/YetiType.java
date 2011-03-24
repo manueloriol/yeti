@@ -275,9 +275,20 @@ public class YetiType {
 	 */
 	public void addInterestingValues(Object interestingValue) {
 		if (!this.hasInterestingValues())
-			this.setHasInterestingValues(true);
+		this.setHasInterestingValues(true);
+		//added by Mian.
+		//System.out.println("The value of interesting value passed to this method is :" + interestingValue);
+		int i = interestingValues.indexOf(interestingValue, 0);
+		//System.out.println(" The value of i is "+ i);
+		if(i == -1)
+		{
 		this.interestingValues.add(interestingValue);
 		YetiLog.printDebugLog("Added interesting value: "+ interestingValue, this, true);
+		}
+		//else
+		//{ 
+		//	System.out.println(" The item is already in the vector so it is not added this time.");
+		//}
 	}
 
 	/**
