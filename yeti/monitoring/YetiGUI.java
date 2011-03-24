@@ -91,6 +91,11 @@ import yeti.environments.java.YetiJavaPrefetchingLoader;
  */
 public class YetiGUI implements Runnable {
 	
+	/*
+	 * We store here the main GUI to be able to query it.
+	 */
+	public static YetiGUI mainGUI = null;
+	
 	/**
 	 * The dimensions of the screen. 
 	 */
@@ -165,6 +170,7 @@ public class YetiGUI implements Runnable {
 		f.pack();
 		f.setVisible(true);
 
+		mainGUI=this;
 
 		new Thread(this).start();
 		new Thread(sampler).start();
@@ -395,6 +401,39 @@ public class YetiGUI implements Runnable {
 		return splitPane;
 	}
 
+	public YetiGraph getGraphFaults() {
+		return graphFaults;
+	}
+
+
+	public YetiGraph getGraphNumberOfCallsOverTime() {
+		return graphNumberOfCallsOverTime;
+	}
+
+
+	public YetiGraph getGraphNumberOfVariable() {
+		return graphNumberOfVariable;
+	}
+
+
+	public YetiGraph getGraphBranchCoverage() {
+		return graphBranchCoverage;
+	}
+
+
+	public YetiGraph getGraphNumberOfFailures() {
+		return graphNumberOfFailures;
+	}
+
+	private YetiGraph graphFaults = null;
+
+	private YetiGraph graphNumberOfCallsOverTime = null;
+	
+	private YetiGraph graphNumberOfVariable = null;
+
+	private YetiGraph graphBranchCoverage = null;
+
+	private YetiGraph graphNumberOfFailures = null;
 
 	/**
 	 * Generates the panel with the monitoring graphs.
@@ -405,14 +444,14 @@ public class YetiGUI implements Runnable {
 
 
 		// we add the number of faults over time	
-		YetiGraph graph0 = new YetiGraphFaultsOverTime(YetiLog.proc,nMSBetweenUpdates);
-		sampler.addSamplable(graph0);
-		this.allComponents.add(graph0);
+		graphFaults = new YetiGraphFaultsOverTime(YetiLog.proc,nMSBetweenUpdates);
+		sampler.addSamplable(graphFaults);
+		this.allComponents.add(graphFaults);
 
 		// we add the number of calls over time
-		YetiGraph graph1 = new YetiGraphNumberOfCallsOverTime(YetiLog.proc,nMSBetweenUpdates);
-		sampler.addSamplable(graph1);
-		this.allComponents.add(graph1);
+		graphNumberOfCallsOverTime = new YetiGraphNumberOfCallsOverTime(YetiLog.proc,nMSBetweenUpdates);
+		sampler.addSamplable(graphNumberOfCallsOverTime);
+		this.allComponents.add(graphNumberOfCallsOverTime);
 
 		// we add the number of failures over time
 		boolean coverageEnabled = true;
@@ -422,28 +461,32 @@ public class YetiGUI implements Runnable {
 			coverageEnabled=false;
 		}
 		YetiGraph graph2 = null;
-		if (coverageEnabled)
+		if (coverageEnabled) {
 			graph2 = new YetiGraphCoverageOverTime(Yeti.testModule,nMSBetweenUpdates);
-		else
+			graphBranchCoverage = graph2;
+		}
+		else {
 			graph2 = new YetiGraphNumberOfFailuresOverTime(YetiLog.proc,nMSBetweenUpdates);
+			graphNumberOfFailures = graph2;
+		}
 		sampler.addSamplable(graph2);
 		this.allComponents.add(graph2);
 
 
 		// we add the number of failures over time
-		YetiGraph graph3 = new YetiGraphNumberOfVariablesOverTime(YetiLog.proc,nMSBetweenUpdates);	
-		sampler.addSamplable(graph3);
-		this.allComponents.add(graph3);
+		graphNumberOfVariable = new YetiGraphNumberOfVariablesOverTime(YetiLog.proc,nMSBetweenUpdates);	
+		sampler.addSamplable(graphNumberOfVariable);
+		this.allComponents.add(graphNumberOfVariable);
 
 		// the panel containing the graphs
 		JPanel p = new JPanel();
 		p.setLayout(new GridLayout(0,2));
 
 		// we add all the graphs
-		p.add(graph0);
-		p.add(graph1);
+		p.add(graphFaults);
+		p.add(graphNumberOfCallsOverTime);
 		p.add(graph2);
-		p.add(graph3);
+		p.add(graphNumberOfVariable);
 
 		return p;
 	}

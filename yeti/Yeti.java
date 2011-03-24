@@ -62,6 +62,8 @@ import yeti.environments.jml.YetiJMLPrefetchingLoader;
 import yeti.environments.pharo.YetiPharoCommunicator;
 import yeti.environments.pharo.YetiPharoTestManager;
 import yeti.monitoring.YetiGUI;
+import yeti.stats.YetiDataSet;
+import yeti.stats.YetiMichaelisMentenEquation;
 import yeti.strategies.YetiDSSStrategy;
 import yeti.strategies.YetiRandomPlusDecreasing;
 import yeti.strategies.YetiRandomPlusStrategy;
@@ -193,6 +195,8 @@ public class Yeti {
 		boolean isDSS = false;
 		boolean showMonitoringGui = false;
 		boolean printNumberOfCallsPerMethod = false;
+		boolean approximate = false;
+		
 		int nTests=0;
 		String []modulesToTest=null;
 		int callsTimeOut=75;
@@ -410,6 +414,13 @@ public class Yeti {
 			// If we want to gather the number of calls per method
 			if (s0.equals("-printNumberOfCallsPerMethod")) {
 				printNumberOfCallsPerMethod = true;
+				continue;	
+			}
+
+			// If we want to approximate the number of bugs over number of calls
+			if (s0.equals("-approximate")) {
+				approximate = true;
+				showMonitoringGui=true;
 				continue;	
 			}
 
@@ -711,6 +722,12 @@ public class Yeti {
 			for (YetiRoutine r: Yeti.testModule.routinesInModule.values()) {
 				System.out.println(r.getSignature()+": Called: "+r.getnTimesCalled()+", Successfully: "+r.getnTimesCalledSuccessfully()+", Undecidable: "+r.getnTimesCalledUndecidable()+", Unsuccessfully: "+r.getnTimesCalledUnsuccessfully());
 			}
+		}
+		if (approximate) {
+			YetiDataSet dataSetNcallsNFaults = new YetiDataSet(YetiGUI.mainGUI.getGraphNumberOfCallsOverTime().series[1], YetiGUI.mainGUI.getGraphFaults().series[1]);
+			YetiMichaelisMentenEquation e = dataSetNcallsNFaults.fitMichaelisMenten();
+			
+			System.out.println("/** Approximation: "+e+"(f: number of bugs, x number of tests) R^2="+dataSetNcallsNFaults.coeffOfDetermination(e)+" **/");
 		}
 		
 		//If distributed mode of operation
