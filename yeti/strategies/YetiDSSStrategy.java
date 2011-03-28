@@ -253,9 +253,12 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 				
 				if(yc.getType().getName().equals("char")){
 					
-					 Character g = (Character) yc.getValue();
+					System.out.println(" Let see for char it is executed or not %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+					
+					 char g = (Character)yc.getValue();
 					 System.out.println( "the value of g is " + g);
-					 yc.getType().addInterestingValues(g);
+					 yc.getType().addInterestingValues((Character)(char)( g + 2));
+					 yc.getType().addInterestingValues((Character)(char)( g - 2));
 				 }
 				
 				if(yc.getType().getName().equals("float")){

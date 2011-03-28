@@ -207,13 +207,19 @@ public class YetiJavaSpecificType extends YetiType {
 
 		YetiJavaSpecificType tChar=new YetiJavaSpecificType("char");
 		tChar.setSimpleType(true);
-		tChar.addInterestingValues('\0');
-		tChar.addInterestingValues('\1');
-		tChar.addInterestingValues('\2');
-		tChar.addInterestingValues('\n');
-		tChar.addInterestingValues('\255');
-		tChar.addInterestingValues('\254');
-		tChar.addInterestingValues('\253');
+//		tChar.addInterestingValues('\0');
+//		tChar.addInterestingValues('\1');
+//		tChar.addInterestingValues('\2');
+//		tChar.addInterestingValues('\n');
+//		tChar.addInterestingValues('\255');
+//		tChar.addInterestingValues('\254');
+//		tChar.addInterestingValues('\253');
+		tChar.addInterestingValues((Character)(char)0);
+		tChar.addInterestingValues((Character)(char)1);
+		tChar.addInterestingValues((Character)(char)2);
+		tChar.addInterestingValues((Character) (char)255);
+		tChar.addInterestingValues((Character) (char)254);
+		tChar.addInterestingValues((Character) (char)253);
 		tChar.addInterestingValues(Character.MAX_VALUE);
 		tChar.addInterestingValues(Character.MIN_VALUE);
 
