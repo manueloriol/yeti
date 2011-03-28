@@ -73,10 +73,10 @@ import yeti.monitoring.YetiUpdatableSlider;
 public class YetiDSSStrategy extends YetiRandomStrategy {
 
 	/**
-	 * The probability to inject an interesting value (default is 10%).
+	 * The probability to inject an interesting value.
 	 * 
 	 */
-	public static double INTERESTING_VALUE_INJECTION_PROBABILITY = 0.70;
+	public static double INTERESTING_VALUE_INJECTION_PROBABILITY = 0.60;
 
 	/**
 	 * Creates the RandomPlusStrategy using a test manager.
@@ -187,7 +187,7 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 	
 	
 	
-	/** The following statements will check if error is found by the test or not, In case of any error found
+	/** The following code will check if error is found by the test or not, In case of any error found
 	 *  it will add that value + some constant to the list of interesting values and the probability to select
 	 *  interesting value is increased from 0.50 to 0.70 and thus more chances of utilization of intersting values.
 	 *  Each if statement will add a primitive type to the set on its demand.
@@ -195,10 +195,14 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 	
 	
 	long oldFaults=0;
+	
 	YetiCard[] oldyt=null;
+	
 	public YetiCard[] getAllCards(YetiRoutine routine) throws ImpossibleToMakeConstructorException{
+	
 		long currentErrors = YetiLog.numberOfErrors;
-		 YetiLog.printDebugLog("nErrors "+currentErrors, this);
+		
+		YetiLog.printDebugLog("nErrors "+currentErrors, this);
 	
 		if (currentErrors>oldFaults){
 			 YetiLog.printDebugLog("found bug in the strategy", this);
@@ -210,13 +214,15 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 				 
 				if (yc.getType().getName().equals("int")){
 					 int a = ((Integer)(yc.getValue())).intValue();
-					 yc.getType().addInterestingValues(a+1);
+					 yc.getType().addInterestingValues(a+3);
+					 yc.getType().addInterestingValues(a-3);
 				 }
 				 
 				
 				if (yc.getType().getName().equals("double")){
 						 double b = ((Double)(yc.getValue())).doubleValue();
 						 yc.getType().addInterestingValues(b + 5.23);
+						 yc.getType().addInterestingValues(b - 5.23);
 		
 				 }
 					 
@@ -224,31 +230,38 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 				if(yc.getType().getName().equals("String")){
 						 String c = (String) yc.getValue();
 						 yc.getType().addInterestingValues(c);
-					 }
+						 }
 				
 				if(yc.getType().getName().equals("byte")){
 					 byte d = (Byte) yc.getValue();
 					 yc.getType().addInterestingValues(d + 1);
+					 yc.getType().addInterestingValues(d - 1);
 				 }
 				
 				if(yc.getType().getName().equals("short")){
 					 short e = (Short) yc.getValue();
-					 yc.getType().addInterestingValues(e + 2);
+					 yc.getType().addInterestingValues(e + 1);
+					 yc.getType().addInterestingValues(e - 1);
 				 }
 				
 				if(yc.getType().getName().equals("long")){
 					 long f = (Long) yc.getValue();
 					 yc.getType().addInterestingValues(f + 5);
+					 yc.getType().addInterestingValues(f - 5);
+					 
 				 }
 				
 				if(yc.getType().getName().equals("char")){
-					 char g = (char)(Character) yc.getValue();
-					 yc.getType().addInterestingValues(g+1);
+					
+					 Character g = (Character) yc.getValue();
+					 System.out.println( "the value of g is " + g);
+					 yc.getType().addInterestingValues(g);
 				 }
 				
 				if(yc.getType().getName().equals("float")){
-					 float g = (Float) yc.getValue();
-					 yc.getType().addInterestingValues(g + 2.37);
+					 float h = (Float) yc.getValue();
+					 yc.getType().addInterestingValues(h + 2.37);
+					 yc.getType().addInterestingValues(h - 2.37);
 				 }
 			 }
 
@@ -258,35 +271,83 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 	} 
 	
 
-	/**
-	 * Get all the arguments with the level of recursion.
-	 * 
-	 * @param routine the routine to test.
-	 * @param recursiveRank the rank of recursion
-	 * @return an array with all arguments.
-	 * @throws ImpossibleToMakeConstructorException when it is impossible to construct all argument givent hte level of recursion.
-	 */
-	public YetiCard[] getAllCards(YetiRoutine routine, int recursiveRank) throws ImpossibleToMakeConstructorException{
-		long currentErrors = YetiLog.numberOfErrors;
-		if (currentErrors>oldFaults){
-			 YetiLog.printDebugLog("found bug in the strategy", this);
-			 oldFaults = currentErrors;
-			 for(YetiCard yc: oldyt){
-				 yc.getValue();
-				 if (yc.getType().getName().equals("int")){
-					 int a = ((Integer)(yc.getValue())).intValue();
-					 YetiLog.printDebugLog("Added interesting value: "+(a+1), this, true);
-					 yc.getType().addInterestingValues(a+1);
-					
-
-				 }
-			 }
-			
-		}
-
-		oldyt=super.getAllCards(routine, recursiveRank);
-		return oldyt;
-	}
+//	/**
+//	 * Get all the arguments with the level of recursion.
+//	 * 
+//	 * @param routine the routine to test.
+//	 * @param recursiveRank the rank of recursion
+//	 * @return an array with all arguments.
+//	 * @throws ImpossibleToMakeConstructorException when it is impossible to construct all argument givent hte level of recursion.
+//	 */
+//	public YetiCard[] getAllCards(YetiRoutine routine, int recursiveRank) throws ImpossibleToMakeConstructorException{
+//		long currentErrors = YetiLog.numberOfErrors;
+//		if (currentErrors>oldFaults){
+//			 YetiLog.printDebugLog("found bug in the strategy", this);
+//			 oldFaults = currentErrors;
+//			
+//			 
+//			 for(YetiCard yc: oldyt){
+//				 yc.getValue();
+//				 
+//				if (yc.getType().getName().equals("int")){
+//					 int a = ((Integer)(yc.getValue())).intValue();
+//					 yc.getType().addInterestingValues(a+1);
+//					 yc.getType().addInterestingValues(a-1);
+//				 }
+//				 
+//				
+//				if (yc.getType().getName().equals("double")){
+//						 double b = ((Double)(yc.getValue())).doubleValue();
+//						 yc.getType().addInterestingValues(b + 5.23);
+//						 yc.getType().addInterestingValues(b - 5.23);
+//		
+//				 }
+//					 
+//				
+//				if(yc.getType().getName().equals("String")){
+//						 String c = (String) yc.getValue();
+//						 yc.getType().addInterestingValues(c);
+//					 }
+//				
+//				if(yc.getType().getName().equals("byte")){
+//					 byte d = (Byte) yc.getValue();
+//					 yc.getType().addInterestingValues(d + 1);
+//					 yc.getType().addInterestingValues(d - 1);
+//				 }
+//				
+//				if(yc.getType().getName().equals("short")){
+//					 short e = (Short) yc.getValue();
+//					 yc.getType().addInterestingValues(e + 1);
+//					 yc.getType().addInterestingValues(e - 1);
+//				 }
+//				
+//				if(yc.getType().getName().equals("long")){
+//					 long f = (Long) yc.getValue();
+//					 yc.getType().addInterestingValues(f + 5);
+//					 yc.getType().addInterestingValues(f - 5);
+//				 }
+//				
+//				if(yc.getType().getName().equals("Character")){
+//					 Character g = (Character) yc.getValue();
+//					 System.out.println( "the value of g is ******************    " + g);
+//					 yc.getType().addInterestingValues(g);
+//				 }
+//				
+//				if(yc.getType().getName().equals("float")){
+//					 float h = (Float) yc.getValue();
+//					 yc.getType().addInterestingValues(h + 2.37);
+//					 yc.getType().addInterestingValues(h - 2.37);
+//				 }
+//			 }
+//
+//				 
+//			 
+//			
+//		}
+//
+//		oldyt=super.getAllCards(routine, recursiveRank);
+//		return oldyt;
+//	}
 	
 	@Override
 	public String getName() {
@@ -294,3 +355,4 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 	}
 
 }
+
