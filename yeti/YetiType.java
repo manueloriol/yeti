@@ -258,6 +258,11 @@ public class YetiType {
 	 * The vector of interestingValues.
 	 */
 	private Vector<Object> interestingValues = new Vector<Object>();
+	
+	/**
+	 * The vector of interestingValues received from DSSStrategy.
+	 */
+	private Vector<Object> dSSInterestingValues = new Vector<Object>();
 
 	/**
 	 * Simple getter for interesting values.
@@ -291,6 +296,43 @@ public class YetiType {
 		//}
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * Adds interesting values from DSSStrategy in Vector dSSInterestingValues.
+	 * 
+	 * @param interestingValue the value to add.
+	 */
+	public void addDSSInterestingValues(Object interestingValue) {
+		//if (!this.hasInterestingValues())
+		//this.setHasInterestingValues(true);
+		//added by Mian.
+		//System.out.println("The value of interesting value passed to this method is :" + interestingValue);
+		int i = dSSInterestingValues.indexOf(interestingValue, 0);
+		//System.out.println(" The value of i is "+ i);
+		if(i == -1)
+		{
+		this.dSSInterestingValues.add(interestingValue);
+		YetiLog.printDebugLog("Added interesting value to dSSInterestingValues Vector: "+ interestingValue, this, true);
+		}
+		//else
+		//{ 
+		//	System.out.println(" The item is already in the vector so it is not added this time.");
+		//}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Resets interesting values on this type.
 	 * 
@@ -312,6 +354,9 @@ public class YetiType {
 		return this.interestingValues.remove(interestingValues.size()-1);
 	}
 
+	
+	
+	
 	/**
 	 * Returns an interesting value and does not remove it from the list of interesting values.
 	 * 
