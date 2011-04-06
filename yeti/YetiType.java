@@ -262,7 +262,7 @@ public class YetiType {
 	/**
 	 * The vector of interestingValues received from DSSStrategy.
 	 */
-	private Vector<Object> dSSInterestingValues = new Vector<Object>();
+	private static Vector<Object> dSSInterestingValues = new Vector<Object>();
 
 	/**
 	 * Simple getter for interesting values.
@@ -297,7 +297,9 @@ public class YetiType {
 	}
 
 	
-	
+	public static Vector<Object> getdSSInterestingValues(){
+		return dSSInterestingValues;
+	}
 	
 	
 	

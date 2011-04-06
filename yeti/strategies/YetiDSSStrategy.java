@@ -32,7 +32,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-**/ 
+ **/ 
 
 import yeti.environments.YetiTestManager;
 import java.awt.BorderLayout;
@@ -69,14 +69,15 @@ import yeti.strategies.YetiRandomPlusStrategy;
  * @date Apr 05, 2011
  *
  */
+
 public class YetiDSSStrategy extends YetiRandomPlusStrategy {
-	
+
 	/**
 	 * The probability to inject an interesting value.
 	 * 
 	 */
 	public static double INTERESTING_VALUE_INJECTION_PROBABILITY = 0.60;
-	
+
 	/**
 	 * Creates the DSS using a test manager.
 	 * 
@@ -84,16 +85,16 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 	 */
 	public YetiDSSStrategy(YetiTestManager ytm) {
 		super(ytm);
-		}
+	}
 
 	@Override
 	public YetiCard getNextCard(YetiRoutine routine, int argumentNumber,
 			int recursiveRank) throws ImpossibleToMakeConstructorException {
-	
+
 		return super.getNextCard(routine, argumentNumber, recursiveRank);
 	}
-	
-	
+
+
 	@Override
 	public YetiCard getNextCard(YetiRoutine routine, int argumentNumber)
 	throws ImpossibleToMakeConstructorException {
@@ -109,7 +110,7 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 		JLabel txt = new JLabel("% interesting values: ");
 		p.add(txt);
 		txt.setAlignmentX(0);
-		
+
 		// we create the slider, this slider is updated both ways
 		YetiUpdatableSlider useInterestingValuesSlider = new YetiUpdatableSlider(JSlider.HORIZONTAL, 
 				0, 100, (int) YetiDSSStrategy.INTERESTING_VALUE_INJECTION_PROBABILITY*100) {
@@ -125,7 +126,7 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 
 			}
 		};
-		
+
 		// we set up the listener that updates the value
 		useInterestingValuesSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
@@ -148,17 +149,17 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 		useInterestingValuesSlider.setAlignmentX(0);
 		p.add(useInterestingValuesSlider);
 
-		
+
 		TitledBorder title = BorderFactory.createTitledBorder(Yeti.strategy.getName()+" Panel");
 		p.setBorder(title);
 		p.setMinimumSize(new Dimension(300,250));
 		p.setMaximumSize(new Dimension(300,250));
 		p.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
+
 		return p;
-		
+
 	}
-	
+
 
 	long oldFaults=0;
 
@@ -292,132 +293,132 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 
 
 				else if(yc.getType().getName().equals("char"))
+				{
+					char charFaultValue = ((Character)(yc.getValue())).charValue();
+
+					// This statement will add the fault value first
+					yc.getType().addDSSInterestingValues(charFaultValue);
+
+					// This for loop will add values greater than the fault value.
+					for (int i =1; i < 5; i++)
 					{
-						char charFaultValue = ((Character)(yc.getValue())).charValue();
-
-						// This statement will add the fault value first
-						yc.getType().addDSSInterestingValues(charFaultValue);
-
-						// This for loop will add values greater than the fault value.
-						for (int i =1; i < 5; i++)
-						{
-							yc.getType().addDSSInterestingValues((Character)(char)(charFaultValue+i));
-						}
-
-						// This for loop will add values lesser than the fault value.
-						for (int j = 1; j < 5; j++)
-						{
-							yc.getType().addDSSInterestingValues((Character)(char)(charFaultValue-j));
-						}
+						yc.getType().addDSSInterestingValues((Character)(char)(charFaultValue+i));
 					}
 
-
-					else if(yc.getType().getName().equals("float"))
+					// This for loop will add values lesser than the fault value.
+					for (int j = 1; j < 5; j++)
 					{
-						float floatFaultValue = ((Float)(yc.getValue())).floatValue();
+						yc.getType().addDSSInterestingValues((Character)(char)(charFaultValue-j));
+					}
+				}
 
-						// This statement will add the fault value first
-						yc.getType().addDSSInterestingValues(floatFaultValue);
 
-						// This for loop will add values greater than the fault value.
-						for (int i =1; i < 5; i++)
-						{
-							yc.getType().addDSSInterestingValues(floatFaultValue + i);
-						}
+				else if(yc.getType().getName().equals("float"))
+				{
+					float floatFaultValue = ((Float)(yc.getValue())).floatValue();
 
-						// This for loop will add values lesser than the fault value.
-						for (int j = 1; j < 5; j++)
-						{
-							yc.getType().addDSSInterestingValues(floatFaultValue - j);
-						}
+					// This statement will add the fault value first
+					yc.getType().addDSSInterestingValues(floatFaultValue);
+
+					// This for loop will add values greater than the fault value.
+					for (int i =1; i < 5; i++)
+					{
+						yc.getType().addDSSInterestingValues(floatFaultValue + i);
+					}
+
+					// This for loop will add values lesser than the fault value.
+					for (int j = 1; j < 5; j++)
+					{
+						yc.getType().addDSSInterestingValues(floatFaultValue - j);
 					}
 				}
 			}
+		}
 
 
-			oldyt=super.getAllCards(routine);
-			return oldyt;
-		} 
-	
+		oldyt=super.getAllCards(routine);
+		return oldyt;
+	} 
 
-//	/**
-//	 * Get all the arguments with the level of recursion.
-//	 * 
-//	 * @param routine the routine to test.
-//	 * @param recursiveRank the rank of recursion
-//	 * @return an array with all arguments.
-//	 * @throws ImpossibleToMakeConstructorException when it is impossible to construct all argument givent hte level of recursion.
-//	 */
-//	public YetiCard[] getAllCards(YetiRoutine routine, int recursiveRank) throws ImpossibleToMakeConstructorException{
-//		long currentErrors = YetiLog.numberOfErrors;
-//		if (currentErrors>oldFaults){
-//			 YetiLog.printDebugLog("found bug in the strategy", this);
-//			 oldFaults = currentErrors;
-//			
-//			 
-//			 for(YetiCard yc: oldyt){
-//				 yc.getValue();
-//				 
-//				if (yc.getType().getName().equals("int")){
-//					 int a = ((Integer)(yc.getValue())).intValue();
-//					 yc.getType().addInterestingValues(a+1);
-//					 yc.getType().addInterestingValues(a-1);
-//				 }
-//				 
-//				
-//				if (yc.getType().getName().equals("double")){
-//						 double b = ((Double)(yc.getValue())).doubleValue();
-//						 yc.getType().addInterestingValues(b + 5.23);
-//						 yc.getType().addInterestingValues(b - 5.23);
-//		
-//				 }
-//					 
-//				
-//				if(yc.getType().getName().equals("String")){
-//						 String c = (String) yc.getValue();
-//						 yc.getType().addInterestingValues(c);
-//					 }
-//				
-//				if(yc.getType().getName().equals("byte")){
-//					 byte d = (Byte) yc.getValue();
-//					 yc.getType().addInterestingValues(d + 1);
-//					 yc.getType().addInterestingValues(d - 1);
-//				 }
-//				
-//				if(yc.getType().getName().equals("short")){
-//					 short e = (Short) yc.getValue();
-//					 yc.getType().addInterestingValues(e + 1);
-//					 yc.getType().addInterestingValues(e - 1);
-//				 }
-//				
-//				if(yc.getType().getName().equals("long")){
-//					 long f = (Long) yc.getValue();
-//					 yc.getType().addInterestingValues(f + 5);
-//					 yc.getType().addInterestingValues(f - 5);
-//				 }
-//				
-//				if(yc.getType().getName().equals("Character")){
-//					 Character g = (Character) yc.getValue();
-//					 System.out.println( "the value of g is ******************    " + g);
-//					 yc.getType().addInterestingValues(g);
-//				 }
-//				
-//				if(yc.getType().getName().equals("float")){
-//					 float h = (Float) yc.getValue();
-//					 yc.getType().addInterestingValues(h + 2.37);
-//					 yc.getType().addInterestingValues(h - 2.37);
-//				 }
-//			 }
-//
-//				 
-//			 
-//			
-//		}
-//
-//		oldyt=super.getAllCards(routine, recursiveRank);
-//		return oldyt;
-//	}
-	
+
+	//	/**
+	//	 * Get all the arguments with the level of recursion.
+	//	 * 
+	//	 * @param routine the routine to test.
+	//	 * @param recursiveRank the rank of recursion
+	//	 * @return an array with all arguments.
+	//	 * @throws ImpossibleToMakeConstructorException when it is impossible to construct all argument givent hte level of recursion.
+	//	 */
+	//	public YetiCard[] getAllCards(YetiRoutine routine, int recursiveRank) throws ImpossibleToMakeConstructorException{
+	//		long currentErrors = YetiLog.numberOfErrors;
+	//		if (currentErrors>oldFaults){
+	//			 YetiLog.printDebugLog("found bug in the strategy", this);
+	//			 oldFaults = currentErrors;
+	//			
+	//			 
+	//			 for(YetiCard yc: oldyt){
+	//				 yc.getValue();
+	//				 
+	//				if (yc.getType().getName().equals("int")){
+	//					 int a = ((Integer)(yc.getValue())).intValue();
+	//					 yc.getType().addInterestingValues(a+1);
+	//					 yc.getType().addInterestingValues(a-1);
+	//				 }
+	//				 
+	//				
+	//				if (yc.getType().getName().equals("double")){
+	//						 double b = ((Double)(yc.getValue())).doubleValue();
+	//						 yc.getType().addInterestingValues(b + 5.23);
+	//						 yc.getType().addInterestingValues(b - 5.23);
+	//		
+	//				 }
+	//					 
+	//				
+	//				if(yc.getType().getName().equals("String")){
+	//						 String c = (String) yc.getValue();
+	//						 yc.getType().addInterestingValues(c);
+	//					 }
+	//				
+	//				if(yc.getType().getName().equals("byte")){
+	//					 byte d = (Byte) yc.getValue();
+	//					 yc.getType().addInterestingValues(d + 1);
+	//					 yc.getType().addInterestingValues(d - 1);
+	//				 }
+	//				
+	//				if(yc.getType().getName().equals("short")){
+	//					 short e = (Short) yc.getValue();
+	//					 yc.getType().addInterestingValues(e + 1);
+	//					 yc.getType().addInterestingValues(e - 1);
+	//				 }
+	//				
+	//				if(yc.getType().getName().equals("long")){
+	//					 long f = (Long) yc.getValue();
+	//					 yc.getType().addInterestingValues(f + 5);
+	//					 yc.getType().addInterestingValues(f - 5);
+	//				 }
+	//				
+	//				if(yc.getType().getName().equals("Character")){
+	//					 Character g = (Character) yc.getValue();
+	//					 System.out.println( "the value of g is ******************    " + g);
+	//					 yc.getType().addInterestingValues(g);
+	//				 }
+	//				
+	//				if(yc.getType().getName().equals("float")){
+	//					 float h = (Float) yc.getValue();
+	//					 yc.getType().addInterestingValues(h + 2.37);
+	//					 yc.getType().addInterestingValues(h - 2.37);
+	//				 }
+	//			 }
+	//
+	//				 
+	//			 
+	//			
+	//		}
+	//
+	//		oldyt=super.getAllCards(routine, recursiveRank);
+	//		return oldyt;
+	//	}
+
 	@Override
 	public String getName() {
 		return "Dirt Spot Sweeping Strategy";

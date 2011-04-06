@@ -48,6 +48,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Vector;
 
+
 /**
  * Class that represents a processor for logs coming from Yeti.
  * @author  Manuel Oriol (manuel@cs.york.ac.uk)
@@ -352,8 +353,6 @@ public abstract class YetiLogProcessor {
 		return true;
 	}
 
-	
-	
 	/**
 	 * Method that reads exception traces from a file where they were stored.
 	 * The exceptions are supposed to be of the format:<br>

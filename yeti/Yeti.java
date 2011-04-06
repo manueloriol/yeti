@@ -70,6 +70,7 @@ import yeti.strategies.YetiRandomPlusStrategy;
 import yeti.strategies.YetiRandomPlusPeriodicProbabilitiesStrategy;
 import yeti.strategies.YetiRandomStrategy;
 import yeti.cloud.YetiMap;
+import yeti.YetiType;
 
 
 /**
@@ -736,7 +737,15 @@ public class Yeti {
 			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
 			YetiMap.listOfExceptions.putAll(lp.getListOfErrors());
 
-			
+		//To display the values of vector dSSInterestingValues from YetiType	
+		
+		}
+		
+		if(isDSS){
+			System.out.println();
+			System.out.println(" The values of dSSInterestingValues Vector are");
+			System.out.println(YetiType.getdSSInterestingValues());
+			System.out.println();
 		}
 		
 		System.out.println("/** Testing finished **/");
