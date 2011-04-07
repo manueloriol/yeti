@@ -356,4 +356,16 @@ public class YetiJavaTestManager extends YetiTestManager {
 	}
 
 
+
+	/**
+	 * Resets this class.
+	 */
+	public static void reset() {
+		nThreadsStopped = 0;
+		nThreadsStarted = 0;
+		workersGroup.destroy();
+		workersGroup= new ThreadGroup("workers");
+	}
+
+
 }

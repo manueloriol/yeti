@@ -111,5 +111,11 @@ public abstract class YetiStrategy {
 	public String getName() {
 		return "Generic Strategy";
 	}
-
+	
+	/**
+	 * Resets this strategy.
+	 */
+	public void reset() {
+		
+	}
 }

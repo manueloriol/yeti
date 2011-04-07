@@ -126,4 +126,13 @@ public class YetiIdentifier {
 		this.value = value;
 	}
 
+
+
+	/**
+	 * Resets this class.
+	 */
+	public static void reset() {
+		currentIndex = 0;
+	}
+
 }

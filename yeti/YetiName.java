@@ -85,4 +85,11 @@ public class YetiName {
 		this.value = value;
 	}
 
+	/**
+	 * Resets this class.
+	 */
+	public static void reset() {
+		index = 0;
+	}
+
 }

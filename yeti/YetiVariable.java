@@ -45,6 +45,13 @@ import yeti.environments.YetiLoader;
  * @date Jun 22, 2009
  *
  */
+/**
+ * Class that represents... 
+ * 
+ * @author Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date Apr 7, 2011
+ *
+ */
 public class YetiVariable extends YetiCard{
 
 	/**
@@ -150,6 +157,15 @@ public class YetiVariable extends YetiCard{
 	 */
 	public synchronized void setValue(Object value) {
 		this.value = value;
+	}
+
+	/**
+	 * Resets all Yeti variables.
+	 */
+	public static void reset() {
+		YetiVariable.allId = new HashMap<String, YetiVariable>();
+		YetiVariable.nVariables = 0;
+
 	}
 
 }

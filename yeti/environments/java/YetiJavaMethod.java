@@ -375,4 +375,11 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		this.method = m;
 	}
 
+	/**
+	 * Resets the Java methods.
+	 */
+	public static void reset() {
+		initMethodsNotToAdd();
+	}
+
 }

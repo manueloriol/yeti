@@ -112,7 +112,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 				//				if (Yeti.testModule.containsModuleName(name))
 				if (exists(Yeti.testModulesName, name))
 				{
-					byte[] classBytes = bi.loadAndInstrument(name);
+					byte[] classBytes = bi.loadAndInstrument(name,classpaths);
 					clazz = this.defineClass(name, classBytes, 0, classBytes.length);
 					instrumented = true;
 				}
@@ -141,7 +141,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 		}
 		else 
 		{
-			clazz = findSystemClass(name);
+			clazz = super.loadClass(name,resolve);
 		}
 
 		YetiLog.printDebugLog("Class loaded in parent class loader: " + clazz.getName(), this);
@@ -397,28 +397,29 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 	/* (non-Javadoc)
 	 * 
 	 * Standard javadoc function.
+	 * We now use the URLClassLoader and do not need that.
 	 * 
 	 * @see java.lang.ClassLoader#findClass(java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
-	public Class findClass(String name) throws ClassNotFoundException{
-		File fc=null;
-		Class c=null;
-
-		// for all paths in class path, we try to load the class 
-		for (String classpath: classpaths){
-			fc=new File(classpath+System.getProperty("file.separator")+name.replace('.', System.getProperty("file.separator").charAt(0))+".class");
-			YetiLog.printDebugLog("trying: "+fc.getAbsolutePath(), this);
-			// we actually check that the class exists
-			if (fc.exists()){
-				YetiLog.printDebugLog("found it", this);
-				c=readClass(fc,name);
-				break;
-			}
-		}
-		if (c==null) throw new ClassNotFoundException(name);
-		return c;
-	}
+//	@SuppressWarnings("unchecked")
+//	public Class findClass(String name) throws ClassNotFoundException{
+//		File fc=null;
+//		Class c=null;
+//
+//		// for all paths in class path, we try to load the class 
+//		for (String classpath: classpaths){
+//			fc=new File(classpath+System.getProperty("file.separator")+name.replace('.', System.getProperty("file.separator").charAt(0))+".class");
+//			YetiLog.printDebugLog("trying: "+fc.getAbsolutePath(), this);
+//			// we actually check that the class exists
+//			if (fc.exists()){
+//				YetiLog.printDebugLog("found it", this);
+//				c=readClass(fc,name);
+//				break;
+//			}
+//		}
+//		if (c==null) throw new ClassNotFoundException(name);
+//		return c;
+//	}
 
 	/**
 	 *  Utility function to read the class from disk. Should be extended in the future to add reading from a jar file.

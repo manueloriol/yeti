@@ -384,20 +384,31 @@ public class YetiJavaBytecodeInstrumenter {
 
 	}
 
+	public static boolean isClassPathAssigned=false;
+	public static String[] lastClasspaths;
 	/**
 	 * Loads the class using the default loading mechanisms.
 	 * 
 	 * @param className the name of the class.
+	 * @param classpaths 
 	 * @return the byte array containing the instrumented code.
 	 * @throws NotFoundException
 	 * @throws CannotCompileException
 	 * @throws BadBytecode
 	 * @throws IOException
 	 */
-	public byte[] loadAndInstrument(String className) throws NotFoundException, CannotCompileException, BadBytecode, IOException {
+	public byte[] loadAndInstrument(String className, String[] classpaths) throws NotFoundException, CannotCompileException, BadBytecode, IOException {
 		// we retrieve the class file into a Javassist utility class
 		//System.out.println("intrumenting: " + className);
 		ClassPool pool = ClassPool.getDefault();
+		if (!isClassPathAssigned) {
+			lastClasspaths = classpaths;
+			isClassPathAssigned = true;
+			for (String path: classpaths) {
+				System.out.println("Added "+path);
+				pool.appendClassPath(path);
+			}
+		}
 		CtClass cc = pool.get(className);
 
 		cc = instrument(cc);

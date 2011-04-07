@@ -464,5 +464,11 @@ public abstract class YetiLogProcessor {
 		}
 
 	}
+	/**
+	 * Resets this class.
+	 */
+	public static void reset() {
+		lastNumberOfNonUniqueBugs = 0;
+	}
 
 }

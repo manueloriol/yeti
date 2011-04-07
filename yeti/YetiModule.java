@@ -271,4 +271,11 @@ public class YetiModule implements YetiCoverageIndicator {
 		throw new YetiNoCoverageException(this.moduleName);	
 	}
 
+	/**
+	 * Resets all modules.
+	 */
+	public static void reset() {
+		allModules =new HashMap<String,YetiModule>();
+	}
+
 }

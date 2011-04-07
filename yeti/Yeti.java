@@ -55,6 +55,7 @@ import yeti.environments.csharp.YetiCsharpTestManager;
 import yeti.environments.csharp.YetiServerSocket;
 import yeti.environments.java.YetiJavaInitializer;
 import yeti.environments.java.YetiJavaLogProcessor;
+import yeti.environments.java.YetiJavaMethod;
 import yeti.environments.java.YetiJavaPrefetchingLoader;
 import yeti.environments.java.YetiJavaProperties;
 import yeti.environments.java.YetiJavaTestManager;
@@ -62,6 +63,7 @@ import yeti.environments.jml.YetiJMLPrefetchingLoader;
 import yeti.environments.pharo.YetiPharoCommunicator;
 import yeti.environments.pharo.YetiPharoTestManager;
 import yeti.monitoring.YetiGUI;
+import yeti.monitoring.YetiUpdatable;
 import yeti.stats.YetiDataSet;
 import yeti.stats.YetiMichaelisMentenEquation;
 import yeti.strategies.YetiDSSStrategy;
@@ -121,7 +123,16 @@ public class Yeti {
 	 */
 	public static String yetiPath = ".";//System.getProperty("java.class.path");
 	
+	
+	/**
+	 * Start testing time.
+	 */
 	public static long st;
+	
+	
+	/**
+	 * Number of test cases executed. 
+	 */
 	public static long testCaseCount=0;
 
 	/**
@@ -770,6 +781,38 @@ public class Yeti {
 		}
 	}
 
+	/**
+	 * This method completely resets YETI.
+	 */
+	public static void reset() {
+		Yeti.engine = null;
+		Yeti.hasBranchCoverage = false;
+		Yeti.isDistributed = false;
+		Yeti.makeMethodsVisible = false;
+		Yeti.st = 0;
+		Yeti.strategy.reset();
+		Yeti.strategy = null;
+		Yeti.testModule = null;
+		Yeti.testModulesName = null;
+		Yeti.yetiPath = ".";
+		Yeti.gui.reset();
+		YetiType.reset();
+		YetiVariable.reset();
+		YetiLoader.reset();
+		YetiIdentifier.reset();
+		YetiLog.reset();
+		YetiLogProcessor.reset();
+		YetiModule.reset();
+		YetiName.reset();
+		if (Yeti.pl instanceof YetiJavaProperties) {
+			YetiJavaMethod.reset();
+			YetiJavaTestManager.reset();
+		}
+		// TODO add the same code for other programming languages
+		Yeti.pl = null;
+	}
+	
+	
 	/**
 	 * This is a simple help printing utility function.
 	 */

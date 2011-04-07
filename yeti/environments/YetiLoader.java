@@ -1,5 +1,11 @@
 package yeti.environments;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Vector;
+
 /**
  
  YETI - York Extensible Testing Infrastructure
@@ -41,7 +47,7 @@ package yeti.environments;
  * @date 20 Jul 2009
  *
  */
-public abstract class YetiLoader extends ClassLoader {
+public abstract class YetiLoader extends URLClassLoader {
 	
 	/**
 	 * The classpath of classes to load.
@@ -60,9 +66,26 @@ public abstract class YetiLoader extends ClassLoader {
 	 * @param path the classpath to load classes.
 	 */
 	public YetiLoader(String path) {
-		super();
-		
+		super(new URL[0]);
 		this.classpaths = path.split(System.getProperty("path.separator"));
+		for(String pathToAdd:classpaths) {
+			try {
+				File fileToAdd = new File(pathToAdd);
+				URL u = null;
+				if (fileToAdd.getName().endsWith(".jar")) {
+					String jarPath = "jar:" + fileToAdd.toURI().toString() +"!/";
+					//URL u = fileToAdd.toURI().toURL();
+					u = new URL(jarPath);
+					
+				} else
+					u=fileToAdd.toURI().toURL();
+				addURL(u);
+				
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		yetiLoader = this;
 	}
 	
@@ -87,4 +110,11 @@ public abstract class YetiLoader extends ClassLoader {
 	 */
 	@SuppressWarnings("unchecked")
 	public abstract Class addDefinition(Class clazz);
+
+	/**
+	 * Resets the loader of yeti.
+	 */
+	public static void reset() {
+		yetiLoader = null;
+	}
 }

@@ -433,5 +433,12 @@ public class YetiType {
 		}
 	}
 
+	/**
+	 * Resets all the types. 
+	 */
+	public static void reset() {
+		YetiType.allTypes= new HashMap<String,YetiType>();	
+	}
+
 
 }

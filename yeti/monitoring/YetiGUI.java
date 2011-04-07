@@ -129,6 +129,11 @@ public class YetiGUI implements Runnable {
 	}
 
 	/**
+	 * The main frame of the gui.
+	 */
+	public JFrame f = null;
+	
+	/**
 	 * All the components in the current GUI.
 	 */
 	public static ArrayList<YetiUpdatable> allComponents= new ArrayList<YetiUpdatable>();
@@ -156,7 +161,7 @@ public class YetiGUI implements Runnable {
 		JComponent p = this.generateToolsAndMainPanel();
 
 		// we create a frame for it and show the frame
-		JFrame f = new JFrame();
+		f = new JFrame();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.add(p,BorderLayout.CENTER);
 
@@ -773,5 +778,21 @@ public class YetiGUI implements Runnable {
 		// we add file menu to the menu bar
 		bar.add(filemenu);
 		return bar;
+	}
+
+	
+	/**
+	 * Method to reset the GUI.
+	 */
+	public void reset() {
+		stopRoutine();
+		allComponents = new ArrayList<YetiUpdatable>();
+		branchCoverageIndicator = null;
+		sampler= new YetiSampler(100);
+		f.setVisible(false);
+		f.dispose();
+		f=null;
+		mainGUI=null;
+		
 	}
 }

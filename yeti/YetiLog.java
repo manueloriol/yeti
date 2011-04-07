@@ -167,4 +167,16 @@ public class YetiLog {
 		return proc.isAccountableFailure(t);
 	}
 
+	/**
+	 * Resets the logs.
+	 */
+	public static void reset() {
+		proc = null;
+		numberOfCalls =0;
+		numberOfErrors =0;
+		// this one is statically set anyway...
+		//		enabledDebugClasses={}; 
+		
+	}
+
 }
