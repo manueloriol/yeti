@@ -92,7 +92,7 @@ public class YetiDataSet {
 	public double squaredResiduals (YetiEquation e) {
 		double sum = 0.0;
 		int max = xVector.size();
-		// we simply iteraes through all the xs
+		// we simply iterate through all the xs
 		// we then aggregate each (xi-yi)^2
 		for (int i = 0; i<max; i++) {
 			double residual =  (yVector.get(i)-e.valueOf(xVector.get(i)));
@@ -147,10 +147,14 @@ public class YetiDataSet {
 		Max = yVector.get(yVector.size()-1);
 
 		// we approximate f'(0)
-		double fPrimeZero = yVector.get(1)/xVector.get(1);
-		
-		
+		double fPrimeZero;
 		int size = xVector.size();
+
+		if (xVector.get(1)!=0)
+			fPrimeZero = yVector.get(1)/xVector.get(1);
+		else
+			fPrimeZero = yVector.get(size)/xVector.get(size);
+		
 		// finally we iterate through the values to find where f(K)/K = f'(0)/2
 		for (i = 2; i<size; i++) {
 			if ((yVector.get(i)/xVector.get(i))<fPrimeZero/2){

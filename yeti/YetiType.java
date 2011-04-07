@@ -1,12 +1,12 @@
 package yeti;
 
 /**
- 
+
  YETI - York Extensible Testing Infrastructure
- 
+
  Copyright (c) 2009-2010, Manuel Oriol <manuel.oriol@gmail.com> - University of York
  All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
  1. Redistributions of source code must retain the above copyright
@@ -20,7 +20,7 @@ package yeti;
  4. Neither the name of the University of York nor the
  names of its contributors may be used to endorse or promote products
  derived from this software without specific prior written permission.
- 
+
  THIS SOFTWARE IS PROVIDED BY <COPYRIGHT HOLDER> ''AS IS'' AND ANY
  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -31,7 +31,7 @@ package yeti;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
  **/ 
 
 import java.security.Permission;
@@ -258,7 +258,7 @@ public class YetiType {
 	 * The vector of interestingValues.
 	 */
 	private Vector<Object> interestingValues = new Vector<Object>();
-	
+
 	/**
 	 * The vector of interestingValues received from DSSStrategy.
 	 */
@@ -280,15 +280,15 @@ public class YetiType {
 	 */
 	public void addInterestingValues(Object interestingValue) {
 		if (!this.hasInterestingValues())
-		this.setHasInterestingValues(true);
+			this.setHasInterestingValues(true);
 		//added by Mian.
 		//System.out.println("The value of interesting value passed to this method is :" + interestingValue);
 		int i = interestingValues.indexOf(interestingValue, 0);
 		//System.out.println(" The value of i is "+ i);
 		if(i == -1)
 		{
-		this.interestingValues.add(interestingValue);
-		YetiLog.printDebugLog("Added interesting value: "+ interestingValue, this, true);
+			this.interestingValues.add(interestingValue);
+			YetiLog.printDebugLog("Added interesting value: "+ interestingValue, this);
 		}
 		//else
 		//{ 
@@ -296,15 +296,15 @@ public class YetiType {
 		//}
 	}
 
-	
+
 	public static Vector<Object> getdSSInterestingValues(){
 		return dSSInterestingValues;
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Adds interesting values from DSSStrategy in Vector dSSInterestingValues.
 	 * 
@@ -319,22 +319,22 @@ public class YetiType {
 		//System.out.println(" The value of i is "+ i);
 		if(i == -1)
 		{
-		this.dSSInterestingValues.add(interestingValue);
-		YetiLog.printDebugLog("Added interesting value to dSSInterestingValues Vector: "+ interestingValue, this, true);
+			this.dSSInterestingValues.add(interestingValue);
+			YetiLog.printDebugLog("Added interesting value to dSSInterestingValues Vector: "+ interestingValue, this, true);
 		}
 		//else
 		//{ 
 		//	System.out.println(" The item is already in the vector so it is not added this time.");
 		//}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
 	/**
 	 * Resets interesting values on this type.
 	 * 
@@ -356,9 +356,9 @@ public class YetiType {
 		return this.interestingValues.remove(interestingValues.size()-1);
 	}
 
-	
-	
-	
+
+
+
 	/**
 	 * Returns an interesting value and does not remove it from the list of interesting values.
 	 * 
@@ -383,7 +383,7 @@ public class YetiType {
 
 	}
 
-	
+
 	/**
 	 * A simple setter to say that a type has interesting values.
 	 * @param hasInterestingValues  true if it has interesting values, false otherwise.
