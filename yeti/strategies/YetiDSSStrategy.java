@@ -61,9 +61,10 @@ import yeti.environments.YetiTestManager;
 import yeti.monitoring.YetiGUI;
 import yeti.monitoring.YetiUpdatableSlider;
 import yeti.strategies.YetiRandomPlusStrategy;
+import yeti.YetiVariable;
 
 /**
- * Class that represents a purely random strategy.
+ * Class that represents a Dirt Spot Sweeping strategy.
  * 
  * @author Manuel Oriol (manuel@cs.york.ac.uk), Mian Asbat Ahmad (ma@cs.york.ac.uk)
  * @date Apr 05, 2011
@@ -76,7 +77,7 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 	 * The probability to inject an interesting value.
 	 * 
 	 */
-	public static double INTERESTING_VALUE_INJECTION_PROBABILITY = 0.60;
+	public static double INTERESTING_VALUE_INJECTION_PROBABILITY = 0.50;
 
 	/**
 	 * Creates the DSS using a test manager.
@@ -87,19 +88,39 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 		super(ytm);
 	}
 
+	
+
 	@Override
 	public YetiCard getNextCard(YetiRoutine routine, int argumentNumber,
 			int recursiveRank) throws ImpossibleToMakeConstructorException {
+		YetiType cardType = routine.getOpenSlots()[argumentNumber];
+		if (cardType.hasInterestingValues())    //but the problem here is that DSS is initially.
+			if (Math.random()<INTERESTING_VALUE_INJECTION_PROBABILITY) {
+				return (cardType).getDSSRandomInterestingVariable();
+			}
 
 		return super.getNextCard(routine, argumentNumber, recursiveRank);
 	}
-
-
+	
 	@Override
 	public YetiCard getNextCard(YetiRoutine routine, int argumentNumber)
 	throws ImpossibleToMakeConstructorException {
+		YetiType cardType = routine.getOpenSlots()[argumentNumber];
+		if (cardType.hasInterestingValues())
+			if (Math.random()<INTERESTING_VALUE_INJECTION_PROBABILITY) {
+				Object value =cardType.getDSSRandomInterestingValue();   
+				YetiLog.printDebugLog("Interesting value: "+value, this);
+				YetiIdentifier id=YetiIdentifier.getFreshIdentifier();
+				return new YetiVariable(id, cardType, value);
+			}
+
 		return super.getNextCard(routine, argumentNumber);
 	}
+
+
+	
+
+
 
 	@SuppressWarnings("serial")
 	@Override
@@ -161,7 +182,9 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 	}
 
 
-	long oldFaults=0;
+	long oldFaults1=0;
+	
+	long oldFaults2=0;
 
 	YetiCard[] oldyt=null;
 
@@ -171,9 +194,9 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 
 		YetiLog.printDebugLog("nErrors "+currentErrors, this);
 
-		if (currentErrors>oldFaults){
+		if (currentErrors>oldFaults1){
 			YetiLog.printDebugLog("found bug in the strategy", this);
-			oldFaults = currentErrors;
+			oldFaults1 = currentErrors;
 
 
 			for(YetiCard yc: oldyt){
@@ -184,18 +207,18 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 					int intFaultValue = ((Integer)(yc.getValue())).intValue();
 
 					// This statement will add the fault value first
-					yc.getType().addDSSInterestingValues(intFaultValue);
+					yc.getType().addDSSInterestingValues((Integer)intFaultValue);
 
 					// This for loop will add values greater than the fault value.
 					for (int i =1; i < 5; i++)
 					{
-						yc.getType().addDSSInterestingValues(intFaultValue + i);
+						yc.getType().addDSSInterestingValues((Integer)intFaultValue + i);
 					}
 
 					// This for loop will add values lesser than the fault value.
 					for (int j = 1; j < 5; j++)
 					{
-						yc.getType().addDSSInterestingValues(intFaultValue - j);
+						yc.getType().addDSSInterestingValues((Integer)intFaultValue - j);
 					}
 				}
 
@@ -205,47 +228,55 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 					double doubleFaultValue = ((Double)(yc.getValue())).doubleValue();
 
 					// This statement will add the fault value first
-					yc.getType().addDSSInterestingValues(doubleFaultValue);
+					yc.getType().addDSSInterestingValues((Double)doubleFaultValue);
 
 					// This for loop will add values greater than the fault value.
 					for (int i =1; i < 5; i++)
 					{
-						yc.getType().addDSSInterestingValues(doubleFaultValue + i);
+						yc.getType().addDSSInterestingValues((Double)doubleFaultValue + i);
 					}
 
 					// This for loop will add values lesser than the fault value.
 					for (int j = 1; j < 5; j++)
 					{
-						yc.getType().addDSSInterestingValues(doubleFaultValue - j);
+						yc.getType().addDSSInterestingValues((Double)doubleFaultValue - j);
 					}
 				}	
 
 
 				else if(yc.getType().getName().equals("String")){
 
-
-
 					String c = (String) yc.getValue();
-					yc.getType().addInterestingValues(c);
+
+					yc.getType().addInterestingValues((String)c);
+					yc.getType().addDSSInterestingValues((String)c+" ");
+					yc.getType().addDSSInterestingValues((String)" "+c);
+					yc.getType().addDSSInterestingValues((String)c.toUpperCase());
+					yc.getType().addDSSInterestingValues((String)c.toLowerCase());
+					yc.getType().addDSSInterestingValues((String)c.trim());
+					yc.getType().addDSSInterestingValues((String)c.substring(2));
+					yc.getType().addDSSInterestingValues((String)c.substring(1,c.length()-1));
+
 				}
+
 
 				else if(yc.getType().getName().equals("byte"))
 				{
 					byte byteFaultValue = ((Byte)(yc.getValue())).byteValue();
 
 					// This statement will add the fault value first
-					yc.getType().addDSSInterestingValues(byteFaultValue);
+					yc.getType().addDSSInterestingValues((Byte)byteFaultValue);
 
 					// This for loop will add values greater than the fault value.
 					for (int i =1; i < 5; i++)
 					{
-						yc.getType().addDSSInterestingValues(byteFaultValue+i);
+						yc.getType().addDSSInterestingValues((Byte)byteFaultValue+i);
 					}
 
 					// This for loop will add values lesser than the fault value.
 					for (int j = 1; j < 5; j++)
 					{
-						yc.getType().addDSSInterestingValues(byteFaultValue-j);
+						yc.getType().addDSSInterestingValues((Byte)byteFaultValue-j);
 					}
 				}
 
@@ -255,18 +286,18 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 					short shortFaultValue = ((Short)(yc.getValue())).shortValue();
 
 					// This statement will add the fault value first
-					yc.getType().addDSSInterestingValues(shortFaultValue);
+					yc.getType().addDSSInterestingValues((Short)shortFaultValue);
 
 					// This for loop will add values greater than the fault value.
 					for (int i =1; i < 5; i++)
 					{
-						yc.getType().addDSSInterestingValues(shortFaultValue + i);
+						yc.getType().addDSSInterestingValues((Short)shortFaultValue + i);
 					}
 
 					// This for loop will add values lesser than the fault value.
 					for (int j = 1; j < 5; j++)
 					{
-						yc.getType().addDSSInterestingValues(shortFaultValue - j);
+						yc.getType().addDSSInterestingValues((Short)shortFaultValue - j);
 					}
 				}
 
@@ -276,18 +307,18 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 					long longFaultValue = ((Long)(yc.getValue())).longValue();
 
 					// This statement will add the fault value first
-					yc.getType().addDSSInterestingValues(longFaultValue);
+					yc.getType().addDSSInterestingValues((Long)longFaultValue);
 
 					// This for loop will add values greater than the fault value.
 					for (int i =1; i < 5; i++)
 					{
-						yc.getType().addDSSInterestingValues(longFaultValue + i);
+						yc.getType().addDSSInterestingValues((Long)longFaultValue + i);
 					}
 
 					// This for loop will add values lesser than the fault value.
 					for (int j = 1; j < 5; j++)
 					{
-						yc.getType().addDSSInterestingValues(longFaultValue - j);
+						yc.getType().addDSSInterestingValues((Long)longFaultValue - j);
 					}
 				}
 
@@ -297,7 +328,7 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 					char charFaultValue = ((Character)(yc.getValue())).charValue();
 
 					// This statement will add the fault value first
-					yc.getType().addDSSInterestingValues(charFaultValue);
+					yc.getType().addDSSInterestingValues((Character)charFaultValue);
 
 					// This for loop will add values greater than the fault value.
 					for (int i =1; i < 5; i++)
@@ -318,18 +349,18 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 					float floatFaultValue = ((Float)(yc.getValue())).floatValue();
 
 					// This statement will add the fault value first
-					yc.getType().addDSSInterestingValues(floatFaultValue);
+					yc.getType().addDSSInterestingValues((Float)floatFaultValue);
 
 					// This for loop will add values greater than the fault value.
 					for (int i =1; i < 5; i++)
 					{
-						yc.getType().addDSSInterestingValues(floatFaultValue + i);
+						yc.getType().addDSSInterestingValues((Float)floatFaultValue + i);
 					}
 
 					// This for loop will add values lesser than the fault value.
 					for (int j = 1; j < 5; j++)
 					{
-						yc.getType().addDSSInterestingValues(floatFaultValue - j);
+						yc.getType().addDSSInterestingValues((Float)floatFaultValue - j);
 					}
 				}
 			}
@@ -341,83 +372,195 @@ public class YetiDSSStrategy extends YetiRandomPlusStrategy {
 	} 
 
 
-	//	/**
-	//	 * Get all the arguments with the level of recursion.
-	//	 * 
-	//	 * @param routine the routine to test.
-	//	 * @param recursiveRank the rank of recursion
-	//	 * @return an array with all arguments.
-	//	 * @throws ImpossibleToMakeConstructorException when it is impossible to construct all argument givent hte level of recursion.
-	//	 */
-	//	public YetiCard[] getAllCards(YetiRoutine routine, int recursiveRank) throws ImpossibleToMakeConstructorException{
-	//		long currentErrors = YetiLog.numberOfErrors;
-	//		if (currentErrors>oldFaults){
-	//			 YetiLog.printDebugLog("found bug in the strategy", this);
-	//			 oldFaults = currentErrors;
-	//			
-	//			 
-	//			 for(YetiCard yc: oldyt){
-	//				 yc.getValue();
-	//				 
-	//				if (yc.getType().getName().equals("int")){
-	//					 int a = ((Integer)(yc.getValue())).intValue();
-	//					 yc.getType().addInterestingValues(a+1);
-	//					 yc.getType().addInterestingValues(a-1);
-	//				 }
-	//				 
-	//				
-	//				if (yc.getType().getName().equals("double")){
-	//						 double b = ((Double)(yc.getValue())).doubleValue();
-	//						 yc.getType().addInterestingValues(b + 5.23);
-	//						 yc.getType().addInterestingValues(b - 5.23);
-	//		
-	//				 }
-	//					 
-	//				
-	//				if(yc.getType().getName().equals("String")){
-	//						 String c = (String) yc.getValue();
-	//						 yc.getType().addInterestingValues(c);
-	//					 }
-	//				
-	//				if(yc.getType().getName().equals("byte")){
-	//					 byte d = (Byte) yc.getValue();
-	//					 yc.getType().addInterestingValues(d + 1);
-	//					 yc.getType().addInterestingValues(d - 1);
-	//				 }
-	//				
-	//				if(yc.getType().getName().equals("short")){
-	//					 short e = (Short) yc.getValue();
-	//					 yc.getType().addInterestingValues(e + 1);
-	//					 yc.getType().addInterestingValues(e - 1);
-	//				 }
-	//				
-	//				if(yc.getType().getName().equals("long")){
-	//					 long f = (Long) yc.getValue();
-	//					 yc.getType().addInterestingValues(f + 5);
-	//					 yc.getType().addInterestingValues(f - 5);
-	//				 }
-	//				
-	//				if(yc.getType().getName().equals("Character")){
-	//					 Character g = (Character) yc.getValue();
-	//					 System.out.println( "the value of g is ******************    " + g);
-	//					 yc.getType().addInterestingValues(g);
-	//				 }
-	//				
-	//				if(yc.getType().getName().equals("float")){
-	//					 float h = (Float) yc.getValue();
-	//					 yc.getType().addInterestingValues(h + 2.37);
-	//					 yc.getType().addInterestingValues(h - 2.37);
-	//				 }
-	//			 }
-	//
-	//				 
-	//			 
-	//			
-	//		}
-	//
-	//		oldyt=super.getAllCards(routine, recursiveRank);
-	//		return oldyt;
-	//	}
+//	/**
+//	 * Get all the arguments with the level of recursion.
+//	 * 
+//	 * @param routine the routine to test.
+//	 * @param recursiveRank the rank of recursion
+//	 * @return an array with all arguments.
+//	 * @throws ImpossibleToMakeConstructorException when it is impossible to construct all argument givent hte level of recursion.
+//	 */
+//	public YetiCard[] getAllCards(YetiRoutine routine, int recursiveRank) throws ImpossibleToMakeConstructorException{
+//		long currentErrors = YetiLog.numberOfErrors;
+//
+//		YetiLog.printDebugLog("nErrors "+currentErrors, this);
+//
+//		if (currentErrors>oldFaults2){
+//			YetiLog.printDebugLog("found bug in the strategy", this);
+//			oldFaults2 = currentErrors;
+//
+//
+//			for(YetiCard yc: oldyt){
+//				yc.getValue();
+//
+//				if (yc.getType().getName().equals("int"))
+//				{
+//					int intFaultValue = ((Integer)(yc.getValue())).intValue();
+//
+//					// This statement will add the fault value first
+//					yc.getType().addDSSInterestingValues((Integer)intFaultValue);
+//
+//					// This for loop will add values greater than the fault value.
+//					for (int i =1; i < 5; i++)
+//					{
+//						yc.getType().addDSSInterestingValues((Integer)intFaultValue + i);
+//					}
+//
+//					// This for loop will add values lesser than the fault value.
+//					for (int j = 1; j < 5; j++)
+//					{
+//						yc.getType().addDSSInterestingValues((Integer)intFaultValue - j);
+//					}
+//				}
+//
+//
+//				else if (yc.getType().getName().equals("double"))
+//				{
+//					double doubleFaultValue = ((Double)(yc.getValue())).doubleValue();
+//
+//					// This statement will add the fault value first
+//					yc.getType().addDSSInterestingValues((Double)doubleFaultValue);
+//
+//					// This for loop will add values greater than the fault value.
+//					for (int i =1; i < 5; i++)
+//					{
+//						yc.getType().addDSSInterestingValues((Double)doubleFaultValue + i);
+//					}
+//
+//					// This for loop will add values lesser than the fault value.
+//					for (int j = 1; j < 5; j++)
+//					{
+//						yc.getType().addDSSInterestingValues((Double)doubleFaultValue - j);
+//					}
+//				}	
+//
+//
+//				else if(yc.getType().getName().equals("String")){
+//
+//					String c = (String) yc.getValue();
+//
+//					yc.getType().addInterestingValues((String)c);
+//					yc.getType().addDSSInterestingValues((String)c+" ");
+//					yc.getType().addDSSInterestingValues((String)" "+c);
+//					yc.getType().addDSSInterestingValues((String)c.toUpperCase());
+//					yc.getType().addDSSInterestingValues((String)c.toLowerCase());
+//					yc.getType().addDSSInterestingValues((String)c.trim());
+//					yc.getType().addDSSInterestingValues((String)c.substring(2));
+//					yc.getType().addDSSInterestingValues((String)c.substring(1,c.length()-1));
+//
+//				}
+//
+//
+//				else if(yc.getType().getName().equals("byte"))
+//				{
+//					byte byteFaultValue = ((Byte)(yc.getValue())).byteValue();
+//
+//					// This statement will add the fault value first
+//					yc.getType().addDSSInterestingValues((Byte)byteFaultValue);
+//
+//					// This for loop will add values greater than the fault value.
+//					for (int i =1; i < 5; i++)
+//					{
+//						yc.getType().addDSSInterestingValues((Byte)byteFaultValue+i);
+//					}
+//
+//					// This for loop will add values lesser than the fault value.
+//					for (int j = 1; j < 5; j++)
+//					{
+//						yc.getType().addDSSInterestingValues((Byte)byteFaultValue-j);
+//					}
+//				}
+//
+//
+//				else if(yc.getType().getName().equals("short"))
+//				{
+//					short shortFaultValue = ((Short)(yc.getValue())).shortValue();
+//
+//					// This statement will add the fault value first
+//					yc.getType().addDSSInterestingValues((Short)shortFaultValue);
+//
+//					// This for loop will add values greater than the fault value.
+//					for (int i =1; i < 5; i++)
+//					{
+//						yc.getType().addDSSInterestingValues((Short)shortFaultValue + i);
+//					}
+//
+//					// This for loop will add values lesser than the fault value.
+//					for (int j = 1; j < 5; j++)
+//					{
+//						yc.getType().addDSSInterestingValues((Short)shortFaultValue - j);
+//					}
+//				}
+//
+//
+//				else if(yc.getType().getName().equals("long"))
+//				{
+//					long longFaultValue = ((Long)(yc.getValue())).longValue();
+//
+//					// This statement will add the fault value first
+//					yc.getType().addDSSInterestingValues((Long)longFaultValue);
+//
+//					// This for loop will add values greater than the fault value.
+//					for (int i =1; i < 5; i++)
+//					{
+//						yc.getType().addDSSInterestingValues((Long)longFaultValue + i);
+//					}
+//
+//					// This for loop will add values lesser than the fault value.
+//					for (int j = 1; j < 5; j++)
+//					{
+//						yc.getType().addDSSInterestingValues((Long)longFaultValue - j);
+//					}
+//				}
+//
+//
+//				else if(yc.getType().getName().equals("char"))
+//				{
+//					char charFaultValue = ((Character)(yc.getValue())).charValue();
+//
+//					// This statement will add the fault value first
+//					yc.getType().addDSSInterestingValues((Character)charFaultValue);
+//
+//					// This for loop will add values greater than the fault value.
+//					for (int i =1; i < 5; i++)
+//					{
+//						yc.getType().addDSSInterestingValues((Character)(char)(charFaultValue+i));
+//					}
+//
+//					// This for loop will add values lesser than the fault value.
+//					for (int j = 1; j < 5; j++)
+//					{
+//						yc.getType().addDSSInterestingValues((Character)(char)(charFaultValue-j));
+//					}
+//				}
+//
+//
+//				else if(yc.getType().getName().equals("float"))
+//				{
+//					float floatFaultValue = ((Float)(yc.getValue())).floatValue();
+//
+//					// This statement will add the fault value first
+//					yc.getType().addDSSInterestingValues((Float)floatFaultValue);
+//
+//					// This for loop will add values greater than the fault value.
+//					for (int i =1; i < 5; i++)
+//					{
+//						yc.getType().addDSSInterestingValues((Float)floatFaultValue + i);
+//					}
+//
+//					// This for loop will add values lesser than the fault value.
+//					for (int j = 1; j < 5; j++)
+//					{
+//						yc.getType().addDSSInterestingValues((Float)floatFaultValue - j);
+//					}
+//				}
+//			}
+//		}
+//
+//
+//		oldyt=super.getAllCards(routine, recursiveRank);
+//		return oldyt;
+//	}
 
 	@Override
 	public String getName() {

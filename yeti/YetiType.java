@@ -369,6 +369,18 @@ public class YetiType {
 		int i=(int) Math.floor(d*this.interestingValues.size());
 		return this.interestingValues.get(i);
 	}
+	
+	/**
+	 * Returns an interesting value from dSSInterestingValues and does not remove it from the list of interesting values.
+	 * 
+	 * @return an object conataining the value.
+	 */
+	public Object getDSSRandomInterestingValue() {
+		double d=Math.random();
+		int i=(int) Math.floor(d*this.dSSInterestingValues.size());
+		return this.dSSInterestingValues.get(i);
+	}
+	
 
 	/**
 	 * Returns an interesting value in a variable and does not remove it from the list of interesting values.
@@ -384,6 +396,15 @@ public class YetiType {
 	}
 
 
+	public YetiVariable getDSSRandomInterestingVariable() {
+		Object value =this.getDSSRandomInterestingValue();
+		YetiLog.printDebugLog("Interesting variable: "+value, this);
+		YetiIdentifier id=YetiIdentifier.getFreshIdentifier();
+		return new YetiVariable(id, this, value);
+
+	}
+	
+	
 	/**
 	 * A simple setter to say that a type has interesting values.
 	 * @param hasInterestingValues  true if it has interesting values, false otherwise.

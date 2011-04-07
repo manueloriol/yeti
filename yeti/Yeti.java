@@ -73,6 +73,10 @@ import yeti.strategies.YetiRandomPlusPeriodicProbabilitiesStrategy;
 import yeti.strategies.YetiRandomStrategy;
 import yeti.cloud.YetiMap;
 import yeti.YetiType;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.util.Vector;
 
 
 /**
@@ -134,6 +138,9 @@ public class Yeti {
 	 * Number of test cases executed. 
 	 */
 	public static long testCaseCount=0;
+	
+	
+	
 
 	/**
 	 * The engine used to make tests.
@@ -686,6 +693,30 @@ public class Yeti {
 		if (isTimeout) {
 			System.out.println("/** Testing Session finished, time: "+(endTestingTime-startTestingTime)+"ms **/");
 		}
+		
+		if(isDSS){
+			
+			try {
+			      PrintStream out = new PrintStream(new FileOutputStream("dSSInterestingValues.txt"));
+			    //Vector to hold the values of a dSSInterestingValues Vector.
+			      Vector<Object> tempDSSInterestingValues = new Vector<Object>();
+			      tempDSSInterestingValues = YetiType.getdSSInterestingValues();
+			      for (int i = 0; i < tempDSSInterestingValues.size(); i++)
+			        out.println("Value at: " + i + " = " + tempDSSInterestingValues.elementAt(i));
+
+			      out.close();
+
+			    } catch (FileNotFoundException e) {
+			      e.printStackTrace();
+			    }
+			
+			
+			
+//			System.out.println();
+//			System.out.println(" The values of dSSInterestingValues Vector are");
+//			System.out.println(YetiType.getdSSInterestingValues());
+//			System.out.println();
+		}
 
 		boolean isProcessed = false;
 		String aggregationProcessing = "";
@@ -752,12 +783,7 @@ public class Yeti {
 		
 		}
 		
-		if(isDSS){
-			System.out.println();
-			System.out.println(" The values of dSSInterestingValues Vector are");
-			System.out.println(YetiType.getdSSInterestingValues());
-			System.out.println();
-		}
+		
 		
 		System.out.println("/** Testing finished **/");
 		
