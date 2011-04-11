@@ -37,8 +37,12 @@ package yeti;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Vector;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.HashMap;
 import yeti.environments.YetiInitializer;
 import yeti.environments.YetiLoader;
@@ -73,10 +77,6 @@ import yeti.strategies.YetiRandomPlusPeriodicProbabilitiesStrategy;
 import yeti.strategies.YetiRandomStrategy;
 import yeti.cloud.YetiMap;
 import yeti.YetiType;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.util.Vector;
 
 
 /**
@@ -86,6 +86,10 @@ import java.util.Vector;
  */
 public class Yeti {
 
+	/**
+	 * The report for the testing session.
+	 */
+	public static YetiReport report= null;
 	
 	/**
 	 * The main gui for Yeti.
@@ -129,18 +133,20 @@ public class Yeti {
 	
 	
 	/**
-	 * Start testing time.
+	 * Starting testing time.
 	 */
 	public static long st;
 	
 	
 	/**
+	 * The report for the last session.
+	 */
+	public static YetiReport rep=null;
+	
+	/**
 	 * Number of test cases executed. 
 	 */
 	public static long testCaseCount=0;
-	
-	
-	
 
 	/**
 	 * The engine used to make tests.
@@ -189,6 +195,7 @@ public class Yeti {
 			printHelp();
 			//e.printStackTrace();
 		}
+		System.exit(0);
 	}
 
 	/**
@@ -196,6 +203,9 @@ public class Yeti {
 	 * This will receive the same arguments as described for method main and process them
 	 * @param args the list of arguments passed on either by main or Map Method in YetiMap
 	 */	
+	/**
+	 * @param args
+	 */
 	public static void YetiRun(String[] args){
 		YetiInitializer secondaryInitializer = null;
 		boolean isJava = false;
@@ -215,11 +225,13 @@ public class Yeti {
 		boolean showMonitoringGui = false;
 		boolean printNumberOfCallsPerMethod = false;
 		boolean approximate = false;
+		String modulesString = null;
 		
 		int nTests=0;
 		String []modulesToTest=null;
 		int callsTimeOut=75;
 		Thread th = null;
+		String reportFile = null;
 		String tracesOutputFile = null;
 		String[] traceInputFiles = null;
 		YetiLogProcessor logProcessor = null;
@@ -338,8 +350,8 @@ public class Yeti {
 			}
 			// we want to test these modules
 			if (s0.startsWith("-testModules=")) {
-				String s1=s0.substring(13);
-				modulesToTest=s1.split(":");
+				modulesString=s0.substring(13);
+				modulesToTest=modulesString.split(":");
 				testModulesName = modulesToTest;
 				continue;
 			}
@@ -441,6 +453,12 @@ public class Yeti {
 				approximate = true;
 				showMonitoringGui=true;
 				continue;	
+			}
+			
+			// we want to test these modules
+			if (s0.startsWith("-compactReport=")) {
+				reportFile=s0.substring(15);
+				continue;
 			}
 
 			System.out.println("Yeti could not understand option: "+s0);
@@ -651,9 +669,19 @@ public class Yeti {
 		
 		}
 		
+		
 		//we combine all the modules in single structure
 		mod = YetiModule.combineModules(modules.toArray(new YetiModule[modules.size()]));
+
+		//in case no test modules were successfully loaded
+		if (mod.routinesInModule.size() == 0)
+		{
+			System.err.println("Testing halted: there is no method to test");
+			printHelp();
+			return;
 		
+		}
+
 		// we let everybody use the tested module
 		Yeti.testModule = mod;
 
@@ -731,10 +759,15 @@ public class Yeti {
 			long endProcessingTime = new Date().getTime();
 			aggregationProcessing = "/** Processing time: "+(endProcessingTime-endTestingTime)+"ms **/";
 		}
+		
+		// we create the report
+		report = new YetiReport(modulesString, YetiLog.numberOfCalls , endTestingTime-startTestingTime, YetiLog.numberOfErrors);
+
 		if (!isProcessed) {
 
 			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
 			System.out.println("/** Unique relevant bugs: "+lp.getNumberOfUniqueFaults()+" **/");
+			report.setnErrors(lp.getNumberOfUniqueFaults());
 
 		}
 		if (isProcessed) {
@@ -750,6 +783,7 @@ public class Yeti {
 						Yeti.testModule.getNumberOfCoveredBranches()+"/"+
 						Yeti.testModule.getNumberOfBranches()+"("+
 						((float)((int)(100*Yeti.testModule.getCoverage())))/100+"%) **/");
+						report.setBranchCoverage(Yeti.testModule.getCoverage());
 			} catch (YetiNoCoverageException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -769,6 +803,11 @@ public class Yeti {
 		if (approximate) {
 			YetiDataSet dataSetNcallsNFaults = new YetiDataSet(YetiGUI.mainGUI.getGraphNumberOfCallsOverTime().series[1], YetiGUI.mainGUI.getGraphFaults().series[1]);
 			YetiMichaelisMentenEquation e = dataSetNcallsNFaults.fitMichaelisMenten();
+			report.setK(e.getK());
+			report.setMax(e.getMax());
+			report.setR2(dataSetNcallsNFaults.coeffOfDetermination(e));
+			report.setSSErr(dataSetNcallsNFaults.SSerr);
+			report.setSSTot(dataSetNcallsNFaults.SStot);
 			
 			System.out.println("/** Approximation: "+e+"(f: number of bugs, x number of tests) R^2="+dataSetNcallsNFaults.coeffOfDetermination(e)+" **/");
 		}
@@ -781,6 +820,22 @@ public class Yeti {
 
 		//To display the values of vector dSSInterestingValues from YetiType	
 		
+		}
+		
+		// if we ask for a report file, we complete it
+		if(reportFile!=null) {
+			try {
+				FileOutputStream fos = new FileOutputStream(reportFile, true);
+				fos.write((report.toString()+"\n").getBytes());
+				fos.close();
+				Yeti.reset();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				System.err.println("could not print in "+reportFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		
@@ -811,6 +866,7 @@ public class Yeti {
 	 * This method completely resets YETI.
 	 */
 	public static void reset() {
+		try {
 		Yeti.engine = null;
 		Yeti.hasBranchCoverage = false;
 		Yeti.isDistributed = false;
@@ -821,7 +877,8 @@ public class Yeti {
 		Yeti.testModule = null;
 		Yeti.testModulesName = null;
 		Yeti.yetiPath = ".";
-		Yeti.gui.reset();
+		if (Yeti.gui!=null)
+			Yeti.gui.reset();
 		YetiType.reset();
 		YetiVariable.reset();
 		YetiLoader.reset();
@@ -836,6 +893,9 @@ public class Yeti {
 		}
 		// TODO add the same code for other programming languages
 		Yeti.pl = null;
+		} catch (Throwable t) {
+			System.out.println("Error in reset");
+		}
 	}
 	
 	

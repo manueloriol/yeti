@@ -130,7 +130,7 @@ public class YetiEngine {
 			long currentTime = startTime;
 			
 			// at each iteration we test the current time
-			while (currentTime<endTime){
+			while (currentTime<endTime&&!shouldStopTesting()){
 				if (currentTime>lastStep+step) {
 					this.setProgress((int)((100L*(currentTime-startTime))/(endTime-startTime)));
 					lastStep = lastStep+step;
@@ -161,7 +161,7 @@ public class YetiEngine {
 			long lastStep = 0;
 	
 			// we simplty iterate through the calls
-			while (nTests-->0){
+			while (nTests-->0&&!shouldStopTesting()){
 				if ((number-nTests)>(lastStep+step)) {
 					this.setProgress(((number-nTests)*100)/number);
 					lastStep = lastStep+step;
@@ -206,6 +206,23 @@ public class YetiEngine {
 		 */
 		public void setStrategy(YetiStrategy strategy) {
 			this.strategy = strategy;
+		}
+		
+		private boolean stopTesting = false;
+		/**
+		 * Checks if we should stop testing.
+		 * 
+		 * @return true if needs to stop testing.
+		 */
+		public boolean shouldStopTesting() {
+			return stopTesting;
+		}
+		
+		/**
+		 * Call this method to stop testing.
+		 */
+		public void stopTesting() {
+			stopTesting = true;
 		}
 
 }

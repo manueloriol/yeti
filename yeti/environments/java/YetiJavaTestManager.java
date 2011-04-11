@@ -363,7 +363,8 @@ public class YetiJavaTestManager extends YetiTestManager {
 	public static void reset() {
 		nThreadsStopped = 0;
 		nThreadsStarted = 0;
-		workersGroup.destroy();
+		if (workersGroup!=null)
+			workersGroup.destroy();
 		workersGroup= new ThreadGroup("workers");
 	}
 

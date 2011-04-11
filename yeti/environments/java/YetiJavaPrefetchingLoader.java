@@ -40,6 +40,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import javax.swing.JFrame;
 
@@ -53,6 +56,7 @@ import yeti.YetiName;
 import yeti.YetiRoutine;
 import yeti.YetiType;
 import yeti.environments.YetiLoader;
+import yeti.experimenter.YetiTestArchiveModule;
 import yeti.monitoring.YetiCoverageIndicator;
 import yeti.monitoring.YetiGUI;
 import yeti.monitoring.YetiGraphCoverageOverTime;
@@ -401,25 +405,25 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 	 * 
 	 * @see java.lang.ClassLoader#findClass(java.lang.String)
 	 */
-//	@SuppressWarnings("unchecked")
-//	public Class findClass(String name) throws ClassNotFoundException{
-//		File fc=null;
-//		Class c=null;
-//
-//		// for all paths in class path, we try to load the class 
-//		for (String classpath: classpaths){
-//			fc=new File(classpath+System.getProperty("file.separator")+name.replace('.', System.getProperty("file.separator").charAt(0))+".class");
-//			YetiLog.printDebugLog("trying: "+fc.getAbsolutePath(), this);
-//			// we actually check that the class exists
-//			if (fc.exists()){
-//				YetiLog.printDebugLog("found it", this);
-//				c=readClass(fc,name);
-//				break;
-//			}
-//		}
-//		if (c==null) throw new ClassNotFoundException(name);
-//		return c;
-//	}
+	//	@SuppressWarnings("unchecked")
+	//	public Class findClass(String name) throws ClassNotFoundException{
+	//		File fc=null;
+	//		Class c=null;
+	//
+	//		// for all paths in class path, we try to load the class 
+	//		for (String classpath: classpaths){
+	//			fc=new File(classpath+System.getProperty("file.separator")+name.replace('.', System.getProperty("file.separator").charAt(0))+".class");
+	//			YetiLog.printDebugLog("trying: "+fc.getAbsolutePath(), this);
+	//			// we actually check that the class exists
+	//			if (fc.exists()){
+	//				YetiLog.printDebugLog("found it", this);
+	//				c=readClass(fc,name);
+	//				break;
+	//			}
+	//		}
+	//		if (c==null) throw new ClassNotFoundException(name);
+	//		return c;
+	//	}
 
 	/**
 	 *  Utility function to read the class from disk. Should be extended in the future to add reading from a jar file.
@@ -454,7 +458,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 	 */
 	public void loadAllClassesInPath(){
 		for (String classpath: classpaths){
-			if (!classpath.endsWith(".jar"))
+			//if (!classpath.endsWith(".jar"))
 				loadAllClassesIn(classpath, "");
 		}
 	}
@@ -470,35 +474,77 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 		File dir = new File(directoryName);
 		YetiLog.printDebugLog("loading from classpath: " + directoryName, this);
 
+		if (dir.exists()) {
 
-		if (dir.isDirectory()) {
-			// we iterate through the content
-			for (File file: dir.listFiles()) {
-				// For each subdirectory we load recursively
-				String cname=file.getName();
-				if (file.isDirectory()){
-					if (prefix.equals("")){
-						loadAllClassesIn(directoryName+System.getProperty("file.separator")+cname,cname);
-					}else{
-						loadAllClassesIn(directoryName+System.getProperty("file.separator")+cname,prefix+"."+cname);
-					}
-				} else
-					// otherwise we load the class
-					if (cname.endsWith(".class")){
-						String className=cname;
-						className=className.substring(0,className.length()-6);
-						YetiLog.printDebugLog("reading "+className, this);
+			if (dir.isDirectory()) {
+				// we iterate through the content
+				for (File file: dir.listFiles()) {
+					// For each subdirectory we load recursively
+					String cname=file.getName();
+					if (file.isDirectory()){
+						if (prefix.equals("")){
+							loadAllClassesIn(directoryName+System.getProperty("file.separator")+cname,cname);
+						}else{
+							loadAllClassesIn(directoryName+System.getProperty("file.separator")+cname,prefix+"."+cname);
+						}
+					} else
+						// otherwise we load the class
+						if (cname.endsWith(".class")){
+							String className=cname;
+							className=className.substring(0,className.length()-6);
+							YetiLog.printDebugLog("reading "+className, this);
+							try {
+								// we actually try to load the class
+								if (prefix.equals(""))
+									loadClass(className);
+								else
+									loadClass(prefix+"."+className);
+							} catch (ClassNotFoundException e) {
+								// should never happen
+								e.printStackTrace();
+							}
+						}
+				}
+			} else 
+			{
+				if (dir.getName().endsWith(".jar")) {
+					String classpath = dir.getAbsolutePath();
+					YetiLog.printDebugLog("JAR found: "+classpath, this);
+					JarFile jf = null;
+					try {
+						// we first define a JarFile
+						jf = new JarFile(dir);
+						// we open the JarFile
+						Enumeration<JarEntry> jes = jf.entries();
+						// for each element, we open it and extract the name and the classpath of the file
+						for(JarEntry je=jes.nextElement();jes.hasMoreElements();je=jes.nextElement()) {
+							String name = je.getName().replace("/", ".");
+							if (name.endsWith(".class")) {
+								name = name.substring(0,name.length()-6);
+								YetiLog.printDebugLog("Loading class: "+name, this);
+								try {
+									loadClass(name);
+								} catch (ClassNotFoundException e) {
+									// TODO Auto-generated catch block
+									YetiLog.printYetiThrowable(e, this);
+								}
+							}
+						}
+
+					} catch (IOException e) {
+
+						System.err.println("Problem with file: "+dir.getName());
+						e.printStackTrace();
+					} finally {
 						try {
-							// we actually try to load the class
-							if (prefix.equals(""))
-								loadClass(className);
-							else
-								loadClass(prefix+"."+className);
-						} catch (ClassNotFoundException e) {
-							// should never happen
-							e.printStackTrace();
+							// we close the file
+							jf.close();
+						} catch (Exception e) {
+							// if this happens, the JarFile is already closed, we ignore it then
 						}
 					}
+
+				}
 			}
 		}
 	}

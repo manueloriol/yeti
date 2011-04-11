@@ -1,4 +1,6 @@
-package yeti.stats;
+package yeti.experimenter;
+
+import java.io.PrintStream;
 
 /**
 
@@ -32,96 +34,79 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- **/ 
+**/ 
 
+import yeti.Yeti;
+import yeti.YetiReport;
 
 /**
- * Class that represents a Michaelis-Menten function. 
- * Such a function is of the form: (Max*x)/(K+x)
- * 
+ * Class that represents an experiment with YETI
+ *
  * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Mar 24, 2011
+ * @date Apr 7, 2011
  *
  */
-public class YetiMichaelisMentenEquation extends YetiEquation {
-
+public abstract class YetiExperiment {
+	
 	/**
-	 * The Max in the equation.
+	 * The Printstream in which print the results.
 	 */
-	private double Max;
-
-
+	PrintStream ps;
+	
 	/**
-	 * The K in the equation.
+	 * The static options for this experiment.
 	 */
-	private double K;
-
+	String []staticOptions;
+	
 	/**
-	 * Simple constructor for the function.
+	 * True if only printing the calls.
+	 */
+	boolean onlyPrint=false;
+	
+	/**
+	 * Simple constructor for YetiExperiments.
 	 * 
-	 * @param Max the Max constant.
-	 * @param K the K constant.
+	 * @param ps the printStream in which print the results.
+	 * @param staticOptions the static options to call YETI.
+	 * @param onlyPrint true to only print the calls on the command-line.
 	 */
-	public YetiMichaelisMentenEquation(double Max, double K) {
+	public YetiExperiment(PrintStream ps, String []staticOptions, boolean onlyPrint) {
+		this.ps=ps;
+		this.staticOptions=staticOptions;
+		this.onlyPrint = onlyPrint;
 		
-		this.Max=Max;
-		if (K!=0.0) this.K=K;
-		else this.K = .00001;
-
 	}
-
-	/* 
-	 * Returns the simple value for the equation.
-	 * 
-	 * @see yeti.stats.YetiEquation#valueOf(double)
-	 */
-	@Override
-	double valueOf(double x) {
-		return (Max*x)/(K+x);
-	}
-
+	
 	/**
-	 * Simple getter for Max
-	 * 
-	 * @return the value of Max
+	 * The method to chain the calls.
 	 */
-	public double getMax() {
-		return Max;
+	public abstract void make();
+	
+	/**
+	 * Make an individual call to YETI.
+	 * 
+	 * @param yetiPath the yetiPath to provide.
+	 * @param modules the modules to test.
+	 */
+	public void makeCall(String yetiPath, String modules) {
+		// we first initialize the arguments.
+		String []args = new String[staticOptions.length+2];
+		for (int i = 0;i<staticOptions.length;i++) {
+			args[i]=staticOptions[i];
+		}
+		args[staticOptions.length]="-yetiPath="+yetiPath;
+		args[staticOptions.length+1]="-testModules="+modules;
+		// We then make the call
+		if (!onlyPrint) {
+			Yeti.YetiRun(args);
+			Yeti.reset();
+		} else {
+			String call = "java -ea yeti.Yeti ";
+			for (String opt: args) {
+				call=call+" "+opt;
+			}
+			System.out.println(call);
+		}
 	}
 
-	/**
-	 * Simple setter for Max
-	 * 
-	 * @param max the new Max
-	 */
-	public void setMax(double max) {
-		Max = max;
-	}
-
-	/**
-	 * Simple getter for K
-	 * 
-	 * @return the value of K
-	 */	public double getK() {
-		 return K;
-	 }
-
-	 /**
-	  * Simple setter for Max
-	  * 
-	  * @param max the new Max
-	  */
-	 public void setK(double k) {
-		 K = k;
-	 }
-
-	 /* 
-	  * Presents a nice String representation of the equation f(x)=(Max*x)/(K+x)
-	  * 
-	  * @see java.lang.Object#toString()
-	  */
-	 public String toString() {
-		 return "f(x)=("+Max+"*x)/("+K+"+x)";
-
-	 }
 }

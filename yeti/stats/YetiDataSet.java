@@ -102,6 +102,17 @@ public class YetiDataSet {
 		return sum;
 	}
 	
+	
+	/**
+	 * The SStot for the fitting.
+	 */
+	public double SStot;
+
+	/**
+	 * The SSerr for the fitting.
+	 */
+	public double SSerr;
+
 	/**
 	 * A method to calculate the R^2 with respect to an equation.
 	 * 
@@ -110,7 +121,7 @@ public class YetiDataSet {
 	 */
 	public double coeffOfDetermination (YetiEquation e) {
 		// we first calculate the square residuals
-		double SSerr = squaredResiduals(e);
+		SSerr = squaredResiduals(e);
 		double total = 0;
 		// we then calculate the mean of the ys
 		int max = xVector.size();
@@ -120,7 +131,7 @@ public class YetiDataSet {
 		double mean = total/max;
 		
 		// we then calculate the sum of the differences with the mean
-		double SStot = 0.0;
+		SStot = 0.0;
 		for (int i = 0; i<max; i++) {
 			double diffWithMean =  (yVector.get(i)-mean);
 			SStot += diffWithMean*diffWithMean;
@@ -152,8 +163,11 @@ public class YetiDataSet {
 
 		if (xVector.get(1)!=0)
 			fPrimeZero = yVector.get(1)/xVector.get(1);
+		else if(xVector.get(size-1)!=0&&yVector.get(size-1)!=0) {
+			fPrimeZero=yVector.get(size-1)/xVector.get(size-1);
+		}
 		else
-			fPrimeZero = yVector.get(size)/xVector.get(size);
+			fPrimeZero = 1.0;
 		
 		// finally we iterate through the values to find where f(K)/K = f'(0)/2
 		for (i = 2; i<size; i++) {
@@ -183,7 +197,7 @@ public class YetiDataSet {
 		YetiMichaelisMentenEquation e=firstFitMichaelisMenten();
 		
 		// we use the current precision to refine our approximation
-		int currentPrecision = 0;
+		int currentPrecision = -4;
 
 		boolean finished = false;
 		
@@ -193,7 +207,7 @@ public class YetiDataSet {
 			while (!finished) {
 				// we calculate the squared residuals of the current equation
 				double res = squaredResiduals(e);
-				YetiLog.printDebugLog("Trying with: "+e, this);
+				YetiLog.printDebugLog("Trying with: "+e, this,true	);
 				// we calculate the neighbours for the equation
 				YetiMichaelisMentenEquation eM0 = new YetiMichaelisMentenEquation(e.getMax()+1.0/((double)(10^currentPrecision)),e.getK());
 				YetiMichaelisMentenEquation em0 = new YetiMichaelisMentenEquation(e.getMax()-1.0/((double)(10^currentPrecision)),e.getK());

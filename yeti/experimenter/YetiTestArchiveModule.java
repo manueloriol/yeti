@@ -1,4 +1,4 @@
-package yeti.stats;
+package yeti.experimenter;
 
 /**
 
@@ -32,96 +32,81 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- **/ 
+**/ 
+
 
 
 /**
- * Class that represents a Michaelis-Menten function. 
- * Such a function is of the form: (Max*x)/(K+x)
+ * Class that represents a class to test with its class path.
  * 
  * @author Manuel Oriol (manuel@cs.york.ac.uk)
- * @date Mar 24, 2011
+ * @date Apr 7, 2011
  *
  */
-public class YetiMichaelisMentenEquation extends YetiEquation {
-
+public class YetiTestArchiveModule {
+	
 	/**
-	 * The Max in the equation.
+	 * The name of the class to test.
 	 */
-	private double Max;
-
+	private String className;
 
 	/**
-	 * The K in the equation.
+	 * The path for the class to test.
 	 */
-	private double K;
-
+	private String classpath;
+	
 	/**
-	 * Simple constructor for the function.
+	 * Getter for the name of the class.
 	 * 
-	 * @param Max the Max constant.
-	 * @param K the K constant.
+	 * @return the name of the class.
 	 */
-	public YetiMichaelisMentenEquation(double Max, double K) {
-		
-		this.Max=Max;
-		if (K!=0.0) this.K=K;
-		else this.K = .00001;
-
+	public String getClassName() {
+		return className;
 	}
 
-	/* 
-	 * Returns the simple value for the equation.
+	/**
+	 * Setter for the name of the class.
 	 * 
-	 * @see yeti.stats.YetiEquation#valueOf(double)
+	 * @param className
 	 */
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
+	/**
+	 * Getter for the classpath.
+	 * 
+	 * @return the classpath.
+	 */
+	public String getClasspath() {
+		return classpath;
+	}
+
+	/**
+	 * Setter for the classpath.
+	 * 
+	 * @param classpath the classpath to set.
+	 */
+	public void setClasspath(String classpath) {
+		this.classpath = classpath;
+	}
+
+
 	@Override
-	double valueOf(double x) {
-		return (Max*x)/(K+x);
+	public String toString() {
+		return "Class "+getClassName()+" from "+getClasspath();
 	}
 
 	/**
-	 * Simple getter for Max
+	 * Simple constructor for the test archive module.
 	 * 
-	 * @return the value of Max
+	 * @param className The class name.
+	 * @param classpath The classpath to it.
 	 */
-	public double getMax() {
-		return Max;
+	public YetiTestArchiveModule(String className, String classpath) {
+		super();
+		this.className = className;
+		this.classpath = classpath;
 	}
 
-	/**
-	 * Simple setter for Max
-	 * 
-	 * @param max the new Max
-	 */
-	public void setMax(double max) {
-		Max = max;
-	}
-
-	/**
-	 * Simple getter for K
-	 * 
-	 * @return the value of K
-	 */	public double getK() {
-		 return K;
-	 }
-
-	 /**
-	  * Simple setter for Max
-	  * 
-	  * @param max the new Max
-	  */
-	 public void setK(double k) {
-		 K = k;
-	 }
-
-	 /* 
-	  * Presents a nice String representation of the equation f(x)=(Max*x)/(K+x)
-	  * 
-	  * @see java.lang.Object#toString()
-	  */
-	 public String toString() {
-		 return "f(x)=("+Max+"*x)/("+K+"+x)";
-
-	 }
 }

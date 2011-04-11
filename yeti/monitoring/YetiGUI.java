@@ -44,6 +44,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -162,8 +164,27 @@ public class YetiGUI implements Runnable {
 
 		// we create a frame for it and show the frame
 		f = new JFrame();
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		f.add(p,BorderLayout.CENTER);
+		
+		f.addWindowListener(new WindowListener(){
+			@Override
+			public void windowActivated(WindowEvent arg0) {}
+			@Override
+			public void windowClosed(WindowEvent arg0) {}
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				Yeti.engine.stopTesting();
+			}
+			@Override
+			public void windowDeactivated(WindowEvent arg0) {}
+			@Override
+			public void windowDeiconified(WindowEvent arg0) {}
+			@Override
+			public void windowIconified(WindowEvent arg0) {}
+			@Override
+			public void windowOpened(WindowEvent arg0) {}
+		});
 
 		
 		// we set the size
@@ -789,8 +810,10 @@ public class YetiGUI implements Runnable {
 		allComponents = new ArrayList<YetiUpdatable>();
 		branchCoverageIndicator = null;
 		sampler= new YetiSampler(100);
-		f.setVisible(false);
-		f.dispose();
+		if (f!=null) {
+			f.setVisible(false);
+			f.dispose();
+		}
 		f=null;
 		mainGUI=null;
 		
