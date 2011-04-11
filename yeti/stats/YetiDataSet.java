@@ -136,6 +136,9 @@ public class YetiDataSet {
 			double diffWithMean =  (yVector.get(i)-mean);
 			SStot += diffWithMean*diffWithMean;
 		}		
+		
+		if ((SStot==0)&&(SSerr==0))
+			return 1.0;
 		// we finally calculate the coefficient of determination and return it
 		return 1.0-(SSerr/SStot);
 	}
@@ -193,11 +196,13 @@ public class YetiDataSet {
 	 */
 	public YetiMichaelisMentenEquation fitMichaelisMenten() {
 
+		if (yVector.get(yVector.size()-1)==0.0) 
+			return new YetiMichaelisMentenEquation(0,1.0);
 		// we first fit the equation with a broad evaluation
 		YetiMichaelisMentenEquation e=firstFitMichaelisMenten();
 		
 		// we use the current precision to refine our approximation
-		int currentPrecision = -4;
+		int currentPrecision = -10;
 
 		boolean finished = false;
 		
@@ -207,7 +212,7 @@ public class YetiDataSet {
 			while (!finished) {
 				// we calculate the squared residuals of the current equation
 				double res = squaredResiduals(e);
-				YetiLog.printDebugLog("Trying with: "+e, this,true	);
+				YetiLog.printDebugLog("Trying with: "+e, this);
 				// we calculate the neighbours for the equation
 				YetiMichaelisMentenEquation eM0 = new YetiMichaelisMentenEquation(e.getMax()+1.0/((double)(10^currentPrecision)),e.getK());
 				YetiMichaelisMentenEquation em0 = new YetiMichaelisMentenEquation(e.getMax()-1.0/((double)(10^currentPrecision)),e.getK());
