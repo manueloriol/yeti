@@ -37,6 +37,10 @@ package yeti;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Vector;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -77,7 +81,6 @@ import yeti.strategies.YetiRandomPlusPeriodicProbabilitiesStrategy;
 import yeti.strategies.YetiRandomStrategy;
 import yeti.cloud.YetiMap;
 import yeti.YetiType;
-
 
 /**
  * Class that represents the main launching class of Yeti
@@ -722,30 +725,70 @@ public class Yeti {
 
 		// for logging purposes
 		if (isTimeout) {
+			
 			System.out.println("/** Testing Session finished, time: "+(endTestingTime-startTestingTime)+"ms **/");
 		}
 		
 		if(isDSS){
 			
-			System.out.println(" The hashmap containing method name as key and values as DSS Interesting Values.");
-			System.out.println(YetiDSSStrategy.hashMapToStoreMethodNameWithInterestingValues);
+			//%%%%%%%%%%%%%%%%%%%%%%%%% Writing interesting values and method name from hashMap to a text file %%%%%%%%%%%%%%%%%%%%%%%%%// 
+			
+			
 			
 			try {
-			      PrintStream out = new PrintStream(new FileOutputStream("dSSInterestingValues.txt"));
-			      //Vector to hold the values of a dSSInterestingValues Vector.
-			      Vector<Object> tempDSSInterestingValues = new Vector<Object>();
-			      tempDSSInterestingValues = YetiType.getdSSInterestingValues();
-			      for (int i = 0; i < tempDSSInterestingValues.size(); i++)
-			        out.println("Value at: " + i + " = " + tempDSSInterestingValues.elementAt(i));
 
-			      out.close();
 
-			    } catch (FileNotFoundException e) {
-			      e.printStackTrace();
-			    }
+
+				PrintStream out = new PrintStream(new FileOutputStream("HashMap_Of_Interesting_Values.txt"));
+
+				//HashMap to hold the values of a dSSInterestingValues HashMap.
+
+				HashMap<String, Object> tempDSSInterestingHashMapValues = new HashMap<String, Object>();
+
+				tempDSSInterestingHashMapValues = YetiDSSStrategy.hashMapToStoreMethodNameWithInterestingValues;
+				// Get a set of the entries 
+				Set set = tempDSSInterestingHashMapValues.entrySet(); 
+				// Get an iterator 
+				Iterator i = set.iterator(); 
+				// Display elements 
+				while(i.hasNext()) { 
+					Map.Entry me = (Map.Entry)i.next(); 
+					out.println(me.getKey() + " contain interesting values "+ me.getValue()); 
+					out.println();
+		
+				} 
+				out.close();
+
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+//				System.out.println(" The hashmap containing method name as key and values as DSS Interesting Values.");
+//				System.out.println(YetiDSSStrategy.hashMapToStoreMethodNameWithInterestingValues);
+
 			
 			
-			
+			//%%%%%%%%%%%%%%%%%%%%%%%%% Writing interesting values from Vector to a text file %%%%%%%%%%%%%%%%%%%%%%%%%// 
+
+
+
+			try {
+				PrintStream out = new PrintStream(new FileOutputStream("Vector_Of_Interesting_Values.txt"));
+				//Vector to hold the values of a dSSInterestingValues Vector.
+				Vector<Object> tempDSSInterestingValues = new Vector<Object>();
+				tempDSSInterestingValues = YetiType.getInterestingValues();
+				for (int i = 0; i < tempDSSInterestingValues.size(); i++)
+					out.println("Value at: " + i + " = " + tempDSSInterestingValues.elementAt(i));
+
+				out.close();
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+
+
 //			System.out.println();
 //			System.out.println(" The values of dSSInterestingValues Vector are");
 //			System.out.println(YetiType.getdSSInterestingValues());

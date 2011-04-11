@@ -259,16 +259,12 @@ public class YetiType {
 	 */
 	public static Vector<Object> interestingValues = new Vector<Object>();
 
-	/**
-	 * The vector of interestingValues received from DSSStrategy.
-	 */
-	private static Vector<Object> dSSInterestingValues = new Vector<Object>();
-
+	
 	/**
 	 * Simple getter for interesting values.
 	 * @return  the vector of interesting values.
 	 */
-	public Vector<Object> getInterestingValues() {
+	public static Vector<Object> getInterestingValues() {
 
 		return interestingValues;
 	}
@@ -281,58 +277,14 @@ public class YetiType {
 	public void addInterestingValues(Object interestingValue) {
 		if (!this.hasInterestingValues())
 			this.setHasInterestingValues(true);
-		//added by Mian.
-		//System.out.println("The value of interesting value passed to this method is :" + interestingValue);
 		int i = interestingValues.indexOf(interestingValue, 0);
-		//System.out.println(" The value of i is "+ i);
 		if(i == -1)
 		{
 			this.interestingValues.add(interestingValue);
 			YetiLog.printDebugLog("Added interesting value: "+ interestingValue, this);
 		}
-		//else
-		//{ 
-		//	System.out.println(" The item is already in the vector so it is not added this time.");
-		//}
+
 	}
-
-
-	public static Vector<Object> getdSSInterestingValues(){
-		return dSSInterestingValues;
-	}
-
-
-
-
-
-	/**
-	 * Adds interesting values from DSSStrategy in Vector dSSInterestingValues.
-	 * 
-	 * @param interestingValue the value to add.
-	 */
-	public void addDSSInterestingValues(Object interestingValue) {
-		//if (!this.hasInterestingValues())
-		//this.setHasInterestingValues(true);
-		//added by Mian.
-		//System.out.println("The value of interesting value passed to this method is :" + interestingValue);
-		int i = dSSInterestingValues.indexOf(interestingValue, 0);
-		//System.out.println(" The value of i is "+ i);
-		if(i == -1)
-		{
-			this.dSSInterestingValues.add(interestingValue);
-			YetiLog.printDebugLog("Added interesting value to dSSInterestingValues Vector: "+ interestingValue, this, true);
-		}
-		//else
-		//{ 
-		//	System.out.println(" The item is already in the vector so it is not added this time.");
-		//}
-	}
-
-
-
-
-
-
 
 
 	/**
@@ -371,16 +323,6 @@ public class YetiType {
 		return this.interestingValues.get(i);
 	}
 	
-	/**
-	 * Returns an interesting value from dSSInterestingValues and does not remove it from the list of interesting values.
-	 * 
-	 * @return an object conataining the value.
-	 */
-	public Object getDSSRandomInterestingValue() {
-		double d=Math.random();
-		int i=(int) Math.floor(d*this.dSSInterestingValues.size());
-		return this.dSSInterestingValues.get(i);
-	}
 	
 
 	/**
@@ -397,15 +339,6 @@ public class YetiType {
 
 	}
 
-
-	public YetiVariable getDSSRandomInterestingVariable() {
-		Object value =this.getDSSRandomInterestingValue();
-		YetiLog.printDebugLog("Interesting variable: "+value, this);
-		YetiIdentifier id=YetiIdentifier.getFreshIdentifier();
-		return new YetiVariable(id, this, value);
-
-	}
-	
 	
 	/**
 	 * A simple setter to say that a type has interesting values.
