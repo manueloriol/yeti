@@ -727,9 +727,12 @@ public class Yeti {
 		
 		if(isDSS){
 			
+			System.out.println(" The hashmap containing method name as key and values as DSS Interesting Values.");
+			System.out.println(YetiDSSStrategy.hashMapToStoreMethodNameWithInterestingValues);
+			
 			try {
 			      PrintStream out = new PrintStream(new FileOutputStream("dSSInterestingValues.txt"));
-			    //Vector to hold the values of a dSSInterestingValues Vector.
+			      //Vector to hold the values of a dSSInterestingValues Vector.
 			      Vector<Object> tempDSSInterestingValues = new Vector<Object>();
 			      tempDSSInterestingValues = YetiType.getdSSInterestingValues();
 			      for (int i = 0; i < tempDSSInterestingValues.size(); i++)

@@ -257,7 +257,7 @@ public class YetiType {
 	/**
 	 * The vector of interestingValues.
 	 */
-	private Vector<Object> interestingValues = new Vector<Object>();
+	public static Vector<Object> interestingValues = new Vector<Object>();
 
 	/**
 	 * The vector of interestingValues received from DSSStrategy.
