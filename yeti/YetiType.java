@@ -365,6 +365,7 @@ public class YetiType {
 	 * @return an object conataining the value.
 	 */
 	public Object getRandomInterestingValue() {
+		if (interestingValues.size()==0) return null;
 		double d=Math.random();
 		int i=(int) Math.floor(d*this.interestingValues.size());
 		return this.interestingValues.get(i);
@@ -389,6 +390,7 @@ public class YetiType {
 	 */
 	public YetiVariable getRandomInterestingVariable() {
 		Object value =this.getRandomInterestingValue();
+		if (value == null) return null;
 		YetiLog.printDebugLog("Interesting variable: "+value, this);
 		YetiIdentifier id=YetiIdentifier.getFreshIdentifier();
 		return new YetiVariable(id, this, value);
