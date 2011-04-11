@@ -152,6 +152,8 @@ public class Yeti {
 	 * The engine used to make tests.
 	 */
 	public static YetiEngine engine;
+
+	public static boolean compactReport=false;
 	/**
 	 * Main method of Yeti. It serves YetiRun the arguments it receives.
 	 * Arguments are numerous. Here is a list of the current ones:
@@ -195,7 +197,7 @@ public class Yeti {
 			printHelp();
 			//e.printStackTrace();
 		}
-		System.exit(0);
+		if (Yeti.compactReport) System.exit(0);
 	}
 
 	/**
@@ -457,6 +459,7 @@ public class Yeti {
 			
 			// we want to test these modules
 			if (s0.startsWith("-compactReport=")) {
+				Yeti.compactReport = true;
 				reportFile=s0.substring(15);
 				continue;
 			}

@@ -58,7 +58,7 @@ public class YetiRandomStrategy extends YetiStrategy{
 	/**
 	 * The maximum number of recursions allowed for creating arguments to a method.
 	 */
-	public static int MAX_RECURSIVE_RANK=10;
+	public static int MAX_RECURSIVE_RANK=20;
 
 	/**
 	 * Creates this strategy.
