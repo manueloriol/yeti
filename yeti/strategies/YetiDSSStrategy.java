@@ -84,9 +84,9 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 	
 	
 	/**
-	 * HashMap to store the routine name with the interesting values.
+	 * HashMap to store the type name with the interesting values.
 	 */
-	public static HashMap<String, Object> hashMapToStoreMethodNameWithInterestingValues = new HashMap<String, Object>();
+	public static HashMap<String, Object> hashMapToStoreTypeNameWithInterestingValues = new HashMap<String, Object>();
 	
 	
 
@@ -101,6 +101,289 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 		// This statement is added to remove the existing interesting values from the Vector.
 		YetiType.interestingValues.clear();
 		}
+	
+	
+	long oldFaults1=0;
+	
+	static int  number = 1;
+	
+	long oldFaults2=0;
+
+	YetiCard[] oldyt=null;
+	
+	int lengthOfParameters;
+
+	public YetiCard[] getAllCards(YetiRoutine routine) throws ImpossibleToMakeConstructorException{
+
+		long currentErrors = YetiLog.numberOfErrors;
+
+		YetiLog.printDebugLog("Number of Errors "+currentErrors, this);
+	
+		if (currentErrors>oldFaults1){
+			YetiLog.printDebugLog("found bug in the strategy", this);
+			oldFaults1 = currentErrors;
+
+
+			for(YetiCard yc: oldyt){
+				yc.getValue();
+
+				if (yc.getType().getName().equals("int"))
+				{	
+					
+					String typeName = "IntegerType"+ number++; 
+					ArrayList<Integer> arrayListToStoreDSSInterestingIntegerValues = new ArrayList<Integer>();
+					
+					int intFaultValue = ((Integer)(yc.getValue())).intValue();
+
+					// This statement will add the fault value first
+					yc.getType().addInterestingValues((Integer)intFaultValue);
+					arrayListToStoreDSSInterestingIntegerValues.add((Integer)intFaultValue);
+
+					// This for loop will add values greater than the fault value.
+					for (int i =1; i < 5; i++)
+					{
+						yc.getType().addInterestingValues((Integer)intFaultValue + i);
+						arrayListToStoreDSSInterestingIntegerValues.add((Integer)intFaultValue + i);
+					}
+
+					// This for loop will add values lesser than the fault value.
+					for (int j = 1; j < 5; j++)
+					{
+						yc.getType().addInterestingValues((Integer)intFaultValue - j);
+						arrayListToStoreDSSInterestingIntegerValues.add((Integer)intFaultValue - j);
+					}
+					
+					hashMapToStoreTypeNameWithInterestingValues.put(typeName, arrayListToStoreDSSInterestingIntegerValues);
+					
+				}
+
+
+				else if (yc.getType().getName().equals("double"))
+				{
+					
+					String typeName = "DoubleType"+ number++; 
+					ArrayList<Double> arrayListToStoreDSSInterestingDoubleValues = new ArrayList<Double>();
+					
+					double doubleFaultValue = ((Double)(yc.getValue())).doubleValue();
+
+					// This statement will add the fault value first
+					yc.getType().addInterestingValues((Double)doubleFaultValue);
+					arrayListToStoreDSSInterestingDoubleValues.add((Double)doubleFaultValue);
+
+					// This for loop will add values greater than the fault value.
+					for (int i =1; i < 5; i++)
+					{
+						yc.getType().addInterestingValues((Double)doubleFaultValue + i);
+						arrayListToStoreDSSInterestingDoubleValues.add((Double)doubleFaultValue + i);
+					}
+
+					// This for loop will add values lesser than the fault value.
+					for (int j = 1; j < 5; j++)
+					{
+						yc.getType().addInterestingValues((Double)doubleFaultValue - j);
+						arrayListToStoreDSSInterestingDoubleValues.add((Double)doubleFaultValue - j);
+					}
+					
+					hashMapToStoreTypeNameWithInterestingValues.put(typeName, arrayListToStoreDSSInterestingDoubleValues);
+				}	
+
+
+				else if(yc.getType().getName().equals("String")){
+					
+					String typeName = "StringType"+ number++; 
+					ArrayList<String> arrayListToStoreDSSInterestingStringValues = new ArrayList<String>();
+
+					String c = (String) yc.getValue();
+					
+					yc.getType().addInterestingValues((String)c);
+					arrayListToStoreDSSInterestingStringValues.add((String)c);
+					
+					yc.getType().addInterestingValues((String)c+" ");
+					arrayListToStoreDSSInterestingStringValues.add((String)c+" ");
+					
+					yc.getType().addInterestingValues((String)" "+c);
+					arrayListToStoreDSSInterestingStringValues.add((String)" "+c);
+					
+					yc.getType().addInterestingValues((String)c.toUpperCase());
+					arrayListToStoreDSSInterestingStringValues.add((String)c.toUpperCase());
+					
+					yc.getType().addInterestingValues((String)c.toLowerCase());
+					arrayListToStoreDSSInterestingStringValues.add((String)c.toLowerCase());
+					
+					yc.getType().addInterestingValues((String)c.trim());
+					arrayListToStoreDSSInterestingStringValues.add((String)c.trim());
+					
+					yc.getType().addInterestingValues((String)c.substring(2));
+					arrayListToStoreDSSInterestingStringValues.add((String)c.substring(2));
+					
+					yc.getType().addInterestingValues((String)c.substring(1,c.length()-1));
+					arrayListToStoreDSSInterestingStringValues.add((String)c.substring(1,c.length()-1));
+					
+					hashMapToStoreTypeNameWithInterestingValues.put( typeName, arrayListToStoreDSSInterestingStringValues);
+
+				}
+
+
+				else if(yc.getType().getName().equals("byte"))
+				{
+					String typeName = "ByteType"+ number++; 
+					ArrayList<Byte> arrayListToStoreDSSInterestingByteValues = new ArrayList<Byte>();
+					
+					
+					byte byteFaultValue = ((Byte)(yc.getValue())).byteValue();
+
+					// This statement will add the fault value first
+					yc.getType().addInterestingValues((Byte)byteFaultValue);
+					arrayListToStoreDSSInterestingByteValues.add((Byte)byteFaultValue);
+
+					// This for loop will add values greater than the fault value.
+					for (int i =1; i < 5; i++)
+					{
+						yc.getType().addInterestingValues((Byte)byteFaultValue + i);
+						arrayListToStoreDSSInterestingByteValues.add((Byte)(byte)(byteFaultValue - i));
+					}
+
+					// This for loop will add values lesser than the fault value.
+					for (int j = 1; j < 5; j++)
+					{
+						yc.getType().addInterestingValues((Byte)byteFaultValue-j);
+						arrayListToStoreDSSInterestingByteValues.add((Byte)(byte)(byteFaultValue - j));
+					}
+					
+					hashMapToStoreTypeNameWithInterestingValues.put(typeName, arrayListToStoreDSSInterestingByteValues);
+					
+				}
+
+
+				else if(yc.getType().getName().equals("short"))
+				{
+					String typeName = "ShortType"+ number++; 
+					ArrayList<Short> arrayListToStoreDSSInterestingShortValues = new ArrayList<Short>();
+					
+					
+					short shortFaultValue = ((Short)(yc.getValue())).shortValue();
+
+					// This statement will add the fault value first
+					yc.getType().addInterestingValues((Short)shortFaultValue);
+					arrayListToStoreDSSInterestingShortValues.add((Short)shortFaultValue);
+
+					// This for loop will add values greater than the fault value.
+					for (int i =1; i < 5; i++)
+					{
+						yc.getType().addInterestingValues((Short)shortFaultValue + i);
+						arrayListToStoreDSSInterestingShortValues.add((Short)(short)(shortFaultValue + i));
+					}
+
+					// This for loop will add values lesser than the fault value.
+					for (int j = 1; j < 5; j++)
+					{
+						yc.getType().addInterestingValues((Short)shortFaultValue - j);
+						arrayListToStoreDSSInterestingShortValues.add((Short)(short)(shortFaultValue - j));
+					}
+					
+					hashMapToStoreTypeNameWithInterestingValues.put(typeName, arrayListToStoreDSSInterestingShortValues);
+				}
+
+
+				else if(yc.getType().getName().equals("long"))
+				{
+					String typeName = "LongType"+ number++; 
+					ArrayList<Long> arrayListToStoreDSSInterestingLongValues = new ArrayList<Long>();
+					
+					long longFaultValue = ((Long)(yc.getValue())).longValue();
+
+					// This statement will add the fault value first
+					yc.getType().addInterestingValues((Long)longFaultValue);
+					arrayListToStoreDSSInterestingLongValues.add((Long)longFaultValue);
+
+					// This for loop will add values greater than the fault value.
+					for (int i =1; i < 5; i++)
+					{
+						yc.getType().addInterestingValues((Long)longFaultValue + i);
+						arrayListToStoreDSSInterestingLongValues.add((Long)longFaultValue + i);
+					}
+
+					// This for loop will add values lesser than the fault value.
+					for (int j = 1; j < 5; j++)
+					{
+						yc.getType().addInterestingValues((Long)longFaultValue - j);
+						arrayListToStoreDSSInterestingLongValues.add((Long)longFaultValue - j);
+					}
+					
+					hashMapToStoreTypeNameWithInterestingValues.put(typeName, arrayListToStoreDSSInterestingLongValues);
+				}
+
+
+				else if(yc.getType().getName().equals("char"))
+				{
+					
+					String typeName = "CharType"+ number++; 
+					ArrayList<Character> arrayListToStoreDSSInterestingCharValues = new ArrayList<Character>();
+					
+					char charFaultValue = ((Character)(yc.getValue())).charValue();
+
+					// This statement will add the fault value first
+					yc.getType().addInterestingValues((Character)charFaultValue);
+					arrayListToStoreDSSInterestingCharValues.add((Character)charFaultValue);
+
+					// This for loop will add values greater than the fault value.
+					for (int i =1; i < 5; i++)
+					{
+						yc.getType().addInterestingValues((Character)(char)(charFaultValue+i));
+						arrayListToStoreDSSInterestingCharValues.add((Character)(char)(charFaultValue+i));
+					}
+
+					// This for loop will add values lesser than the fault value.
+					for (int j = 1; j < 5; j++)
+					{
+						yc.getType().addInterestingValues((Character)(char)(charFaultValue-j));
+						arrayListToStoreDSSInterestingCharValues.add((Character)(char)(charFaultValue-j));
+					}
+					
+					hashMapToStoreTypeNameWithInterestingValues.put(typeName, arrayListToStoreDSSInterestingCharValues);
+				}
+
+
+				else if(yc.getType().getName().equals("float"))
+				{
+					String typeName = "FloatType"+ number++; 
+					ArrayList<Float> arrayListToStoreDSSInterestingFloatValues = new ArrayList<Float>();
+					
+					float floatFaultValue = ((Float)(yc.getValue())).floatValue();
+
+					// This statement will add the fault value first
+					yc.getType().addInterestingValues((Float)floatFaultValue);
+					arrayListToStoreDSSInterestingFloatValues.add((Float)floatFaultValue);
+
+					// This for loop will add values greater than the fault value.
+					for (int i =1; i < 5; i++)
+					{
+						yc.getType().addInterestingValues((Float)floatFaultValue + i);
+						arrayListToStoreDSSInterestingFloatValues.add((Float)floatFaultValue + i);
+					}
+
+					// This for loop will add values lesser than the fault value.
+					for (int j = 1; j < 5; j++)
+					{
+						yc.getType().addInterestingValues((Float)floatFaultValue - j);
+						arrayListToStoreDSSInterestingFloatValues.add((Float)floatFaultValue - j);
+					}
+					
+					hashMapToStoreTypeNameWithInterestingValues.put(typeName, arrayListToStoreDSSInterestingFloatValues);
+					
+				}
+			}
+		}
+
+
+		oldyt=super.getAllCards(routine);
+		return oldyt;
+	} 
+	
+	
+	
+	
+	
 	
 	
 	/**
@@ -207,206 +490,7 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 	}
 	
 	
-	long oldFaults1=0;
-	
-	static int  number = 1;
-	
-	long oldFaults2=0;
 
-	YetiCard[] oldyt=null;
-
-	public YetiCard[] getAllCards(YetiRoutine routine) throws ImpossibleToMakeConstructorException{
-
-		long currentErrors = YetiLog.numberOfErrors;
-
-		YetiLog.printDebugLog("nErrors "+currentErrors, this);
-
-		if (currentErrors>oldFaults1){
-			YetiLog.printDebugLog("found bug in the strategy", this);
-			oldFaults1 = currentErrors;
-
-
-			for(YetiCard yc: oldyt){
-				yc.getValue();
-
-				if (yc.getType().getName().equals("int"))
-				{	
-					
-					String methodName = "method"+ number++; 
-					ArrayList<Integer> arrayListToStoreDSSInterestingIntegerValues = new ArrayList<Integer>();
-					
-					int intFaultValue = ((Integer)(yc.getValue())).intValue();
-
-					// This statement will add the fault value first
-					yc.getType().addInterestingValues((Integer)intFaultValue);
-					arrayListToStoreDSSInterestingIntegerValues.add((Integer)intFaultValue);
-
-					// This for loop will add values greater than the fault value.
-					for (int i =1; i < 5; i++)
-					{
-						yc.getType().addInterestingValues((Integer)intFaultValue + i);
-						arrayListToStoreDSSInterestingIntegerValues.add((Integer)intFaultValue + i);
-					}
-
-					// This for loop will add values lesser than the fault value.
-					for (int j = 1; j < 5; j++)
-					{
-						yc.getType().addInterestingValues((Integer)intFaultValue - j);
-						arrayListToStoreDSSInterestingIntegerValues.add((Integer)intFaultValue - j);
-					}
-					
-					hashMapToStoreMethodNameWithInterestingValues.put(methodName, arrayListToStoreDSSInterestingIntegerValues);
-					
-				}
-
-
-				else if (yc.getType().getName().equals("double"))
-				{
-					double doubleFaultValue = ((Double)(yc.getValue())).doubleValue();
-
-					// This statement will add the fault value first
-					yc.getType().addInterestingValues((Double)doubleFaultValue);
-
-					// This for loop will add values greater than the fault value.
-					for (int i =1; i < 5; i++)
-					{
-						yc.getType().addInterestingValues((Double)doubleFaultValue + i);
-					}
-
-					// This for loop will add values lesser than the fault value.
-					for (int j = 1; j < 5; j++)
-					{
-						yc.getType().addInterestingValues((Double)doubleFaultValue - j);
-					}
-				}	
-
-
-				else if(yc.getType().getName().equals("String")){
-
-					String c = (String) yc.getValue();
-
-					yc.getType().addInterestingValues((String)c);
-					yc.getType().addInterestingValues((String)c+" ");
-					yc.getType().addInterestingValues((String)" "+c);
-					yc.getType().addInterestingValues((String)c.toUpperCase());
-					yc.getType().addInterestingValues((String)c.toLowerCase());
-					yc.getType().addInterestingValues((String)c.trim());
-					yc.getType().addInterestingValues((String)c.substring(2));
-					yc.getType().addInterestingValues((String)c.substring(1,c.length()-1));
-
-				}
-
-
-				else if(yc.getType().getName().equals("byte"))
-				{
-					byte byteFaultValue = ((Byte)(yc.getValue())).byteValue();
-
-					// This statement will add the fault value first
-					yc.getType().addInterestingValues((Byte)byteFaultValue);
-
-					// This for loop will add values greater than the fault value.
-					for (int i =1; i < 5; i++)
-					{
-						yc.getType().addInterestingValues((Byte)byteFaultValue+i);
-					}
-
-					// This for loop will add values lesser than the fault value.
-					for (int j = 1; j < 5; j++)
-					{
-						yc.getType().addInterestingValues((Byte)byteFaultValue-j);
-					}
-				}
-
-
-				else if(yc.getType().getName().equals("short"))
-				{
-					short shortFaultValue = ((Short)(yc.getValue())).shortValue();
-
-					// This statement will add the fault value first
-					yc.getType().addInterestingValues((Short)shortFaultValue);
-
-					// This for loop will add values greater than the fault value.
-					for (int i =1; i < 5; i++)
-					{
-						yc.getType().addInterestingValues((Short)shortFaultValue + i);
-					}
-
-					// This for loop will add values lesser than the fault value.
-					for (int j = 1; j < 5; j++)
-					{
-						yc.getType().addInterestingValues((Short)shortFaultValue - j);
-					}
-				}
-
-
-				else if(yc.getType().getName().equals("long"))
-				{
-					long longFaultValue = ((Long)(yc.getValue())).longValue();
-
-					// This statement will add the fault value first
-					yc.getType().addInterestingValues((Long)longFaultValue);
-
-					// This for loop will add values greater than the fault value.
-					for (int i =1; i < 5; i++)
-					{
-						yc.getType().addInterestingValues((Long)longFaultValue + i);
-					}
-
-					// This for loop will add values lesser than the fault value.
-					for (int j = 1; j < 5; j++)
-					{
-						yc.getType().addInterestingValues((Long)longFaultValue - j);
-					}
-				}
-
-
-				else if(yc.getType().getName().equals("char"))
-				{
-					char charFaultValue = ((Character)(yc.getValue())).charValue();
-
-					// This statement will add the fault value first
-					yc.getType().addInterestingValues((Character)charFaultValue);
-
-					// This for loop will add values greater than the fault value.
-					for (int i =1; i < 5; i++)
-					{
-						yc.getType().addInterestingValues((Character)(char)(charFaultValue+i));
-					}
-
-					// This for loop will add values lesser than the fault value.
-					for (int j = 1; j < 5; j++)
-					{
-						yc.getType().addInterestingValues((Character)(char)(charFaultValue-j));
-					}
-				}
-
-
-				else if(yc.getType().getName().equals("float"))
-				{
-					float floatFaultValue = ((Float)(yc.getValue())).floatValue();
-
-					// This statement will add the fault value first
-					yc.getType().addInterestingValues((Float)floatFaultValue);
-
-					// This for loop will add values greater than the fault value.
-					for (int i =1; i < 5; i++)
-					{
-						yc.getType().addInterestingValues((Float)floatFaultValue + i);
-					}
-
-					// This for loop will add values lesser than the fault value.
-					for (int j = 1; j < 5; j++)
-					{
-						yc.getType().addInterestingValues((Float)floatFaultValue - j);
-					}
-				}
-			}
-		}
-
-
-		oldyt=super.getAllCards(routine);
-		return oldyt;
-	} 
 	
 	
 	

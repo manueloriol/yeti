@@ -745,7 +745,7 @@ public class Yeti {
 
 				HashMap<String, Object> tempDSSInterestingHashMapValues = new HashMap<String, Object>();
 
-				tempDSSInterestingHashMapValues = YetiDSSStrategy.hashMapToStoreMethodNameWithInterestingValues;
+				tempDSSInterestingHashMapValues = YetiDSSStrategy.hashMapToStoreTypeNameWithInterestingValues;
 				// Get a set of the entries 
 				Set set = tempDSSInterestingHashMapValues.entrySet(); 
 				// Get an iterator 
