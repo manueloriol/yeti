@@ -275,14 +275,21 @@ public class YetiType {
 	 * @param interestingValue the value to add.
 	 */
 	public void addInterestingValues(Object interestingValue) {
+		
 		if (!this.hasInterestingValues())
 			this.setHasInterestingValues(true);
-		int i = interestingValues.indexOf(interestingValue, 0);
-		if(i == -1)
-		{
+		
+		//***********************************************************************************************************************************
+		//************ There is no need of stopping duplication because the repetition of the value mean that has more chances of finding bug
+		//************ So it should also have more chances of being picked for the next test.
+		
+//		int i = interestingValues.indexOf(interestingValue, 0);
+//		if(i == -1)
+//		{
 			this.interestingValues.add(interestingValue);
 			YetiLog.printDebugLog("Added interesting value: "+ interestingValue, this);
-		}
+//		}
+		//***********************************************************************************************************************************
 
 	}
 
