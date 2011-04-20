@@ -70,6 +70,11 @@ public class YetiTestArchiveExplorer {
 	public Vector<String> allJars = new Vector<String>();
 	
 	/**
+	 * All directories files.
+	 */
+	public Vector<String> allDirs = new Vector<String>();
+	
+	/**
 	 * Number of JAR files.
 	 */
 	public int numberOfJarFiles=0;
@@ -118,17 +123,44 @@ public class YetiTestArchiveExplorer {
 		
 	}
 
+	
 	/**
-	 * Writes the files on the command-line.
+	 * Return all dirs as a path.
+	 * 
+	 * @return a path containing all dirs.
 	 */
-	public void includeAllJars() {
+	public String allDirsAsPath() {
+		String alldirpaths = ".";
+		
+		for (String dir: allDirs) {
+			alldirpaths =  alldirpaths+":"+dir;
+		}
+		return alldirpaths;		
+	}
+
+	/**
+	 * Return all Jars as a path.
+	 * 
+	 * @return a path containing all jars
+	 */
+	public String allJarsAsPath() {
 		String alljarpaths = ".";
 		
 		for (String jar: allJars) {
 			alljarpaths =  alljarpaths+":"+jar;
 		}
+		return alljarpaths;		
+	}
+
+	/**
+	 * Writes the files on the command-line.
+	 */
+	public void includeAllJarsAndDirs() {
+		String alljardirpaths = ".";
+		alljardirpaths = alljardirpaths+":" /**+allDirsAsPath()+":"**/  +allJarsAsPath();
+	
 		for (YetiTestArchiveModule tam:allModules) {
-			tam.setClasspath(alljarpaths);
+			tam.setClasspath(alljardirpaths);
 		}
 		
 	}
@@ -181,6 +213,7 @@ public class YetiTestArchiveExplorer {
 	 * @param f the directory to explore.
 	 */
 	public void exploreDirectory(File f) {
+		allDirs.add(f.getAbsolutePath());
 		File []allFiles = f.listFiles();
 		for (File floc: allFiles) {
 			if (floc.isDirectory()) {
@@ -188,6 +221,13 @@ public class YetiTestArchiveExplorer {
 			} else {
 				if (floc.getName().endsWith(".jar")) {
 					this.exploreJAR(floc);
+				} else if (floc.getName().endsWith(".class")) {
+					String name = floc.getName();
+					name = name.substring(0,name.length()-6);
+					YetiLog.printDebugLog("Class: "+name, this);
+					
+					allModules.add(new YetiTestArchiveModule(name,allDirsAsPath()));
+					numberOfClasses++;
 				}
 			}
 			
@@ -264,7 +304,7 @@ public class YetiTestArchiveExplorer {
 			YetiTestArchiveExplorer ae = new YetiTestArchiveExplorer(path);
 			try {
 				ae.explore();
-				ae.includeAllJars();
+				ae.includeAllJarsAndDirs();
 				if (onlyPrint)
 					ae.print();
 				else
@@ -283,7 +323,7 @@ public class YetiTestArchiveExplorer {
 
 	/**
 	 * 
-	 * Prints a simple help
+	 * Prints a simple help.
 	 * 
 	 */
 	private static void printHelp() {
