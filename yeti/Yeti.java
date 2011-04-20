@@ -157,6 +157,8 @@ public class Yeti {
 	public static YetiEngine engine;
 
 	public static boolean compactReport=false;
+
+	public static boolean finished=false;
 	/**
 	 * Main method of Yeti. It serves YetiRun the arguments it receives.
 	 * Arguments are numerous. Here is a list of the current ones:
@@ -200,7 +202,8 @@ public class Yeti {
 			printHelp();
 			//e.printStackTrace();
 		}
-		if (Yeti.compactReport) System.exit(0);
+		if (Yeti.compactReport||YetiGUI.closed) System.exit(0);
+		Yeti.finished = true;
 	}
 
 	/**

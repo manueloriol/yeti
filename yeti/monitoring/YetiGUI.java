@@ -142,6 +142,8 @@ public class YetiGUI implements Runnable {
 
 	public static YetiJavaPrefetchingLoader branchCoverageIndicator = null;
 
+	public static boolean closed;
+
 	/**
 	 * Simple creation procedure for YetiGUI.
 	 * 
@@ -171,7 +173,9 @@ public class YetiGUI implements Runnable {
 			public void windowActivated(WindowEvent arg0) {}
 			public void windowClosed(WindowEvent arg0) {}
 			public void windowClosing(WindowEvent arg0) {
+				YetiGUI.closed = true;
 				Yeti.engine.stopTesting();
+				if (Yeti.finished) System.exit(0);
 			}
 			public void windowDeactivated(WindowEvent arg0) {}
 			public void windowDeiconified(WindowEvent arg0) {}
