@@ -44,10 +44,10 @@ import java.io.InputStream;
 import java.util.Vector;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
+
+import org.jgap.IChromosome;
 import yeti.environments.YetiInitializer;
 import yeti.environments.YetiLoader;
 import yeti.environments.YetiProgrammingLanguageProperties;
@@ -71,9 +71,11 @@ import yeti.environments.jml.YetiJMLPrefetchingLoader;
 import yeti.environments.pharo.YetiPharoCommunicator;
 import yeti.environments.pharo.YetiPharoTestManager;
 import yeti.monitoring.YetiGUI;
-import yeti.monitoring.YetiUpdatable;
 import yeti.stats.YetiDataSet;
 import yeti.stats.YetiMichaelisMentenEquation;
+import yeti.strategies.GA.YetiChromosomeInterpreter;
+import yeti.strategies.GA.YetiEvolutionaryStrategy;
+import yeti.strategies.GA.YetiStrategyOptimizer;
 import yeti.strategies.YetiDSSStrategy;
 import yeti.strategies.YetiRandomPlusDecreasing;
 import yeti.strategies.YetiRandomPlusStrategy;
@@ -93,7 +95,11 @@ public class Yeti {
 	 * The report for the testing session.
 	 */
 	public static YetiReport report= null;
-	
+
+    /**
+     * The chromosome to run the evolutionary stratgy
+     */
+    public static IChromosome chromosome;
 	/**
 	 * The main gui for Yeti.
 	 */
@@ -230,6 +236,9 @@ public class Yeti {
 		boolean isRandomPlusPeriodic = false;
 		boolean isRandomPlusDecreasing = false;
 		boolean isDSS = false;
+        boolean isEvolutionary = false;
+        boolean isRunningFromChromosome = false;
+        String chromosomePath = null;
 		boolean showMonitoringGui = false;
 		boolean printNumberOfCallsPerMethod = false;
 		boolean approximate = false;
@@ -410,10 +419,23 @@ public class Yeti {
 			if (s0.equals("-DSS")) {
 				isDSS = true;
 				continue;	
-			}			
+			}
 
-			// we have no limits for the number of instances
-			if (s0.equals("-noInstancesCap")) {
+            if (s0.equals("-evolutionary")) {
+                isEvolutionary = true;
+                continue;
+            }
+
+            // we want to use the following path
+            if (s0.startsWith("-chromosome=")) {
+                String s1=s0.substring(12);
+                chromosomePath = s1;
+                isRunningFromChromosome = true;
+                continue;
+            }
+
+            // we have no limits for the number of instances
+            if (s0.equals("-noInstancesCap")) {
 				YetiType.TYPES_HAVEMAXIMUM_NUMBER_OF_INSTANCES = true;
 				continue;	
 			}
@@ -585,6 +607,12 @@ public class Yeti {
 			pl.setNoLogs(isNoLogs);
 		}
 
+        if (isEvolutionary) {
+            System.out.println("--==> Evolving a testing Strategy");
+            YetiStrategyOptimizer optimizer = new YetiStrategyOptimizer();
+            optimizer.evolveStrategy();
+        }
+
 		// initializing Yeti
 		try {
 			pl.getInitializer().initialize(args);
@@ -627,8 +655,27 @@ public class Yeti {
 		}		
 		if (isDSS) {
 			strategy= new YetiDSSStrategy(testManager);
-		}			
+		}
 
+        if (isRunningFromChromosome) {
+            if (chromosome == null) {
+                System.out.println("Have to load a chromosome from file");
+            }
+            //Load chromosome from file
+
+            YetiChromosomeInterpreter chromosomeInterpreter = new YetiChromosomeInterpreter(chromosome);
+            strategy = new YetiEvolutionaryStrategy(testManager,chromosomeInterpreter);
+        }
+
+        //TODO: lssilva make sure nothing that is not for EV is executed after the ev
+        // is started
+        if (isEvolutionary) {
+            //Take the chromosome set by GA
+
+            if (strategy == null) {
+            //    strategy = new YetiEvolutionaryStrategy(testManager, chromosome);
+            }
+        }
 
 		// getting the module(s) to test
 		YetiModule mod=null;
@@ -973,6 +1020,8 @@ public class Yeti {
 		System.out.println("\t-randomPlus : uses the random+ strategy that injects interesting values every now and then.");
 		System.out.println("\t-randomPlusPeriodic : uses the random+ strategy and periodically change the values of the standard probalilities (null values, new instances, interesting values).");
 		System.out.println("\t-randomPlusDecreasing : uses the random+ strategy and decreases the values of the standard probalilities (null values, new instances, interesting values).<br>");
+        System.out.println("\t-evolutionary : uses GA to evolve a testing strategy.");
+        System.out.println("\t-chromosome : execute Yeti using a strategy chromosome.");
 		System.out.println("\t-DSS : initially uses random+ strategy and based on the results of random+ it uses dirt spot sweeping strategy.");
 		System.out.println("\t-gui : shows the standard graphical user interface for monitoring yeti.");
 		System.out.println("\t-noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.");
