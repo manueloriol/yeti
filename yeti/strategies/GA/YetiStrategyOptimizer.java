@@ -16,6 +16,8 @@ import java.util.List;
  */
 public class YetiStrategyOptimizer {
 
+    public Configuration gaConfiguration;
+
     public void evolveStrategy() {
         YetiLog.printDebugLog("Evolution started",this);
         Genotype genotype = null;
@@ -34,34 +36,34 @@ public class YetiStrategyOptimizer {
      * @return Genotype
      * @throws Exception
      */
-    protected Genotype configureJGAP()  throws Exception {
+    public Genotype configureJGAP()  throws Exception {
 
-        Configuration gaConf = new DefaultConfiguration();
+       this.gaConfiguration = new DefaultConfiguration();
         Configuration.resetProperty(Configuration.PROPERTY_FITEVAL_INST);
 
-        gaConf.setFitnessEvaluator(new DeltaFitnessEvaluator());
+        gaConfiguration.setFitnessEvaluator(new DeltaFitnessEvaluator());
         // Just use a swapping operator instead of mutation and others.
         // ------------------------------------------------------------
-        gaConf.getGeneticOperators().clear();
-        SwappingMutationOperator swapper = new SwappingMutationOperator(gaConf);
-        gaConf.addGeneticOperator(swapper);
+        gaConfiguration.getGeneticOperators().clear();
+        SwappingMutationOperator swapper = new SwappingMutationOperator(gaConfiguration);
+        gaConfiguration.addGeneticOperator(swapper);
         // Setup some other parameters.
         // ----------------------------
-        gaConf.setPreservFittestIndividual(true);
-        gaConf.setKeepPopulationSizeConstant(false);
+        gaConfiguration.setPreservFittestIndividual(true);
+        gaConfiguration.setKeepPopulationSizeConstant(false);
         // Set number of individuals (=tries) per generation.
         // --------------------------------------------------
-        gaConf.setPopulationSize(YetiGAParameters.GA_POPULATION_SIZE);
+        gaConfiguration.setPopulationSize(YetiGAParameters.GA_POPULATION_SIZE);
         Genotype genotype = null;
         try {
             //At the moment the chromosome is very simple and only includes
             //the routine callse.
 
-            gaConf.setSampleChromosome(createChromosome(gaConf));
+            gaConfiguration.setSampleChromosome(createChromosome(gaConfiguration));
             //At the moment the fitness function is only using the number of faults
-            gaConf.setFitnessFunction(new YetiSimpleFitnessFunction());
+            gaConfiguration.setFitnessFunction(new YetiSimpleFitnessFunction());
 
-            genotype = Genotype.randomInitialGenotype(gaConf);
+            genotype = Genotype.randomInitialGenotype(gaConfiguration);
             //FIXME: lssilva this alleles have to be specified according to
             //the chromosome.
             List chromosomes = genotype.getPopulation().getChromosomes();
@@ -100,6 +102,11 @@ public class YetiStrategyOptimizer {
         // Print summary.
         // --------------
         IChromosome fittest = a_genotype.getFittestChromosome();
+        try {
+            YetiStrategyPersistenceManager.saveChromosome(fittest, "/tmp/test.c");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println("Best solution has fitness " +  fittest.getFitnessValue());
         printSolution(fittest);
     }

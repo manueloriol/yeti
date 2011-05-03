@@ -76,6 +76,7 @@ import yeti.stats.YetiMichaelisMentenEquation;
 import yeti.strategies.GA.YetiChromosomeInterpreter;
 import yeti.strategies.GA.YetiEvolutionaryStrategy;
 import yeti.strategies.GA.YetiStrategyOptimizer;
+import yeti.strategies.GA.YetiStrategyPersistenceManager;
 import yeti.strategies.YetiDSSStrategy;
 import yeti.strategies.YetiRandomPlusDecreasing;
 import yeti.strategies.YetiRandomPlusStrategy;
@@ -659,12 +660,20 @@ public class Yeti {
 
         if (isRunningFromChromosome) {
             if (chromosome == null) {
-                System.out.println("Have to load a chromosome from file");
-            }
-            //Load chromosome from file
+                YetiStrategyOptimizer optimizer = new YetiStrategyOptimizer();
+                try {
+                    optimizer.configureJGAP();
+                    IChromosome loadedChromosome = YetiStrategyPersistenceManager.loadChromosome(optimizer.gaConfiguration, chromosomePath);
+                    YetiChromosomeInterpreter chromosomeInterpreter = new YetiChromosomeInterpreter(loadedChromosome);
+                    strategy = new YetiEvolutionaryStrategy(testManager,chromosomeInterpreter);
 
-            YetiChromosomeInterpreter chromosomeInterpreter = new YetiChromosomeInterpreter(chromosome);
-            strategy = new YetiEvolutionaryStrategy(testManager,chromosomeInterpreter);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                YetiChromosomeInterpreter chromosomeInterpreter = new YetiChromosomeInterpreter(chromosome);
+                strategy = new YetiEvolutionaryStrategy(testManager,chromosomeInterpreter);
+            }
         }
 
         //TODO: lssilva make sure nothing that is not for EV is executed after the ev
