@@ -44,7 +44,7 @@ public abstract class YetiRoutine {
 	/**
 	 * The name of the routine.
 	 */
-	protected YetiName name; 
+	protected YetiName name;
 
 	/**
 	 * The openslots of the routine.

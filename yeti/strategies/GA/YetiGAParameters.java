@@ -11,7 +11,7 @@ package yeti.strategies.GA;
 
 public class YetiGAParameters {
     public static int GA_CHROMOSOME_SIZE = 10000;
-    public static int GA_POPULATION_SIZE = 40;
+    public static int GA_POPULATION_SIZE = 10;
     public static int GA_NUMBER_GENERATION = 4;
 
     public static String GA_EVALUATION_TIME = "10s";

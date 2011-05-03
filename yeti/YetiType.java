@@ -111,6 +111,14 @@ public class YetiType {
 		return creationRoutines.get(i);
 	}
 
+
+    public YetiRoutine getDeterministicCreationRoutine(int index) throws NoCreationRoutineInType{
+		if (creationRoutines.size()==0) throw new NoCreationRoutineInType("no creation routine for: "+this.name);
+		int i = index % creationRoutines.size();
+		YetiLog.printDebugLog("trying to get routine for: "+this.name, this);
+		return creationRoutines.get(i);
+	}
+
 	/**
 	 * Structure that stores all instances of this type
 	 */
@@ -185,6 +193,12 @@ public class YetiType {
 		return instances.get(i);
 	}
 
+
+    public YetiVariable getDeterministicInstance(int index){
+		int i=index % instances.size();
+		return instances.get(i);
+	}
+
 	/**
 	 * Returns an instance of this type at random.
 	 * 
@@ -193,6 +207,12 @@ public class YetiType {
 	public YetiVariable getRandomDirectInstance(){
 		double d=Math.random();
 		int i=(int) Math.floor(d*this.directInstances.size());
+		return this.directInstances.get(i);
+	}
+
+
+    public YetiVariable getDeterministicDirectInstance(int index){
+		int i = index % this.directInstances.size();
 		return this.directInstances.get(i);
 	}
 
@@ -296,8 +316,7 @@ public class YetiType {
 
 	/**
 	 * Resets interesting values on this type.
-	 * 
-	 * @param interestingValue the value to add.
+	 *
 	 */
 	public void resetInterestingValues() {
 		this.interestingValues=new Vector<Object>();
@@ -305,8 +324,7 @@ public class YetiType {
 	}
 	/**
 	 * Returns an interesting value and removes it from the list of interesting values.
-	 * 
-	 * @param interestingValue the interesting value.
+	 *
 	 */
 	public Object removeInterestingValue() {
 		if (interestingValues.size()==1) 		
@@ -321,7 +339,7 @@ public class YetiType {
 	/**
 	 * Returns an interesting value and does not remove it from the list of interesting values.
 	 * 
-	 * @return an object conataining the value.
+	 * @return an object containing the value.
 	 */
 	public Object getRandomInterestingValue() {
 		if (interestingValues.size()==0) return null;
@@ -329,13 +347,25 @@ public class YetiType {
 		int i=(int) Math.floor(d*this.interestingValues.size());
 		return this.interestingValues.get(i);
 	}
+
+    /**
+	 * Returns an interesting value and does not remove it from the list of interesting values.
+	 *
+	 * @return an object containing the value.
+	 */
+	public Object getDeterministicInterestingValue(int index) {
+		if (interestingValues.size()==0) {
+            return null;
+        }
+        int i = index % interestingValues.size();
+		return YetiType.interestingValues.get(index);
+	}
 	
 	
 
 	/**
 	 * Returns an interesting value in a variable and does not remove it from the list of interesting values.
-	 * 
-	 * @param interestingValue the interesting value.
+	 *
 	 */
 	public YetiVariable getRandomInterestingVariable() {
 		Object value =this.getRandomInterestingValue();
@@ -346,6 +376,19 @@ public class YetiType {
 
 	}
 
+
+    /**
+	 * Returns an interesting value in a variable and does not remove it from the list of interesting values.
+	 *
+	 */
+	public YetiVariable getDeterministicInterestingVariable(int index) {
+		Object value = this.getDeterministicInterestingValue(index);
+		if (value == null) return null;
+		YetiLog.printDebugLog("Interesting variable: "+value, this);
+		YetiIdentifier id = YetiIdentifier.getFreshIdentifier();
+		return new YetiVariable(id, this, value);
+
+	}
 	
 	/**
 	 * A simple setter to say that a type has interesting values.

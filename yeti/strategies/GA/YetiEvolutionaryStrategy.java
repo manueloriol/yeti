@@ -64,15 +64,17 @@ public class YetiEvolutionaryStrategy extends YetiStrategy{
 	public YetiCard[] getAllCards(YetiRoutine routine, int recursiveRank) throws ImpossibleToMakeConstructorException{
 
 		// we test for the level of recursion
-		if (recursiveRank>=MAX_RECURSIVE_RANK)
+		if (recursiveRank >= MAX_RECURSIVE_RANK) {
 			throw new ImpossibleToMakeConstructorException(routine.getClass().getName());
+        }
+
 		int length = routine.getOpenSlots().length;
-		YetiCard[] yt=new YetiCard[length];
+		YetiCard[] yt = new YetiCard[length];
 
 		// we try to get all arguments
 		for (int i=0; i<length; i++){
 			YetiLog.printDebugLog("trying to get argument "+ i, this);
-			yt[i]=getNextCard(routine, i, recursiveRank+1);
+			yt[i] = getNextCard(routine, i, recursiveRank+1);
 		}
 		return yt;
 	}
@@ -90,37 +92,45 @@ public class YetiEvolutionaryStrategy extends YetiStrategy{
 	 */
 	public YetiCard getNextCard(YetiRoutine routine, int argumentNumber, int recursiveRank) throws ImpossibleToMakeConstructorException {
 
-		// we test first
-		if (recursiveRank>=MAX_RECURSIVE_RANK)
-			throw new ImpossibleToMakeConstructorException(routine.getClass().getName());
+        // we test first
+        if (recursiveRank >= MAX_RECURSIVE_RANK) {
+            throw new ImpossibleToMakeConstructorException(routine.getClass().getName());
+        }
 
-		YetiType type=routine.getOpenSlots()[argumentNumber];
-		YetiLog.printDebugLog(routine.getName().getValue(),this);
+        YetiType type = routine.getOpenSlots()[argumentNumber];
+        YetiLog.printDebugLog(routine.getName().getValue(),this);
 
 		// we try to get a random instance from the pool
-		if ((type.instances.size()>0)&&(Math.random()>NEW_INSTANCES_INJECTION_PROBABILITY)){
-			return type.getRandomInstance();
+        //TODO: Initialize the pool to a fixed size
+		if ((type.instances.size() > 0) && (Math.random()>NEW_INSTANCES_INJECTION_PROBABILITY)){
+			return type.getDeterministicInstance(chromosomeInterpreter.getNextMethodCallParameter());
 		}
-		YetiRoutine creator;
+
+        YetiRoutine creator;
 
 		// we try to create that random instance
 		try {
-			creator = type.getRandomCreationRoutine();
+			creator = type.getDeterministicCreationRoutine(chromosomeInterpreter.getNextMethodCall());
 		} catch (NoCreationRoutineInType e) {
 			throw new ImpossibleToMakeConstructorException(e.getMessage());
 		}
-		YetiCard[] creatorCards=getAllCards(creator,recursiveRank);
-		if (creatorCards.length>0)
+
+		YetiCard[] creatorCards = getAllCards(creator,recursiveRank);
+
+		if (creatorCards.length>0) {
 			YetiLog.printDebugLog("Getting creation routine of type "+type.getName()+" with arguments "+creatorCards[0]+"...", this);
-		else
+
+        } else {
 			YetiLog.printDebugLog("Getting creation routine of type "+type.getName()+" with no arguments ", this);
+        }
 
 		// we make a call to a constructor
 		YetiVariable result = (YetiVariable)creator.makeCall(creatorCards);
-		if (result!=null)
+		if (result!=null) {
 			return result;
-		else
+        } else {
 			return getNextCard( routine, argumentNumber, recursiveRank+1);
+        }
 	}
 
 	/* (non-Javadoc)
@@ -147,12 +157,12 @@ public class YetiEvolutionaryStrategy extends YetiStrategy{
 	@Override
 	public YetiCard getNextCard(YetiRoutine routine, int argumentNumber) throws ImpossibleToMakeConstructorException {
 
-		YetiType type=routine.getOpenSlots()[argumentNumber];
+		YetiType type = routine.getOpenSlots()[argumentNumber];
 		YetiLog.printDebugLog(routine.getName().getValue(),this);
 
 		// we try to get a random argument.
 		if (type.instances.size()>0){
-			return type.getRandomInstance();
+			return type.getDeterministicInstance(chromosomeInterpreter.getNextMethodCallParameter());
 		}
 		YetiRoutine creator;
 		try {

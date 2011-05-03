@@ -30,5 +30,18 @@ public class YetiChromosomeInterpreter {
         return result;
     }
 
+    //TODO make the sections in the chromosome
+    public int getNextMethodCallParameter() {
+        int result = 0;
+        if (currentIndex < chromosome.size()) {
+            IntegerGene gene = (IntegerGene)chromosome.getGene(currentIndex);
+            result = gene.intValue();
+            currentIndex++;
+        }
+
+        return result;
+
+    }
+
 
 }
