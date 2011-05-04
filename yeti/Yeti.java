@@ -73,10 +73,7 @@ import yeti.environments.pharo.YetiPharoTestManager;
 import yeti.monitoring.YetiGUI;
 import yeti.stats.YetiDataSet;
 import yeti.stats.YetiMichaelisMentenEquation;
-import yeti.strategies.GA.YetiChromosomeInterpreter;
-import yeti.strategies.GA.YetiEvolutionaryStrategy;
-import yeti.strategies.GA.YetiStrategyOptimizer;
-import yeti.strategies.GA.YetiStrategyPersistenceManager;
+import yeti.strategies.GA.*;
 import yeti.strategies.YetiDSSStrategy;
 import yeti.strategies.YetiRandomPlusDecreasing;
 import yeti.strategies.YetiRandomPlusStrategy;
@@ -244,6 +241,7 @@ public class Yeti {
 		boolean printNumberOfCallsPerMethod = false;
 		boolean approximate = false;
 		String modulesString = null;
+        YetiGAParameters gaParameters = new YetiGAParameters();
 		
 		int nTests=0;
 		String []modulesToTest=null;
@@ -302,6 +300,8 @@ public class Yeti {
 			if (s0.startsWith("-time=")) {
 				isTimeout=true;
 				int size = s0.length();
+                //GA set evaluation time
+                gaParameters.setGaEvaluationTime(s0.substring(6, size));
 				// if the time value is in seconds
 				if (s0.substring(size-1).equals("s")) {
 					timeOutSec=(Integer.parseInt(s0.substring(6, size-1)));
@@ -369,6 +369,7 @@ public class Yeti {
 			// we want to test these modules
 			if (s0.startsWith("-testModules=")) {
 				modulesString=s0.substring(13);
+                gaParameters.setGaEvaluationModules(modulesString);
 				modulesToTest=modulesString.split(":");
 				testModulesName = modulesToTest;
 				continue;
@@ -610,7 +611,7 @@ public class Yeti {
 
         if (isEvolutionary) {
             System.out.println("--==> Evolving a testing Strategy");
-            YetiStrategyOptimizer optimizer = new YetiStrategyOptimizer();
+            YetiStrategyOptimizer optimizer = new YetiStrategyOptimizer(gaParameters);
             optimizer.evolveStrategy();
         }
 
@@ -660,9 +661,9 @@ public class Yeti {
 
         if (isRunningFromChromosome) {
             if (chromosome == null) {
-                YetiStrategyOptimizer optimizer = new YetiStrategyOptimizer();
+                YetiStrategyOptimizer optimizer = new YetiStrategyOptimizer(gaParameters);
                 try {
-                    optimizer.configureJGAP();
+                    optimizer.createGAConfiguration();
                     IChromosome loadedChromosome = YetiStrategyPersistenceManager.loadChromosome(optimizer.gaConfiguration, chromosomePath);
                     YetiChromosomeInterpreter chromosomeInterpreter = new YetiChromosomeInterpreter(loadedChromosome);
                     strategy = new YetiEvolutionaryStrategy(testManager,chromosomeInterpreter);

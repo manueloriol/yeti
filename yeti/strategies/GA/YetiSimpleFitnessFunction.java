@@ -33,14 +33,17 @@ import java.util.*;
  * Time: 12:15:29 PM
  */
 public class YetiSimpleFitnessFunction extends FitnessFunction {
+    private YetiGAParameters parameters;
 
-    public YetiSimpleFitnessFunction() {
+
+    public YetiSimpleFitnessFunction(YetiGAParameters parameters) {
+        this.parameters = parameters;
     }
 
     public double evaluate(IChromosome a_subject) {
-        String[] arguments={"-java","-time="+YetiGAParameters.GA_EVALUATION_TIME,"-testModules=yeti.YetiLogProcessor","-nologs","-chromosome=test"};
+        String[] arguments={"-java","-time="+this.parameters.gaEvaluationTime,"-testModules="+this.parameters.gaEvaluationModules,"-nologs","-chromosome=test"};
         Yeti.chromosome = a_subject;
         Yeti.YetiRun(arguments);
-        return 100 - Yeti.report.getnErrors();
+        return Yeti.report.getnErrors();
     }
 }

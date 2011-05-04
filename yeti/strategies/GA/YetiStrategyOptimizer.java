@@ -16,70 +16,109 @@ import java.util.List;
  */
 public class YetiStrategyOptimizer {
 
+
+    /**
+     * Genetic Algorithm configuration with the mutation
+     * fitness function
+     */
     public Configuration gaConfiguration;
+
+    /**
+     * Genotype is a set of chromosomes
+     */
+    public Genotype gaGenotype;
+
+
+    /**
+     * The parameters that controls how the execution should be executed
+     */
+    public YetiGAParameters parameters;
+
+
+    public YetiStrategyOptimizer(YetiGAParameters parameters) {
+        this.parameters = parameters;
+
+    }
 
     public void evolveStrategy() {
         YetiLog.printDebugLog("Evolution started",this);
-        Genotype genotype = null;
+
         try {
-            genotype = configureJGAP();
-            doEvolution(genotype);
+            createGAConfiguration();
+            createGAGenotype();
+            doEvolution(this.gaGenotype);
+
             YetiLog.printDebugLog("Evolution finished", this);
-            YetiLog.printDebugLog("The chromosome is " + genotype.getFittestChromosome().getFitnessValue(), this);
+            YetiLog.printDebugLog("The best chromosome is " + this.gaGenotype.getFittestChromosome().getFitnessValue(), this);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
     /**
-     * Create the GA and Chromosome.
-     * @return Genotype
-     * @throws Exception
+     * Here we have to set the GA operators and the evolution parameters
      */
-    public Genotype configureJGAP()  throws Exception {
+    public void createGAConfiguration () {
+        if (this.gaConfiguration == null) {
+            try {
+                this.gaConfiguration = new DefaultConfiguration();
+                Configuration.resetProperty(Configuration.PROPERTY_FITEVAL_INST);
 
-       this.gaConfiguration = new DefaultConfiguration();
-        Configuration.resetProperty(Configuration.PROPERTY_FITEVAL_INST);
+                gaConfiguration.setFitnessEvaluator(new DeltaFitnessEvaluator());
+                // Just use a swapping operator instead of mutation and others.
+                // ------------------------------------------------------------
+                gaConfiguration.getGeneticOperators().clear();
+                SwappingMutationOperator swapper = new SwappingMutationOperator(gaConfiguration);
+                gaConfiguration.addGeneticOperator(swapper);
+                // Setup some other parameters.
+                // ----------------------------
+                gaConfiguration.setPreservFittestIndividual(true);
+                gaConfiguration.setKeepPopulationSizeConstant(false);
+                // Set number of individuals (=tries) per generation.
+                // --------------------------------------------------
+                gaConfiguration.setPopulationSize(YetiGAParameters.GA_POPULATION_SIZE);
+                gaConfiguration.setSampleChromosome(createChromosome(gaConfiguration));
+                //At the moment the fitness function is only using the number of faults
+                gaConfiguration.setFitnessFunction(new YetiSimpleFitnessFunction(this.parameters));
 
-        gaConfiguration.setFitnessEvaluator(new DeltaFitnessEvaluator());
-        // Just use a swapping operator instead of mutation and others.
-        // ------------------------------------------------------------
-        gaConfiguration.getGeneticOperators().clear();
-        SwappingMutationOperator swapper = new SwappingMutationOperator(gaConfiguration);
-        gaConfiguration.addGeneticOperator(swapper);
-        // Setup some other parameters.
-        // ----------------------------
-        gaConfiguration.setPreservFittestIndividual(true);
-        gaConfiguration.setKeepPopulationSizeConstant(false);
-        // Set number of individuals (=tries) per generation.
-        // --------------------------------------------------
-        gaConfiguration.setPopulationSize(YetiGAParameters.GA_POPULATION_SIZE);
-        Genotype genotype = null;
-        try {
-            //At the moment the chromosome is very simple and only includes
-            //the routine callse.
-
-            gaConfiguration.setSampleChromosome(createChromosome(gaConfiguration));
-            //At the moment the fitness function is only using the number of faults
-            gaConfiguration.setFitnessFunction(new YetiSimpleFitnessFunction());
-
-            genotype = Genotype.randomInitialGenotype(gaConfiguration);
-            //FIXME: lssilva this alleles have to be specified according to
-            //the chromosome.
-            List chromosomes = genotype.getPopulation().getChromosomes();
-            for (int i = 0; i < chromosomes.size(); i++) {
-                IChromosome chrom = (IChromosome) chromosomes.get(i);
-                for (int j = 0; j < chrom.size(); j++) {
-                    Gene gene = (Gene) chrom.getGene(j);
-                    gene.setAllele(j);
-                }
+            } catch (InvalidConfigurationException e) {
+                e.printStackTrace();
+                System.exit( -2);
             }
-        } catch (InvalidConfigurationException e) {
-            e.printStackTrace();
-            System.exit( -2);
         }
-        return genotype;
     }
+
+
+    /**
+     * The goal of this method is to set the alleles of the population.
+     * Since the population is randomly initialize we have to set alleles here.
+     * TODO: Improve the initialization (Interesting values, etc..)
+     */
+    public void createGAGenotype() {
+        assert(this.gaConfiguration != null): "The GAConfiguration must not be null";
+
+        if (this.gaGenotype == null) {
+            try {
+                this.gaGenotype = Genotype.randomInitialGenotype(gaConfiguration);
+
+                //FIXME: lssilva this alleles have to be specified according to
+                //the chromosome.
+                List chromosomes = this.gaGenotype.getPopulation().getChromosomes();
+                for (int i = 0; i < chromosomes.size(); i++) {
+                    IChromosome chrom = (IChromosome) chromosomes.get(i);
+                    for (int j = 0; j < chrom.size(); j++) {
+                        Gene gene = (Gene) chrom.getGene(j);
+                        gene.setAllele(j);
+                    }
+                }
+            } catch (InvalidConfigurationException e) {
+                e.printStackTrace();
+                System.exit( -2);
+            }
+        }
+    }
+
 
     /**
      * Does the evolution until finished.
@@ -89,6 +128,7 @@ public class YetiStrategyOptimizer {
         int percentEvolution = YetiGAParameters.GA_NUMBER_GENERATION / 100;
         for (int i = 0; i < YetiGAParameters.GA_NUMBER_GENERATION; i++) {
             a_genotype.evolve();
+             System.out.println("Currently best solution has fitness ");
             // Print progress.
             // ---------------
             if (percentEvolution > 0 && i % percentEvolution == 0) {
@@ -111,6 +151,9 @@ public class YetiStrategyOptimizer {
         printSolution(fittest);
     }
 
+
+
+
     /**
      * @param a_solution of the best chromosome.
      */
@@ -123,10 +166,13 @@ public class YetiStrategyOptimizer {
         }
 
         YetiLog.printDebugLog("Chromosome = "+chromosome,this);
-
     }
 
+
+
     /**
+     * At the moment this is just a sample chromosome but it ought to encode the parameters for the
+     * testing session
      * @param gaConf to create the chromosome
      * @return a chromosome
      */
