@@ -255,6 +255,12 @@ public class YetiDataSet {
 	 * @param args the only argument should be the file to read.
 	 */
 	public static void main(String []args) {
+		if (args[0].equals("-theory")) {
+			testTheory(100000);
+			return;
+		} else {System.out.println("oops");}
+		
+		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(args[0]));
 			String s = null;
@@ -277,6 +283,43 @@ public class YetiDataSet {
 			e.printStackTrace();
 		}
 		
+		
+	}
+	
+	/**
+	 * Method to test the theoretical hypothesis
+	 * 
+	 * @param nTests
+	 */
+	public static void testTheory(int nTests) {
+		double probabilitiesArray[] = {.0021d, .00202d, .0022d, .002d, .00002d, .001d, .008d, .005d, .1d, .01d, .001d, .00002d, .005d, .002d, .0002d, .003d, .001d};
+		int max = probabilitiesArray.length;
+		boolean found[]= new boolean[max];
+		int nfound = 0;
+		ArrayList<Double> xs = new ArrayList<Double>();
+		ArrayList<Double> ys = new ArrayList<Double>();
+		
+		
+		for (int i=0;i<nTests;i++) {
+			if ((i%100)==0) {
+				xs.add((double)i);
+				ys.add((double)nfound);
+			}
+				
+			for (int j=0;j<max;j++) {
+				double d = probabilitiesArray[j];
+				if ((Math.random()<d)&&!found[j]) {
+					found[j] = true;
+					nfound++;
+					break;
+				}
+				
+			}
+		}
+		YetiDataSet ds=new YetiDataSet(xs,ys);
+		YetiMichaelisMentenEquation e = ds.fitMichaelisMenten();
+		System.out.println(e);
+		System.out.println("R^2 = "+ds.coeffOfDetermination(e));		
 		
 	}
 
