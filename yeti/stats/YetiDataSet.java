@@ -256,10 +256,19 @@ public class YetiDataSet {
 	 */
 	public static void main(String []args) {
 		if (args[0].equals("-theory")) {
-			testTheory(100000);
+			System.err.println("Theoretical testing");
+			System.out.println("probability,sample,max,K,R2,nFailures");
+			int Max = 100;
+			double probstep = .0001d;
+			int samplestep = 100;
+			for (int i = 1;i<=Max;i++) {
+				System.err.println("i="+i);
+				for (int j = 1;j<=Max;j++) {
+					testTheory(100000, i*probstep, j*samplestep);
+				}
+			}
 			return;
-		} else {System.out.println("oops");}
-		
+		} 
 		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(args[0]));
@@ -289,11 +298,15 @@ public class YetiDataSet {
 	/**
 	 * Method to test the theoretical hypothesis
 	 * 
-	 * @param nTests
+	 * @param nTests the number of tests to perform
 	 */
-	public static void testTheory(int nTests) {
-		double probabilitiesArray[] = {.0021d, .00202d, .0022d, .002d, .00002d, .001d, .008d, .005d, .1d, .01d, .001d, .00002d, .005d, .002d, .0002d, .003d, .001d};
+	public static void testTheory(int nTests, double probability, int sample) {
+		
+		double probabilitiesArray[] = new double[20];
 		int max = probabilitiesArray.length;
+		for(int i = 0;i<max; i++) {
+			probabilitiesArray[i]=probability;
+		}
 		boolean found[]= new boolean[max];
 		int nfound = 0;
 		ArrayList<Double> xs = new ArrayList<Double>();
@@ -301,7 +314,7 @@ public class YetiDataSet {
 		
 		
 		for (int i=0;i<nTests;i++) {
-			if ((i%100)==0) {
+			if ((i%sample)==0) {
 				xs.add((double)i);
 				ys.add((double)nfound);
 			}
@@ -318,8 +331,9 @@ public class YetiDataSet {
 		}
 		YetiDataSet ds=new YetiDataSet(xs,ys);
 		YetiMichaelisMentenEquation e = ds.fitMichaelisMenten();
-		System.out.println(e);
-		System.out.println("R^2 = "+ds.coeffOfDetermination(e));		
+		System.out.println(probability+","+ sample+","+e.getMax()+","+e.getK()+","+ds.coeffOfDetermination(e)+","+nfound );
+//		System.out.println(e);
+//		System.out.println("R^2 = "+ds.coeffOfDetermination(e));		
 		
 	}
 
