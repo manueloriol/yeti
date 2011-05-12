@@ -327,7 +327,7 @@ public class YetiTestArchiveExplorer {
 	 * 
 	 */
 	private static void printHelp() {
-		System.out.print("Usage:\n  java yetiexperimenter.ArchiveExlporer path [output_file]");
+		System.out.print("Usage:\n  java yeti.experimenter.YetiTestArchiveExplorer path [output_file | -print]");
 	}
 
 }

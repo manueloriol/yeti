@@ -81,6 +81,8 @@ public class YetiExperimentOneClass extends YetiExperiment {
 	/**
 	 * Main method allowing to launch experiments.
 	 * 
+	 * Example of use: java yeti.experimenter.YetiExperimentOneClass . java.lang.String -onlyPrint
+	 * 
 	 * @param args
 	 */
 	public static void main(String []args) {
