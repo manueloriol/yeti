@@ -11,12 +11,22 @@ package yeti.strategies.GA;
 
 public class YetiGAParameters {
     public static int GA_CHROMOSOME_SIZE = 10000;
-    public static int GA_POPULATION_SIZE = 2;
-    public static int GA_NUMBER_GENERATION = 1;
+    public static int GA_POPULATION_SIZE = 1;
+    public static int GA_NUMBER_GENERATION = 0;
 
     public String gaEvaluationTime;
     public String gaEvaluationModules;
     public String gaEvaluationModulesClassPath;
+
+    public String getGaFittestChromosomeOutPutPath() {
+        return gaFittestChromosomeOutPutPath;
+    }
+
+    public void setGaFittestChromosomeOutPutPath(String gaFittestChromosomeOutPutPath) {
+        this.gaFittestChromosomeOutPutPath = gaFittestChromosomeOutPutPath;
+    }
+
+    public String gaFittestChromosomeOutPutPath;
 
 
     public String getGaEvaluationTime() {

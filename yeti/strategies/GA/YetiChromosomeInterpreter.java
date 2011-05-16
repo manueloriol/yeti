@@ -2,6 +2,7 @@ package yeti.strategies.GA;
 
 import org.jgap.IChromosome;
 import org.jgap.impl.IntegerGene;
+import yeti.YetiLog;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,6 +17,7 @@ public class YetiChromosomeInterpreter {
     public YetiChromosomeInterpreter(IChromosome aChromosome) {
         this.chromosome = aChromosome;
         currentIndex = 0;
+        printSolution(aChromosome);
 
     }
 
@@ -43,5 +45,16 @@ public class YetiChromosomeInterpreter {
 
     }
 
+
+     public void printSolution(IChromosome a_solution) {
+        YetiLog.printDebugLog("Printing the chromosome of the Solution with size" + a_solution.size(), this);
+        String chromosome = "";
+        for (int i = 0; i < a_solution.size(); i++) {
+            IntegerGene gene = (IntegerGene)a_solution.getGene(i);
+            chromosome = chromosome.concat(gene.intValue() +",");
+        }
+
+        System.out.println("Chromosome = "+chromosome);
+    }
 
 }

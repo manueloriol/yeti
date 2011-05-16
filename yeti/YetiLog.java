@@ -63,7 +63,7 @@ public class YetiLog {
 	 */
 	//public static String []enabledDebugClasses={"yeti.YetiType", "yeti.environments.java.YetiJavaMethod"};
 	//public static String []enabledDebugClasses={"yeti.environments.java.YetiJavaPrefetchingLoader"};
-	public static String []enabledDebugClasses={};
+	public static String []enabledDebugClasses={"yeti.strategies.GA.YetiStrategyOptimizer"};
 
 	/**
 	 * Method used to print debugging messages.

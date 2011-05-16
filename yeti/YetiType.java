@@ -156,6 +156,32 @@ public class YetiType {
 	}
 
 
+    /**
+	 * Adds an instance to the type in question and all supertypes
+	 *
+	 * @param v the instance to add.
+	 */
+	public synchronized void addInstanceDeterministically(YetiVariable v, int index){
+
+		// if there is a cap on the number of instances, we will remove one at random to make room
+		if (v.getType().equals(this)) {
+			// if there is a cap and we got to it
+			while ((this.hasSpecificMaximumNumberOfDirectInstances&&directInstances.size()>=this.specificMaximumNumberOfDirectInstances)
+					||((!this.hasSpecificMaximumNumberOfDirectInstances)&&(YetiType.TYPES_HAVEMAXIMUM_NUMBER_OF_INSTANCES
+							&&(directInstances.size()>=YetiType.DEFAULT_MAXIMUM_NUMBER_OF_INSTANCES)))) {
+				YetiVariable v0 =  this.getDeterministicDirectInstance(index);
+				this.removeInstance(v0);
+			}
+			directInstances.add(v);
+		}
+		YetiLog.printDebugLog("Adding "+v.toString()+" to: "+this.name+" number of instances: "+directInstances.size()+" number of types: "+YetiType.allTypes.size(), this);
+		instances.add(v);
+		// we add the instance to all parents
+		for (YetiType t: directSuperTypes.values())
+			t.addInstanceDeterministically(v,index);
+	}
+
+
 	/**
 	 * Removes an instance to the type in question and all supertypes
 	 *

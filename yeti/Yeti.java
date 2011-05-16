@@ -423,7 +423,11 @@ public class Yeti {
 				continue;	
 			}
 
-            if (s0.equals("-evolutionary")) {
+            if (s0.startsWith("-evolutionary=")) {
+                String s1=s0.substring(14);
+                gaParameters.setGaFittestChromosomeOutPutPath(s1);
+                isRunningFromChromosome = true;
+
                 isEvolutionary = true;
                 continue;
             }
@@ -513,6 +517,7 @@ public class Yeti {
 
 		}
 
+        //TODO: Init with chromosome interpreter
 		//test of options to set up the YetiProperties for Java
 		if (isJava) {
 			YetiLoader prefetchingLoader = new YetiJavaPrefetchingLoader(yetiPath);
@@ -615,6 +620,7 @@ public class Yeti {
             optimizer.evolveStrategy();
         }
 
+        //TODO: IF GA init with chromosome
 		// initializing Yeti
 		try {
 			pl.getInitializer().initialize(args);

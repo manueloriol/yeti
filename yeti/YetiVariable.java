@@ -71,9 +71,9 @@ public class YetiVariable extends YetiCard{
 
 
 	/**
-	 * Creates a variable in Yeti. Note that the creation procedure automatically adds 
+	 * Creates a variable in Yeti. Note that the creation procedure automatically adds
 	 * the instance to the types it has.
-	 * 
+	 *
 	 * @param id the identity for the variable.
 	 * @param type the type of the variable.
 	 * @param value the value of the variable.
@@ -93,6 +93,32 @@ public class YetiVariable extends YetiCard{
 		YetiLog.printDebugLog("type: "+this.type.name, this);
 		// we add the instance to the type
 		this.type.addInstance(this);
+	}
+
+
+    /**
+	 * Creates a variable in Yeti. Note that the creation procedure automatically adds
+	 * the instance to the types it has.
+	 *
+	 * @param id the identity for the variable.
+	 * @param type the type of the variable.
+	 * @param value the value of the variable.
+	 */
+	public YetiVariable( YetiIdentifier id, YetiType type, Object value, int index) {
+		super (id, type, value);
+		nVariables++;
+		allId.put(id.value, this);
+		YetiLog.printDebugLog("type: "+type, this);
+		// if the type was not created before we create it on the fly
+		if (type==null){
+			YetiLog.printDebugLog("value's type: "+value.getClass().getName(), this);
+			YetiLoader.yetiLoader.addDefinition(value.getClass());
+			this.type=YetiType.allTypes.get(value.getClass().getName());
+
+		}
+		YetiLog.printDebugLog("type: "+this.type.name, this);
+		// we add the instance to the type
+		this.type.addInstanceDeterministically(this, index);
 	}
 
 	/* (non-Javadoc)

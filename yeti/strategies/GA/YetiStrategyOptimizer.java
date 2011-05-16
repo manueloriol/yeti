@@ -41,15 +41,18 @@ public class YetiStrategyOptimizer {
     }
 
     public void evolveStrategy() {
-        YetiLog.printDebugLog("Evolution started",this);
+        YetiLog.printDebugLog("---===>Evolution started",this);
 
         try {
             createGAConfiguration();
             createGAGenotype();
             doEvolution(this.gaGenotype);
 
-            YetiLog.printDebugLog("Evolution finished", this);
-            YetiLog.printDebugLog("The best chromosome is " + this.gaGenotype.getFittestChromosome().getFitnessValue(), this);
+            YetiLog.printDebugLog("---===>Evolution finished", this);
+            YetiLog.printDebugLog("---===>Saving Chromosome to " + parameters.getGaFittestChromosomeOutPutPath(), this);
+            YetiStrategyPersistenceManager.saveChromosome(this.gaGenotype.getFittestChromosome(),parameters.getGaFittestChromosomeOutPutPath());
+            printSolution(this.gaGenotype.getFittestChromosome());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -124,31 +127,12 @@ public class YetiStrategyOptimizer {
      * Does the evolution until finished.
      */
     public void doEvolution(Genotype a_genotype) {
-        int progress = 0;
         int percentEvolution = YetiGAParameters.GA_NUMBER_GENERATION / 100;
         for (int i = 0; i < YetiGAParameters.GA_NUMBER_GENERATION; i++) {
             a_genotype.evolve();
-             System.out.println("Currently best solution has fitness ");
-            // Print progress.
-            // ---------------
-            if (percentEvolution > 0 && i % percentEvolution == 0) {
-                progress++;
-                IChromosome fittest = a_genotype.getFittestChromosome();
-                double fitness = fittest.getFitnessValue();
-                System.out.println("Currently best solution has fitness " + fitness);
-                printSolution(fittest);
-            }
         }
-        // Print summary.
-        // --------------
-        IChromosome fittest = a_genotype.getFittestChromosome();
-        try {
-            YetiStrategyPersistenceManager.saveChromosome(fittest, "/tmp/test.c");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("Best solution has fitness " +  fittest.getFitnessValue());
-        printSolution(fittest);
+
+        YetiLog.printDebugLog("Evolution finished ",this);
     }
 
 

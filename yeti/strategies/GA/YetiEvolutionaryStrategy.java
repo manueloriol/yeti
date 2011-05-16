@@ -7,6 +7,8 @@ import yeti.*;
 import yeti.environments.YetiTestManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -102,7 +104,8 @@ public class YetiEvolutionaryStrategy extends YetiStrategy{
 
 		// we try to get a random instance from the pool
         //TODO: Initialize the pool to a fixed size
-		if ((type.instances.size() > 0) && (Math.random()>NEW_INSTANCES_INJECTION_PROBABILITY)){
+        //TODO change 100 by a parameter
+		if ((type.instances.size() > 0) && (100>NEW_INSTANCES_INJECTION_PROBABILITY)){
 			return type.getDeterministicInstance(chromosomeInterpreter.getNextMethodCallParameter());
 		}
 
@@ -142,6 +145,17 @@ public class YetiEvolutionaryStrategy extends YetiStrategy{
 	public YetiRoutine getNextRoutine(YetiModule module) {
         if (this.staticRoutineList == null) {
             this.staticRoutineList = new ArrayList<YetiRoutine>(module.routinesInModule.values());
+
+            Collections.sort(this.staticRoutineList, new Comparator(){
+                public int compare(Object o1, Object o2) {
+                    YetiRoutine p1 = (YetiRoutine) o1;
+                    YetiRoutine p2 = (YetiRoutine) o2;
+                    return p1.getName().getValue().compareTo(p2.getName().getValue());
+                }
+
+            });
+
+
         }
         int i = this.chromosomeInterpreter.getNextMethodCall() % staticRoutineList.size();
 		YetiRoutine r = this.staticRoutineList.get(i);
