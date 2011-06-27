@@ -183,8 +183,13 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 		Class parent = clazz.getSuperclass();
 
 		if (parent!=null && YetiType.allTypes.containsKey(parent.getName())){
-			YetiLog.printDebugLog("linking " + type.getName() + " to " + parent.getName(), this);
+			YetiLog.printDebugLog("linking " + type.getName() + " to " + parent.getName(), this, true);
 			YetiType.allTypes.get(parent.getName()).allSubtypes.put(clazz.getName(), type);
+			YetiType baseType = YetiType.allTypes.get(parent.getName());
+			if (!baseType.allSubtypes.containsValue(type))
+				baseType.addSubtype(type);
+			if (!type.directSuperTypes.containsValue(baseType))
+				type.directSuperTypes.put(parent.getName(), baseType);
 		}
 
 		// we link this class to the parent interfaces
@@ -459,7 +464,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 	public void loadAllClassesInPath(){
 		for (String classpath: classpaths){
 			//if (!classpath.endsWith(".jar"))
-				loadAllClassesIn(classpath, "");
+			loadAllClassesIn(classpath, "");
 		}
 	}
 

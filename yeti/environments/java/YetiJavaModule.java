@@ -71,9 +71,10 @@ public class YetiJavaModule extends YetiModule {
 	 */
 	public boolean isThrowableInModule(String throwableTrace) {
 		// we remove the beginning of the trace
-		String trace = throwableTrace.substring(throwableTrace.indexOf('\t')+1);
+		String trace = throwableTrace.substring(throwableTrace.lastIndexOf('\t')+1);
+		trace = trace.substring(trace.indexOf(' ')+1);
 		// we return true if the trace contains the module name
-		if (trace.contains(this.getModuleName()))
+		if (trace.startsWith(this.getModuleName()+"."))
 			return true;
 		return false;
 	}

@@ -194,7 +194,9 @@ public class Yeti {
 	 * -tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').<br>
 	 * -printNumberOfCallsPerMethod : prints the number of calls per method.<br>
 	 * -branchCoverage : shows the branch coverage if available (in Java, this implies instrumenting the bytecode)."); <br>
-	 * -makeMethodsVisible: converts all the protected and private methods into public for testing. 
+	 * -makeMethodsVisible: converts all the protected and private methods into public for testing.
+	 * -approximate : approximates the number of unique failures per number of tests.
+	 * -compactReport=X : adds a line in file X containing the information about the testing session.
 	 * @param args the arguments of the program
 	 */
 	public static void main (String[] args) {
@@ -491,7 +493,7 @@ public class Yeti {
 				continue;	
 			}
 			
-			// we want to test these modules
+			// we want to store the compact report in some file in a new line
 			if (s0.startsWith("-compactReport=")) {
 				Yeti.compactReport = true;
 				reportFile=s0.substring(15);
@@ -900,7 +902,7 @@ public class Yeti {
 						((float)((int)(100*Yeti.testModule.getCoverage())))/100+"%) **/");
 						report.setBranchCoverage(Yeti.testModule.getCoverage());
 			} catch (YetiNoCoverageException e) {
-				// TODO Auto-generated catch block
+				// this should not happen... We should have quit already
 				e.printStackTrace();
 			}
 		}
@@ -909,12 +911,15 @@ public class Yeti {
 			YetiLog.proc.outputTracesToFile(logProcessor.listOfNewErrors, tracesOutputFile,logProcessor.numberOfNonErrors);
 		}
 		
+		// if we print the number of calls per method
 		if (printNumberOfCallsPerMethod) {
 			System.out.println("Trace of number of calls per method:");
 			for (YetiRoutine r: Yeti.testModule.routinesInModule.values()) {
 				System.out.println(r.getSignature()+": Called: "+r.getnTimesCalled()+", Successfully: "+r.getnTimesCalledSuccessfully()+", Undecidable: "+r.getnTimesCalledUndecidable()+", Unsuccessfully: "+r.getnTimesCalledUnsuccessfully());
 			}
 		}
+		
+		// if we approximate the number of failures per number of testsZ
 		if (approximate) {
 			YetiDataSet dataSetNcallsNFaults = new YetiDataSet(YetiGUI.mainGUI.getGraphNumberOfCallsOverTime().series[1], YetiGUI.mainGUI.getGraphFaults().series[1]);
 			YetiMichaelisMentenEquation e = dataSetNcallsNFaults.fitMichaelisMenten();
@@ -1047,6 +1052,8 @@ public class Yeti {
 		System.out.println("\t-printNumberOfCallsPerMethod : prints the number of calls per method.");
 		System.out.println("\t-branchCoverage : shows the branch coverage if available (in Java, this implies instrumenting the bytecode).");
 		System.out.println("\t-makeMethodsVisible: converts all the protected and private methods into public for testing.");
+		System.out.println("\t-approximate : approximates the number of unique failures per number of tests.");
+		System.out.println("\t-compactReport=X : adds a line in file X containing the information about the testing session.");
 		System.out.println("Example command to execute Yeti from command prompt is: >Java yeti.Yeti -java -time=15mn -testModules=yeti.test.YetiTest -nologs -randomPlus -gui");
 	
 	}
