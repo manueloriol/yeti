@@ -183,7 +183,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 		Class parent = clazz.getSuperclass();
 
 		if (parent!=null && YetiType.allTypes.containsKey(parent.getName())){
-			YetiLog.printDebugLog("linking " + type.getName() + " to " + parent.getName(), this, true);
+			YetiLog.printDebugLog("linking " + type.getName() + " to " + parent.getName(), this);
 			YetiType.allTypes.get(parent.getName()).allSubtypes.put(clazz.getName(), type);
 			YetiType baseType = YetiType.allTypes.get(parent.getName());
 			if (!baseType.allSubtypes.containsValue(type))
