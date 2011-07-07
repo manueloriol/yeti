@@ -99,7 +99,8 @@ public class YetiDSSStrategy extends YetiRandomStrategy {
 		super(ytm);
 
 		// This statement is added to remove the existing interesting values from the Vector.
-		YetiType.interestingValues.clear();
+		for (YetiType t: YetiType.allTypes.values())
+			t.interestingValues.clear();
 	}
 
 

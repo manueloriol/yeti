@@ -1,12 +1,12 @@
 package yeti;
 
 /**
- 
+
  YETI - York Extensible Testing Infrastructure
- 
+
  Copyright (c) 2009-2010, Manuel Oriol <manuel.oriol@gmail.com> - University of York
  All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
  1. Redistributions of source code must retain the above copyright
@@ -20,7 +20,7 @@ package yeti;
  4. Neither the name of the University of York nor the
  names of its contributors may be used to endorse or promote products
  derived from this software without specific prior written permission.
- 
+
  THIS SOFTWARE IS PROVIDED BY <COPYRIGHT HOLDER> ''AS IS'' AND ANY
  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -31,7 +31,7 @@ package yeti;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
  **/ 
 
 import java.util.ArrayList;
@@ -94,10 +94,10 @@ public class Yeti {
 	 */
 	public static YetiReport report= null;
 
-    /**
-     * The chromosome to run the evolutionary stratgy
-     */
-    public static IChromosome chromosome;
+	/**
+	 * The chromosome to run the evolutionary stratgy
+	 */
+	public static IChromosome chromosome;
 	/**
 	 * The main gui for Yeti.
 	 */
@@ -126,7 +126,7 @@ public class Yeti {
 	 * The support for branch coverage. 
 	 */
 	public static boolean hasBranchCoverage= false;
-	
+
 	/**
 	 * The support for branch coverage. 
 	 */
@@ -137,19 +137,19 @@ public class Yeti {
 	 * Stores the path to use for testing.
 	 */
 	public static String yetiPath = ".";//System.getProperty("java.class.path");
-	
-	
+
+
 	/**
 	 * Starting testing time.
 	 */
 	public static long st;
-	
-	
+
+
 	/**
 	 * The report for the last session.
 	 */
 	public static YetiReport rep=null;
-	
+
 	/**
 	 * Number of test cases executed. 
 	 */
@@ -236,15 +236,15 @@ public class Yeti {
 		boolean isRandomPlusPeriodic = false;
 		boolean isRandomPlusDecreasing = false;
 		boolean isDSS = false;
-        boolean isEvolutionary = false;
-        boolean isRunningFromChromosome = false;
-        String chromosomePath = null;
+		boolean isEvolutionary = false;
+		boolean isRunningFromChromosome = false;
+		String chromosomePath = null;
 		boolean showMonitoringGui = false;
 		boolean printNumberOfCallsPerMethod = false;
 		boolean approximate = false;
 		String modulesString = null;
-        YetiGAParameters gaParameters = new YetiGAParameters();
-		
+		YetiGAParameters gaParameters = new YetiGAParameters();
+
 		int nTests=0;
 		String []modulesToTest=null;
 		int callsTimeOut=75;
@@ -256,13 +256,13 @@ public class Yeti {
 
 		// we parse all arguments of the program
 		for (String s0: args) {
-			
+
 			// way of passing options to the language-specific bindings
 			// all options should start by "-opt"
 			if (s0.startsWith("-opt")) {
 				continue;
 			}
-			
+
 			// if it is printing help
 			if (s0.equals("-help")||s0.equals("-h")) {
 				Yeti.printHelp();
@@ -284,13 +284,13 @@ public class Yeti {
 				isDotNet = true;
 				continue;
 			}
-			
+
 			//if .NET
 			if(s0.toLowerCase().equals("-cl")){		
 				isCommandLine = true;
 				continue;
 			}
-			
+
 			// if Pharo
 			if (s0.equals("-Pharo")) {
 				isPharo = true;
@@ -302,8 +302,8 @@ public class Yeti {
 			if (s0.startsWith("-time=")) {
 				isTimeout=true;
 				int size = s0.length();
-                //GA set evaluation time
-                gaParameters.setGaEvaluationTime(s0.substring(6, size));
+				//GA set evaluation time
+				gaParameters.setGaEvaluationTime(s0.substring(6, size));
 				// if the time value is in seconds
 				if (s0.substring(size-1).equals("s")) {
 					timeOutSec=(Integer.parseInt(s0.substring(6, size-1)));
@@ -357,7 +357,7 @@ public class Yeti {
 				nTests=(Integer.parseInt(s0.substring(8)));
 				continue;
 			}
-			
+
 			// if collect branch coverage 
 			if (s0.startsWith("-branchCoverage")) {
 				hasBranchCoverage = true;
@@ -371,7 +371,7 @@ public class Yeti {
 			// we want to test these modules
 			if (s0.startsWith("-testModules=")) {
 				modulesString=s0.substring(13);
-                gaParameters.setGaEvaluationModules(modulesString);
+				gaParameters.setGaEvaluationModules(modulesString);
 				modulesToTest=modulesString.split(":");
 				testModulesName = modulesToTest;
 				continue;
@@ -419,31 +419,31 @@ public class Yeti {
 				isRandomPlusDecreasing = true;
 				continue;	
 			}			
-			
+
 			if (s0.equals("-DSS")) {
 				isDSS = true;
 				continue;	
 			}
 
-            if (s0.startsWith("-evolutionary=")) {
-                String s1=s0.substring(14);
-                gaParameters.setGaFittestChromosomeOutPutPath(s1);
-                isRunningFromChromosome = true;
+			if (s0.startsWith("-evolutionary=")) {
+				String s1=s0.substring(14);
+				gaParameters.setGaFittestChromosomeOutPutPath(s1);
+				isRunningFromChromosome = true;
 
-                isEvolutionary = true;
-                continue;
-            }
+				isEvolutionary = true;
+				continue;
+			}
 
-            // we want to use the following path
-            if (s0.startsWith("-chromosome=")) {
-                String s1=s0.substring(12);
-                chromosomePath = s1;
-                isRunningFromChromosome = true;
-                continue;
-            }
+			// we want to use the following path
+			if (s0.startsWith("-chromosome=")) {
+				String s1=s0.substring(12);
+				chromosomePath = s1;
+				isRunningFromChromosome = true;
+				continue;
+			}
 
-            // we have no limits for the number of instances
-            if (s0.equals("-noInstancesCap")) {
+			// we have no limits for the number of instances
+			if (s0.equals("-noInstancesCap")) {
 				YetiType.TYPES_HAVEMAXIMUM_NUMBER_OF_INSTANCES = true;
 				continue;	
 			}
@@ -492,7 +492,7 @@ public class Yeti {
 				showMonitoringGui=true;
 				continue;	
 			}
-			
+
 			// we want to store the compact report in some file in a new line
 			if (s0.startsWith("-compactReport=")) {
 				Yeti.compactReport = true;
@@ -519,7 +519,7 @@ public class Yeti {
 
 		}
 
-        //TODO: Init with chromosome interpreter
+		//TODO: Init with chromosome interpreter
 		//test of options to set up the YetiProperties for Java
 		if (isJava) {
 			YetiLoader prefetchingLoader = new YetiJavaPrefetchingLoader(yetiPath);
@@ -567,8 +567,8 @@ public class Yeti {
 				}
 			} );
 
-			
-			
+
+
 			th.start();
 
 
@@ -581,8 +581,8 @@ public class Yeti {
 			System.out.println("----------------------------------------");
 
 		}
-	
-		
+
+
 		//test of options to set up the YetiProperties for Java
 		if (isCommandLine) {
 			YetiInitializer initializer = new YetiCLInitializer();
@@ -616,13 +616,13 @@ public class Yeti {
 			pl.setNoLogs(isNoLogs);
 		}
 
-        if (isEvolutionary) {
-            System.out.println("--==> Evolving a testing Strategy");
-            YetiStrategyOptimizer optimizer = new YetiStrategyOptimizer(gaParameters);
-            optimizer.evolveStrategy();
-        }
+		if (isEvolutionary) {
+			System.out.println("--==> Evolving a testing Strategy");
+			YetiStrategyOptimizer optimizer = new YetiStrategyOptimizer(gaParameters);
+			optimizer.evolveStrategy();
+		}
 
-        //TODO: IF GA init with chromosome
+		//TODO: IF GA init with chromosome
 		// initializing Yeti
 		try {
 			pl.getInitializer().initialize(args);
@@ -667,58 +667,58 @@ public class Yeti {
 			strategy= new YetiDSSStrategy(testManager);
 		}
 
-        if (isRunningFromChromosome) {
-            if (chromosome == null) {
-                YetiStrategyOptimizer optimizer = new YetiStrategyOptimizer(gaParameters);
-                try {
-                    optimizer.createGAConfiguration();
-                    IChromosome loadedChromosome = YetiStrategyPersistenceManager.loadChromosome(optimizer.gaConfiguration, chromosomePath);
-                    YetiChromosomeInterpreter chromosomeInterpreter = new YetiChromosomeInterpreter(loadedChromosome);
-                    strategy = new YetiEvolutionaryStrategy(testManager,chromosomeInterpreter);
+		if (isRunningFromChromosome) {
+			if (chromosome == null) {
+				YetiStrategyOptimizer optimizer = new YetiStrategyOptimizer(gaParameters);
+				try {
+					optimizer.createGAConfiguration();
+					IChromosome loadedChromosome = YetiStrategyPersistenceManager.loadChromosome(optimizer.gaConfiguration, chromosomePath);
+					YetiChromosomeInterpreter chromosomeInterpreter = new YetiChromosomeInterpreter(loadedChromosome);
+					strategy = new YetiEvolutionaryStrategy(testManager,chromosomeInterpreter);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                YetiChromosomeInterpreter chromosomeInterpreter = new YetiChromosomeInterpreter(chromosome);
-                strategy = new YetiEvolutionaryStrategy(testManager,chromosomeInterpreter);
-            }
-        }
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				YetiChromosomeInterpreter chromosomeInterpreter = new YetiChromosomeInterpreter(chromosome);
+				strategy = new YetiEvolutionaryStrategy(testManager,chromosomeInterpreter);
+			}
+		}
 
-        //TODO: lssilva make sure nothing that is not for EV is executed after the ev
-        // is started
-        if (isEvolutionary) {
-            //Take the chromosome set by GA
+		//TODO: lssilva make sure nothing that is not for EV is executed after the ev
+		// is started
+		if (isEvolutionary) {
+			//Take the chromosome set by GA
 
-            if (strategy == null) {
-            //    strategy = new YetiEvolutionaryStrategy(testManager, chromosome);
-            }
-        }
+			if (strategy == null) {
+				//    strategy = new YetiEvolutionaryStrategy(testManager, chromosome);
+			}
+		}
 
 		// getting the module(s) to test
 		YetiModule mod=null;
-		
+
 		//we generate an array which will contain all the modules to be tested
 		ArrayList<YetiModule> modules=new ArrayList<YetiModule>();
-		
+
 		//we iterate through the list of testModules specified by user
 		for(String moduleToTest : modulesToTest) {
-		
+
 			//we check if sub-packages are to be included (test modules ending with asterisks specifies yes)
 			if (moduleToTest.endsWith("*"))
 			{
 				boolean ignoreCriteria = false;
 				if (moduleToTest.equals("*")) ignoreCriteria = true; //include all the classes, ignore all criteria
-								
+
 				//parse the name of parent package
 				String parentPackage = moduleToTest.replace(".*", "");
-				
+
 				//iterate through all the loaded classes from classpaths
 				Iterator it = YetiModule.allModules.keySet().iterator();
 				while(it.hasNext()) 
 				{	
 					String moduleName = (String)it.next();
-					
+
 					//if classname is same as the parent package or criteria is to be ignored, 
 					//add it in the array of test modules
 					if (moduleName.startsWith(parentPackage) || ignoreCriteria)
@@ -732,7 +732,7 @@ public class Yeti {
 				// add the module in the collection array of test modules
 				addTestModuleInArray(moduleToTest, modules);
 			}
-		
+
 		}
 		//in case no test modules were successfully loaded
 		if (modules.size() == 0)
@@ -740,10 +740,10 @@ public class Yeti {
 			System.err.println("Testing halted: No test modules were successfully loaded");
 			printHelp();
 			return;
-		
+
 		}
-		
-		
+
+
 		//we combine all the modules in single structure
 		mod = YetiModule.combineModules(modules.toArray(new YetiModule[modules.size()]));
 
@@ -753,7 +753,7 @@ public class Yeti {
 			System.err.println("Testing halted: there is no method to test");
 			printHelp();
 			return;
-		
+
 		}
 
 		// we let everybody use the tested module
@@ -765,11 +765,11 @@ public class Yeti {
 		// Creating the log processor
 		if (showMonitoringGui) {
 			YetiLog.proc=pl.getLogProcessor();
-			
+
 			//The routine tracker
 			gui = new YetiGUI(100);
 
-			
+
 		} else {
 			YetiLog.proc=pl.getLogProcessor();
 		}
@@ -793,16 +793,16 @@ public class Yeti {
 
 		// for logging purposes
 		if (isTimeout) {
-			
+
 			System.out.println("/** Testing Session finished, time: "+(endTestingTime-startTestingTime)+"ms **/");
 		}
-		
+
 		if(isDSS){
-			
+
 			//%%%%%%%%%%%%%%%%%%%%%%%%% Writing interesting values and method name from hashMap to a text file %%%%%%%%%%%%%%%%%%%%%%%%%// 
-			
-			
-			
+
+
+
 			try {
 
 
@@ -823,7 +823,7 @@ public class Yeti {
 					Map.Entry me = (Map.Entry)i.next(); 
 					out.println(me.getKey() + " contain interesting values "+ me.getValue()); 
 					out.println();
-		
+
 				} 
 				out.close();
 
@@ -832,11 +832,11 @@ public class Yeti {
 				e.printStackTrace();
 			}
 
-//				System.out.println(" The hashmap containing method name as key and values as DSS Interesting Values.");
-//				System.out.println(YetiDSSStrategy.hashMapToStoreMethodNameWithInterestingValues);
+			//				System.out.println(" The hashmap containing method name as key and values as DSS Interesting Values.");
+			//				System.out.println(YetiDSSStrategy.hashMapToStoreMethodNameWithInterestingValues);
 
-			
-			
+
+
 			//%%%%%%%%%%%%%%%%%%%%%%%%% Writing interesting values from Vector to a text file %%%%%%%%%%%%%%%%%%%%%%%%%// 
 
 
@@ -845,10 +845,11 @@ public class Yeti {
 				PrintStream out = new PrintStream(new FileOutputStream("Vector_Of_Interesting_Values.txt"));
 				//Vector to hold the values of a dSSInterestingValues Vector.
 				Vector<Object> tempDSSInterestingValues = new Vector<Object>();
-				tempDSSInterestingValues = YetiType.getInterestingValues();
-				for (int i = 0; i < tempDSSInterestingValues.size(); i++)
-					out.println("Value at: " + i + " = " + tempDSSInterestingValues.elementAt(i));
-
+				for (YetiType t: YetiType.allTypes.values()) {
+					tempDSSInterestingValues = t.getInterestingValues();
+					for (int i = 0; i < tempDSSInterestingValues.size(); i++)
+						out.println("Value at: " + i + " = " + tempDSSInterestingValues.elementAt(i));
+				}
 				out.close();
 
 			} catch (FileNotFoundException e) {
@@ -857,10 +858,10 @@ public class Yeti {
 
 
 
-//			System.out.println();
-//			System.out.println(" The values of dSSInterestingValues Vector are");
-//			System.out.println(YetiType.getdSSInterestingValues());
-//			System.out.println();
+			//			System.out.println();
+			//			System.out.println(" The values of dSSInterestingValues Vector are");
+			//			System.out.println(YetiType.getdSSInterestingValues());
+			//			System.out.println();
 		}
 
 		boolean isProcessed = false;
@@ -876,7 +877,7 @@ public class Yeti {
 			long endProcessingTime = new Date().getTime();
 			aggregationProcessing = "/** Processing time: "+(endProcessingTime-endTestingTime)+"ms **/";
 		}
-		
+
 		// we create the report
 		report = new YetiReport(modulesString, YetiLog.numberOfCalls , endTestingTime-startTestingTime, YetiLog.numberOfErrors);
 
@@ -892,7 +893,7 @@ public class Yeti {
 			System.out.println(aggregationProcessing);
 
 		}
-		
+
 		if (Yeti.hasBranchCoverage) {
 			try {
 				System.out.println("/** " +
@@ -900,7 +901,7 @@ public class Yeti {
 						Yeti.testModule.getNumberOfCoveredBranches()+"/"+
 						Yeti.testModule.getNumberOfBranches()+"("+
 						((float)((int)(100*Yeti.testModule.getCoverage())))/100+"%) **/");
-						report.setBranchCoverage(Yeti.testModule.getCoverage());
+				report.setBranchCoverage(Yeti.testModule.getCoverage());
 			} catch (YetiNoCoverageException e) {
 				// this should not happen... We should have quit already
 				e.printStackTrace();
@@ -910,7 +911,7 @@ public class Yeti {
 		if ((tracesOutputFile!=null)&&(logProcessor!=null)) {
 			YetiLog.proc.outputTracesToFile(logProcessor.listOfNewErrors, tracesOutputFile,logProcessor.numberOfNonErrors);
 		}
-		
+
 		// if we print the number of calls per method
 		if (printNumberOfCallsPerMethod) {
 			System.out.println("Trace of number of calls per method:");
@@ -918,7 +919,7 @@ public class Yeti {
 				System.out.println(r.getSignature()+": Called: "+r.getnTimesCalled()+", Successfully: "+r.getnTimesCalledSuccessfully()+", Undecidable: "+r.getnTimesCalledUndecidable()+", Unsuccessfully: "+r.getnTimesCalledUnsuccessfully());
 			}
 		}
-		
+
 		// if we approximate the number of failures per number of testsZ
 		if (approximate) {
 			YetiDataSet dataSetNcallsNFaults = new YetiDataSet(YetiGUI.mainGUI.getGraphNumberOfCallsOverTime().series[1], YetiGUI.mainGUI.getGraphFaults().series[1]);
@@ -928,20 +929,20 @@ public class Yeti {
 			report.setR2(dataSetNcallsNFaults.coeffOfDetermination(e));
 			report.setSSErr(dataSetNcallsNFaults.SSerr);
 			report.setSSTot(dataSetNcallsNFaults.SStot);
-			
+
 			System.out.println("/** Approximation: "+e+"(f: number of bugs, x number of tests) R^2="+dataSetNcallsNFaults.coeffOfDetermination(e)+" **/");
 		}
-		
+
 		//If distributed mode of operation
 		if (isDistributed){
 			YetiMap.moduleName=modulesToTest[0];
 			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
 			YetiMap.listOfExceptions.putAll(lp.getListOfErrors());
 
-		//To display the values of vector dSSInterestingValues from YetiType	
-		
+			//To display the values of vector dSSInterestingValues from YetiType	
+
 		}
-		
+
 		// if we ask for a report file, we complete it
 		if(reportFile!=null) {
 			try {
@@ -957,20 +958,20 @@ public class Yeti {
 				e.printStackTrace();
 			}
 		}
-		
-		
-		
+
+
+
 		System.out.println("/** Testing finished **/");
-		
-		
+
+
 	}
-	
+
 	/**
-	* Adds a single Yeti Module to the modules array
-	* @param moduleToTest the name of the module to be added
-	* @param modules the array in which the module is to be added
-	*
-	*/
+	 * Adds a single Yeti Module to the modules array
+	 * @param moduleToTest the name of the module to be added
+	 * @param modules the array in which the module is to be added
+	 *
+	 */
 	private static void addTestModuleInArray(String moduleToTest, ArrayList<YetiModule> modules)
 	{
 		YetiModule yetiModuleToTest = YetiModule.allModules.get(moduleToTest);
@@ -987,38 +988,38 @@ public class Yeti {
 	 */
 	public static void reset() {
 		try {
-		Yeti.engine = null;
-		Yeti.hasBranchCoverage = false;
-		Yeti.isDistributed = false;
-		Yeti.makeMethodsVisible = false;
-		Yeti.st = 0;
-		Yeti.strategy.reset();
-		Yeti.strategy = null;
-		Yeti.testModule = null;
-		Yeti.testModulesName = null;
-		Yeti.yetiPath = ".";
-		if (Yeti.gui!=null)
-			Yeti.gui.reset();
-		YetiType.reset();
-		YetiVariable.reset();
-		YetiLoader.reset();
-		YetiIdentifier.reset();
-		YetiLog.reset();
-		YetiLogProcessor.reset();
-		YetiModule.reset();
-		YetiName.reset();
-		if (Yeti.pl instanceof YetiJavaProperties) {
-			YetiJavaMethod.reset();
-			YetiJavaTestManager.reset();
-		}
-		// TODO add the same code for other programming languages
-		Yeti.pl = null;
+			Yeti.engine = null;
+			Yeti.hasBranchCoverage = false;
+			Yeti.isDistributed = false;
+			Yeti.makeMethodsVisible = false;
+			Yeti.st = 0;
+			Yeti.strategy.reset();
+			Yeti.strategy = null;
+			Yeti.testModule = null;
+			Yeti.testModulesName = null;
+			Yeti.yetiPath = ".";
+			if (Yeti.gui!=null)
+				Yeti.gui.reset();
+			YetiType.reset();
+			YetiVariable.reset();
+			YetiLoader.reset();
+			YetiIdentifier.reset();
+			YetiLog.reset();
+			YetiLogProcessor.reset();
+			YetiModule.reset();
+			YetiName.reset();
+			if (Yeti.pl instanceof YetiJavaProperties) {
+				YetiJavaMethod.reset();
+				YetiJavaTestManager.reset();
+			}
+			// TODO add the same code for other programming languages
+			Yeti.pl = null;
 		} catch (Throwable t) {
 			System.out.println("Error in reset");
 		}
 	}
-	
-	
+
+
 	/**
 	 * This is a simple help printing utility function.
 	 */
@@ -1041,8 +1042,8 @@ public class Yeti {
 		System.out.println("\t-randomPlus : uses the random+ strategy that injects interesting values every now and then.");
 		System.out.println("\t-randomPlusPeriodic : uses the random+ strategy and periodically change the values of the standard probalilities (null values, new instances, interesting values).");
 		System.out.println("\t-randomPlusDecreasing : uses the random+ strategy and decreases the values of the standard probalilities (null values, new instances, interesting values).<br>");
-        System.out.println("\t-evolutionary : uses GA to evolve a testing strategy.");
-        System.out.println("\t-chromosome : execute Yeti using a strategy chromosome.");
+		System.out.println("\t-evolutionary : uses GA to evolve a testing strategy.");
+		System.out.println("\t-chromosome : execute Yeti using a strategy chromosome.");
 		System.out.println("\t-DSS : initially uses random+ strategy and based on the results of random+ it uses dirt spot sweeping strategy.");
 		System.out.println("\t-gui : shows the standard graphical user interface for monitoring yeti.");
 		System.out.println("\t-noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.");
@@ -1055,7 +1056,7 @@ public class Yeti {
 		System.out.println("\t-approximate : approximates the number of unique failures per number of tests.");
 		System.out.println("\t-compactReport=X : adds a line in file X containing the information about the testing session.");
 		System.out.println("Example command to execute Yeti from command prompt is: >Java yeti.Yeti -java -time=15mn -testModules=yeti.test.YetiTest -nologs -randomPlus -gui");
-	
+
 	}
 
 }

@@ -113,6 +113,8 @@ public class YetiJavaRoutine extends YetiRoutine {
 			YetiLog.printDebugLog(this.getSignature()+" IllegalArgumentException", this,true);
 			for(YetiCard c: arg) {
 				YetiLog.printDebugLog("YetiType: "+c.getType().toString()+", real type: "+c.getValue().getClass()+", value: "+c.getValue().toString(),this,true);
+				//for (YetiType t: c.getType().directSuperTypes.values()) YetiLog.printDebugLog(t.getName()+" is supertype of "+ c.getType().toString(), this,true);
+				//for (YetiType t: YetiType.allTypes.values()) YetiLog.printDebugLog("Type in the system: "+t.getName(), this,true);
 			}
 			// should never happen
 			//e.printStackTrace();

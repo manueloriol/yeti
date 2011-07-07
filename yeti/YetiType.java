@@ -303,14 +303,14 @@ public class YetiType {
 	/**
 	 * The vector of interestingValues.
 	 */
-	public static Vector<Object> interestingValues = new Vector<Object>();
+	public Vector<Object> interestingValues = new Vector<Object>();
 
 	
 	/**
 	 * Simple getter for interesting values.
 	 * @return  the vector of interesting values.
 	 */
-	public static Vector<Object> getInterestingValues() {
+	public Vector<Object> getInterestingValues() {
 
 		return interestingValues;
 	}
@@ -383,8 +383,8 @@ public class YetiType {
 		if (interestingValues.size()==0) {
             return null;
         }
-        int i = index % interestingValues.size();
-		return YetiType.interestingValues.get(index);
+//        int i = index % interestingValues.size();
+		return interestingValues.get(index);
 	}
 	
 	

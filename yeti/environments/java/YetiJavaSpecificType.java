@@ -137,101 +137,95 @@ public class YetiJavaSpecificType extends YetiType {
 		// we create the primitive types		
 		YetiJavaSpecificType tBoolean=new YetiJavaSpecificType("boolean");
 		tBoolean.setSimpleType(true);
-		tBoolean.addInterestingValues(true);
-		tBoolean.addInterestingValues(false);
+		tBoolean.addInterestingValues(new Boolean(true));
+		tBoolean.addInterestingValues(new Boolean(false));
 		
 		YetiJavaSpecificType tByte=new YetiJavaSpecificType("byte");
 		tByte.setSimpleType(true);
-		tByte.addInterestingValues((byte)0);
-		tByte.addInterestingValues((byte)1);
-		tByte.addInterestingValues((byte)2);
-		tByte.addInterestingValues((byte)255);
-		tByte.addInterestingValues((byte)254);
-		tByte.addInterestingValues((byte)253);
+		tByte.addInterestingValues(new Byte((byte)0));
+		tByte.addInterestingValues(new Byte((byte)(1)));
+		tByte.addInterestingValues(new Byte((byte)(2)));
+		tByte.addInterestingValues(new Byte((byte)(255)));
+		tByte.addInterestingValues(new Byte((byte)(254)));
+		tByte.addInterestingValues(new Byte((byte)(253)));
 
 		YetiJavaSpecificType tShort=new YetiJavaSpecificType("short");
 		tShort.setSimpleType(true);
 		for (short j = -10; j<11;j++)
-			tShort.addInterestingValues((short)j);
-		tShort.addInterestingValues(Short.MAX_VALUE);
-		tShort.addInterestingValues((short) (Short.MAX_VALUE-1));
-		tShort.addInterestingValues((short)(Short.MAX_VALUE-2));
-		tShort.addInterestingValues((short)(Short.MIN_VALUE+2));
-		tShort.addInterestingValues((short)(Short.MIN_VALUE+1));
-		tShort.addInterestingValues(Short.MIN_VALUE);
+			tShort.addInterestingValues(new Short((short)(j)));
+		tShort.addInterestingValues(new Short(Short.MAX_VALUE));
+		tShort.addInterestingValues(new Short((short)(Short.MAX_VALUE-1)));
+		tShort.addInterestingValues(new Short((short)(Short.MAX_VALUE-2)));
+		tShort.addInterestingValues(new Short((short)(Short.MIN_VALUE+2)));
+		tShort.addInterestingValues(new Short((short)(Short.MIN_VALUE+1)));
+		tShort.addInterestingValues(new Short(Short.MIN_VALUE));
 
 
 		YetiJavaSpecificType tInt=new YetiJavaSpecificType("int");
 		tInt.setSimpleType(true);
 		for (int j = -10; j<11;j++)
-			tInt.addInterestingValues(j);
-		tInt.addInterestingValues(Integer.MAX_VALUE);
-		tInt.addInterestingValues(Integer.MAX_VALUE-1);
-		tInt.addInterestingValues(Integer.MAX_VALUE-2);
-		tInt.addInterestingValues(Integer.MIN_VALUE+2);
-		tInt.addInterestingValues(Integer.MIN_VALUE+1);
-		tInt.addInterestingValues(Integer.MIN_VALUE);
+			tInt.addInterestingValues(new Integer(j));
+		tInt.addInterestingValues(new Integer(Integer.MAX_VALUE));
+		tInt.addInterestingValues(new Integer(Integer.MAX_VALUE-1));
+		tInt.addInterestingValues(new Integer(Integer.MAX_VALUE-2));
+		tInt.addInterestingValues(new Integer(Integer.MIN_VALUE+2));
+		tInt.addInterestingValues(new Integer(Integer.MIN_VALUE+1));
+		tInt.addInterestingValues(new Integer(Integer.MIN_VALUE));
 
 		YetiJavaSpecificType tLong=new YetiJavaSpecificType("long");
 		tLong.setSimpleType(true);
 		for (long j = -10; j<11;j++)
-			tLong.addInterestingValues(j);
-		tLong.addInterestingValues(Long.MAX_VALUE);
-		tLong.addInterestingValues(Long.MAX_VALUE-1);
-		tLong.addInterestingValues(Long.MAX_VALUE-2);
-		tLong.addInterestingValues(Long.MIN_VALUE+2);
-		tLong.addInterestingValues(Long.MIN_VALUE+1);
-		tLong.addInterestingValues(Long.MIN_VALUE);
-		tLong.addInterestingValues(Integer.MAX_VALUE);
-		tLong.addInterestingValues(Integer.MAX_VALUE-1);
-		tLong.addInterestingValues(Integer.MAX_VALUE-2);
-		tLong.addInterestingValues(Integer.MIN_VALUE+2);
-		tLong.addInterestingValues(Integer.MIN_VALUE+1);
-		tLong.addInterestingValues(Integer.MIN_VALUE);
+			tLong.addInterestingValues(new Long(j));
+		tLong.addInterestingValues(new Long(Long.MAX_VALUE));
+		tLong.addInterestingValues(new Long(Long.MAX_VALUE-1));
+		tLong.addInterestingValues(new Long(Long.MAX_VALUE-2));
+		tLong.addInterestingValues(new Long(Long.MIN_VALUE+2));
+		tLong.addInterestingValues(new Long(Long.MIN_VALUE+1));
+		tLong.addInterestingValues(new Long(Long.MIN_VALUE));
+		tLong.addInterestingValues(new Long(Integer.MAX_VALUE));
+		tLong.addInterestingValues(new Long(Integer.MAX_VALUE-1));
+		tLong.addInterestingValues(new Long(Integer.MAX_VALUE-2));
+		tLong.addInterestingValues(new Long(Integer.MIN_VALUE+2));
+		tLong.addInterestingValues(new Long(Integer.MIN_VALUE+1));
+		tLong.addInterestingValues(new Long(Integer.MIN_VALUE));
 
 
 
 		YetiJavaSpecificType tDouble=new YetiJavaSpecificType("double");
 		tDouble.setSimpleType(true);
-		tDouble.addInterestingValues(Double.MAX_VALUE);
-		tDouble.addInterestingValues(Double.MIN_VALUE);
-		tDouble.addInterestingValues(Double.NaN);
-		tDouble.addInterestingValues(Double.POSITIVE_INFINITY);
-		tDouble.addInterestingValues(Double.NEGATIVE_INFINITY);
-		tDouble.addInterestingValues(Float.MAX_VALUE);
-		tDouble.addInterestingValues(Float.MIN_VALUE);
-		tDouble.addInterestingValues(Float.NaN);
-		tDouble.addInterestingValues(Float.POSITIVE_INFINITY);
-		tDouble.addInterestingValues(Float.NEGATIVE_INFINITY);
+		tDouble.addInterestingValues(new Double(Double.MAX_VALUE));
+		tDouble.addInterestingValues(new Double(Double.MIN_VALUE));
+		tDouble.addInterestingValues(new Double(Double.NaN));
+		tDouble.addInterestingValues(new Double(Double.POSITIVE_INFINITY));
+		tDouble.addInterestingValues(new Double(Double.NEGATIVE_INFINITY));
+		tDouble.addInterestingValues(new Double((double)(Float.MAX_VALUE)));
+		tDouble.addInterestingValues(new Double((double)(Float.MIN_VALUE)));
+		tDouble.addInterestingValues(new Double((double)(Float.NaN)));
+		tDouble.addInterestingValues(new Double((double)(Float.POSITIVE_INFINITY)));
+		tDouble.addInterestingValues(new Double((double)(Float.NEGATIVE_INFINITY)));
 
 
 		YetiJavaSpecificType tChar=new YetiJavaSpecificType("char");
 		tChar.setSimpleType(true);
-//		tChar.addInterestingValues('\0');
-//		tChar.addInterestingValues('\1');
-//		tChar.addInterestingValues('\2');
-//		tChar.addInterestingValues('\n');
-//		tChar.addInterestingValues('\255');
-//		tChar.addInterestingValues('\254');
-//		tChar.addInterestingValues('\253');
-		tChar.addInterestingValues((Character)(char)0);
-		tChar.addInterestingValues((Character)(char)1);
-		tChar.addInterestingValues((Character)(char)2);
-		tChar.addInterestingValues((Character) (char)255);
-		tChar.addInterestingValues((Character) (char)254);
-		tChar.addInterestingValues((Character) (char)253);
-		tChar.addInterestingValues(Character.MAX_VALUE);
-		tChar.addInterestingValues(Character.MIN_VALUE);
+		tChar.addInterestingValues(new Character('\0'));
+		tChar.addInterestingValues(new Character('\1'));
+		tChar.addInterestingValues(new Character('\2'));
+		tChar.addInterestingValues(new Character('\n'));
+		tChar.addInterestingValues(new Character('\255'));
+		tChar.addInterestingValues(new Character('\254'));
+		tChar.addInterestingValues(new Character('\253'));
+		tChar.addInterestingValues(new Character(Character.MAX_VALUE));
+		tChar.addInterestingValues(new Character(Character.MIN_VALUE));
 
 
 
 		YetiJavaSpecificType tFloat=new YetiJavaSpecificType("float");
 		tFloat.setSimpleType(true);
-		tFloat.addInterestingValues(Float.MAX_VALUE);
-		tFloat.addInterestingValues(Float.MIN_VALUE);
-		tFloat.addInterestingValues(Float.NaN);
-		tFloat.addInterestingValues(Float.POSITIVE_INFINITY);
-		tFloat.addInterestingValues(Float.NEGATIVE_INFINITY);
+		tFloat.addInterestingValues(new Float(Float.MAX_VALUE));
+		tFloat.addInterestingValues(new Float(Float.MIN_VALUE));
+		tFloat.addInterestingValues(new Float(Float.NaN));
+		tFloat.addInterestingValues(new Float(Float.POSITIVE_INFINITY));
+		tFloat.addInterestingValues(new Float(Float.NEGATIVE_INFINITY));
 
 		// we add the helper class that has creating procedures.
 		YetiLoader.yetiLoader.addDefinition(YetiJavaSpecificType.class);
