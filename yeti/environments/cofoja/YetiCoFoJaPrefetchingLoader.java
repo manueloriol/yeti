@@ -81,7 +81,7 @@ public class YetiCoFoJaPrefetchingLoader extends YetiJavaPrefetchingLoader {
 	 * @param m the constructor.
 	 * @return the Yeti routine for the constructor of the class c
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected YetiRoutine generateRoutineFromConstructor(Class clazz, YetiType[] paramTypes, YetiType type, YetiModule mod, Constructor con) {
 		return new YetiCoFoJaConstructor(YetiName.getFreshNameFrom(clazz.getName()), paramTypes , type, mod, con);
 	}
