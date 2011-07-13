@@ -52,6 +52,7 @@ import yeti.environments.YetiInitializer;
 import yeti.environments.YetiLoader;
 import yeti.environments.YetiProgrammingLanguageProperties;
 import yeti.environments.YetiTestManager;
+import yeti.environments.cofoja.YetiCoFoJaPrefetchingLoader;
 import yeti.environments.commandline.YetiCLInitializer;
 import yeti.environments.commandline.YetiCLLogProcessor;
 import yeti.environments.commandline.YetiCLProperties;
@@ -224,10 +225,11 @@ public class Yeti {
 		YetiInitializer secondaryInitializer = null;
 		boolean isJava = false;
 		boolean isJML = false;
+		boolean isCoFoJa = false;
 		boolean isDotNet = false;
 		boolean isCommandLine = false;
 		boolean isPharo = false;
-		boolean isTimeout = false;
+			boolean isTimeout = false;
 		int timeOutSec=0;
 		boolean isNTests = false;
 		boolean isRawLog = false;
@@ -279,6 +281,11 @@ public class Yeti {
 				continue;
 			}
 
+			// if JML
+			if (s0.toLowerCase().equals("-cofoja")) {
+				isCoFoJa = true;
+				continue;
+			}
 			//if .NET
 			if(s0.toLowerCase().equals("-dotnet")){		
 				isDotNet = true;
@@ -532,6 +539,16 @@ public class Yeti {
 		//test of options to set up the YetiProperties for JML
 		if (isJML) {
 			YetiLoader prefetchingLoader = new YetiJMLPrefetchingLoader(yetiPath);
+			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader);
+			YetiTestManager testManager = new YetiJavaTestManager();
+			logProcessor = new YetiJavaLogProcessor(initialListOfErrors);
+			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
+		}
+
+
+		//test of options to set up the YetiProperties for JML
+		if (isCoFoJa) {
+			YetiLoader prefetchingLoader = new YetiCoFoJaPrefetchingLoader(yetiPath);
 			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader);
 			YetiTestManager testManager = new YetiJavaTestManager();
 			logProcessor = new YetiJavaLogProcessor(initialListOfErrors);
