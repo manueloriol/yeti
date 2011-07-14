@@ -75,7 +75,7 @@ import yeti.monitoring.YetiGUI;
 import yeti.stats.YetiDataSet;
 import yeti.stats.YetiMichaelisMentenEquation;
 import yeti.strategies.GA.*;
-import yeti.strategies.YetiDSSStrategy;
+import yeti.strategies.YetiDSSRStrategy;
 import yeti.strategies.YetiRandomPlusDecreasing;
 import yeti.strategies.YetiRandomPlusStrategy;
 import yeti.strategies.YetiRandomPlusPeriodicProbabilitiesStrategy;
@@ -187,7 +187,7 @@ public class Yeti {
 	 * -randomPlus : uses the random+ strategy that injects interesting values every now and then.<br>
 	 * -randomPlusPeriodic : uses the random+ strategy and periodically change the values of the standard probalilities (null values, new instances, interesting values).<br>
 	 * -randomPlusDecreasing : uses the random+ strategy and decreases the values of the standard probalilities (null values, new instances, interesting values).<br>
-	 * -DSS : uses the Dirt Spot Sweeping Strategy which extends the random plus strategy and check the boundries around the veriables that found bugs.<br>
+	 * -DSSR : uses the Dirt Spot Sweeping Random Strategy which extends the random plus strategy and check the boundries around the veriables that found bugs.<br>
 	 * -gui : shows the standard graphical user interface for monitoring yeti.<br>
 	 * -noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.<br>
 	 * -instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.<br>
@@ -237,7 +237,7 @@ public class Yeti {
 		boolean isRandomPlus = false;
 		boolean isRandomPlusPeriodic = false;
 		boolean isRandomPlusDecreasing = false;
-		boolean isDSS = false;
+		boolean isDSSR = false;
 		boolean isEvolutionary = false;
 		boolean isRunningFromChromosome = false;
 		String chromosomePath = null;
@@ -427,8 +427,8 @@ public class Yeti {
 				continue;	
 			}			
 
-			if (s0.equals("-DSS")) {
-				isDSS = true;
+			if (s0.equals("-DSSR")) {
+				isDSSR = true;
 				continue;	
 			}
 
@@ -680,8 +680,8 @@ public class Yeti {
 		if (isRandomPlusDecreasing) {
 			strategy= new YetiRandomPlusDecreasing(testManager);
 		}		
-		if (isDSS) {
-			strategy= new YetiDSSStrategy(testManager);
+		if (isDSSR) {
+			strategy= new YetiDSSRStrategy(testManager);
 		}
 
 		if (isRunningFromChromosome) {
@@ -814,72 +814,6 @@ public class Yeti {
 			System.out.println("/** Testing Session finished, time: "+(endTestingTime-startTestingTime)+"ms **/");
 		}
 
-		if(isDSS){
-
-			//%%%%%%%%%%%%%%%%%%%%%%%%% Writing interesting values and method name from hashMap to a text file %%%%%%%%%%%%%%%%%%%%%%%%%// 
-
-
-
-			try {
-
-
-
-				PrintStream out = new PrintStream(new FileOutputStream("HashMap_Of_Interesting_Values.txt"));
-
-				//HashMap to hold the values of a dSSInterestingValues HashMap.
-
-				HashMap<String, Object> tempDSSInterestingHashMapValues = new HashMap<String, Object>();
-
-				tempDSSInterestingHashMapValues = YetiDSSStrategy.hashMapToStoreTypeNameWithInterestingValues;
-				// Get a set of the entries 
-				Set set = tempDSSInterestingHashMapValues.entrySet(); 
-				// Get an iterator 
-				Iterator i = set.iterator(); 
-				// Display elements 
-				while(i.hasNext()) { 
-					Map.Entry me = (Map.Entry)i.next(); 
-					out.println(me.getKey() + " contain interesting values "+ me.getValue()); 
-					out.println();
-
-				} 
-				out.close();
-
-
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-
-			//				System.out.println(" The hashmap containing method name as key and values as DSS Interesting Values.");
-			//				System.out.println(YetiDSSStrategy.hashMapToStoreMethodNameWithInterestingValues);
-
-
-
-			//%%%%%%%%%%%%%%%%%%%%%%%%% Writing interesting values from Vector to a text file %%%%%%%%%%%%%%%%%%%%%%%%%// 
-
-
-
-			try {
-				PrintStream out = new PrintStream(new FileOutputStream("Vector_Of_Interesting_Values.txt"));
-				//Vector to hold the values of a dSSInterestingValues Vector.
-				Vector<Object> tempDSSInterestingValues = new Vector<Object>();
-				for (YetiType t: YetiType.allTypes.values()) {
-					tempDSSInterestingValues = t.getInterestingValues();
-					for (int i = 0; i < tempDSSInterestingValues.size(); i++)
-						out.println("Value at: " + i + " = " + tempDSSInterestingValues.elementAt(i));
-				}
-				out.close();
-
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-
-
-
-			//			System.out.println();
-			//			System.out.println(" The values of dSSInterestingValues Vector are");
-			//			System.out.println(YetiType.getdSSInterestingValues());
-			//			System.out.println();
-		}
 
 		boolean isProcessed = false;
 		String aggregationProcessing = "";
@@ -955,9 +889,6 @@ public class Yeti {
 			YetiMap.moduleName=modulesToTest[0];
 			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
 			YetiMap.listOfExceptions.putAll(lp.getListOfErrors());
-
-			//To display the values of vector dSSInterestingValues from YetiType	
-
 		}
 
 		// if we ask for a report file, we complete it
@@ -1061,7 +992,7 @@ public class Yeti {
 		System.out.println("\t-randomPlusDecreasing : uses the random+ strategy and decreases the values of the standard probalilities (null values, new instances, interesting values).<br>");
 		System.out.println("\t-evolutionary : uses GA to evolve a testing strategy.");
 		System.out.println("\t-chromosome : execute Yeti using a strategy chromosome.");
-		System.out.println("\t-DSS : initially uses random+ strategy and based on the results of random+ it uses dirt spot sweeping strategy.");
+		System.out.println("\t-DSSR : initially uses random+ strategy and based on the results of random+ it uses Dirt Spot Sweeping Random strategy.");
 		System.out.println("\t-gui : shows the standard graphical user interface for monitoring yeti.");
 		System.out.println("\t-noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.");
 		System.out.println("\t-instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.");
@@ -1072,7 +1003,6 @@ public class Yeti {
 		System.out.println("\t-makeMethodsVisible: converts all the protected and private methods into public for testing.");
 		System.out.println("\t-approximate : approximates the number of unique failures per number of tests.");
 		System.out.println("\t-compactReport=X : adds a line in file X containing the information about the testing session.");
-		System.out.println("Example command to execute Yeti from command prompt is: >Java yeti.Yeti -java -time=15mn -testModules=yeti.test.YetiTest -nologs -randomPlus -gui");
 
 	}
 
