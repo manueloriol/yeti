@@ -1,0 +1,13 @@
+EXP = yeti.experimenter.YetiExperiment100PicksRandom
+
+all: main test
+main:
+	java yeti.experimenter.YetiTestArchiveExplorer .
+	java -Xmx2g -ea $(EXP) PackageList.yexp -onlyPrint > tests.sh
+	chmod +x tests.sh
+
+test:
+	./tests.sh
+clean:
+	\rm -rf results.csv
+	\rm -rf tests.sh
