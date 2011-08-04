@@ -112,16 +112,21 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 			if ((e.getCause() instanceof RuntimeException && !isAcceptable(e.getCause())) || e.getCause() instanceof Error  ) {
 				if (e.getCause() instanceof ThreadDeath) {
 					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
+					isBug = true;
 				} else {
 					if (e.getCause() instanceof YetiSecurityException) {
+						isBug = true;
 						YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: " + e.getCause().getMessage() + " **/", this);
-					} else if (e.getCause() instanceof org.jmlspecs.jmlrac.runtime.JMLEntryPreconditionError) {
-						// if the cause is a precondition violation of a JML Assertion
-						isBug = false;
-						YetiLog.printYetiLog("/**MEANINGLESS: JMLEntryPreconditionError**/", this);
-					} else if (e.getCause() instanceof org.jmlspecs.jmlrac.runtime.JMLAssertionError) {
-						// if the cause is a violation of a JML Assertion other than precondition
-						YetiLog.printYetiLog("/**BUG FOUND: JMLAssertionError**/", this);
+					} else if (e.getCause() instanceof com.google.java.contract.PreconditionError) {
+						// if the cause is a precondition violation of a CoFoJa precondition of second-level
+						StackTraceElement[] s = e.getCause().getStackTrace();
+						// if the precondition is not first-level
+						isBug=false;
+						if (!s[2].getClassName().startsWith("sun.reflect.")){
+							isBug=true;
+							YetiLog.printYetiLog("/**BUG FOUND: CONTRACT EXCEPTION: "+ e.getCause().getMessage() +" **/", this);
+						} else
+							YetiLog.printYetiLog("/** NORMAL EXCEPTION: CoFoJa PreconditionError**/", this);
 					} else {
 						YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
 					}
@@ -132,14 +137,18 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 			}
 			
 			if (isBug) {
+				this.incnTimesCalledUnsuccessfully();
 				YetiLog.printYetiThrowable(e.getCause(), this);
-			}
+		} else{							
+			this.incnTimesCalledSuccessfully();
+		}
 		} catch (Error e) {
 			// if we are here there was a serious error
 			// we print it
 			YetiLog.printYetiLog(log+");", this);
 			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
 			YetiLog.printYetiThrowable(e.getCause(), this);
+			this.incnTimesCalledUnsuccessfully();
 		}
 		catch (Throwable e){
 			// should never happen

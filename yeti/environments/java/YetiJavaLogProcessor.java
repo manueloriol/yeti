@@ -218,7 +218,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	}
 
 	/**
-	 * Slices the code of the test case statically and conervatively.
+	 * Slices the code of the test case statically and conservatively.
 	 * 
 	 * Does not make any assumption on command-query separation.
 	 * 

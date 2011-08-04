@@ -56,12 +56,7 @@ import yeti.environments.java.YetiJavaPrefetchingLoader;
  *
  */
 public class YetiCoFoJaPrefetchingLoader extends YetiJavaPrefetchingLoader {
-	
-	/**
-	 * This character denotes that the 
-	 */
-	private static final char JML_SPECIFIC_INDICATOR = '$';
-	
+		
 	/**
 	 * Constructor that creates a new loader for loading CoFoJa annotated Java classes.
 	 * 
@@ -117,10 +112,10 @@ public class YetiCoFoJaPrefetchingLoader extends YetiJavaPrefetchingLoader {
 	 * Check whether the method to add is a method generated from CoFoJa
 	 * 
 	 * @param method The method to test
-	 * @return True if the method contains '$'
+	 * @return True if the method starts with "com$google$java$contract$"
 	 */
 	protected boolean isCoFoJaSpecific(Method method) {
-		// if it is jml-specific, skip the method
-		return method.getName().indexOf(JML_SPECIFIC_INDICATOR) >= 0; 
+		// if it is CoFoJa specific, skip the method
+		return method.getName().startsWith("com$google$java$contract$"); 
 	}
 }

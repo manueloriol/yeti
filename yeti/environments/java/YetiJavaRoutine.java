@@ -132,14 +132,17 @@ public class YetiJavaRoutine extends YetiRoutine {
 				if (e.getCause() instanceof ThreadDeath) {
 					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
 					this.incnTimesCalledUndecidable();
+					YetiLog.printYetiThrowable(e.getCause(), this,true);
 				} else {
 					if (e.getCause() instanceof YetiSecurityException) {
 						YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: "+e.getCause().getMessage()+" **/", this);
 						this.incnTimesCalledUndecidable();
+						YetiLog.printYetiThrowable(e.getCause(), this,true);
 					} else {
 						if (YetiLog.isAccountableFailure(e.getCause())) {
 							YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
 							this.incnTimesCalledUnsuccessfully();
+							YetiLog.printYetiThrowable(e.getCause(), this,true);
 							//e.getCause().printStackTrace();
 						}
 						else {
@@ -148,7 +151,6 @@ public class YetiJavaRoutine extends YetiRoutine {
 						}
 					}
 				}
-				YetiLog.printYetiThrowable(e.getCause(), this,true);
 			}
 			else {
 				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);

@@ -808,6 +808,7 @@ public class Yeti {
 			// if it is according to a timeout
 			engine.testModuleForNSeconds(mod, timeOutSec);
 		else {
+			System.out.println("Specify a time or a number of tests to perform");
 			printHelp();
 			return;
 		}

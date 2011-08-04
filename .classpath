@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/hadoop-0.19.2-core.jar"/>
 	<classpathentry kind="lib" path="lib/javassist.jar"/>
 	<classpathentry kind="lib" path="lib/jgap.jar"/>
+	<classpathentry kind="lib" path="lib/cofoja-1.0-20110803.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>
