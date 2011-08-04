@@ -164,6 +164,12 @@ public class Yeti {
 	public static boolean compactReport=false;
 
 	public static boolean finished=false;
+
+	
+	/**
+	 * The generated test cases once processed. 
+	 */
+	public static Vector<String> processedTestCases;
 	/**
 	 * Main method of Yeti. It serves YetiRun the arguments it receives.
 	 * Arguments are numerous. Here is a list of the current ones:
@@ -546,7 +552,7 @@ public class Yeti {
 		}
 
 
-		//test of options to set up the YetiProperties for JML
+		//test of options to set up the YetiProperties for CoFoJa
 		if (isCoFoJa) {
 			YetiLoader prefetchingLoader = new YetiCoFoJaPrefetchingLoader(yetiPath);
 			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader);
@@ -820,8 +826,10 @@ public class Yeti {
 		// presents the logs
 		System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");	
 		if (!Yeti.pl.isRawLog()&&!Yeti.pl.isNoLogs()) {
-			isProcessed = true;		
-			for (String log: YetiLog.proc.processLogs()) {
+			isProcessed = true;
+			
+			processedTestCases = YetiLog.proc.processLogs();
+			for (String log: processedTestCases) {
 				System.out.println(log);
 			}
 			// logging purposes: (slightly wrong because of printing)
