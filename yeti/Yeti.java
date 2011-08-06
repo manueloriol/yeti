@@ -165,7 +165,7 @@ public class Yeti {
 
 	public static boolean finished=false;
 
-	
+
 	/**
 	 * The generated test cases once processed. 
 	 */
@@ -175,14 +175,16 @@ public class Yeti {
 	 * Arguments are numerous. Here is a list of the current ones:
 	 * <br>
 	 * <br>
+	 * -help, -h: prints the help out.<br>
 	 * -java, -Java : for calling it on Java.<br>
 	 * -jml, -JML : for calling it on JML annotated code.<br>
+	 * -cofoja, -CoFoJa : for calling it on Java programs annotated with CoFoJa. Note that if you do not want to pre-process the classes statically, you should call Yeti using the option -javaagent:cofoja.jar (or any other path to a CoFoJa jar).<br>
 	 * -dotnet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts.<br>
 	 * -time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).<br>
 	 * -nTests=X : for calling Yeti to attempt X method calls.<br>
-	 * -testModules=M1:M2:...:Mn : for testing one or several modules.Sub-packages of a system can also be specified with asteriks e.g. yeti.test.* will include all the classes in yeti.test + all the classes belonging to the sub-packages of yeti.test <br>
-	 * -initClass=X : this will use a user class to initialize the system this class will be a subclass of yeti.environments.YetiInitializer<br>
-	 * -help, -h: prints the help out.<br>
+	 * -testModules=M1:M2:...:Mn : for testing one or several modules.Sub-packages of a system can also be specified with asteriks e.g. yeti.test.* will include all the classes in yeti.test + all the classes belonging to the sub-packages of yeti.test .<br>
+	 * -initClass=X : this will use a user class to initialize the system this class will be a subclass of yeti.environments.YetiInitializer .<br>
+	 * -outputUnitTestFile=X : this option stores the generated test cases in a file. THis is binding-specific for Java: X=tests/test0.T.java will store a file T.java from package test0 into the directory tests.<br>
 	 * -rawlogs : prints the logs directly instead of processing them at the end. <br>
 	 * -nologs : does not print logs, only the final result.<br>
 	 * -msCalltimeout=X : sets the timeout (in milliseconds) for a method call to X. Note that too
@@ -224,9 +226,6 @@ public class Yeti {
 	 * This will receive the same arguments as described for method main and process them
 	 * @param args the list of arguments passed on either by main or Map Method in YetiMap
 	 */	
-	/**
-	 * @param args
-	 */
 	public static void YetiRun(String[] args){
 		YetiInitializer secondaryInitializer = null;
 		boolean isJava = false;
@@ -235,7 +234,7 @@ public class Yeti {
 		boolean isDotNet = false;
 		boolean isCommandLine = false;
 		boolean isPharo = false;
-			boolean isTimeout = false;
+		boolean isTimeout = false;
 		int timeOutSec=0;
 		boolean isNTests = false;
 		boolean isRawLog = false;
@@ -245,11 +244,13 @@ public class Yeti {
 		boolean isRandomPlusDecreasing = false;
 		boolean isDSSR = false;
 		boolean isEvolutionary = false;
-		boolean isRunningFromChromosome = false;
+		boolean isRunningFromChromosome = false;		
 		String chromosomePath = null;
 		boolean showMonitoringGui = false;
 		boolean printNumberOfCallsPerMethod = false;
 		boolean approximate = false;
+		boolean saveInUnitTestFile = false;
+		String unitTestFileName = null;
 		String modulesString = null;
 		YetiGAParameters gaParameters = new YetiGAParameters();
 
@@ -298,7 +299,7 @@ public class Yeti {
 				continue;
 			}
 
-			//if .NET
+			//if command-line
 			if(s0.toLowerCase().equals("-cl")){		
 				isCommandLine = true;
 				continue;
@@ -433,6 +434,7 @@ public class Yeti {
 				continue;	
 			}			
 
+			// we can use the Dirt Spot Sweeping strategy
 			if (s0.equals("-DSSR")) {
 				isDSSR = true;
 				continue;	
@@ -510,6 +512,13 @@ public class Yeti {
 			if (s0.startsWith("-compactReport=")) {
 				Yeti.compactReport = true;
 				reportFile=s0.substring(15);
+				continue;
+			}
+
+			if (s0.startsWith("-outputUnitTestFile=")){
+				saveInUnitTestFile=true;
+				unitTestFileName=s0.substring(20);
+				YetiLog.printDebugLog("Will save unit tests in: "+unitTestFileName, Yeti.class, true);
 				continue;
 			}
 
@@ -829,10 +838,31 @@ public class Yeti {
 		if (!Yeti.pl.isRawLog()&&!Yeti.pl.isNoLogs()) {
 			isProcessed = true;
 			
+			// we first process logs
 			processedTestCases = YetiLog.proc.processLogs();
-			for (String log: processedTestCases) {
-				System.out.println(log);
+			if (saveInUnitTestFile){
+				
+				// we generate the file and its name
+				String fileContent = YetiLog.proc.generateUnitTestFile(processedTestCases, unitTestFileName);
+				String fileName=YetiLog.proc.generateUnitTestFileName(processedTestCases, unitTestFileName);
+				
+				// we write it
+				try {
+					PrintStream ps = new PrintStream(fileName);
+					ps.print(fileContent);
+				} catch (Exception e) {
+					// in case it did not work
+					System.out.println("/** Problem with saving test cases. Printing them on command-line instead. **/");
+					e.printStackTrace();
+					System.out.println(fileContent);
+				}
+
+
+			} else {
+				// otherwise, we put it on the command-line
+				System.out.println(YetiLog.proc.generateUnitTestFile(processedTestCases, unitTestFileName));
 			}
+
 			// logging purposes: (slightly wrong because of printing)
 			long endProcessingTime = new Date().getTime();
 			aggregationProcessing = "/** Processing time: "+(endProcessingTime-endTestingTime)+"ms **/";
@@ -982,17 +1012,19 @@ public class Yeti {
 	 */
 	public static void printHelp() {
 		System.out.println("Yeti Usage:\n java yeti.Yeti [-java|-Java] [[-time=Xs|-time=Xmn]|[-nTests=X]][-testModules=M1:M2:...:Mn][-help|-h][-rawlogs]");
+		System.out.println("\t-help, -h: prints the help out.");
 		System.out.println("\t-java, -Java : for calling it on Java.");
 		System.out.println("\t-jml, -JML : for calling it on JML annotated code.");
+		System.out.println("\t-cofoja, -CoFoJa : for calling it on Java programs annotated with CoFoJa.  Note that if you do not want to pre-process the classes statically, you should call Yeti using the option -javaagent:cofoja.jar (or any other path to a CoFoJa jar).");
 		System.out.println("\t-dotnet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts.");
 		System.out.println("\t-time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).");
 		System.out.println("\t-nTests=X : for calling Yeti to attempt X method calls.");
-		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules. Sub-packages of a system can also be specified with asteriks e.g. yeti.test.* will include all the classes in yeti.test + all the classes belonging to the sub-packages of yeti.test");
-		System.out.println("\t-help, -h: prints the help out.");
-		System.out.println("\t-initClass=X : this will use a user class to initialize the system this class will be a subclass of yeti.environments.YetiInitializer");
+		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules. Sub-packages of a system can also be specified with asteriks e.g. yeti.test.* will include all the classes in yeti.test + all the classes belonging to the sub-packages of yeti.test .");
+		System.out.println("\t-initClass=X : this will use a user class to initialize the system this class will be a subclass of yeti.environments.YetiInitializer .");
+		System.out.println("\t-outputUnitTestFile=X : this option stores the generated test cases in a file. THis is binding-specific for Java: X=tests/test0.T.java will store a file T.java from package test0 into the directory tests.");
 		System.out.println("\t-rawlogs: prints the logs directly instead of processing them at the end.");
 		System.out.println("\t-nologs : does not print logs, only the final result.");
-		System.out.println("\t-msCalltimeout=X : sets the timeout (in milliseconds) for a method call to X.Note that too low values may result in blocking Yeti (use at least 30ms for good performances)");
+		System.out.println("\t-msCalltimeout=X : sets the timeout (in milliseconds) for a method call to X.Note that too low values may result in blocking Yeti (use at least 30ms for good performances).");
 		System.out.println("\t-yetiPath=X : stores the path that contains the code to test (e.g. for Java the classpath to consider)");
 		System.out.println("\t-newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100, default is 25.");
 		System.out.println("\t-probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100, default is 1.");

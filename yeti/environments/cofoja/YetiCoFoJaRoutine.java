@@ -87,6 +87,7 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 			
 			try {
 				makeEffectiveCall(arg);
+				this.incnTimesCalledSuccessfully();
 			} catch(YetiCallException e) {
 				log = e.getLog();
 				throw e.getOriginalThrowable();
@@ -113,10 +114,13 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 				if (e.getCause() instanceof ThreadDeath) {
 					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
 					isBug = true;
+					this.incnTimesCalledUndecidable();
 				} else {
 					if (e.getCause() instanceof YetiSecurityException) {
 						isBug = true;
 						YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: " + e.getCause().getMessage() + " **/", this);
+						this.incnTimesCalledUndecidable();
+
 					} else if (e.getCause() instanceof com.google.java.contract.PreconditionError) {
 						// if the cause is a precondition violation of a CoFoJa precondition of second-level
 						StackTraceElement[] s = e.getCause().getStackTrace();
@@ -125,23 +129,26 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 						if (!s[2].getClassName().startsWith("sun.reflect.")){
 							isBug=true;
 							YetiLog.printYetiLog("/**BUG FOUND: CONTRACT EXCEPTION: "+ e.getCause().getMessage() +" **/", this);
-						} else
+							this.incnTimesCalledUnsuccessfully();
+						} else {
 							YetiLog.printYetiLog("/** NORMAL EXCEPTION: CoFoJa PreconditionError**/", this);
+							this.incnTimesCalledSuccessfully();
+						}
+
 					} else {
 						YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
+						this.incnTimesCalledUnsuccessfully();
 					}
 				}
 			}
 			else {
 				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
+				this.incnTimesCalledSuccessfully();
 			}
 			
 			if (isBug) {
-				this.incnTimesCalledUnsuccessfully();
 				YetiLog.printYetiThrowable(e.getCause(), this);
-		} else{							
-			this.incnTimesCalledSuccessfully();
-		}
+			}
 		} catch (Error e) {
 			// if we are here there was a serious error
 			// we print it

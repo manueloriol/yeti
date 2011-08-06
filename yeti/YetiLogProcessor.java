@@ -470,5 +470,49 @@ public abstract class YetiLogProcessor {
 	public static void reset() {
 		lastNumberOfNonUniqueBugs = 0;
 	}
+	
+	/**
+	 * Specialize this to generate proper language-bound test cases.
+	 * 
+	 * @param processedTestCases the processed test cases
+	 */
+	public String generateUnitTestFile(Vector<String> processedTestCases, String unitTestFileName) {
+		String aggregate = "";
+		for (String tc: processedTestCases) {
+			aggregate=aggregate+"\n\n"+tc;
+		}
+		return aggregate;
+	}
+	
+	
+	/**
+	 *  Returns the file name under which store the generated unit tests.
+	 *  
+	 * @param processedTestCases the test cases.
+	 * @param unitTestFileName the file name specified on the command-line.
+	 * @return a file name under which the unit tests should be stored.
+	 */
+	public String generateUnitTestFileName(Vector<String> processedTestCases, String unitTestFileName) {
+		return unitTestFileName;
+	}
+	
+	
+	/**
+	 * Adds 3 spaces at the beginning of each line of the string.
+	 * 
+	 * @param stringToIndent the part of the test case to indent.
+	 * @return the indenter test case.
+	 */
+	public static String indent(String stringToIndent) {
+		String []lines=stringToIndent.split("\n");
+		String result = "";
+		for (String s: lines){
+			result=result+"   "+s+"\n";
+		}
+		
+		return result;
+	}
+	
+	
 
 }

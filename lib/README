@@ -1,0 +1,59 @@
+The libraries included in this repositories are here only for convenience.
+If you would like to use the latest version of each library, please follow 
+the link indicated below. If you have commit rights and would like to update
+such libraries, please do so once you tested the update.
+
+
+Javassist: 
+----------
+Library used to instrument the bytecode to obtain branch coverage.
+and other more advanced features.
+Version included: 3.15.0
+Where to find it: http://www.javassist.org
+File: javassist.jar
+Introduced by: Manuel Oriol
+Introduced on: ?
+Last updated: 05.08.2011 by Manuel Oriol
+
+JML:
+----
+Library used to test Java programs annotated with JML annotations.
+Version included: ?
+Where to find it: ?
+Files: jmlmodels.jar jmlmodelsnonrac.jar jmlruntime.jar jmljunitruntime.jar
+Introduced by: Vasileios Dimitriadis 
+Introduced on: ?
+Last updated: ?
+
+Hadoop:
+-------
+Library used to distribute testing jobs over a cloud.
+Version included: ?
+Where to find it: ?
+File: hadoop-0.19.2-core.jar 
+Introduced by: Faheem Ullah
+Introduced on: ?
+Last updated: ?
+
+CofoJa: 
+-------
+Library used to test Java programs annonated using the CoFoJa annotations.
+Version included: 20110803
+Where to find it: ? 
+File: cofoja.jar
+Introduced by: Manuel Oriol
+Introduced on: 03.08.2011
+Last updated: 03.08.2011 by Manuel Oriol
+
+jgap: 
+-----
+Library used to perform evolutionary testing.
+Version included: ?
+Where to find it: ? 
+File: jgap.jar
+Introduced by: Lucas Silva
+Introduced on: ?
+Last updated: ?
+
+
+
