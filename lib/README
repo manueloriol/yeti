@@ -12,34 +12,34 @@ Version included: 3.15.0
 Where to find it: http://www.javassist.org
 File: javassist.jar
 Introduced by: Manuel Oriol
-Introduced on: ?
+Introduced on: 30.06.2010
 Last updated: 05.08.2011 by Manuel Oriol
 
 JML:
 ----
 Library used to test Java programs annotated with JML annotations.
 Version included: ?
-Where to find it: ?
+Where to find it: http://www.eecs.ucf.edu/~leavens/JML/
 Files: jmlmodels.jar jmlmodelsnonrac.jar jmlruntime.jar jmljunitruntime.jar
 Introduced by: Vasileios Dimitriadis 
-Introduced on: ?
-Last updated: ?
+Introduced on: 29.07.2009
+Last updated: 29.07.2009 by Vasileios Dimitriadis
 
 Hadoop:
 -------
 Library used to distribute testing jobs over a cloud.
-Version included: ?
-Where to find it: ?
+Version included: 0.19.2
+Where to find it: http://hadoop.apache.org/
 File: hadoop-0.19.2-core.jar 
 Introduced by: Faheem Ullah
-Introduced on: ?
-Last updated: ?
+Introduced on: 21.08.2009
+Last updated: 21.08.2009 by Faheem Ullah
 
 CofoJa: 
 -------
 Library used to test Java programs annonated using the CoFoJa annotations.
 Version included: 20110803
-Where to find it: ? 
+Where to find it: http://code.google.com/p/cofoja/ 
 File: cofoja.jar
 Introduced by: Manuel Oriol
 Introduced on: 03.08.2011
@@ -49,11 +49,11 @@ jgap:
 -----
 Library used to perform evolutionary testing.
 Version included: ?
-Where to find it: ? 
+Where to find it: http://jgap.sourceforge.net/
 File: jgap.jar
 Introduced by: Lucas Silva
-Introduced on: ?
-Last updated: ?
+Introduced on: 30.04.2011
+Last updated: 30.04.2011 updated by Lucas Silva
 
 
 
