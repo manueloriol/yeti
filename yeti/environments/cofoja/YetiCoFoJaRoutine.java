@@ -86,6 +86,7 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 		try {
 			
 			try {
+				this.incnTimesCalled();
 				makeEffectiveCall(arg);
 				this.incnTimesCalledSuccessfully();
 			} catch(YetiCallException e) {
@@ -112,9 +113,10 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 			// then print the exception
 			if ((e.getCause() instanceof RuntimeException && !isAcceptable(e.getCause())) || e.getCause() instanceof Error  ) {
 				if (e.getCause() instanceof ThreadDeath) {
-					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
 					isBug = true;
-					this.incnTimesCalledUndecidable();
+                    YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT" + e.getCause().getMessage() + " **/", this);
+                    isBug = true;
+                    this.incnTimesCalledUndecidable();
 				} else {
 					if (e.getCause() instanceof YetiSecurityException) {
 						isBug = true;
@@ -136,13 +138,15 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 						}
 
 					} else {
-						YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
+		
+						YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION "+ e.getCause().getMessage() +" **/", this);
 						this.incnTimesCalledUnsuccessfully();
 					}
 				}
 			}
 			else {
-				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
+			
+				 YetiLog.printYetiLog("/**NORMAL EXCEPTION:"+ e.getCause().getMessage() +" **/", this);
 				this.incnTimesCalledSuccessfully();
 			}
 			
@@ -153,7 +157,8 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 			// if we are here there was a serious error
 			// we print it
 			YetiLog.printYetiLog(log+");", this);
-			YetiLog.printYetiLog("BUG FOUND: ERROR", this);
+			
+			YetiLog.printYetiLog("BUG FOUND: ERROR" + e.getCause().getMessage() + " **/", this);
 			YetiLog.printYetiThrowable(e.getCause(), this);
 			this.incnTimesCalledUnsuccessfully();
 		}
