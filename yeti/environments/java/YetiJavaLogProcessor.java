@@ -507,7 +507,11 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		String packageName = null;
 		String className="";
 		
+		if (unitTestFileName==null) {
+			unitTestFileName="T";
+		}
 		String testFileName = unitTestFileName;
+		
 		
 		// if the user specified the filename with a .java, we remove it.
 		if (unitTestFileName.endsWith(".java")){
