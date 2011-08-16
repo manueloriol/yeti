@@ -138,7 +138,7 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 						}
 
 					} else {
-		
+						isBug=true;
 						YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION "+ e.getCause().getMessage() +" **/", this);
 						this.incnTimesCalledUnsuccessfully();
 					}
