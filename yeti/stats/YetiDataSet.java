@@ -35,9 +35,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/ 
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import yeti.YetiLog;
@@ -245,6 +247,46 @@ public class YetiDataSet {
 
 		}
 		return e;
+		
+	}
+	
+	/**
+	 * A simple method to dump the series into a file
+	 * 
+	 * @param fileName the name of the file to write
+	 */
+	public void saveSet(String fileName) {
+		try {
+			PrintStream ps = new PrintStream(fileName);
+			ps.println("nTests Session_1");
+			for(int i=0; i<xVector.size(); i++) {
+				ps.println(xVector.get(i)+" "+yVector.get(i));
+			}
+			ps.close();
+		} catch (FileNotFoundException e) {
+			// Should not get there
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
+	 * A simple method to dump the series into a file
+	 * 
+	 * @param f the file to write
+	 */
+	public void saveSet(File f) {
+		try {
+			PrintStream ps = new PrintStream(f);
+			ps.println("Tests Session_1");
+			for(int i=0; i<xVector.size(); i++) {
+				ps.println(new Double(xVector.get(i)).intValue()+" "+new Double(yVector.get(i)).intValue());
+			}
+			ps.close();
+		} catch (FileNotFoundException e) {
+			// Should not get there
+			e.printStackTrace();
+		}
 		
 	}
 	

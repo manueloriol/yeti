@@ -42,6 +42,7 @@ import java.util.Set;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -837,15 +838,15 @@ public class Yeti {
 		System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");	
 		if (!Yeti.pl.isRawLog()&&!Yeti.pl.isNoLogs()) {
 			isProcessed = true;
-			
+
 			// we first process logs
 			processedTestCases = YetiLog.proc.processLogs();
 			if (saveInUnitTestFile){
-				
+
 				// we generate the file and its name
 				String fileContent = YetiLog.proc.generateUnitTestFile(processedTestCases, unitTestFileName);
 				String fileName=YetiLog.proc.generateUnitTestFileName(processedTestCases, unitTestFileName);
-				
+
 				// we write it
 				try {
 					PrintStream ps = new PrintStream(fileName);
@@ -913,6 +914,16 @@ public class Yeti {
 		// if we approximate the number of failures per number of testsZ
 		if (approximate) {
 			YetiDataSet dataSetNcallsNFaults = new YetiDataSet(YetiGUI.mainGUI.getGraphNumberOfCallsOverTime().series[1], YetiGUI.mainGUI.getGraphFaults().series[1]);
+			String fileName = modulesString+".txt";
+			File f = new File(fileName);
+			int i=1;
+			while (f.exists()) {
+				fileName = modulesString+"_"+i+".txt";
+				f = new File(fileName);
+				i++;
+			}				
+			dataSetNcallsNFaults.saveSet(f);
+
 			YetiMichaelisMentenEquation e = dataSetNcallsNFaults.fitMichaelisMenten();
 			report.setK(e.getK());
 			report.setMax(e.getMax());

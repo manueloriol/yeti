@@ -7,7 +7,7 @@ import java.io.PrintStream;
 import yeti.Yeti;
 
 /**
- * Class that represents... 
+ * Class that represents an experiment for one class.
  * 
  * @author Manuel Oriol (manuel@cs.york.ac.uk)
  * @date May 3, 2011
