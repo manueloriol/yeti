@@ -10,5 +10,8 @@
 	<classpathentry kind="lib" path="lib/javassist.jar"/>
 	<classpathentry kind="lib" path="lib/jgap.jar"/>
 	<classpathentry kind="lib" path="lib/cofoja.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/kermeta-interpreter-lite.jar"/>
+	<classpathentry kind="lib" path="lib/kermeta-simplified-interpreter.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

@@ -55,5 +55,33 @@ Introduced by: Lucas Silva
 Introduced on: 30.04.2011
 Last updated: 30.04.2011 updated by Lucas Silva
 
+Kermeta interpreter (lite)
+-------
+Library used to run kermeta programs to test.
+Was repackaged especially for Yeti, with some bugfixes and less classes.
+Version included: ?
+Where to find it: svn://scm.gforge.inria.fr/svn/kermeta/trunk/kermeta_projects
+File: kermeta-interpreter-lite.jar
+Introduced by: Erwan Bousse
+Introduced on: 30.08.2011
+Last updated: 30.08.2011 updated by Erwan Bousse
 
+Kermeta interpreter simplifier
+-------
+Library used to simplify the use of the kermeta interpreter
+Version included: ?
+Where to find it: ?
+File: kermeta-simplified-interpreter.jar
+Introduced by: Erwan Bousse
+Introduced on: 30.08.2011
+Last updated: 30.08.2011 updated by Erwan Bousse
 
+Apache Commons IO
+-------
+Library used within the Kermeta interpreter simplifier in order to list files recursively
+Version included: 2.0.1
+Where to find it: http://commons.apache.org/io/
+File: commons-io-2.0.1.jar
+Introduced by: Erwan Bousse
+Introduced on: 30.08.2011
+Last updated: 30.08.2011 updated by Erwan Bousse

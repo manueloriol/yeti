@@ -70,6 +70,10 @@ import yeti.environments.java.YetiJavaPrefetchingLoader;
 import yeti.environments.java.YetiJavaProperties;
 import yeti.environments.java.YetiJavaTestManager;
 import yeti.environments.jml.YetiJMLPrefetchingLoader;
+import yeti.environments.kermeta.YetiKermetaInitializer;
+import yeti.environments.kermeta.YetiKermetaLoader;
+import yeti.environments.kermeta.YetiKermetaLogProcessor;
+import yeti.environments.kermeta.YetiKermetaProperties;
 import yeti.environments.pharo.YetiPharoCommunicator;
 import yeti.environments.pharo.YetiPharoTestManager;
 import yeti.monitoring.YetiGUI;
@@ -233,6 +237,7 @@ public class Yeti {
 		boolean isJML = false;
 		boolean isCoFoJa = false;
 		boolean isDotNet = false;
+		boolean isKermeta = false;
 		boolean isCommandLine = false;
 		boolean isPharo = false;
 		boolean isTimeout = false;
@@ -289,7 +294,7 @@ public class Yeti {
 				continue;
 			}
 
-			// if JML
+			// if cofoja
 			if (s0.toLowerCase().equals("-cofoja")) {
 				isCoFoJa = true;
 				continue;
@@ -297,6 +302,12 @@ public class Yeti {
 			//if .NET
 			if(s0.toLowerCase().equals("-dotnet")){		
 				isDotNet = true;
+				continue;
+			}
+			
+			// if Kermeta
+			if (s0.equals("-kermeta")||s0.equals("-Kermeta")) {
+				isKermeta = true;
 				continue;
 			}
 
@@ -614,6 +625,16 @@ public class Yeti {
 			System.out.println("----------------------------------------");
 
 		}
+		
+		
+		//test of options to set up the YetiProperties for Kermeta
+		if (isKermeta) {
+			YetiKermetaLoader loader = new YetiKermetaLoader(yetiPath);
+			YetiInitializer initializer = new YetiKermetaInitializer(loader);
+			YetiTestManager testManager = new YetiJavaTestManager();
+			logProcessor = new YetiKermetaLogProcessor();
+			pl=new YetiKermetaProperties(initializer, testManager, logProcessor);			
+		}
 
 
 		//test of options to set up the YetiProperties for Java
@@ -735,7 +756,7 @@ public class Yeti {
 		ArrayList<YetiModule> modules=new ArrayList<YetiModule>();
 
 		//we iterate through the list of testModules specified by user
-		for(String moduleToTest : modulesToTest) {
+		for(String moduleToTest : testModulesName) {
 
 			//we check if sub-packages are to be included (test modules ending with asterisks specifies yes)
 			if (moduleToTest.endsWith("*"))
@@ -936,7 +957,7 @@ public class Yeti {
 
 		//If distributed mode of operation
 		if (isDistributed){
-			YetiMap.moduleName=modulesToTest[0];
+			YetiMap.moduleName=testModulesName[0];
 			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
 			YetiMap.listOfExceptions.putAll(lp.getListOfErrors());
 		}
