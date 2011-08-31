@@ -131,7 +131,7 @@ Further individual targets used internally by above targets:
 	<!-- ================================================================================ -->
 	<!-- Removes file(s) and lines from the files to trim Yeti of Genetic Algorithms      -->
 	<!-- ================================================================================ -->
-	<target name="trim-GA">
+	<target name="trim-ga">
 		<delete file="lib/jgap.jar" />
 		<delete dir="yeti/strategies/GA"/>
 		<delete dir="yeti/test/YetiTestGA"/>
@@ -143,7 +143,7 @@ Further individual targets used internally by above targets:
 	<!-- =============================================================================== -->
 	<!-- Removes file(s) and lines from the files to trim Yeti of the Kermeta binding    -->
 	<!-- =============================================================================== -->
-	<target name="trim-Kermeta">
+	<target name="trim-kermeta">
 		<delete file="lib/commons-io-2.0.1.jar" />
 		<delete file="lib/kermeta-interpreter-lite.jar" />
 		<delete file="lib/kermeta-simplified-interpreter.jar" />
@@ -156,7 +156,7 @@ Further individual targets used internally by above targets:
 	<!-- =============================================================================== -->
 	<!-- Removes file(s) and lines from the files to trim Yeti of the DotNet binding     -->
 	<!-- =============================================================================== -->
-	<target name="trim-DotNet">
+	<target name="trim-dotnet">
 		<delete dir="yeti/environments/csharp"/>
 		<delete dir="yeti/test/DotNetTest"/>
 		<delete dir="yeti/test/Yeti Net-Code Contract"/>
@@ -179,7 +179,7 @@ Further individual targets used internally by above targets:
 	<!-- =============================================================================== -->
 	<!-- Removes file(s) and lines from the files to trim Yeti of the CoFoJa binding     -->
 	<!-- =============================================================================== -->
-	<target name="trim-CoFoJa">
+	<target name="trim-cofoja">
 		<delete file="lib/cofoja.jar" />
 		<delete dir="yeti/environments/cofoja"/>
 		<java classname="yetidistributil.trimming.Trimmer" classpath=".">

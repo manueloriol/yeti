@@ -1048,11 +1048,11 @@ public class Yeti {
 		System.out.println("\t-jml, -JML : for calling it on JML annotated code."); //@YetiJMLBinding
 		System.out.println("\t-cofoja, -CoFoJa : for calling it on Java programs annotated with CoFoJa.  Note that if you do not want to pre-process the classes statically, you should call Yeti using the option -javaagent:cofoja.jar (or any other path to a CoFoJa jar)."); //@YetiCoFoJaBinding
 		System.out.println("\t-dotnet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts."); //@YetiDotNETBinding
-		System.out.println("\t-kermeta, -Kermeta : for calling it on Kermeta code.");
+		System.out.println("\t-kermeta, -Kermeta : for calling it on Kermeta code."); //@YetiKermetaBinding
 		System.out.println("\t-time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).");
 		System.out.println("\t-nTests=X : for calling Yeti to attempt X method calls.");
 		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules. Sub-packages of a system can also be specified with asteriks e.g. yeti.test.* will include all the classes in yeti.test + all the classes belonging to the sub-packages of yeti.test .");
-		System.out.println("\t\tNote: Kermeta requires a different format for testModules: -testModules=M1,M2,...,Mn");
+		System.out.println("\t\tNote: Kermeta requires a different format for testModules: -testModules=M1,M2,...,Mn"); //@YetiKermetaBinding
 		System.out.println("\t-initClass=X : this will use a user class to initialize the system this class will be a subclass of yeti.environments.YetiInitializer .");
 		System.out.println("\t-outputUnitTestFile=X : this option stores the generated test cases in a file. THis is binding-specific for Java: X=tests/test0.T.java will store a file T.java from package test0 into the directory tests.");
 		System.out.println("\t-rawlogs: prints the logs directly instead of processing them at the end.");
