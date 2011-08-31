@@ -51,7 +51,7 @@ import yeti.environments.YetiInitializer;
 import yeti.environments.YetiLoader;
 import yeti.environments.YetiProgrammingLanguageProperties;
 import yeti.environments.YetiTestManager;
-import yeti.environments.cofoja.YetiCoFoJaPrefetchingLoader;
+import yeti.environments.cofoja.YetiCoFoJaPrefetchingLoader;//@YetiCoFoJaBinding
 import yeti.environments.commandline.YetiCLInitializer;
 import yeti.environments.commandline.YetiCLLogProcessor;
 import yeti.environments.commandline.YetiCLProperties;
@@ -233,7 +233,7 @@ public class Yeti {
 		YetiInitializer secondaryInitializer = null;
 		boolean isJava = false;
 		boolean isJML = false;			//@YetiJMLBinding
-		boolean isCoFoJa = false;
+		boolean isCoFoJa = false;		//@YetiCoFoJaBinding
 		boolean isDotNet = false; 		//@YetiDotNETBinding
 		boolean isKermeta = false;		//@YetiKermetaBinding
 		boolean isCommandLine = false;
@@ -292,11 +292,11 @@ public class Yeti {
 				continue; 							//@YetiJMLBinding
 			} 										//@YetiJMLBinding
 
-			// if cofoja
-			if (s0.toLowerCase().equals("-cofoja")) {
-				isCoFoJa = true;
-				continue;
-			}
+			// if cofoja								//@YetiCoFoJaBinding
+			if (s0.toLowerCase().equals("-cofoja")) {	//@YetiCoFoJaBinding
+				isCoFoJa = true;						//@YetiCoFoJaBinding
+				continue;								//@YetiCoFoJaBinding
+			}											//@YetiCoFoJaBinding
 			//if .NET								//@YetiDotNETBinding
 			if(s0.toLowerCase().equals("-dotnet")){	//@YetiDotNETBinding
 				isDotNet = true;					//@YetiDotNETBinding
@@ -570,14 +570,14 @@ public class Yeti {
 		}																				//@YetiJMLBinding
 
 
-		//test of options to set up the YetiProperties for CoFoJa
-		if (isCoFoJa) {
-			YetiLoader prefetchingLoader = new YetiCoFoJaPrefetchingLoader(yetiPath);
-			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader);
-			YetiTestManager testManager = new YetiJavaTestManager();
-			logProcessor = new YetiJavaLogProcessor(initialListOfErrors);
-			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
-		}
+		//test of options to set up the YetiProperties for CoFoJa						//@YetiCoFoJaBinding
+		if (isCoFoJa) {																	//@YetiCoFoJaBinding
+			YetiLoader prefetchingLoader = new YetiCoFoJaPrefetchingLoader(yetiPath);	//@YetiCoFoJaBinding
+			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader);	//@YetiCoFoJaBinding
+			YetiTestManager testManager = new YetiJavaTestManager();					//@YetiCoFoJaBinding
+			logProcessor = new YetiJavaLogProcessor(initialListOfErrors);				//@YetiCoFoJaBinding
+			pl=new YetiJavaProperties(initializer, testManager, logProcessor);			//@YetiCoFoJaBinding
+		}																				//@YetiCoFoJaBinding
 
 		//test of options to set up the YetiProperties for .NET assemblies				//@YetiDotNETBinding
 		if (isDotNet) {																	//@YetiDotNETBinding
@@ -1045,7 +1045,7 @@ public class Yeti {
 		System.out.println("\t-help, -h: prints the help out.");
 		System.out.println("\t-java, -Java : for calling it on Java.");
 		System.out.println("\t-jml, -JML : for calling it on JML annotated code."); //@YetiJMLBinding
-		System.out.println("\t-cofoja, -CoFoJa : for calling it on Java programs annotated with CoFoJa.  Note that if you do not want to pre-process the classes statically, you should call Yeti using the option -javaagent:cofoja.jar (or any other path to a CoFoJa jar).");
+		System.out.println("\t-cofoja, -CoFoJa : for calling it on Java programs annotated with CoFoJa.  Note that if you do not want to pre-process the classes statically, you should call Yeti using the option -javaagent:cofoja.jar (or any other path to a CoFoJa jar)."); //@YetiCoFoJaBinding
 		System.out.println("\t-dotnet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts."); //@YetiDotNETBinding
 		System.out.println("\t-time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).");
 		System.out.println("\t-nTests=X : for calling Yeti to attempt X method calls.");
