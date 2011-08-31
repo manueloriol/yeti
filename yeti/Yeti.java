@@ -98,10 +98,10 @@ public class Yeti {
 	 */
 	public static YetiReport report= null;
 
-	/**
-	 * The chromosome to run the evolutionary stratgy
-	 */
-	public static IChromosome chromosome;
+	/**														//@YetiGeneticAlgorithmsStrategy
+	 * The chromosome to run the evolutionary stratgy		//@YetiGeneticAlgorithmsStrategy
+	 */														//@YetiGeneticAlgorithmsStrategy
+	public static IChromosome chromosome; 					//@YetiGeneticAlgorithmsStrategy
 	/**
 	 * The main gui for Yeti.
 	 */
