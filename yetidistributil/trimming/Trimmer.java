@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Vector;
 
 /**
@@ -45,6 +46,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Class that allows the trimming of a file from all lines including a particular keyword.
  * This class is used when building a distribution trimmed of some binding or strategy 
  * (e.g. to remove unnecessary dependencies).
+ * 
+ * @author Manuel Oriol (manuel@cs.york.ac.uk)
+ * @date Aug 31, 2011
+ *
+ */
+/**
+ * Class that represents... 
  * 
  * @author Manuel Oriol (manuel@cs.york.ac.uk)
  * @date Aug 31, 2011
@@ -107,26 +115,55 @@ public class Trimmer {
 	}
 	
 	/**
-	 * @param args
+	 * Simple program that trims files
+	 * 
+	 * @param args the arguments of the main
 	 */
 	public static void main(String[] args) {
 		Trimmer t;
+		boolean onlyPrint=false;
+		// if the length of the arguments is not big enough we print help
+		if (args.length<2) printHelp();
+		if (args[args.length-1].equals("-onlyPrint"))
+			onlyPrint=true;
 		try {
-			t = new Trimmer(new File(args[0]));
+			// the first argument is a fileName
+			File f = new File(args[0]);
+			t = new Trimmer(f);
 			String []argsTrimmed = new String[args.length-1];
-			for (int i=1;i<args.length;i++) {
+			// we remove the first argument
+			int max=args.length;
+			if (onlyPrint)
+				max--;
+			for (int i=1;i<max;i++) {
 				argsTrimmed[i-1]=args[i];
 			}
+			// we trim all lines containing either of the keywords
 			for (String s:argsTrimmed) {
 				t.trim(s);
 			}
-			System.out.println(t.getFileContentAsAString());
-
+			// we print back the result
+			if (onlyPrint)
+				System.out.println(t.getFileContentAsAString());
+			else {
+				// or we save it in the file
+				PrintStream ps = new PrintStream(f);
+				ps.print(t.getFileContentAsAString());
+			}
+				
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Prints a simple help
+	 */
+	private static void printHelp() {
+		System.out.println("Trimmer Usage:\n java yetidistributil.trimming.Trimmer fileName [trimmmingString]* [-onlyPrint]");
+		
 	}
 
 }

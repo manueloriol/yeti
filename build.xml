@@ -11,43 +11,43 @@ See the target "usage" further below for instructions on how to build the softwa
 <!-- ================================================================= -->
 <!-- NOTE: all directories are relative to YetiFreshCompile/           -->
 <!-- ================================================================= -->
-<project name="yeti" default="help" basedir="." >
+<project name="yeti" default="help" basedir=".">
 
-<property name="version" value="1.0.0"/>
+	<property name="version" value="1.0.0" />
 
-<property name="proj.title" value="Yeti"/>
+	<property name="proj.title" value="Yeti" />
 
-<!-- The directory where *.java files are stored. -->
-<property name="javac.src" value="."/>
+	<!-- The directory where *.java files are stored. -->
+	<property name="javac.src" value="." />
 
-<!-- Destination for *.class files -->
-<property name="javac.dest" value="build"/>
+	<!-- Destination for *.class files -->
+	<property name="javac.dest" value="build" />
 
-<!-- Location of jar files -->
-<property name="jar.dir" value="lib"/>
+	<!-- Location of jar files -->
+	<property name="jar.dir" value="lib" />
 
-<!-- Name of Yeti jar file to be generated -->
-<property name="jar.filename" value="yeti-${version}.jar"/>
-
-
-<!-- Construct classpath for compilation-->
-<path id="javac.classpath">
-	<fileset dir="${jar.dir}">
-		<include name="*.jar"/>
-		<exclude name="${jar.filename}"/>
-	</fileset>
-</path>
-
-<!-- The base directory relative to which most targets are built (not needed actually)-->
-<!-- <property name="base" value="."/> -->
+	<!-- Name of Yeti jar file to be generated -->
+	<property name="jar.filename" value="yeti-${version}.jar" />
 
 
+	<!-- Construct classpath for compilation-->
+	<path id="javac.classpath">
+		<fileset dir="${jar.dir}">
+			<include name="*.jar" />
+			<exclude name="${jar.filename}" />
+		</fileset>
+	</path>
 
-<!-- ================================================================= -->
-<!-- Default target                                                    -->
-<!-- ================================================================= -->
-<target name="help">
-<echo>
+	<!-- The base directory relative to which most targets are built (not needed actually)-->
+	<!-- <property name="base" value="."/> -->
+
+
+
+	<!-- ================================================================= -->
+	<!-- Default target                                                    -->
+	<!-- ================================================================= -->
+	<target name="help">
+		<echo>
 First cd into the dir this build file is placed in:
 
 	cd YetiFreshCompile
@@ -64,60 +64,107 @@ Further individual targets used internally by above targets:
 	jar               - Generate jar file(s) from .class files	
 	
 </echo>
-</target>
-	
-
-<!-- ================================================================= -->
-<!-- Initialize variables                                              -->
-<!-- NOTE: all directories are relative to YetiFreshCompile            -->
-<!-- ================================================================= -->
-<target name="init">
-	<tstamp />
-</target>
+	</target>
 
 
-<!-- ================================================================= -->
-<!-- Remove all generated (compiled) class files.                      -->
-<!-- ================================================================= -->
-<target name="clean">
-	<delete dir="${javac.dest}" />
-</target>
-
-<!-- ================================================================= -->
-<!-- Build the software (without generating a distribution)            -->
-<!-- ================================================================= -->
-<target name="build" depends="javac, jar">
-</target>
+	<!-- ================================================================= -->
+	<!-- Initialize variables                                              -->
+	<!-- NOTE: all directories are relative to YetiFreshCompile            -->
+	<!-- ================================================================= -->
+	<target name="init">
+		<tstamp />
+	</target>
 
 
-<!-- ================================================================= -->
-<!-- Compile all *.java files                                          -->
-<!-- ================================================================= -->
-<target name="javac" depends="clean">
+	<!-- ================================================================= -->
+	<!-- Remove all generated (compiled) class files.                      -->
+	<!-- ================================================================= -->
+	<target name="clean">
+		<delete dir="${javac.dest}" />
+	</target>
 
-	<mkdir dir="${javac.dest}" />
-	<javac srcdir="${javac.src}" destdir="${javac.dest}"
-		includes="**/*.java"
-		excludes=".svn/*"
-		deprecation="on"
-		debug="on">
-		
-		<classpath refid="javac.classpath"/>
-	</javac>
-	
-</target>
+	<!-- ================================================================= -->
+	<!-- Build the software (without generating a distribution)            -->
+	<!-- ================================================================= -->
+	<target name="build" depends="javac, jar">
+	</target>
 
 
-<!-- ================================================================= -->
-<!-- Generate jar file(s) from *.class files                           -->
-<!-- ================================================================= -->
-<target name="jar">
+	<!-- ================================================================= -->
+	<!-- Compile all *.java files                                          -->
+	<!-- ================================================================= -->
+	<target name="javac" depends="clean">
 
-	<delete file="${jar.dir}/${jar.filename}" />
-	
-	<jar jarfile="${jar.dir}/${jar.filename}" basedir="${javac.dest}"
-		index="yes"
-		compress="yes"
-	/>
-</target>
+		<mkdir dir="${javac.dest}" />
+		<javac srcdir="${javac.src}" destdir="${javac.dest}" includes="**/*.java" excludes=".svn/*" deprecation="on" debug="on">
+
+			<classpath refid="javac.classpath" />
+		</javac>
+
+	</target>
+
+
+	<!-- ================================================================= -->
+	<!-- Generate jar file(s) from *.class files                           -->
+	<!-- ================================================================= -->
+	<target name="jar">
+
+		<delete file="${jar.dir}/${jar.filename}" />
+
+		<jar jarfile="${jar.dir}/${jar.filename}" basedir="${javac.dest}" index="yes" compress="yes" />
+	</target>
+
+	<!-- ================================================================= -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of JML      -->
+	<!-- ================================================================= -->
+	<target name="trim-jml">
+		<delete file="lib/jmljunitruntime.jar" />
+		<delete file="lib/jmlmodels.jar" />
+		<delete file="lib/jmlmodelsnonrac.jar" />
+		<delete file="jmlruntime.jar" />
+		<delete dir="yeti/environments/jml"/>
+		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
+			<arg value="yeti/Yeti.java" />
+			<arg value="@YetiJMLBinding" />
+		</java>
+	</target>
+	<!-- ================================================================================ -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of Genetic Algorithms      -->
+	<!-- ================================================================================ -->
+	<target name="trim-GA">
+		<delete file="lib/jgap.jar" />
+		<delete dir="yeti/strategies/GA"/>
+		<delete dir="yeti/test/YetiTestGA"/>
+		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
+			<arg value="yeti/Yeti.java" />
+			<arg value="@YetiGeneticAlgorithmsStrategy" />
+		</java>
+	</target>
+	<!-- =============================================================================== -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of the Kermeta binding    -->
+	<!-- =============================================================================== -->
+	<target name="trim-Kermeta">
+		<delete file="lib/commons-io-2.0.1.jra" />
+		<delete file="lib/kermeta-interpreter-lite.jar" />
+		<delete file="lib/kermeta-simplified-interpreter.jar" />
+		<delete dir="yeti/environments/kermeta"/>
+		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
+			<arg value="yeti/Yeti.java" />
+			<arg value="@YetiKermetaBinding" />
+		</java>
+	</target>
+	<!-- =============================================================================== -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of the Kermeta binding    -->
+	<!-- =============================================================================== -->
+	<target name="trim-DotNet">
+		<delete dir="yeti/environments/csharp"/>
+		<delete dir="yeti/test/DotNetTest"/>
+		<delete dir="yeti/test/Yeti Net-Code Contract"/>
+		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
+			<arg value="yeti/Yeti.java" />
+			<arg value="@YetiDotNETBinding" />
+		</java>
+	</target>
+
+
 </project>
