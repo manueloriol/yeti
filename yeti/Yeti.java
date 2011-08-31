@@ -1,12 +1,12 @@
 package yeti;
 
 /**
- 
+
  YETI - York Extensible Testing Infrastructure
- 
+
  Copyright (c) 2009-2010, Manuel Oriol <manuel.oriol@gmail.com> - University of York
  All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
  1. Redistributions of source code must retain the above copyright
@@ -20,7 +20,7 @@ package yeti;
  4. Neither the name of the University of York nor the
  names of its contributors may be used to endorse or promote products
  derived from this software without specific prior written permission.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ''AS IS'' AND ANY
  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -31,14 +31,12 @@ package yeti;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
  **/ 
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
@@ -48,7 +46,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
 
-import org.jgap.IChromosome;
+import org.jgap.IChromosome;								//@YetiGeneticAlgorithmsStrategy
 import yeti.environments.YetiInitializer;
 import yeti.environments.YetiLoader;
 import yeti.environments.YetiProgrammingLanguageProperties;
@@ -58,28 +56,28 @@ import yeti.environments.commandline.YetiCLInitializer;
 import yeti.environments.commandline.YetiCLLogProcessor;
 import yeti.environments.commandline.YetiCLProperties;
 import yeti.environments.commandline.YetiCLTestManager;
-import yeti.environments.csharp.YetiCsharpInitializer;
-import yeti.environments.csharp.YetiCsharpLogProcessor;
-import yeti.environments.csharp.YetiCsharpProperties;
-import yeti.environments.csharp.YetiCsharpTestManager;
-import yeti.environments.csharp.YetiServerSocket;
+import yeti.environments.csharp.YetiCsharpInitializer;		//@YetiDotNETBinding
+import yeti.environments.csharp.YetiCsharpLogProcessor; 	//@YetiDotNETBinding
+import yeti.environments.csharp.YetiCsharpProperties; 		//@YetiDotNETBinding
+import yeti.environments.csharp.YetiCsharpTestManager;		//@YetiDotNETBinding
+import yeti.environments.csharp.YetiServerSocket;			//@YetiDotNETBinding
 import yeti.environments.java.YetiJavaInitializer;
 import yeti.environments.java.YetiJavaLogProcessor;
 import yeti.environments.java.YetiJavaMethod;
 import yeti.environments.java.YetiJavaPrefetchingLoader;
 import yeti.environments.java.YetiJavaProperties;
-import yeti.environments.java.YetiJavaTestManager;
-import yeti.environments.jml.YetiJMLPrefetchingLoader;
-import yeti.environments.kermeta.YetiKermetaInitializer;
-import yeti.environments.kermeta.YetiKermetaLoader;
-import yeti.environments.kermeta.YetiKermetaLogProcessor;
-import yeti.environments.kermeta.YetiKermetaProperties;
+import yeti.environments.java.YetiJavaTestManager; 
+import yeti.environments.jml.YetiJMLPrefetchingLoader; 		//@YetiJMLBinding
+import yeti.environments.kermeta.YetiKermetaInitializer;	//@YetiKermetaBinding
+import yeti.environments.kermeta.YetiKermetaLoader;			//@YetiKermetaBinding
+import yeti.environments.kermeta.YetiKermetaLogProcessor;	//@YetiKermetaBinding
+import yeti.environments.kermeta.YetiKermetaProperties;		//@YetiKermetaBinding
 import yeti.environments.pharo.YetiPharoCommunicator;
 import yeti.environments.pharo.YetiPharoTestManager;
 import yeti.monitoring.YetiGUI;
 import yeti.stats.YetiDataSet;
 import yeti.stats.YetiMichaelisMentenEquation;
-import yeti.strategies.GA.*;
+import yeti.strategies.GA.*;								//@YetiGeneticAlgorithmsStrategy
 import yeti.strategies.YetiDSSRStrategy;
 import yeti.strategies.YetiRandomPlusDecreasing;
 import yeti.strategies.YetiRandomPlusStrategy;
@@ -234,10 +232,10 @@ public class Yeti {
 	public static void YetiRun(String[] args){
 		YetiInitializer secondaryInitializer = null;
 		boolean isJava = false;
-		boolean isJML = false;
+		boolean isJML = false;			//@YetiJMLBinding
 		boolean isCoFoJa = false;
-		boolean isDotNet = false;
-		boolean isKermeta = false;
+		boolean isDotNet = false; 		//@YetiDotNETBinding
+		boolean isKermeta = false;		//@YetiKermetaBinding
 		boolean isCommandLine = false;
 		boolean isPharo = false;
 		boolean isTimeout = false;
@@ -258,7 +256,7 @@ public class Yeti {
 		boolean saveInUnitTestFile = false;
 		String unitTestFileName = null;
 		String modulesString = null;
-		YetiGAParameters gaParameters = new YetiGAParameters();
+		YetiGAParameters gaParameters = new YetiGAParameters(); //@YetiGeneticAlgorithmsStrategy
 
 		int nTests=0;
 		String []modulesToTest=null;
@@ -288,28 +286,28 @@ public class Yeti {
 				isJava = true;
 				continue;
 			}
-			// if JML
-			if (s0.toLowerCase().equals("-jml")) {
-				isJML = true;
-				continue;
-			}
+			// if JML 								//@YetiJMLBinding
+			if (s0.toLowerCase().equals("-jml")) { 	//@YetiJMLBinding
+				isJML = true; 						//@YetiJMLBinding
+				continue; 							//@YetiJMLBinding
+			} 										//@YetiJMLBinding
 
 			// if cofoja
 			if (s0.toLowerCase().equals("-cofoja")) {
 				isCoFoJa = true;
 				continue;
 			}
-			//if .NET
-			if(s0.toLowerCase().equals("-dotnet")){		
-				isDotNet = true;
-				continue;
-			}
-			
-			// if Kermeta
-			if (s0.equals("-kermeta")||s0.equals("-Kermeta")) {
-				isKermeta = true;
-				continue;
-			}
+			//if .NET								//@YetiDotNETBinding
+			if(s0.toLowerCase().equals("-dotnet")){	//@YetiDotNETBinding
+				isDotNet = true;					//@YetiDotNETBinding
+				continue;							//@YetiDotNETBinding
+			}										//@YetiDotNETBinding
+
+			// if Kermeta											//@YetiKermetaBinding
+			if (s0.equals("-kermeta")||s0.equals("-Kermeta")) {		//@YetiKermetaBinding
+				isKermeta = true;									//@YetiKermetaBinding
+				continue;											//@YetiKermetaBinding
+			}														//@YetiKermetaBinding
 
 			//if command-line
 			if(s0.toLowerCase().equals("-cl")){		
@@ -328,8 +326,8 @@ public class Yeti {
 			if (s0.startsWith("-time=")) {
 				isTimeout=true;
 				int size = s0.length();
-				//GA set evaluation time
-				gaParameters.setGaEvaluationTime(s0.substring(6, size));
+				//GA set evaluation time 									//@YetiGeneticAlgorithmsStrategy
+				gaParameters.setGaEvaluationTime(s0.substring(6, size));	//@YetiGeneticAlgorithmsStrategy
 				// if the time value is in seconds
 				if (s0.substring(size-1).equals("s")) {
 					timeOutSec=(Integer.parseInt(s0.substring(6, size-1)));
@@ -397,7 +395,7 @@ public class Yeti {
 			// we want to test these modules
 			if (s0.startsWith("-testModules=")) {
 				modulesString=s0.substring(13);
-				gaParameters.setGaEvaluationModules(modulesString);
+				gaParameters.setGaEvaluationModules(modulesString); 	//@YetiGeneticAlgorithmsStrategy	
 				modulesToTest=modulesString.split(":");
 				testModulesName = modulesToTest;
 				continue;
@@ -452,14 +450,13 @@ public class Yeti {
 				continue;	
 			}
 
-			if (s0.startsWith("-evolutionary=")) {
-				String s1=s0.substring(14);
-				gaParameters.setGaFittestChromosomeOutPutPath(s1);
-				isRunningFromChromosome = true;
-
-				isEvolutionary = true;
-				continue;
-			}
+			if (s0.startsWith("-evolutionary=")) {						//@YetiGeneticAlgorithmsStrategy
+				String s1=s0.substring(14);								//@YetiGeneticAlgorithmsStrategy
+				gaParameters.setGaFittestChromosomeOutPutPath(s1);		//@YetiGeneticAlgorithmsStrategy
+				isRunningFromChromosome = true;							//@YetiGeneticAlgorithmsStrategy
+				isEvolutionary = true;									//@YetiGeneticAlgorithmsStrategy
+				continue;												//@YetiGeneticAlgorithmsStrategy
+			}															//@YetiGeneticAlgorithmsStrategy
 
 			// we want to use the following path
 			if (s0.startsWith("-chromosome=")) {
@@ -563,14 +560,14 @@ public class Yeti {
 			pl=new YetiJavaProperties(initializer, testManager, logProcessor);			
 		}
 
-		//test of options to set up the YetiProperties for JML
-		if (isJML) {
-			YetiLoader prefetchingLoader = new YetiJMLPrefetchingLoader(yetiPath);
-			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader);
-			YetiTestManager testManager = new YetiJavaTestManager();
-			logProcessor = new YetiJavaLogProcessor(initialListOfErrors);
-			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
-		}
+		//test of options to set up the YetiProperties for JML 							//@YetiJMLBinding
+		if (isJML) {																	//@YetiJMLBinding
+			YetiLoader prefetchingLoader = new YetiJMLPrefetchingLoader(yetiPath);		//@YetiJMLBinding
+			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader); 	//@YetiJMLBinding
+			YetiTestManager testManager = new YetiJavaTestManager();					//@YetiJMLBinding
+			logProcessor = new YetiJavaLogProcessor(initialListOfErrors);				//@YetiJMLBinding
+			pl=new YetiJavaProperties(initializer, testManager, logProcessor);			//@YetiJMLBinding
+		}																				//@YetiJMLBinding
 
 
 		//test of options to set up the YetiProperties for CoFoJa
@@ -582,59 +579,57 @@ public class Yeti {
 			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
 		}
 
-		//test of options to set up the YetiProperties for .NET assemblies
-		if (isDotNet) {
+		//test of options to set up the YetiProperties for .NET assemblies				//@YetiDotNETBinding
+		if (isDotNet) {																	//@YetiDotNETBinding
+																						//@YetiDotNETBinding
+			System.out.println("****************************************");				//@YetiDotNETBinding
+			System.out.println("STARTING CsharpReflexiveLayer.exe ");					//@YetiDotNETBinding
+			System.out.println("****************************************");				//@YetiDotNETBinding
+																						//@YetiDotNETBinding
+			th = new Thread(new Runnable()												//@YetiDotNETBinding
+			{																			//@YetiDotNETBinding
+																						//@YetiDotNETBinding
+				public void run() {														//@YetiDotNETBinding
+					Runtime run = Runtime.getRuntime();									//@YetiDotNETBinding
+					String command = yetiPath + "CsharpReflexiveLayer.exe";				//@YetiDotNETBinding
+					try {																//@YetiDotNETBinding
+						Process p = run.exec(command);									//@YetiDotNETBinding
+						InputStream in = p.getInputStream();							//@YetiDotNETBinding
+																						//@YetiDotNETBinding
+						@SuppressWarnings("unused")										//@YetiDotNETBinding
+						int c;															//@YetiDotNETBinding
+						while ((c = in.read()) != -1) {									//@YetiDotNETBinding
+							//System.out.print((char) c);								//@YetiDotNETBinding
+						}																//@YetiDotNETBinding
+																						//@YetiDotNETBinding
+					} catch (IOException e) {											//@YetiDotNETBinding
+						YetiCsharpInitializer.initflag=true;							//@YetiDotNETBinding
+					}																	//@YetiDotNETBinding
+				}																		//@YetiDotNETBinding
+			} );																		//@YetiDotNETBinding
+																						//@YetiDotNETBinding
+			th.start();																	//@YetiDotNETBinding
+																						//@YetiDotNETBinding
+																						//@YetiDotNETBinding
+			YetiInitializer initializer = new YetiCsharpInitializer();					//@YetiDotNETBinding
+			YetiTestManager testManager = new YetiCsharpTestManager();					//@YetiDotNETBinding
+			logProcessor = new YetiCsharpLogProcessor(initialListOfErrors);				//@YetiDotNETBinding
+			YetiServerSocket socketConnector = new YetiServerSocket();					//@YetiDotNETBinding
+			pl=new YetiCsharpProperties(initializer, testManager, logProcessor, 		//@YetiDotNETBinding
+					socketConnector); 													//@YetiDotNETBinding
+			System.out.println("\nMaking the .NET test-case calls...\n");				//@YetiDotNETBinding
+			System.out.println("----------------------------------------");				//@YetiDotNETBinding
+		}																				//@YetiDotNETBinding
 
-			System.out.println("****************************************");
-			System.out.println("STARTING CsharpReflexiveLayer.exe ");
-			System.out.println("****************************************");
 
-			th = new Thread(new Runnable()
-			{
-
-				public void run() {
-					Runtime run = Runtime.getRuntime();
-					String command = yetiPath + "CsharpReflexiveLayer.exe";					
-					try {
-						Process p = run.exec(command);						
-						InputStream in = p.getInputStream();						
-
-						@SuppressWarnings("unused")
-						int c;
-						while ((c = in.read()) != -1) {
-							//System.out.print((char) c);
-						}
-
-					} catch (IOException e) {					
-						YetiCsharpInitializer.initflag=true;
-					}
-				}
-			} );
-
-
-
-			th.start();
-
-
-			YetiInitializer initializer = new YetiCsharpInitializer();
-			YetiTestManager testManager = new YetiCsharpTestManager();
-			logProcessor = new YetiCsharpLogProcessor(initialListOfErrors);
-			YetiServerSocket socketConnector = new YetiServerSocket();
-			pl=new YetiCsharpProperties(initializer, testManager, logProcessor, socketConnector);
-			System.out.println("\nMaking the .NET test-case calls...\n");			
-			System.out.println("----------------------------------------");
-
-		}
-		
-		
-		//test of options to set up the YetiProperties for Kermeta
-		if (isKermeta) {
-			YetiKermetaLoader loader = new YetiKermetaLoader(yetiPath);
-			YetiInitializer initializer = new YetiKermetaInitializer(loader);
-			YetiTestManager testManager = new YetiJavaTestManager();
-			logProcessor = new YetiKermetaLogProcessor();
-			pl=new YetiKermetaProperties(initializer, testManager, logProcessor);			
-		}
+		//test of options to set up the YetiProperties for Kermeta						//@YetiKermetaBinding
+		if (isKermeta) {																//@YetiKermetaBinding
+			YetiKermetaLoader loader = new YetiKermetaLoader(yetiPath);					//@YetiKermetaBinding
+			YetiInitializer initializer = new YetiKermetaInitializer(loader);			//@YetiKermetaBinding
+			YetiTestManager testManager = new YetiJavaTestManager();					//@YetiKermetaBinding
+			logProcessor = new YetiKermetaLogProcessor();								//@YetiKermetaBinding
+			pl=new YetiKermetaProperties(initializer, testManager, logProcessor);		//@YetiKermetaBinding
+		}																				//@YetiKermetaBinding
 
 
 		//test of options to set up the YetiProperties for Java
@@ -670,13 +665,13 @@ public class Yeti {
 			pl.setNoLogs(isNoLogs);
 		}
 
-		if (isEvolutionary) {
-			System.out.println("--==> Evolving a testing Strategy");
-			YetiStrategyOptimizer optimizer = new YetiStrategyOptimizer(gaParameters);
-			optimizer.evolveStrategy();
-		}
+		if (isEvolutionary) {															//@YetiGeneticAlgorithmsStrategy
+			System.out.println("--==> Evolving a testing Strategy");					//@YetiGeneticAlgorithmsStrategy
+			YetiStrategyOptimizer optimizer = new YetiStrategyOptimizer(gaParameters);	//@YetiGeneticAlgorithmsStrategy
+			optimizer.evolveStrategy();													//@YetiGeneticAlgorithmsStrategy
+		}																				//@YetiGeneticAlgorithmsStrategy
 
-		//TODO: IF GA init with chromosome
+		//TODO: IF GA init with chromosome												//@YetiGeneticAlgorithmsStrategy
 		// initializing Yeti
 		try {
 			pl.getInitializer().initialize(args);
@@ -721,33 +716,36 @@ public class Yeti {
 			strategy= new YetiDSSRStrategy(testManager);
 		}
 
-		if (isRunningFromChromosome) {
-			if (chromosome == null) {
-				YetiStrategyOptimizer optimizer = new YetiStrategyOptimizer(gaParameters);
-				try {
-					optimizer.createGAConfiguration();
-					IChromosome loadedChromosome = YetiStrategyPersistenceManager.loadChromosome(optimizer.gaConfiguration, chromosomePath);
-					YetiChromosomeInterpreter chromosomeInterpreter = new YetiChromosomeInterpreter(loadedChromosome);
-					strategy = new YetiEvolutionaryStrategy(testManager,chromosomeInterpreter);
+		if (isRunningFromChromosome) {														//@YetiGeneticAlgorithmsStrategy	
+			if (chromosome == null) {														//@YetiGeneticAlgorithmsStrategy
+				YetiStrategyOptimizer optimizer = new YetiStrategyOptimizer(gaParameters);	//@YetiGeneticAlgorithmsStrategy
+				try {																		//@YetiGeneticAlgorithmsStrategy
+					optimizer.createGAConfiguration();										//@YetiGeneticAlgorithmsStrategy
+					IChromosome loadedChromosome = 											//@YetiGeneticAlgorithmsStrategy
+						YetiStrategyPersistenceManager.loadChromosome(						//@YetiGeneticAlgorithmsStrategy
+								optimizer.gaConfiguration, chromosomePath);					//@YetiGeneticAlgorithmsStrategy
+					YetiChromosomeInterpreter chromosomeInterpreter = 						//@YetiGeneticAlgorithmsStrategy
+						new YetiChromosomeInterpreter(loadedChromosome);					//@YetiGeneticAlgorithmsStrategy
+					strategy = new YetiEvolutionaryStrategy(testManager,					//@YetiGeneticAlgorithmsStrategy
+															chromosomeInterpreter);			//@YetiGeneticAlgorithmsStrategy
+				} catch (Exception e) {														//@YetiGeneticAlgorithmsStrategy
+					e.printStackTrace();													//@YetiGeneticAlgorithmsStrategy
+				}																			//@YetiGeneticAlgorithmsStrategy
+			} else {																		//@YetiGeneticAlgorithmsStrategy
+				YetiChromosomeInterpreter chromosomeInterpreter = 							//@YetiGeneticAlgorithmsStrategy
+					new YetiChromosomeInterpreter(chromosome);								//@YetiGeneticAlgorithmsStrategy
+				strategy = new YetiEvolutionaryStrategy(testManager,chromosomeInterpreter);	//@YetiGeneticAlgorithmsStrategy
+			}																				//@YetiGeneticAlgorithmsStrategy
+		}																					//@YetiGeneticAlgorithmsStrategy
 
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} else {
-				YetiChromosomeInterpreter chromosomeInterpreter = new YetiChromosomeInterpreter(chromosome);
-				strategy = new YetiEvolutionaryStrategy(testManager,chromosomeInterpreter);
-			}
-		}
-
-		//TODO: lssilva make sure nothing that is not for EV is executed after the ev
-		// is started
-		if (isEvolutionary) {
-			//Take the chromosome set by GA
-
-			if (strategy == null) {
-				//    strategy = new YetiEvolutionaryStrategy(testManager, chromosome);
-			}
-		}
+		//TODO: lssilva make sure nothing that is not for EV is executed after the ev		//@YetiGeneticAlgorithmsStrategy
+		// is started																		//@YetiGeneticAlgorithmsStrategy
+		if (isEvolutionary) {																//@YetiGeneticAlgorithmsStrategy
+			//Take the chromosome set by GA													//@YetiGeneticAlgorithmsStrategy
+			if (strategy == null) {															//@YetiGeneticAlgorithmsStrategy
+				//    strategy = new YetiEvolutionaryStrategy(testManager, chromosome);		//@YetiGeneticAlgorithmsStrategy
+			}																				//@YetiGeneticAlgorithmsStrategy
+		}																					//@YetiGeneticAlgorithmsStrategy
 
 		// getting the module(s) to test
 		YetiModule mod=null;
@@ -1046,9 +1044,9 @@ public class Yeti {
 		System.out.println("Yeti Usage:\n java yeti.Yeti [-java|-Java] [[-time=Xs|-time=Xmn]|[-nTests=X]][-testModules=M1:M2:...:Mn][-help|-h][-rawlogs]");
 		System.out.println("\t-help, -h: prints the help out.");
 		System.out.println("\t-java, -Java : for calling it on Java.");
-		System.out.println("\t-jml, -JML : for calling it on JML annotated code.");
+		System.out.println("\t-jml, -JML : for calling it on JML annotated code."); //@YetiJMLBinding
 		System.out.println("\t-cofoja, -CoFoJa : for calling it on Java programs annotated with CoFoJa.  Note that if you do not want to pre-process the classes statically, you should call Yeti using the option -javaagent:cofoja.jar (or any other path to a CoFoJa jar).");
-		System.out.println("\t-dotnet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts.");
+		System.out.println("\t-dotnet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts."); //@YetiDotNETBinding
 		System.out.println("\t-time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).");
 		System.out.println("\t-nTests=X : for calling Yeti to attempt X method calls.");
 		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules. Sub-packages of a system can also be specified with asteriks e.g. yeti.test.* will include all the classes in yeti.test + all the classes belonging to the sub-packages of yeti.test .");
@@ -1063,8 +1061,8 @@ public class Yeti {
 		System.out.println("\t-randomPlus : uses the random+ strategy that injects interesting values every now and then.");
 		System.out.println("\t-randomPlusPeriodic : uses the random+ strategy and periodically change the values of the standard probalilities (null values, new instances, interesting values).");
 		System.out.println("\t-randomPlusDecreasing : uses the random+ strategy and decreases the values of the standard probalilities (null values, new instances, interesting values).<br>");
-		System.out.println("\t-evolutionary : uses GA to evolve a testing strategy.");
-		System.out.println("\t-chromosome : execute Yeti using a strategy chromosome.");
+		System.out.println("\t-evolutionary : uses GA to evolve a testing strategy."); //@YetiGeneticAlgorithmsStrategy
+		System.out.println("\t-chromosome : execute Yeti using a strategy chromosome."); //@YetiGeneticAlgorithmsStrategy
 		System.out.println("\t-DSSR : initially uses random+ strategy and based on the results of random+ it uses Dirt Spot Sweeping Random strategy.");
 		System.out.println("\t-gui : shows the standard graphical user interface for monitoring yeti.");
 		System.out.println("\t-noInstancesCap : removes the cap on the maximum of instances for a given type. Default is there is and the max is 1000.");
