@@ -121,7 +121,7 @@ Further individual targets used internally by above targets:
 		<delete file="lib/jmljunitruntime.jar" />
 		<delete file="lib/jmlmodels.jar" />
 		<delete file="lib/jmlmodelsnonrac.jar" />
-		<delete file="jmlruntime.jar" />
+		<delete file="lib/jmlruntime.jar" />
 		<delete dir="yeti/environments/jml"/>
 		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
 			<arg value="yeti/Yeti.java" />
@@ -144,7 +144,7 @@ Further individual targets used internally by above targets:
 	<!-- Removes file(s) and lines from the files to trim Yeti of the Kermeta binding    -->
 	<!-- =============================================================================== -->
 	<target name="trim-Kermeta">
-		<delete file="lib/commons-io-2.0.1.jra" />
+		<delete file="lib/commons-io-2.0.1.jar" />
 		<delete file="lib/kermeta-interpreter-lite.jar" />
 		<delete file="lib/kermeta-simplified-interpreter.jar" />
 		<delete dir="yeti/environments/kermeta"/>
