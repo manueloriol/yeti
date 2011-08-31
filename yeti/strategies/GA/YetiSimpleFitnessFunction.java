@@ -49,7 +49,6 @@ import yeti.environments.commandline.YetiCLProperties;
 import yeti.environments.commandline.YetiCLTestManager;
 import yeti.environments.csharp.*;
 import yeti.environments.java.*;
-import yeti.environments.jml.YetiJMLPrefetchingLoader;
 import yeti.environments.pharo.YetiPharoCommunicator;
 import yeti.environments.pharo.YetiPharoTestManager;
 import yeti.monitoring.YetiGUI;
