@@ -766,6 +766,7 @@ public class Yeti {
 				String parentPackage = moduleToTest.replace(".*", "");
 
 				//iterate through all the loaded classes from classpaths
+				@SuppressWarnings("rawtypes")
 				Iterator it = YetiModule.allModules.keySet().iterator();
 				while(it.hasNext()) 
 				{	
@@ -968,10 +969,9 @@ public class Yeti {
 				fos.close();
 				Yeti.reset();
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				System.err.println("could not print in "+reportFile);
+				System.err.println("Could not print in "+reportFile);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				System.err.println("Issue with io: "+reportFile);
 				e.printStackTrace();
 			}
 		}
