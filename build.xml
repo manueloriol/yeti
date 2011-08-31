@@ -165,6 +165,17 @@ Further individual targets used internally by above targets:
 			<arg value="@YetiDotNETBinding" />
 		</java>
 	</target>
+	<!-- =============================================================================== -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of the Kermeta binding    -->
+	<!-- =============================================================================== -->
+	<target name="trim-cloud">
+		<delete dir="yeti/cloud"/>
+		<delete file="lib/hadoop-0.19.2-core.jar" />
+		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
+			<arg value="yeti/Yeti.java" />
+			<arg value="@YetiCloud" />
+		</java>
+	</target>
 
 
 </project>
