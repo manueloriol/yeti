@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Vector;
 
 /**
  
@@ -108,7 +107,7 @@ public abstract class YetiLoader extends URLClassLoader {
 	 * @param clazz the class to add.
 	 * @return the class that was added.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public abstract Class addDefinition(Class clazz);
 
 	/**

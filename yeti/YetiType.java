@@ -34,7 +34,6 @@ package yeti;
  
  **/ 
 
-import java.security.Permission;
 import java.util.HashMap;
 import java.util.Vector;
 

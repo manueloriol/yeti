@@ -71,7 +71,7 @@ public class YetiLog {
 	 * @param message the debugging message to use.
 	 * @param objectInWhichCalled the caller or the class of the caller in case it is in a static method.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public static void printDebugLog(String message, Object objectInWhichCalled){
 		String className;
 
@@ -103,7 +103,7 @@ public class YetiLog {
 	 * @param objectInWhichCalled the caller or the class of the caller in case it is in a static method.
 	 * @param isTemporary print the message anyway if true.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public static void printDebugLog(String message, Object objectInWhichCalled, boolean isTemporary) {
 		if (isTemporary)
 			if (objectInWhichCalled instanceof Class)

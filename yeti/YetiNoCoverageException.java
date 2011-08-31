@@ -40,6 +40,7 @@ package yeti;
  * @date Jun 30, 2010
  *
  */
+@SuppressWarnings("serial")
 public class YetiNoCoverageException extends Exception {
 
 	/**

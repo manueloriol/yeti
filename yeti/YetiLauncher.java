@@ -47,6 +47,7 @@ import java.io.PrintStream;
   */
 
 
+@SuppressWarnings("serial")
 public class YetiLauncher extends JFrame {
 	
 	/**

@@ -86,7 +86,7 @@ public class YetiMap extends MapReduceBase implements Mapper<LongWritable, Text,
 		YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
 		int uniqueBugs= lp.getNumberOfUniqueFaults();
 
-		Iterator it =listOfExceptions.keySet().iterator(); 
+		Iterator<String> it =listOfExceptions.keySet().iterator(); 
 		while(it.hasNext())
 			outputKey+=it.next().toString()+"@\n";
 		
