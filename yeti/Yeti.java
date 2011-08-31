@@ -83,7 +83,7 @@ import yeti.strategies.YetiRandomPlusDecreasing;
 import yeti.strategies.YetiRandomPlusStrategy;
 import yeti.strategies.YetiRandomPlusPeriodicProbabilitiesStrategy;
 import yeti.strategies.YetiRandomStrategy;
-import yeti.cloud.YetiMap;
+import yeti.cloud.YetiMap;									//@YetiCloud
 import yeti.YetiType;
 
 /**
@@ -122,10 +122,10 @@ public class Yeti {
 	 */
 	public static YetiModule testModule = null; //combined form
 	public static String[] testModulesName = null; //string format names
-	/**
-	 * The mode of operation 
-	 */
-	public static boolean isDistributed= false;
+	/**												//@YetiCloud
+	 * The mode of operation 						//@YetiCloud
+	 */												//@YetiCloud
+	public static boolean isDistributed= false;		//@YetiCloud
 	/**
 	 * The support for branch coverage. 
 	 */
@@ -954,12 +954,12 @@ public class Yeti {
 			System.out.println("/** Approximation: "+e+"(f: number of bugs, x number of tests) R^2="+dataSetNcallsNFaults.coeffOfDetermination(e)+" **/");
 		}
 
-		//If distributed mode of operation
-		if (isDistributed){
-			YetiMap.moduleName=testModulesName[0];
-			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
-			YetiMap.listOfExceptions.putAll(lp.getListOfErrors());
-		}
+		//If distributed mode of operation										//@YetiCloud
+		if (isDistributed){														//@YetiCloud
+			YetiMap.moduleName=testModulesName[0];								//@YetiCloud
+			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();	//@YetiCloud
+			YetiMap.listOfExceptions.putAll(lp.getListOfErrors());				//@YetiCloud
+		}																		//@YetiCloud
 
 		// if we ask for a report file, we complete it
 		if(reportFile!=null) {
@@ -1007,7 +1007,7 @@ public class Yeti {
 		try {
 			Yeti.engine = null;
 			Yeti.hasBranchCoverage = false;
-			Yeti.isDistributed = false;
+			Yeti.isDistributed = false;							//@YetiCloud
 			Yeti.makeMethodsVisible = false;
 			Yeti.st = 0;
 			Yeti.strategy.reset();
