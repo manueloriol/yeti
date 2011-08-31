@@ -154,7 +154,7 @@ Further individual targets used internally by above targets:
 		</java>
 	</target>
 	<!-- =============================================================================== -->
-	<!-- Removes file(s) and lines from the files to trim Yeti of the Kermeta binding    -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of the DotNet binding     -->
 	<!-- =============================================================================== -->
 	<target name="trim-DotNet">
 		<delete dir="yeti/environments/csharp"/>
@@ -166,7 +166,7 @@ Further individual targets used internally by above targets:
 		</java>
 	</target>
 	<!-- =============================================================================== -->
-	<!-- Removes file(s) and lines from the files to trim Yeti of the Kermeta binding    -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of the cloud extension    -->
 	<!-- =============================================================================== -->
 	<target name="trim-cloud">
 		<delete dir="yeti/cloud"/>
@@ -176,6 +176,16 @@ Further individual targets used internally by above targets:
 			<arg value="@YetiCloud" />
 		</java>
 	</target>
-
+	<!-- =============================================================================== -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of the CoFoJa binding     -->
+	<!-- =============================================================================== -->
+	<target name="trim-CoFoJa">
+		<delete file="lib/cofoja.jar" />
+		<delete dir="yeti/environments/cofoja"/>
+		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
+			<arg value="yeti/Yeti.java" />
+			<arg value="@YetiCoFoJaBinding" />
+		</java>
+	</target>
 
 </project>
