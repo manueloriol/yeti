@@ -117,7 +117,7 @@ Further individual targets used internally by above targets:
 	<!-- ================================================================= -->
 	<!-- Removes file(s) and lines from the files to trim Yeti of JML      -->
 	<!-- ================================================================= -->
-	<target name="trim-jml">
+	<target name="trim-jml" description="Removes the part part of Yeti">
 		<delete file="lib/jmljunitruntime.jar" />
 		<delete file="lib/jmlmodels.jar" />
 		<delete file="lib/jmlmodelsnonrac.jar" />
@@ -131,7 +131,7 @@ Further individual targets used internally by above targets:
 	<!-- ================================================================================ -->
 	<!-- Removes file(s) and lines from the files to trim Yeti of Genetic Algorithms      -->
 	<!-- ================================================================================ -->
-	<target name="trim-ga">
+	<target name="trim-ga"  description="Removes the genetic algorithms part of Yeti">
 		<delete file="lib/jgap.jar" />
 		<delete dir="yeti/strategies/GA"/>
 		<delete dir="yeti/test/YetiTestGA"/>
@@ -143,7 +143,7 @@ Further individual targets used internally by above targets:
 	<!-- =============================================================================== -->
 	<!-- Removes file(s) and lines from the files to trim Yeti of the Kermeta binding    -->
 	<!-- =============================================================================== -->
-	<target name="trim-kermeta">
+	<target name="trim-kermeta"  description="Removes the Kermeta part of Yeti">
 		<delete file="lib/commons-io-2.0.1.jar" />
 		<delete file="lib/kermeta-interpreter-lite.jar" />
 		<delete file="lib/kermeta-simplified-interpreter.jar" />
@@ -156,7 +156,7 @@ Further individual targets used internally by above targets:
 	<!-- =============================================================================== -->
 	<!-- Removes file(s) and lines from the files to trim Yeti of the DotNet binding     -->
 	<!-- =============================================================================== -->
-	<target name="trim-dotnet">
+	<target name="trim-dotnet"  description="Removes the .Net/C# part of Yeti">
 		<delete dir="yeti/environments/csharp"/>
 		<delete dir="yeti/test/DotNetTest"/>
 		<delete dir="yeti/test/Yeti Net-Code Contract"/>
@@ -168,7 +168,7 @@ Further individual targets used internally by above targets:
 	<!-- =============================================================================== -->
 	<!-- Removes file(s) and lines from the files to trim Yeti of the cloud extension    -->
 	<!-- =============================================================================== -->
-	<target name="trim-cloud">
+	<target name="trim-cloud" description="Removes the cloud part of Yeti">
 		<delete dir="yeti/cloud"/>
 		<delete file="lib/hadoop-0.19.2-core.jar" />
 		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
@@ -179,7 +179,7 @@ Further individual targets used internally by above targets:
 	<!-- =============================================================================== -->
 	<!-- Removes file(s) and lines from the files to trim Yeti of the CoFoJa binding     -->
 	<!-- =============================================================================== -->
-	<target name="trim-cofoja">
+	<target name="trim-cofoja" description="Removes the cofoja part of Yeti">
 		<delete file="lib/cofoja.jar" />
 		<delete dir="yeti/environments/cofoja"/>
 		<java classname="yetidistributil.trimming.Trimmer" classpath=".">
@@ -187,5 +187,18 @@ Further individual targets used internally by above targets:
 			<arg value="@YetiCoFoJaBinding" />
 		</java>
 	</target>
-
+	<!-- =============================================================================== -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of the documentation      -->
+	<!-- =============================================================================== -->
+	<target name="trim-doc" description="Removes the documentation of Yeti">
+		<delete dir="papers"/>
+		<delete dir="docs"/>
+	</target>
+	<!-- ========================================================================================== -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of everythign but the cofoja binding -->
+	<!-- ========================================================================================== -->
+	<target name="trim-all-but-cofoja"  
+			description="Removes the documentation of Yeti"
+			depends="trim-doc,trim-cloud,trim-dotnet,trim-kermeta,trim-ga,trim-jml"
+	/>
 </project>
