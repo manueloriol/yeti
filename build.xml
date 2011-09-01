@@ -13,7 +13,7 @@ See the target "usage" further below for instructions on how to build the softwa
 <!-- ================================================================= -->
 <project name="yeti" default="help" basedir=".">
 
-	<property name="version" value="1.0.0" />
+	<property name="version" value="1.0.1" />
 
 	<property name="proj.title" value="Yeti" />
 
@@ -27,7 +27,10 @@ See the target "usage" further below for instructions on how to build the softwa
 	<property name="jar.dir" value="lib" />
 
 	<!-- Name of Yeti jar file to be generated -->
-	<property name="jar.filename" value="yeti-${version}.jar" />
+	<property name="jar.filename" value="yeti.jar" />
+
+	<!-- Name of Yeti jar file to be generated -->
+	<property name="src-jar.filename" value="yeti-src.jar" />
 
 
 	<!-- Construct classpath for compilation-->
@@ -50,7 +53,7 @@ See the target "usage" further below for instructions on how to build the softwa
 		<echo>
 First cd into the dir this build file is placed in:
 
-	cd YetiFreshCompile
+	cd trunk
 	 	
 Then type one of the following to build the software:
 
@@ -111,7 +114,27 @@ Further individual targets used internally by above targets:
 
 		<delete file="${jar.dir}/${jar.filename}" />
 
-		<jar jarfile="${jar.dir}/${jar.filename}" basedir="${javac.dest}" index="yes" compress="yes" />
+		<jar 	jarfile="${jar.dir}/${jar.filename}" 
+				basedir="${javac.dest}" 
+				index="yes" 
+				compress="yes" 
+				casesensitive="yes"
+
+		/>
+	</target>
+
+	<!-- ================================================================= -->
+	<!-- Generate jar file(s) from *.class files                           -->
+	<!-- ================================================================= -->
+	<target name="src-jar">
+
+		<delete file="${jar.dir}/${src-jar.filename}" />
+		<jar 	jarfile="${jar.dir}/${src-jar.filename}" 
+				index="yes" 
+				compress="yes" 
+				basedir="${javac.src}" 
+				casesensitive="yes"
+				includes="yeti/**/*.java"/>
 	</target>
 
 	<!-- ================================================================= -->
@@ -200,5 +223,12 @@ Further individual targets used internally by above targets:
 	<target name="trim-all-but-cofoja"  
 			description="Removes the documentation of Yeti"
 			depends="trim-doc,trim-cloud,trim-dotnet,trim-kermeta,trim-ga,trim-jml"
+	/>
+	<!-- ========================================================================================== -->
+	<!-- Removes file(s) and lines from the files to trim Yeti of everythign but the cofoja binding -->
+	<!-- ========================================================================================== -->
+	<target name="trim-all-but-kermeta"  
+			description="Removes the documentation of Yeti"
+			depends="trim-doc,trim-cloud,trim-dotnet,trim-cofoja,trim-ga,trim-jml"
 	/>
 </project>
