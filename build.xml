@@ -119,7 +119,7 @@ Further individual targets used internally by above targets:
 				index="yes" 
 				compress="yes" 
 				casesensitive="yes"
-
+				includes="yeti/**/*.class"
 		/>
 	</target>
 
@@ -134,7 +134,8 @@ Further individual targets used internally by above targets:
 				compress="yes" 
 				basedir="${javac.src}" 
 				casesensitive="yes"
-				includes="yeti/**/*.java"/>
+				includes="yeti/**/*.java"
+		/>
 	</target>
 
 	<!-- ================================================================= -->
