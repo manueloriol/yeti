@@ -1,0 +1,131 @@
+\begin{thebibliography}{10}
+
+\bibitem{Ciupa2009}
+I.~Ciupa, A.~Pretschner, M.~Oriol, A.~Leitner, and B.~Meyer, ``On the number
+  and nature of faults found by random testing,'' {\em Software Testing
+  Verification and Reliability}, vol.~9999, no.~9999, pp.~1--7, 2009.
+
+\bibitem{Ciupa2008}
+I.~Ciupa, B.~Meyer, M.~Oriol, and A.~Pretschner, ``Finding faults: Manual
+  testing vs. random+ testing vs. user reports,'' in {\em Proceedings of the
+  2008 19th International Symposium on Software Reliability Engineering},
+  (Washington, DC, USA), pp.~157--166, IEEE Computer Society, 2008.
+
+\bibitem{Ciupa2008a}
+I.~Ciupa, A.~Leitner, M.~Oriol, and B.~Meyer, ``Artoo: adaptive random testing
+  for object-oriented software,'' in {\em Proceedings of the 30th international
+  conference on Software engineering}, ICSE '08, (New York, NY, USA),
+  pp.~71--80, ACM, 2008.
+
+\bibitem{Oriol2010a}
+M.~Oriol and S.~Tassis, ``Testing .net code with yeti,'' in {\em Proceedings of
+  the 2010 15th IEEE International Conference on Engineering of Complex
+  Computer Systems}, ICECCS '10, (Washington, DC, USA), pp.~264--265, IEEE
+  Computer Society, 2010.
+
+\bibitem{Oriol2010}
+M.~Oriol and F.~Ullah, ``Yeti on the cloud,'' {\em Software Testing
+  Verification and Validation Workshop, IEEE International Conference on},
+  vol.~0, pp.~434--437, 2010.
+
+\bibitem{Leitner2007}
+A.~Leitner, I.~Ciupa, B.~Meyer, and M.~Howard, ``Reconciling manual and
+  automated testing: The autotest experience,'' in {\em Proceedings of the 40th
+  Annual Hawaii International Conference on System Sciences}, HICSS '07,
+  (Washington, DC, USA), pp.~261a--, IEEE Computer Society, 2007.
+
+\bibitem{Ciupa2007}
+I.~Ciupa, A.~Leitner, M.~Oriol, and B.~Meyer, ``Experimental assessment of
+  random testing for object-oriented software,'' in {\em Proceedings of the
+  2007 international symposium on Software testing and analysis}, ISSTA '07,
+  (New York, NY, USA), pp.~84--94, ACM, 2007.
+
+\bibitem{Claessen2000}
+K.~Claessen and J.~Hughes, ``Quickcheck: a lightweight tool for random testing
+  of haskell programs,'' in {\em Proceedings of the fifth ACM SIGPLAN
+  international conference on Functional programming}, ICFP '00, (New York, NY,
+  USA), pp.~268--279, ACM, 2000.
+
+\bibitem{Pacheco2007}
+C.~Pacheco and M.~D. Ernst, ``{Randoop:} feedback-directed random testing for
+  {Java},'' in {\em OOPSLA 2007 Companion, Montreal, Canada}, ACM, Oct. 2007.
+
+\bibitem{Oriat2004}
+C.~Oriat, ``Jartege: a tool for random generation of unit tests for java
+  classes,'' {\em CoRR}, vol.~abs/cs/0412012, 2004.
+
+\bibitem{Myers2004}
+G.~J. Myers and C.~Sandler, {\em The Art of Software Testing}.
+\newblock John Wiley \& Sons, 2004.
+
+\bibitem{Duran1981}
+J.~W. Duran and S.~Ntafos, ``A report on random testing,'' in {\em Proceedings
+  of the 5th international conference on Software engineering}, ICSE '81,
+  (Piscataway, NJ, USA), pp.~179--183, IEEE Press, 1981.
+
+\bibitem{Hamlet1994}
+R.~Hamlet, ``Random testing,'' in {\em Encyclopedia of Software Engineering},
+  pp.~970--978, Wiley, 1994.
+
+\bibitem{Ntafos2001}
+S.~C. Ntafos, ``On comparisons of random, partition, and proportional partition
+  testing,'' {\em IEEE Trans. Softw. Eng.}, vol.~27, pp.~949--960, October
+  2001.
+
+\bibitem{Chen2008}
+T.~Y. Chen, ``Adaptive random testing,'' {\em Eighth International Conference
+  on Qualify Software}, vol.~0, p.~443, 2008.
+
+\bibitem{Chan2002}
+K.~P. Chan, T.~Y. Chen, and D.~Towey, ``Restricted random testing,'' in {\em
+  Proceedings of the 7th International Conference on Software Quality}, ECSQ
+  '02, (London, UK, UK), pp.~321--330, Springer-Verlag, 2002.
+
+\bibitem{Pacheco2007a}
+C.~Pacheco, S.~K. Lahiri, M.~D. Ernst, and T.~Ball, ``Feedback-directed random
+  test generation,'' in {\em Proceedings of the 29th international conference
+  on Software Engineering}, ICSE '07, (Washington, DC, USA), pp.~75--84, IEEE
+  Computer Society, 2007.
+
+\bibitem{Chen2003}
+T.~Y. Chen, F.~C. Kuo, R.~G. Merkel, and S.~P. Ng, ``Mirror adaptive random
+  testing,'' in {\em Proceedings of the Third International Conference on
+  Quality Software}, QSIC '03, (Washington, DC, USA), p.~4, IEEE Computer
+  Society, 2003.
+
+\bibitem{Chen2005}
+T.~Y. Chen and R.~Merkel, ``Quasi-random testing,'' in {\em Proceedings of the
+  20th IEEE/ACM international Conference on Automated software engineering},
+  ASE '05, (New York, NY, USA), pp.~309--312, ACM, 2005.
+
+\bibitem{Chen2006}
+T.~Y. Chen and F.-C. Kuo, ``Is adaptive random testing really better than
+  random testing,'' in {\em Proceedings of the 1st international workshop on
+  Random testing}, RT '06, (New York, NY, USA), pp.~64--69, ACM, 2006.
+
+\bibitem{Beizer1990}
+B.~Beizer, {\em Software testing techniques (2nd ed.)}.
+\newblock New York, NY, USA: Van Nostrand Reinhold Co., 1990.
+
+\bibitem{Kaner2004}
+C.~Kaner, ``Software testing as a social science,'' tech. rep., Florida
+  Institute of Technology, July 2004.
+
+\bibitem{Ciupa2008b}
+I.~Ciupa, A.~Pretschner, A.~Leitner, M.~Oriol, and B.~Meyer, ``On the
+  predictability of random tests for object-oriented software,'' in {\em
+  Proceedings of the 2008 International Conference on Software Testing,
+  Verification, and Validation}, (Washington, DC, USA), pp.~72--81, IEEE
+  Computer Society, 2008.
+
+\bibitem{Chen1996}
+T.~Chen and Y.~Yu, ``On the expected number of failures detected by subdomain
+  testing and random testing,'' {\em Software Engineering, IEEE Transactions
+  on}, vol.~22, pp.~109 --119, feb 1996.
+
+\bibitem{Chen2004}
+T.~Y. Chen, F.-C. Kuo, and R.~Merkel, ``On the statistical properties of the
+  f-measure,'' in {\em Quality Software, 2004. QSIC 2004. Proceedings. Fourth
+  International Conference on}, pp.~146 -- 153, sept. 2004.
+
+\end{thebibliography}
