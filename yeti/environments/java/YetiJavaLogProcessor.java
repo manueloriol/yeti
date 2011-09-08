@@ -240,7 +240,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 
 		// we make the list of errors
 		HashMap<String,Integer> listOfErrors= new HashMap<String,Integer>();
-		// we look for all errors up
+		// we look up for all errors
 		for (int i = 0; i<linesOfTest.length; i++){
 			String exceptionTrace="";
 			if (linesOfTest[i].startsWith("/**BUG")||linesOfTest[i].startsWith("/**POSSIBLE BUG")){
@@ -256,6 +256,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 
 				// the exception starts with a comment
 				if (linesOfTest[k].startsWith("/**")) {
+					k+=2;
 					// will be used to filter the yeti exception stack
 					boolean isInYetiExceptions=false;
 
@@ -272,8 +273,10 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 					}
 				}
 				// we add the error if it is unique
-				if (!listOfErrors.containsKey(exceptionTrace)&&Yeti.testModule.isThrowableInModule(exceptionTrace))
+				if (!listOfErrors.containsKey(exceptionTrace)&&Yeti.testModule.isThrowableInModule(exceptionTrace)) {
+					YetiLog.printDebugLog("Exception trace added: "+exceptionTrace, YetiJavaLogProcessor.class, true);
 					listOfErrors.put(exceptionTrace,i-1);
+				}
 			}
 		}
 
