@@ -113,7 +113,7 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 			// if we should replace it by a null value, we do it
 			if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&&!(((YetiJavaSpecificType)arg[i].getType()).isSimpleType())) {
 				initargs[i]=null;
-				log=log+"null";
+				log=log+"("+arg[i].getType()+")null";
 			} else {
 				// note that we use getValue to get the actual value
 				initargs[i]=arg[i].getValue();

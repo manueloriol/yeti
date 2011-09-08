@@ -32,7 +32,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-**/
+ **/
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -161,13 +161,13 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		boolean isValue= false;
 
 		// use this to monitor a method if needed...
-//		boolean isIndexOf = false;
-//		int k = 0;
-//		if (this.toString().equals("indexOf")) {
-//			isIndexOf=true;
-//		}
-//		YetiLog.printDebugLog("indexOf "+k++, this, isIndexOf);
-		
+		//		boolean isIndexOf = false;
+		//		int k = 0;
+		//		if (this.toString().equals("indexOf")) {
+		//			isIndexOf=true;
+		//		}
+		//		YetiLog.printDebugLog("indexOf "+k++, this, isIndexOf);
+
 		// if the method is static, we need to adjust the arguments
 		// there is no target in the open slots.
 		if (isStatic){
@@ -226,7 +226,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			// if we should replace it by a null value, we do it
 			if ((YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random())&&!(((YetiJavaSpecificType)arg[i].getType()).isSimpleType())) {
 				initargs[i-offset]=null;
-				log=log+"null";
+				log=log+"("+arg[i].getType()+")null";
 			} else {
 				initargs[i-offset]=arg[i].getValue();
 				log=log+arg[i].toString();
@@ -265,7 +265,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		}
 		else
 			log=log+");";
-		
+
 		// finally we print the log.
 		YetiLog.printYetiLog(log, this);
 		return log;
@@ -337,49 +337,67 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			// we also add the correct modifier to indicate Longs, floats, and double
 			if (o instanceof Float) {
 				if (((Float)o).isNaN()) {
-					log1 = log1+"0.0/0.0f;";
-				} else
-					log1 = log1+o.toString()+"f;";
+					log1 = log1+"Float.NaN;";
+				} else {
+					if (((Float)o).isInfinite()&&Float.valueOf(((Float)o))>0.0){
+						log1 = log1+"Float.POSITIVE_INFINITY;";						
+					} else {
+						if (((Float)o).isInfinite()&&Float.valueOf(((Float)o))<0.0){
+							log1 = log1+"Float.POSITIVE_INFINITY;";						
+						} else {
+							log1 = log1+o.toString()+"f;";
+						}
+					}
+				}
 			} else
 				if (o instanceof Double) {
 					if (((Double)o).isNaN()) {
-						log1 = log1+"0.0/0.0d;";
+						log1 = log1+"Double.NaN;";
+					} else {
+						if (((Double)o).isInfinite()&&Double.valueOf(((Double)o))>0.0){
+							log1 = log1+"Double.POSITIVE_INFINITY;";						
+						} else {
+							if (((Double)o).isInfinite()&&Double.valueOf(((Double)o))<0.0){
+								log1 = log1+"Double.POSITIVE_INFINITY;";						
+							} else {
+								log1 = log1+o.toString()+"d;";
+							} 
+						}
+					}
 					} else
-						log1 = log1+o.toString()+"d;";
-				} else
-					if (o instanceof Long) {
-						log1 = log1+o.toString()+"L;";
-					} else
-						log1=log1+o.toString()+";";
+						if (o instanceof Long) {
+							log1 = log1+o.toString()+"L;";
+						} else
+							log1=log1+o.toString()+";";
+				}
+			log = log1;
+			return log;
 		}
-		log = log1;
-		return log;
-	}
-	
-	
-	
 
-	/**
-	 * Getter for the implementation of the method.
-	 * @return  the implementation of the method.
-	 */
-	public Method getMethod() {
-		return method;
-	}
 
-	/**
-	 * Setter for the implementation of the method.
-	 * @param m  the method to set.
-	 */
-	public void setMethod(Method m) {
-		this.method = m;
-	}
 
-	/**
-	 * Resets the Java methods.
-	 */
-	public static void reset() {
-		initMethodsNotToAdd();
-	}
 
-}
+		/**
+		 * Getter for the implementation of the method.
+		 * @return  the implementation of the method.
+		 */
+		public Method getMethod() {
+			return method;
+		}
+
+		/**
+		 * Setter for the implementation of the method.
+		 * @param m  the method to set.
+		 */
+		public void setMethod(Method m) {
+			this.method = m;
+		}
+
+		/**
+		 * Resets the Java methods.
+		 */
+		public static void reset() {
+			initMethodsNotToAdd();
+		}
+
+	}

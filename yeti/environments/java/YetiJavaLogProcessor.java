@@ -167,19 +167,24 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		if (!isCreation&&isMethodCall) {
 			String target;
 			// we find the target
-			if (isAssignment)
-				target = loc.substring(loc.indexOf("=")+1,loc.lastIndexOf('.'));
-			else
-				target = loc.substring(0,loc.lastIndexOf('.'));
+			if (isAssignment) {
+				String tmpLoc = loc.substring(0,loc.indexOf('('));
+				target = tmpLoc.substring(tmpLoc.indexOf("=")+1,tmpLoc.lastIndexOf('.'));
+			}
+			else {
+				String tmpLoc = loc.substring(0,loc.indexOf('('));
+				target = tmpLoc.substring(0,tmpLoc.lastIndexOf('.'));
+			}
 			YetiLog.printDebugLog("target: "+target, YetiJavaLogProcessor.class);
 
 			// we add it to the values that matter
-			valuesThatMatter.add(target);
+			if (target.startsWith("v")||!YetiLogProcessor.aggressiveTestCasesMinimization)
+				valuesThatMatter.add(target);
 		}
 		// for all method calls we extract arguments
 		if (isMethodCall) {
 			int indexOfAfterOpenParenthesis = loc.indexOf("(")+1;
-			int indexOfCloseParenthesis = loc.indexOf(")");
+			int indexOfCloseParenthesis = loc.lastIndexOf(")");
 			localLoc = localLoc.substring(indexOfAfterOpenParenthesis, indexOfCloseParenthesis);
 
 			// we add all arguments one after he other
@@ -274,7 +279,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 				}
 				// we add the error if it is unique
 				if (!listOfErrors.containsKey(exceptionTrace)&&Yeti.testModule.isThrowableInModule(exceptionTrace)) {
-					YetiLog.printDebugLog("Exception trace added: "+exceptionTrace, YetiJavaLogProcessor.class, true);
+					YetiLog.printDebugLog("Exception trace added: "+exceptionTrace, YetiJavaLogProcessor.class);
 					listOfErrors.put(exceptionTrace,i-1);
 				}
 			}

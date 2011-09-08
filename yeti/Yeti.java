@@ -188,7 +188,7 @@ public class Yeti {
 	 * -nTests=X : for calling Yeti to attempt X method calls.<br>
 	 * -testModules=M1:M2:...:Mn : for testing one or several modules.  Sub-packages of a system can also be specified with asteriks e.g. yeti.test.* will include all the classes in yeti.test + all the classes belonging to the sub-packages of yeti.test .<br>
 	 * -initClass=X : this will use a user class to initialize the system this class will be a subclass of yeti.environments.YetiInitializer .<br>
-	 * -outputUnitTestFile=X : this option stores the generated test cases in a file. THis is binding-specific for Java: X=tests/test0.T.java will store a file T.java from package test0 into the directory tests.<br>
+	 * -outputUnitTestFile=X : this option stores the generated test cases in a file. This is binding-specific for Java: X=tests/test0.T.java will store a file T.java from package test0 into the directory tests.<br>
 	 * -rawlogs : prints the logs directly instead of processing them at the end. <br>
 	 * -nologs : does not print logs, only the final result.<br>
 	 * -msCalltimeout=X : sets the timeout (in milliseconds) for a method call to X. Note that too
@@ -207,9 +207,10 @@ public class Yeti {
 	 * -tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').<br>
 	 * -printNumberOfCallsPerMethod : prints the number of calls per method.<br>
 	 * -branchCoverage : shows the branch coverage if available (in Java, this implies instrumenting the bytecode)."); <br>
-	 * -makeMethodsVisible: converts all the protected and private methods into public for testing.
-	 * -approximate : approximates the number of unique failures per number of tests.
-	 * -compactReport=X : adds a line in file X containing the information about the testing session.
+	 * -makeMethodsVisible: converts all the protected and private methods into public for testing. <br>
+	 * -approximate : approximates the number of unique failures per number of tests. <br>
+	 * -compactReport=X : adds a line in file X containing the information about the testing session. <br>
+	 * -accurateMinimization : makes the test case minimization more accurate, by adding previous static method calls when used to compute a result. <br>
 	 * @param args the arguments of the program
 	 */
 	public static void main (String[] args) {
@@ -255,6 +256,7 @@ public class Yeti {
 		boolean printNumberOfCallsPerMethod = false;
 		boolean approximate = false;
 		boolean saveInUnitTestFile = false;
+		boolean accurateMinimization = false;
 		String unitTestFileName = null;
 		String modulesString = null;
 		YetiGAParameters gaParameters = new YetiGAParameters(); //@YetiGeneticAlgorithmsStrategy
@@ -319,6 +321,13 @@ public class Yeti {
 			// if Pharo
 			if (s0.equals("-Pharo")) {
 				isPharo = true;
+				continue;
+			}
+
+			// if Pharo
+			if (s0.equals("-accurateMinimization")) {
+				accurateMinimization = true;
+				YetiLogProcessor.aggressiveTestCasesMinimization = false;
 				continue;
 			}
 
@@ -1077,6 +1086,7 @@ public class Yeti {
 		System.out.println("\t-makeMethodsVisible: converts all the protected and private methods into public for testing.");
 		System.out.println("\t-approximate : approximates the number of unique failures per number of tests.");
 		System.out.println("\t-compactReport=X : adds a line in file X containing the information about the testing session.");
+		System.out.println("\t-accurateMinimization : makes the test case minimization more accurate, by adding previous static method calls when used to compute a result.");
 
 	}
 

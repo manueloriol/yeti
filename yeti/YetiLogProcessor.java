@@ -62,6 +62,13 @@ public abstract class YetiLogProcessor {
 	public static int lastNumberOfNonUniqueBugs = 0;
 
 	/**
+	 * A variable that is true if the test cases minimization should be aggressive 
+	 * (less accurate, but produces smaller test cases), or false if the processing 
+	 * should be less aggressive.
+	 */
+	public static boolean aggressiveTestCasesMinimization = true;
+
+	/**
 	 * The number of (non-unique) failures found so far.
 	 */
 	public int numberOfErrors = 0;
