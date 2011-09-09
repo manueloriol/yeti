@@ -574,7 +574,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			testFileName=testFileName.substring(testFileName.lastIndexOf(System.getProperty("file.separator"))+1);
 		}
 
-		YetiLog.printDebugLog("Will store in "+testFileName, this,true);
+		YetiLog.printDebugLog("Will store in "+testFileName, this);
 
 
 		// if it is in a package, we separate the package name from the class name
@@ -628,7 +628,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		}
 
 		// we add .java to the file name
-		YetiLog.printDebugLog("fileName is: "+className, Yeti.class,true);
+		YetiLog.printDebugLog("fileName is: "+className, Yeti.class);
 		String fullName=className+".java";
 
 		// if it is supposed to go to a directory, we add it too

@@ -881,6 +881,7 @@ public class Yeti {
 				try {
 					PrintStream ps = new PrintStream(fileName);
 					ps.print(fileContent);
+					System.out.println("/** Saving test cases in "+fileName+" **/");
 				} catch (Exception e) {
 					// in case it did not work
 					System.out.println("/** Problem with saving test cases. Printing them on command-line instead. **/");
