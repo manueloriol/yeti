@@ -96,12 +96,15 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 		} catch (InstantiationException e) {
 			// should never happen
 			// e.printStackTrace();
+			return null;
 		} catch (IllegalArgumentException e) {
 			// should never happen
 			//e.printStackTrace();
+			return null;
 		} catch (IllegalAccessException e) {
 			// should never happen
 			// e.printStackTrace();
+			return null;
 		} catch (InvocationTargetException e) {
 			
 			boolean isBug = true;
@@ -153,6 +156,8 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 			if (isBug) {
 				YetiLog.printYetiThrowable(e.getCause(), this);
 			}
+			return null;
+
 		} catch (Error e) {
 			// if we are here there was a serious error
 			// we print it
@@ -161,12 +166,14 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 			YetiLog.printYetiLog("BUG FOUND: ERROR" + e.getCause().getMessage() + " **/", this);
 			YetiLog.printYetiThrowable(e.getCause(), this);
 			this.incnTimesCalledUnsuccessfully();
+			return null;
 		}
 		catch (Throwable e){
 			// should never happen
 			System.out.println("This should never happen!!!");
 			System.out.println("Trying to call " + this + " with these args=" + Arrays.toString(arg));
 			e.printStackTrace();
+			return null;
 		}
 		return this.lastCallResult;
 	}

@@ -229,7 +229,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 				log=log+"("+arg[i].getType()+")null";
 			} else {
 				initargs[i-offset]=arg[i].getValue();
-				log=log+arg[i].toString();
+				log=log+"("+arg[i].getType()+")"+arg[i].toString();
 			}
 			if (i<arg.length-1){
 				log=log+",";

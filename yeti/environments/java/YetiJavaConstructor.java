@@ -118,7 +118,7 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 				// note that we use getValue to get the actual value
 				initargs[i]=arg[i].getValue();
 				// we use toString() to make it pretty-print.
-				log=log+arg[i].toString();
+				log=log+"("+arg[i].getType()+")"+arg[i].toString();
 			}
 			if (i<arg.length-1){
 				log=log+",";

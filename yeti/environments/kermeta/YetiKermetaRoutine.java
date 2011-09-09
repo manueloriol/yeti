@@ -122,6 +122,8 @@ public class YetiKermetaRoutine extends YetiRoutine {
 	 * @see yeti.YetiRoutine#makeCall(yeti.YetiCard[])
 	 */
 	public Object makeCall(YetiCard []arg){
+		// TODO Check that this method does not need the changes that were implemented in other bindings:
+		// Namely, returning explicitly null when the call is failing.
 
 		String log = null;
 		super.makeCall(arg);

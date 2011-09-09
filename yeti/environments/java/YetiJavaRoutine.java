@@ -118,15 +118,17 @@ public class YetiJavaRoutine extends YetiRoutine {
 			}
 			// should never happen
 			//e.printStackTrace();
+			return null;
 		} catch (IllegalAccessException e) {
 			YetiLog.printDebugLog(this.getSignature()+" IllegalAccessException", this,true);
 			// should never happen
 			// e.printStackTrace();
+			return null;
 		} catch (InvocationTargetException e) {
 
 			// if we are here, we found a bug.
 			// we first print the log
-			YetiLog.printYetiLog(log+");", this);
+			YetiLog.printYetiLog("try {"+log+");} catch(Throwable t){}", this);
 			// then print the exception
 			if ((e.getCause() instanceof RuntimeException  || e.getCause() instanceof Error) && !isAcceptable(e.getCause())) {
 				if (e.getCause() instanceof ThreadDeath) {
@@ -157,6 +159,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 				YetiLog.printYetiThrowable(e.getCause(), this,false);
 				this.incnTimesCalledSuccessfully();
 			}
+			return null;
 		} catch (Error e){
 			// if we are here there was a serious error
 			// we print it
@@ -171,10 +174,12 @@ public class YetiJavaRoutine extends YetiRoutine {
 				YetiLog.printYetiThrowable(e.getCause(), this,true);
 				this.incnTimesCalledSuccessfully();
 			}
+			return null;
 		}
 		catch (Throwable e){
 			// should never happen
-			//e.printStackTrace();
+			e.printStackTrace();
+			return null;
 		}
 		return this.lastCallResult;
 	}

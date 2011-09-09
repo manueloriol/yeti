@@ -74,7 +74,7 @@ public class YetiCLSpecificType extends YetiType {
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
-			// create a yeti varivable by the value 
+			// create a yeti variable by the value 
 			return new YetiVariable(YetiIdentifier.getFreshIdentifier(),
 					returnType, value);
 		}

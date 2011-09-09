@@ -126,6 +126,11 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	 * @return the String value for the variable to kill.
 	 */
 	public static String kill(String loc){
+		if (loc.startsWith("try")) {
+			loc = loc.substring(loc.indexOf("{")+1, loc.indexOf("}"));
+		}
+
+		
 		boolean isAssignment = (loc.indexOf("=")>0);
 		int indexOfSpace = loc.indexOf(" ");
 
@@ -148,11 +153,15 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	 * list of values that matter.
 	 */
 	public static Vector<String> gen(String loc){
+		if (loc.startsWith("try")) {
+			loc = loc.substring(loc.indexOf("{")+1, loc.indexOf("}"));
+		}
 
 		boolean isAssignment = (loc.indexOf("=")>0);
 		boolean isCreation = (loc.indexOf("new ")>0);
 		boolean isMethodCall = (loc.indexOf("(")>0);
 		boolean isComment = loc.startsWith("/**");
+		
 
 		// if this is a comment we return no gen
 		if (isComment)
@@ -165,16 +174,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 
 		// if it is not a creation method but it is a method call
 		if (!isCreation&&isMethodCall) {
-			String target;
-			// we find the target
-			if (isAssignment) {
-				String tmpLoc = loc.substring(0,loc.indexOf('('));
-				target = tmpLoc.substring(tmpLoc.indexOf("=")+1,tmpLoc.lastIndexOf('.'));
-			}
-			else {
-				String tmpLoc = loc.substring(0,loc.indexOf('('));
-				target = tmpLoc.substring(0,tmpLoc.lastIndexOf('.'));
-			}
+			String target = target(loc);
 			YetiLog.printDebugLog("target: "+target, YetiJavaLogProcessor.class);
 
 			// we add it to the values that matter
@@ -191,12 +191,44 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			if (localLoc.length()>0)
 				for (String var: localLoc.split(",")){
 					YetiLog.printDebugLog("arg: "+var, YetiJavaLogProcessor.class);
-					if (!var.equals("null")) 
+					if (!var.equals("null")) {
+						int indexOfParen = var.indexOf(")");
+						if (indexOfParen>=0)
+							var = var.substring(indexOfParen+1); 
 						valuesThatMatter.add(var);
+					}
 				}
 		}
 		// we return the result
 		return valuesThatMatter;
+	}
+
+	/**
+	 * A dimple method that extracts the target of a call in a log line.
+	 * 
+	 * @param loc the line of code
+	 * @return the target of the call if any
+	 */
+	public static String target(String loc) {
+		String target;
+		if (loc.startsWith("try")) {
+			loc = loc.substring(loc.indexOf("{")+1, loc.indexOf("}"));
+		}
+
+		boolean isAssignment = (loc.indexOf("=")>0);
+		boolean isMethodCall = (loc.indexOf("(")>0);
+
+		if (!isMethodCall) return null;
+		// we find the target
+		if (isAssignment) {
+			String tmpLoc = loc.substring(0,loc.indexOf('('));
+			target = tmpLoc.substring(tmpLoc.indexOf("=")+1,tmpLoc.lastIndexOf('.'));
+		}
+		else {
+			String tmpLoc = loc.substring(0,loc.indexOf('('));
+			target = tmpLoc.substring(0,tmpLoc.lastIndexOf('.'));
+		}
+		return target;
 	}
 
 	/**
@@ -209,11 +241,15 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	public static boolean containsKillsOrGens(String loc, Vector<String> varNames){
 		Vector<String> gen0 = gen(loc);
 		String kill0=kill(loc);
+//		String target0 = target (loc);
+		
 
 		// we iterate through all names
 		for (String var: varNames) {
 			if (kill0!=null)
 				if (kill0.equals(var)) return true;
+//			if (target0!=null)
+//				if (target0.equals(var)) return true;
 			if (!YetiLogProcessor.aggressiveTestCasesMinimization) {
 				for (String geni: gen0) {
 					if (geni.equals(var)) return true;
@@ -293,7 +329,12 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		// for each error:
 		for(int i: listOfErrors.values()){
 			int finalLength = 0;
-			String currentTestCase = linesOfTest[i]+"\n"+linesOfTest[i+1];
+			String failingCall = linesOfTest[i];
+			if (failingCall.startsWith("try")) {
+				failingCall = failingCall.substring(failingCall.indexOf("{")+1, failingCall.indexOf("}"));
+			}
+
+			String currentTestCase = failingCall+"\n"+linesOfTest[i+1];
 			Vector<String> variables = gen(linesOfTest[i]);
 			boolean ignoreNext = false;
 			// for all lines previously executed:
