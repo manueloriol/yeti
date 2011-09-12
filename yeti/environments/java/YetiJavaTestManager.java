@@ -353,7 +353,7 @@ public class YetiJavaTestManager extends YetiTestManager {
 			// we make sure that the logs are not cut
 			synchronized (YetiLog.class) {
 				// we stop the thread anyway!
-				ct.stop(new YetiCallException("Call stoped by YETI",new Exception("Call stoped by YETI")));
+				ct.stop();
 			}
 			nThreadsStopped++;
 		} catch (Throwable e) {
