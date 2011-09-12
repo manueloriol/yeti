@@ -45,6 +45,8 @@ import yeti.YetiName;
 import yeti.YetiType;
 import yeti.environments.YetiSecurityException;
 import yeti.environments.java.YetiJavaRoutine;
+import com.google.java.contract.core.runtime.ContractContext;
+import com.google.java.contract.core.runtime.ContractRuntime;
 
 /**
  * Class that represents a routine in Yeti which is annotated with CoFoJa. <br>
@@ -116,7 +118,7 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 			// then print the exception
 			if ((e.getCause() instanceof RuntimeException && !isAcceptable(e.getCause())) || e.getCause() instanceof Error  ) {
 				if (e.getCause() instanceof ThreadDeath) {
-					isBug = true;
+					ContractRuntime.getContext().leaveContract();
                     YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT" + e.getCause().getMessage() + " **/", this);
                     isBug = true;
                     this.incnTimesCalledUndecidable();
@@ -162,8 +164,8 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 			// if we are here there was a serious error
 			// we print it
 			YetiLog.printYetiLog("try {"+log+");} catch(Throwable t){}", this);
-			
-			YetiLog.printYetiLog("/**BUG FOUND: ERROR" + e.getCause().getMessage() + " **/", this);
+			if (e.getCause()!= null)
+				YetiLog.printYetiLog("/**BUG FOUND: ERROR" + e.getCause().getMessage() + " **/", this);
 			YetiLog.printYetiThrowable(e.getCause(), this);
 			this.incnTimesCalledUnsuccessfully();
 			return null;
