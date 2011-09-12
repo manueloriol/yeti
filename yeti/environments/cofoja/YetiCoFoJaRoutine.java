@@ -111,7 +111,7 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 			// if we are here, we found a bug.
 			// we first print the log
 			//TODO log can be null here if thread is killed
-			YetiLog.printYetiLog(log+");", this);
+			YetiLog.printYetiLog("try {"+log+");} catch(Throwable t){}", this);
 			
 			// then print the exception
 			if ((e.getCause() instanceof RuntimeException && !isAcceptable(e.getCause())) || e.getCause() instanceof Error  ) {
@@ -161,9 +161,9 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 		} catch (Error e) {
 			// if we are here there was a serious error
 			// we print it
-			YetiLog.printYetiLog(log+");", this);
+			YetiLog.printYetiLog("try {"+log+");} catch(Throwable t){}", this);
 			
-			YetiLog.printYetiLog("BUG FOUND: ERROR" + e.getCause().getMessage() + " **/", this);
+			YetiLog.printYetiLog("/**BUG FOUND: ERROR" + e.getCause().getMessage() + " **/", this);
 			YetiLog.printYetiThrowable(e.getCause(), this);
 			this.incnTimesCalledUnsuccessfully();
 			return null;

@@ -97,11 +97,11 @@ public class YetiJavaRoutine extends YetiRoutine {
 	 */
 	public Object makeCall(YetiCard []arg){
 		String log = null;
-		super.makeCall(arg);
 
 		try {
 
 			try {
+				this.incnTimesCalled();
 				makeEffectiveCall(arg);
 				this.incnTimesCalledSuccessfully();
 			} catch(YetiCallException e) {
@@ -163,7 +163,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 		} catch (Error e){
 			// if we are here there was a serious error
 			// we print it
-			YetiLog.printYetiLog(log+");", this);
+			YetiLog.printYetiLog("try {"+log+");} catch(Throwable t){}", this);
 			if (!YetiLog.isAccountableFailure(e.getCause())) {
 				YetiLog.printYetiLog("/**BUG FOUND: ERROR**/", this);
 				YetiLog.printYetiThrowable(e.getCause(), this,true);

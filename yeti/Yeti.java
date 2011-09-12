@@ -537,7 +537,7 @@ public class Yeti {
 			if (s0.startsWith("-outputUnitTestFile=")){
 				saveInUnitTestFile=true;
 				unitTestFileName=s0.substring(20);
-				YetiLog.printDebugLog("Will save unit tests in: "+unitTestFileName, Yeti.class, true);
+				YetiLog.printDebugLog("Will save unit tests in: "+unitTestFileName, Yeti.class);
 				continue;
 			}
 
@@ -857,7 +857,6 @@ public class Yeti {
 
 		// for logging purposes
 		if (isTimeout) {
-
 			System.out.println("/** Testing Session finished, time: "+(endTestingTime-startTestingTime)+"ms **/");
 		}
 
@@ -881,7 +880,7 @@ public class Yeti {
 				try {
 					PrintStream ps = new PrintStream(fileName);
 					ps.print(fileContent);
-					System.out.println("/** Saving test cases in "+fileName+" **/");
+					System.out.println("/** Saved test cases in "+fileName+" **/");
 				} catch (Exception e) {
 					// in case it did not work
 					System.out.println("/** Problem with saving test cases. Printing them on command-line instead. **/");

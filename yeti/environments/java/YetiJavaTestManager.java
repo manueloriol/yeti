@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 
 import yeti.ImpossibleToMakeConstructorException;
+import yeti.YetiCallException;
 import yeti.YetiLog;
 import yeti.YetiModule;
 import yeti.YetiRoutine;
@@ -47,6 +48,7 @@ import yeti.environments.YetiTestManager;
  * @date  Jun 22, 2009
  */
 public class YetiJavaTestManager extends YetiTestManager {
+		
 
 	/**
 	 * Class that represents a thread that makes the next method call.
@@ -154,8 +156,15 @@ public class YetiJavaTestManager extends YetiTestManager {
 		public Object thisLock = new Object();
 
 
+		/**
+		 * The number of the last call.
+		 */
 		private long lastCallNumber;
 
+		/**
+		 * The number of the last call that succeeded.
+		 */
+		private long lastCallThatSucceeded = 0;
 
 
 		/* (non-Javadoc)
@@ -189,6 +198,7 @@ public class YetiJavaTestManager extends YetiTestManager {
 							try {
 								// we make the actual call
 								r.makeCall(strategy.getAllCards(r));
+								lastCallThatSucceeded=lastCallNumber;
 							} catch (ImpossibleToMakeConstructorException e) {
 								// Ignore calls that do not allow to make new instances
 								//e.printStackTrace();
@@ -343,7 +353,7 @@ public class YetiJavaTestManager extends YetiTestManager {
 			// we make sure that the logs are not cut
 			synchronized (YetiLog.class) {
 				// we stop the thread anyway!
-				ct.stop();
+				ct.stop(new YetiCallException("Call stoped by YETI",new Exception("Call stoped by YETI")));
 			}
 			nThreadsStopped++;
 		} catch (Throwable e) {
