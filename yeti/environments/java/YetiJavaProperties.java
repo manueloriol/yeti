@@ -47,7 +47,7 @@ import yeti.environments.YetiTestManager;
 public class YetiJavaProperties extends YetiProgrammingLanguageProperties {
 
 	/**
-	 * We decided to ignore the IllegalArgumentsExceptions by default
+	 * We decided to ignore the IllegalArgumentsExceptions by default	
 	 */
 	public static boolean ignoreIllegalArgumentExceptions=true;
 

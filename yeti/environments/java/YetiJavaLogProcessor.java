@@ -37,6 +37,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
@@ -44,6 +47,7 @@ import java.util.Vector;
 import yeti.Yeti;
 import yeti.YetiLog;
 import yeti.YetiLogProcessor;
+import yeti.annotations.YetiTrace;
 
 /**
  * Class that represents a log processor for Java. 
@@ -130,7 +134,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 			loc = loc.substring(loc.indexOf("{")+1, loc.indexOf("}"));
 		}
 
-		
+
 		boolean isAssignment = (loc.indexOf("=")>0);
 		int indexOfSpace = loc.indexOf(" ");
 
@@ -161,7 +165,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		boolean isCreation = (loc.indexOf("new ")>0);
 		boolean isMethodCall = (loc.indexOf("(")>0);
 		boolean isComment = loc.startsWith("/**");
-		
+
 
 		// if this is a comment we return no gen
 		if (isComment)
@@ -241,15 +245,15 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	public static boolean containsKillsOrGens(String loc, Vector<String> varNames){
 		Vector<String> gen0 = gen(loc);
 		String kill0=kill(loc);
-//		String target0 = target (loc);
-		
+		//		String target0 = target (loc);
+
 
 		// we iterate through all names
 		for (String var: varNames) {
 			if (kill0!=null)
 				if (kill0.equals(var)) return true;
-//			if (target0!=null)
-//				if (target0.equals(var)) return true;
+			//			if (target0!=null)
+			//				if (target0.equals(var)) return true;
 			if (!YetiLogProcessor.aggressiveTestCasesMinimization) {
 				for (String geni: gen0) {
 					if (geni.equals(var)) return true;
@@ -545,6 +549,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 				exceptionTrace=exceptionTrace+"\n"+linesOfTest[k++];
 			}
 		}
+		YetiLog.printDebugLog("Trace returned:\n"+exceptionTrace, this);
 		return exceptionTrace;
 	}
 
@@ -639,6 +644,67 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		return fullName;
 
 	}
+	@Override
+	public ArrayList<String> readTracesFromFile(String fileName) {
+		ArrayList<String> result = new ArrayList<String>();
+		YetiLog.printDebugLog("Filename is "+fileName, this);
+		
+		// if we have a class file, we will execute methods instead
+		if (fileName.endsWith(".class")) {
+			String className = fileName.substring(fileName.lastIndexOf(System.getProperty("file.separator"))+1,fileName.lastIndexOf("."));
+			try {
+				// we first load the class
+				@SuppressWarnings("rawtypes")
+				Class c = ClassLoader.getSystemClassLoader().loadClass(className);
+				for (Method m: c.getDeclaredMethods()) {
+					// if the annotation is there
+					if (m.isAnnotationPresent(YetiTrace.class)) {
+						// we create a target for the call
+						Object o = m.getDeclaringClass().getConstructor().newInstance();
+						YetiLog.printDebugLog("Target of test call is: "+o, this);
+						try {
+							// we invoke the method with no arguments
+							m.invoke(o);
+						} catch (Throwable t) {
+							// if there was a Throwable thrown, we add the trace to the list of 
+							// returned non-errors
+							Throwable t0 = t.getCause();
+							String s = this.getTraceFromThrowable(t0);
+							s=s.substring(0,s.lastIndexOf("\n"));
+							result.add(s);
+							YetiLog.printDebugLog("Added trace: \n"+s, this);
+						}
+					}
+				}
+			} catch (ClassNotFoundException e) {
+				System.out.println("Could not find class "+className);
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				System.out.println("Does not have the right privileges when importing traces in "+className);
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				System.out.println("Cannot execute method when importing traces in "+className);
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				System.out.println("Should not happen: the trace methods should have no arguments in "+className);
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				System.out.println("Should not happen: the class "+className+" should be instanciable with no argument");
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				System.out.println("Does not have the right privileges when importing traces in "+className);
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				System.out.println("Should not happen: the class "+className+" should be instanciable with no argument"+className);
+				e.printStackTrace();
+			}
+			return result;
+		}
+		// if the file is a regular text file, we use the generic importer
+		return super.readTracesFromFile(fileName);
+	}
+
+
 
 
 

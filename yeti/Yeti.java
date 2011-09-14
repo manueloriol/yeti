@@ -187,6 +187,7 @@ public class Yeti {
 	 * -time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).<br>
 	 * -nTests=X : for calling Yeti to attempt X method calls.<br>
 	 * -testModules=M1:M2:...:Mn : for testing one or several modules.  Sub-packages of a system can also be specified with asteriks e.g. yeti.test.* will include all the classes in yeti.test + all the classes belonging to the sub-packages of yeti.test .<br>
+	 * Note: Kermeta requires a different format for testModules: -testModules=M1,M2,...,Mn<br>
 	 * -initClass=X : this will use a user class to initialize the system this class will be a subclass of yeti.environments.YetiInitializer .<br>
 	 * -outputUnitTestFile=X : this option stores the generated test cases in a file. This is binding-specific for Java: X=tests/test0.T.java will store a file T.java from package test0 into the directory tests.<br>
 	 * -rawlogs : prints the logs directly instead of processing them at the end. <br>
@@ -205,6 +206,8 @@ public class Yeti {
 	 * -instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.<br>
 	 * -tracesOutputFile=X : the file where to output traces on disk<br>
 	 * -tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').<br>
+	 *  Note that if a file whose name finishes by ".class" then the file is loaded and traces are taken from the failures it produces on methods annotated using yeti.test.YetiTrace<br>
+	 *  For an example of such file check the class yeti.test.TGenString which can be loaded on the command-line using -tracesInputFiles=yeti.test.TGenString.class <br>
 	 * -printNumberOfCallsPerMethod : prints the number of calls per method.<br>
 	 * -branchCoverage : shows the branch coverage if available (in Java, this implies instrumenting the bytecode)."); <br>
 	 * -makeMethodsVisible: converts all the protected and private methods into public for testing. <br>
@@ -554,18 +557,6 @@ public class Yeti {
 
 		}
 
-		// we read traces if there are some to read and we initialize the list of Errors with it.
-		HashMap<String, Object> initialListOfErrors = null;
-		if (traceInputFiles!=null) {
-			initialListOfErrors = new HashMap<String, Object>();
-			// for each file to use, we read the traces and add them to our initial list
-			for (String fileName: traceInputFiles) {
-				for (String trace: YetiLog.proc.readTracesFromFile(fileName)) {
-					initialListOfErrors.put(trace, 0);
-				}
-			}
-
-		}
 
 		//TODO: Init with chromosome interpreter
 		//test of options to set up the YetiProperties for Java
@@ -573,16 +564,17 @@ public class Yeti {
 			YetiLoader prefetchingLoader = new YetiJavaPrefetchingLoader(yetiPath);
 			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader);
 			YetiTestManager testManager = new YetiJavaTestManager();
-			logProcessor = new YetiJavaLogProcessor(initialListOfErrors);
+			logProcessor = new YetiJavaLogProcessor();
 			pl=new YetiJavaProperties(initializer, testManager, logProcessor);			
 		}
+
 
 		//test of options to set up the YetiProperties for JML 							//@YetiJMLBinding
 		if (isJML) {																	//@YetiJMLBinding
 			YetiLoader prefetchingLoader = new YetiJMLPrefetchingLoader(yetiPath);		//@YetiJMLBinding
 			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader); 	//@YetiJMLBinding
 			YetiTestManager testManager = new YetiJavaTestManager();					//@YetiJMLBinding
-			logProcessor = new YetiJavaLogProcessor(initialListOfErrors);				//@YetiJMLBinding
+			logProcessor = new YetiJavaLogProcessor();				//@YetiJMLBinding
 			pl=new YetiJavaProperties(initializer, testManager, logProcessor);			//@YetiJMLBinding
 		}																				//@YetiJMLBinding
 
@@ -592,7 +584,7 @@ public class Yeti {
 			YetiLoader prefetchingLoader = new YetiCoFoJaPrefetchingLoader(yetiPath);	//@YetiCoFoJaBinding
 			YetiInitializer initializer = new YetiJavaInitializer(prefetchingLoader);	//@YetiCoFoJaBinding
 			YetiTestManager testManager = new YetiJavaTestManager();					//@YetiCoFoJaBinding
-			logProcessor = new YetiJavaLogProcessor(initialListOfErrors);				//@YetiCoFoJaBinding
+			logProcessor = new YetiJavaLogProcessor();				//@YetiCoFoJaBinding
 			pl=new YetiJavaProperties(initializer, testManager, logProcessor);			//@YetiCoFoJaBinding
 		}																				//@YetiCoFoJaBinding
 
@@ -630,7 +622,7 @@ public class Yeti {
 																						//@YetiDotNETBinding
 			YetiInitializer initializer = new YetiCsharpInitializer();					//@YetiDotNETBinding
 			YetiTestManager testManager = new YetiCsharpTestManager();					//@YetiDotNETBinding
-			logProcessor = new YetiCsharpLogProcessor(initialListOfErrors);				//@YetiDotNETBinding
+			logProcessor = new YetiCsharpLogProcessor();								//@YetiDotNETBinding
 			YetiServerSocket socketConnector = new YetiServerSocket();					//@YetiDotNETBinding
 			pl=new YetiCsharpProperties(initializer, testManager, logProcessor, 		//@YetiDotNETBinding
 					socketConnector); 													//@YetiDotNETBinding
@@ -657,19 +649,22 @@ public class Yeti {
 			pl=new YetiCLProperties(initializer, testManager, logProcessor);			
 		}
 
+		// TODO extend when ready
 		//test of options to set up the YetiProperties for Java
 		if (isPharo) {
 			YetiPharoCommunicator initializer = new YetiPharoCommunicator();
 			try {
 				initializer.initialize(args);
 			} catch (YetiInitializationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			YetiTestManager testManager = new YetiPharoTestManager(initializer);
 			logProcessor = null; //new YetiJavaLogProcessor(initialListOfErrors);
 			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
 		}
+
+		// we read traces if there are some to read and we initialize the list of Errors with it.
+		logProcessor.readTraces(traceInputFiles);
 
 
 		//if it is raw logs, then set it		
@@ -1000,6 +995,7 @@ public class Yeti {
 
 	}
 
+
 	/**
 	 * Adds a single Yeti Module to the modules array
 	 * @param moduleToTest the name of the module to be added
@@ -1088,6 +1084,9 @@ public class Yeti {
 		System.out.println("\t-instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.");
 		System.out.println("\t-tracesOutputFile=X : the file where to output traces on disk.");
 		System.out.println("\t-tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').");
+		System.out.println("\t\tNote that if a file whose name finishes by \".class\" then the file is loaded and traces are taken from the failures it produces on methods annotated using yeti.test.YetiTrace");
+		System.out.println("\t\tFor an example of such file check the class yeti.test.TGenString which can be loaded on the command-line using -tracesInputFiles=yeti.test.TGenString.class");
+
 		System.out.println("\t-printNumberOfCallsPerMethod : prints the number of calls per method.");
 		System.out.println("\t-branchCoverage : shows the branch coverage if available (in Java, this implies instrumenting the bytecode).");
 		System.out.println("\t-makeMethodsVisible: converts all the protected and private methods into public for testing.");

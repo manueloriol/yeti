@@ -151,7 +151,7 @@ public abstract class YetiLogProcessor {
 	public HashMap<String,Object> listOfNonErrors = null;
 
 	/**
-	 * A simple routine to check that a trace is in the list of non-errors.
+	 * A simple routine to check whether a trace is in the list of non-errors.
 	 * 
 	 * @param trace the trace to check
 	 * @return true if it is in it.
@@ -162,6 +162,33 @@ public abstract class YetiLogProcessor {
 		else 
 			return false;
 	}
+	
+	/**
+	 * A simple routine to add a trace to in the list of non-errors.
+	 * 
+	 * @param trace the trace to add
+	 */
+	public void addToListOfNonErrors(String trace) {
+		if (listOfNonErrors==null) {
+			listOfNonErrors = new HashMap<String, Object>(); 
+		}
+		String trimmedTrace = trace.substring(trace.indexOf('\t'));
+		listOfNonErrors.put(trimmedTrace, 0);
+		numberOfNonErrors++;
+	}
+	
+	/**
+	 * A simple routine to a trace to in the list of errors.
+	 * 
+	 * @param trace the trace to add
+	 */
+	public void addToListOfErrors(String trace) {
+		String trimmedTrace = trace.substring(trace.indexOf('\t'));
+		listOfErrors.put(trimmedTrace, 0);
+	}
+	
+	
+	
 	/**
 	 * Constructor of the YetiLogProcessor.
 	 */
@@ -370,7 +397,7 @@ public abstract class YetiLogProcessor {
 	 * @param fileName the file to read
 	 * @return an ArrayList containing all decoded traces 
 	 */
-	public static ArrayList<String> readTracesFromFile(String fileName) {
+	public ArrayList<String> readTracesFromFile(String fileName) {
 		ArrayList<String> result = new ArrayList<String>();
 		BufferedReader br=null;
 		// we first check that the file exists
@@ -437,6 +464,26 @@ public abstract class YetiLogProcessor {
 		return result;
 
 	}
+	
+	/**
+	 * A simple method to read all traces from a list of files.
+	 * 
+	 * @param traceInputFiles an array containing all file names.
+	 */
+	public void readTraces(String[] traceInputFiles) {
+		if (traceInputFiles!=null) {
+			// for each file to use, we read the traces and add them to our initial list
+			for (String fileName: traceInputFiles) {
+				for (String trace: this.readTracesFromFile(fileName)) {
+					this.addToListOfNonErrors(trace);
+					this.addToListOfErrors(trace);
+				}
+			}
+
+		}
+	}
+
+	
 	/**
 	 * Outputs traces into a file passed as an argument. This method is coded to work with method readTracesFromFile 
 	 * 
