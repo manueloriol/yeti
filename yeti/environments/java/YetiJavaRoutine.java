@@ -116,13 +116,15 @@ public class YetiJavaRoutine extends YetiRoutine {
 				//for (YetiType t: c.getType().directSuperTypes.values()) YetiLog.printDebugLog(t.getName()+" is supertype of "+ c.getType().toString(), this,true);
 				//for (YetiType t: YetiType.allTypes.values()) YetiLog.printDebugLog("Type in the system: "+t.getName(), this,true);
 			}
-			// should never happen
+			// is not a bug
+			this.incnTimesCalledSuccessfully();
 			//e.printStackTrace();
 			return null;
 		} catch (IllegalAccessException e) {
 			YetiLog.printDebugLog(this.getSignature()+" IllegalAccessException", this);
 			// should never happen
 			// e.printStackTrace();
+			this.incnTimesCalledSuccessfully();
 			return null;
 		} catch (InvocationTargetException e) {
 
@@ -187,13 +189,11 @@ public class YetiJavaRoutine extends YetiRoutine {
 	/**
 	 * A hashmap of acceptable exception types.
 	 */
-	@SuppressWarnings("unchecked")
 	public HashMap <String, Class> acceptableExceptionTypes = new HashMap <String, Class>();
 
 	/**
 	 * @return  the types of exceptions that are considered "acceptable"
 	 */
-	@SuppressWarnings("unchecked")
 	public HashMap<String, Class> getAcceptableExceptionTypes() {
 		return acceptableExceptionTypes;
 	}
@@ -223,6 +223,8 @@ public class YetiJavaRoutine extends YetiRoutine {
 	@SuppressWarnings("unchecked")
 	public boolean isAcceptable(Throwable cause) {
 		// optimization
+		if ((YetiJavaProperties.ignoreIllegalArgumentExceptions) 
+				&& (cause instanceof IllegalArgumentException)) return true;
 		if (acceptableExceptionTypes.isEmpty()) return false;
 		// for all classes, we check that the Throwable is not an instance 
 		// of a subclass of an acceptable Throwable

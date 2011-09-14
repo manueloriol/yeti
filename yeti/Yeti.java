@@ -211,6 +211,7 @@ public class Yeti {
 	 * -approximate : approximates the number of unique failures per number of tests. <br>
 	 * -compactReport=X : adds a line in file X containing the information about the testing session. <br>
 	 * -accurateMinimization : makes the test case minimization more accurate, by adding previous static method calls when used to compute a result. <br>
+	 * -javaBased:doNotIngoreIllegalArgumentExceptions : this makes sure that we do not treat IllegalArgumentExceptions as precondition violations (we ignore them). <br>
 	 * @param args the arguments of the program
 	 */
 	public static void main (String[] args) {
@@ -533,12 +534,18 @@ public class Yeti {
 				reportFile=s0.substring(15);
 				continue;
 			}
-
+			
+			// the file where to put the generated test cases
 			if (s0.startsWith("-outputUnitTestFile=")){
 				saveInUnitTestFile=true;
 				unitTestFileName=s0.substring(20);
 				YetiLog.printDebugLog("Will save unit tests in: "+unitTestFileName, Yeti.class);
 				continue;
+			}
+			
+			// by default we ignore IllegalArgumentExceptions 
+			if (s0.equals("-javaBased:doNotIngoreIllegalArgumentExceptions")) {
+				YetiJavaProperties.ignoreIllegalArgumentExceptions=false;
 			}
 
 			System.out.println("Yeti could not understand option: "+s0);
@@ -1087,6 +1094,7 @@ public class Yeti {
 		System.out.println("\t-approximate : approximates the number of unique failures per number of tests.");
 		System.out.println("\t-compactReport=X : adds a line in file X containing the information about the testing session.");
 		System.out.println("\t-accurateMinimization : makes the test case minimization more accurate, by adding previous static method calls when used to compute a result.");
+		System.out.println("\t-javaBased:doNotIngoreIllegalArgumentExceptions : this makes sure that we do not treat IllegalArgumentExceptions as precondition violations (we ignore them).");
 
 	}
 
