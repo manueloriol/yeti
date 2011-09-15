@@ -197,7 +197,8 @@ public class Yeti {
 	 * -yetiPath=X : stores the path that contains the code to test (e.g. for Java the classpath to consider)<br>
 	 * -newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100. <br>
 	 * -probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100 default is 1.<br>
-	 * -randomPlus : uses the random+ strategy that injects interesting values every now and then.<br>
+	 * -random : uses the pure random strategy.<br>
+	 * -randomPlus : uses the random+ strategy that injects interesting values every now and then. (this is the default value)<br>
 	 * -randomPlusPeriodic : uses the random+ strategy and periodically change the values of the standard probalilities (null values, new instances, interesting values).<br>
 	 * -randomPlusDecreasing : uses the random+ strategy and decreases the values of the standard probalilities (null values, new instances, interesting values).<br>
 	 * -DSSR : uses the Dirt Spot Sweeping Random Strategy which extends the random plus strategy and check the boundries around the veriables that found bugs.<br>
@@ -249,7 +250,8 @@ public class Yeti {
 		boolean isNTests = false;
 		boolean isRawLog = false;
 		boolean isNoLogs = false;
-		boolean isRandomPlus = false;
+		boolean isRandom = false;
+		boolean isRandomPlus = true;
 		boolean isRandomPlusPeriodic = false;
 		boolean isRandomPlusDecreasing = false;
 		boolean isDSSR = false;
@@ -443,6 +445,12 @@ public class Yeti {
 			}
 
 			// we can use the randomPlus strategy
+			if (s0.equals("-random")) {
+				isRandomPlus = false;
+				isRandom = true;
+				continue;	
+			}
+			// we can use the randomPlus strategy
 			if (s0.equals("-randomPlus")) {
 				isRandomPlus = true;
 				continue;	
@@ -450,11 +458,13 @@ public class Yeti {
 			// we can use the randomPlusPeriodic strategy
 			if (s0.equals("-randomPlusPeriodic")) {
 				isRandomPlusPeriodic = true;
+				isRandomPlus = false;
 				continue;	
 			}			
 			// we can use the randomPlusDecreasing strategy
 			if (s0.equals("-randomPlusDecreasing")) {
 				isRandomPlusDecreasing = true;
+				isRandomPlus = false;
 				continue;	
 			}			
 
@@ -714,7 +724,9 @@ public class Yeti {
 		}
 
 		// We set the strategy
-		strategy= new YetiRandomStrategy(testManager);
+		if (isRandom) {
+			strategy= new YetiRandomStrategy(testManager);				
+		}
 		if (isRandomPlus) {
 			strategy= new YetiRandomPlusStrategy(testManager);				
 		}
@@ -1073,7 +1085,8 @@ public class Yeti {
 		System.out.println("\t-yetiPath=X : stores the path that contains the code to test (e.g. for Java the classpath to consider)");
 		System.out.println("\t-newInstanceInjectionProbability=X : probability to inject new instances at each call (if relevant). Value between 0 and 100, default is 25.");
 		System.out.println("\t-probabilityToUseNullValue=X : probability to use a null instance at each variable (if relevant). Value between 0 and 100, default is 1.");
-		System.out.println("\t-randomPlus : uses the random+ strategy that injects interesting values every now and then.");
+		System.out.println("\t-random : uses the pure random strategy.");
+		System.out.println("\t-randomPlus : uses the random+ strategy that injects interesting values every now and then (this is the default strategy).");
 		System.out.println("\t-randomPlusPeriodic : uses the random+ strategy and periodically change the values of the standard probalilities (null values, new instances, interesting values).");
 		System.out.println("\t-randomPlusDecreasing : uses the random+ strategy and decreases the values of the standard probalilities (null values, new instances, interesting values).<br>");
 		System.out.println("\t-evolutionary : uses GA to evolve a testing strategy."); //@YetiGeneticAlgorithmsStrategy
