@@ -32,7 +32,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-**/
+ **/
 
 import java.lang.reflect.Constructor;
 import yeti.YetiCallException;
@@ -74,7 +74,7 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 	public YetiJavaConstructor(YetiName name, YetiType[] openSlots, YetiType returnType, YetiModule originatingModule, Constructor c) {
 		super(name, openSlots, returnType, originatingModule);
 		this.c=c;
-		
+
 		for (Class cl: c.getExceptionTypes()) {
 			this.addAcceptableExceptionType(cl.getName());			
 		}
@@ -113,6 +113,7 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 			// if we should replace it by a null value, we do it
 			if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&&!(((YetiJavaSpecificType)arg[i].getType()).isSimpleType())) {
 				initargs[i]=null;
+				arg[i]=new YetiCard(arg[i].getType());
 				log=log+"("+arg[i].getType()+")null";
 			} else {
 				// note that we use getValue to get the actual value
@@ -138,6 +139,35 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 		YetiLog.printYetiLog(log, this);
 		YetiLog.printDebugLog(log, this);
 		return log;
+	}
+
+	/**
+	 * Creates a method call from the routine and the arguments
+	 * 
+	 * @param arguments the arguments of the call
+	 * @return the text of the test case
+	 */
+	public String toStringWithArguments(YetiCard[] arguments) {
+		String longRoutineName = this.getName().getValue();
+		String routineName = longRoutineName.substring(0,longRoutineName.lastIndexOf("_"));
+		String prefix = "";
+		if (arguments.length>0) {
+			prefix = arguments[0].toStringPrefix();
+		}
+		String testCaseBody= prefix+((prefix.length()==0)?"":"\n")+"new "+routineName+"(";
+		if (arguments.length>0) {
+			testCaseBody = testCaseBody+arguments[0].toStringVariable();
+			for (int i=1;i<arguments.length;i++) {
+				if (!testCaseBody.contains(arguments[i].toStringVariable()+"=")) {
+					prefix = arguments[i].toStringPrefix();
+				} else
+					prefix = "";
+				testCaseBody=prefix+((prefix.length()==0)?"":"\n")+testCaseBody+","+arguments[i].toStringVariable();
+			}
+
+		}
+		testCaseBody=testCaseBody+");\n";
+		return testCaseBody;
 	}
 
 }

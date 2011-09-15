@@ -1,12 +1,12 @@
 package yeti.environments.cofoja;
 
 /**
- 
+
  YETI - York Extensible Testing Infrastructure
- 
+
  Copyright (c) 2009-2010, Manuel Oriol <manuel.oriol@gmail.com> - University of York
  All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
  1. Redistributions of source code must retain the above copyright
@@ -20,7 +20,7 @@ package yeti.environments.cofoja;
  4. Neither the name of the University of York nor the
  names of its contributors may be used to endorse or promote products
  derived from this software without specific prior written permission.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ''AS IS'' AND ANY
  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -31,15 +31,17 @@ package yeti.environments.cofoja;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
  **/ 
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
+import yeti.YetiCallContext;
 import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiLog;
+import yeti.YetiLogProcessor;
 import yeti.YetiModule;
 import yeti.YetiName;
 import yeti.YetiType;
@@ -64,7 +66,7 @@ import com.google.java.contract.core.runtime.ContractRuntime;
  *
  */
 public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
-	
+
 	/**
 	 * Create a CoFoJa Routine
 	 * 
@@ -76,17 +78,17 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 	public YetiCoFoJaRoutine(YetiName name, YetiType[] openSlots, YetiType returnType, YetiModule originatingModule) {
 		super(name, openSlots, returnType, originatingModule);
 	}
-	
+
 	@Override
 	public Object makeCall(YetiCard[] arg) {
 		String log = null;
-		
+
 		// invoke the constructor with the arguments
 		// if there is an exception then
 		// depending on its type 
 		// decide the outcome of the test
 		try {
-			
+
 			try {
 				this.incnTimesCalled();
 				makeEffectiveCall(arg);
@@ -108,20 +110,20 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 			// e.printStackTrace();
 			return null;
 		} catch (InvocationTargetException e) {
-			
+
 			boolean isBug = true;
 			// if we are here, we found a bug.
 			// we first print the log
 			//TODO log can be null here if thread is killed
 			YetiLog.printYetiLog("try {"+log+");} catch(Throwable t){}", this);
-			
+
 			// then print the exception
 			if ((e.getCause() instanceof RuntimeException && !isAcceptable(e.getCause())) || e.getCause() instanceof Error  ) {
 				if (e.getCause() instanceof ThreadDeath) {
 					ContractRuntime.getContext().leaveContract();
-                    YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT" + e.getCause().getMessage() + " **/", this);
-                    isBug = true;
-                    this.incnTimesCalledUndecidable();
+					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT" + e.getCause().getMessage() + " **/", this);
+					isBug = true;
+					this.incnTimesCalledUndecidable();
 				} else {
 					if (e.getCause() instanceof YetiSecurityException) {
 						isBug = true;
@@ -150,13 +152,13 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 				}
 			}
 			else {
-			
-				 YetiLog.printYetiLog("/**NORMAL EXCEPTION:"+ e.getCause().getMessage() +" **/", this);
+
+				YetiLog.printYetiLog("/**NORMAL EXCEPTION:"+ e.getCause().getMessage() +" **/", this);
 				this.incnTimesCalledSuccessfully();
 			}
-			
+
 			if (isBug) {
-				YetiLog.printYetiThrowable(e.getCause(), this);
+				YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/** BUG FOUND: "+e.getCause().getMessage()+"**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"));
 			}
 			return null;
 
@@ -166,7 +168,7 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 			YetiLog.printYetiLog("try {"+log+");} catch(Throwable t){}", this);
 			if (e.getCause()!= null)
 				YetiLog.printYetiLog("/**BUG FOUND: ERROR" + e.getCause().getMessage() + " **/", this);
-			YetiLog.printYetiThrowable(e.getCause(), this);
+			YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/** BUG FOUND: ERROR"+e.getCause().getMessage()+"**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"));
 			this.incnTimesCalledUnsuccessfully();
 			return null;
 		}

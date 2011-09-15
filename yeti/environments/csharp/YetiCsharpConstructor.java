@@ -120,6 +120,7 @@ public class YetiCsharpConstructor extends YetiCsharpRoutine {
         	
             if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()&& !(((YetiCsharpSpecificType)arg[i].getType()).isSimpleType())) {                
                 msg+="null";
+				arg[i]=new YetiCard(arg[i].getType());
                 if(i<arg.length -1) msg+= ";";
                 log=log+"null";
                 

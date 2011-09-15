@@ -301,4 +301,23 @@ public abstract class YetiRoutine {
 		this.returnType = returnType;
 	}
 
+	/**
+	 * Creates a method call from the routine and the arguments
+	 * 
+	 * @param arguments the arguments of the call
+	 * @return the text of the test case
+	 */
+	public String toStringWithArguments(YetiCard[] arguments) {
+		String longRoutineName = this.getName().getValue();
+		String routineName = longRoutineName.substring(0,longRoutineName.lastIndexOf("_"));
+		String prefix = arguments[0].toStringPrefix();
+		String testCaseBody=prefix+((prefix.length()==0)?"":"\n")+routineName+"("+arguments[0].toStringVariable();
+		for (int i=1;i<arguments.length;i++) {
+			prefix = arguments[i].toStringPrefix();
+			testCaseBody=prefix+((prefix.length()==0)?"":"\n")+testCaseBody+","+arguments[i].toStringVariable();
+		}
+		testCaseBody=testCaseBody+");\n";
+		return testCaseBody;
+	}
+
 }

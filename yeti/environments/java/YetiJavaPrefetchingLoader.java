@@ -531,7 +531,7 @@ public class YetiJavaPrefetchingLoader extends YetiLoader {
 									loadClass(name);
 								} catch (ClassNotFoundException e) {
 									// TODO Auto-generated catch block
-									YetiLog.printYetiThrowable(e, this);
+									YetiLog.printDebugLog(e.getMessage(), this);
 								}
 							}
 						}

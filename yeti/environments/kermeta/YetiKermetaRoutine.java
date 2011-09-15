@@ -45,9 +45,11 @@ import fr.irisa.triskell.kermeta.language.structure.ClassDefinition;
 import fr.irisa.triskell.kermeta.language.structure.Type;
 import fr.irisa.triskell.kermeta.runtime.RuntimeObject;
 
+import yeti.YetiCallContext;
 import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiLog;
+import yeti.YetiLogProcessor;
 import yeti.YetiModule;
 import yeti.YetiName;
 import yeti.YetiRoutine;
@@ -203,7 +205,8 @@ public class YetiKermetaRoutine extends YetiRoutine {
 		// This is a real Kermeta exception that was thrown because of a real error
 		catch (KermetaRaisedException e) {
 			YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION** /", this);
-			YetiLog.printYetiThrowable(e, this,true);
+			YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/**BUG FOUND: RUNTIME EXCEPTION** /\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"),true);
+
 			this.incnTimesCalledUnsuccessfully();
 		}
 

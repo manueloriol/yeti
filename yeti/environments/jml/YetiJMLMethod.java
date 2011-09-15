@@ -94,4 +94,14 @@ public class YetiJMLMethod extends YetiJMLRoutine {
 	public String toString() {
 		return javaMethod.toString();
 	}
+	
+	/**
+	 * Creates a method call from the routine and the arguments
+	 * 
+	 * @param arguments the arguments of the call
+	 * @return the text of the test case
+	 */
+	public String toStringWithArguments(YetiCard[] arguments) {
+		return javaMethod.toStringWithArguments(arguments);
+	}
 }

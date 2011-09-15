@@ -37,9 +37,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
+import yeti.YetiCallContext;
 import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiLog;
+import yeti.YetiLogProcessor;
 import yeti.YetiModule;
 import yeti.YetiName;
 import yeti.YetiType;
@@ -139,14 +141,14 @@ public abstract class YetiJMLRoutine extends YetiJavaRoutine {
 			}
 			
 			if (isBug) {
-				YetiLog.printYetiThrowable(e.getCause(), this);
+				YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/** BUG FOUND: "+e.getCause().getMessage()+"**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"));
 			}
 		} catch (Error e) {
 			// if we are here there was a serious error
 			// we print it
 			YetiLog.printYetiLog(log+");", this);
 			YetiLog.printYetiLog("BUG FOUND: ERROR" + e.getCause().getMessage() + " **/", this);
-			YetiLog.printYetiThrowable(e.getCause(), this);
+			YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/** BUG FOUND: "+e.getCause().getMessage()+"**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"));
 			this.incnTimesCalledUnsuccessfully();
 		}
 		catch (Throwable e){

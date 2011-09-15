@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import java.util.Date;
 
+import yeti.YetiCallContext;
 import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiLog;
@@ -137,7 +138,9 @@ public class YetiCsharpRoutine extends YetiRoutine {
 					
 					YetiLog.printYetiLog(exception[2].trim(),this);
 					YetiLog.printYetiLog("/**BUG FOUND: ERROR**/", this);
-					YetiLog.printYetiThrowable(new Exception(exceMessage), this);
+					Exception e0 = new Exception(exceMessage);
+					YetiLog.printYetiThrowable(e0, new YetiCallContext(this,arg,e0,"/** BUG FOUND: **/\n/** "+e0.getMessage()+" **/"));
+
 				}
 				else
 				{
@@ -150,7 +153,8 @@ public class YetiCsharpRoutine extends YetiRoutine {
 					//System.out.println("/**NORMAL EXCEPTION:**/");
 					//System.out.println(exceMessage);
 					YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
-					YetiLog.printYetiThrowable(new Exception(exception[1].trim()), this,false);
+					Exception e0 = new Exception(exception[1].trim());
+					YetiLog.printYetiThrowable(e0, new YetiCallContext(this,arg,e0,"/**NORMAL EXCEPTION:**/\n/** "+e0.getMessage()+" **/"),false);
 				}
 			} catch (Throwable e) {
 				

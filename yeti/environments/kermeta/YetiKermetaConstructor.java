@@ -129,6 +129,7 @@ public class YetiKermetaConstructor extends YetiKermetaRoutine {
 			// if we should replace it by a null value, we do it
 			if (YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random()) {
 				o.getProperties().put(this.paramNames[i], interpreter.getVoid());
+				arg[i]=new YetiCard(arg[i].getType());
 				logbuf.append("null");
 			} else {
 				// note that we use getValue to get the actual value

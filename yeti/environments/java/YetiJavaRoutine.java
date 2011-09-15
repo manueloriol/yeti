@@ -37,9 +37,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
+import yeti.YetiCallContext;
 import yeti.YetiCallException;
 import yeti.YetiCard;
 import yeti.YetiLog;
+import yeti.YetiLogProcessor;
 import yeti.YetiModule;
 import yeti.YetiName;
 import yeti.YetiRoutine;
@@ -90,6 +92,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 		return true;
 	}
 
+	
 	/* (non-Javadoc)
 	 * Method used to perform the actual call
 	 * 
@@ -136,18 +139,17 @@ public class YetiJavaRoutine extends YetiRoutine {
 				if (e.getCause() instanceof ThreadDeath) {
 					YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: TIMEOUT**/", this);
 					this.incnTimesCalledUndecidable();
-					YetiLog.printYetiThrowable(e.getCause(), this);
+					YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/**POSSIBLE BUG FOUND: TIMEOUT**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"));
 				} else {
 					if (e.getCause() instanceof YetiSecurityException) {
 						YetiLog.printYetiLog("/**POSSIBLE BUG FOUND: "+e.getCause().getMessage()+" **/", this);
 						this.incnTimesCalledUndecidable();
-						YetiLog.printYetiThrowable(e.getCause(), this);
+						YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/**POSSIBLE BUG FOUND: "+e.getCause().getMessage()+"**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"));
 					} else {
 						if (YetiLog.isAccountableFailure(e.getCause())) {
 							YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION**/", this);
 							this.incnTimesCalledUnsuccessfully();
-							YetiLog.printYetiThrowable(e.getCause(), this);
-							//e.getCause().printStackTrace();
+							YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/**BUG FOUND: RUNTIME EXCEPTION**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"));
 						}
 						else {
 							YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
@@ -158,7 +160,7 @@ public class YetiJavaRoutine extends YetiRoutine {
 			}
 			else {
 				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
-				YetiLog.printYetiThrowable(e.getCause(), this,false);
+				YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/**NORMAL EXCEPTION:**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"),false);
 				this.incnTimesCalledSuccessfully();
 			}
 			return null;
@@ -168,12 +170,12 @@ public class YetiJavaRoutine extends YetiRoutine {
 			YetiLog.printYetiLog("try {"+log+");} catch(Throwable t){}", this);
 			if (!YetiLog.isAccountableFailure(e.getCause())) {
 				YetiLog.printYetiLog("/**BUG FOUND: ERROR**/", this);
-				YetiLog.printYetiThrowable(e.getCause(), this,true);
+				YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/**BUG FOUND: ERROR**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"),true);
 				this.incnTimesCalledUnsuccessfully();
 			}
 			else {
 				YetiLog.printYetiLog("/**NORMAL EXCEPTION:**/", this);
-				YetiLog.printYetiThrowable(e.getCause(), this,true);
+				YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/**NORMAL EXCEPTION:**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"),false);
 				this.incnTimesCalledSuccessfully();
 			}
 			return null;

@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import yeti.Yeti;
+import yeti.YetiCallContext;
 import yeti.YetiLog;
 import yeti.YetiLogProcessor;
 import yeti.environments.csharp.YetiCsharpLogProcessor;
@@ -368,7 +369,7 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 	 * 
 	 * @parameter t the throwable log to print.
 	 */
-	public void printThrowableRawLogs(Throwable t) {
+	public void printThrowableRawLogs(Throwable t, YetiCallContext context) {
 		String throwableLog = t.getMessage();
 		// we split the lines of code
 		String []linesOfTest = throwableLog.split("\n");
@@ -405,7 +406,7 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 	 * 
 	 * @parameter t the throwable log not to print.
 	 */
-	public void printThrowableNoLogs(Throwable t) {
+	public void printThrowableNoLogs(Throwable t, YetiCallContext context) {
 		String throwableLog = t.getMessage();
 		// we split the lines of code
 		String []linesOfTest = throwableLog.split("\n");
@@ -442,7 +443,7 @@ public class YetiCsharpLogProcessor extends YetiLogProcessor {
 	 * 
 	 * @parameter t the throwable log to print.
 	 */
-	public void printThrowableLogs(Throwable t) {
+	public void printThrowableLogs(Throwable t, YetiCallContext context) {
 
 		String throwableLog = t.getMessage();
 		// we split the lines of code

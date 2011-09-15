@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.Vector;
 
 import yeti.Yeti;
+import yeti.YetiCallContext;
 import yeti.YetiLog;
 import yeti.YetiLogProcessor;
 import fr.irisa.triskell.kermeta.interpreter.KermetaRaisedException;
@@ -100,7 +101,7 @@ public class YetiKermetaLogProcessor extends YetiLogProcessor {
 	 * 
 	 * @parameter t the throwable log to print.
 	 */
-	public void printThrowableRawLogs(Throwable t) {
+	public void printThrowableRawLogs(Throwable t, YetiCallContext context) {
 		// Begining of the raw log 
 		System.err.print("YETI EXCEPTION - START ");
 		// We first extract the trace from the throwable
@@ -124,7 +125,7 @@ public class YetiKermetaLogProcessor extends YetiLogProcessor {
 	 * 
 	 * @parameter t the throwable log not to print.
 	 */
-	public void printThrowableNoLogs(Throwable t) {
+	public void printThrowableNoLogs(Throwable t, YetiCallContext context) {
 		// We first extract the trace from the throwable
 		String exceptionTrace = getTraceFromThrowable(t);
 		// We store the trace if relevant
@@ -137,7 +138,7 @@ public class YetiKermetaLogProcessor extends YetiLogProcessor {
 	 * 
 	 * @parameter t the throwable log to print.
 	 */
-	public void printThrowableLogs(Throwable t) {
+	public void printThrowableLogs(Throwable t, YetiCallContext context) {
 		YetiLog.printDebugLog("Logs printed", this);
 		String exceptionTrace = getTraceFromThrowable(t);
 		YetiLog.printDebugLog(exceptionTrace, this);

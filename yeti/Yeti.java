@@ -867,7 +867,7 @@ public class Yeti {
 		String aggregationProcessing = "";
 		// presents the logs
 		System.out.println("/** Testing Session finished, number of tests:"+YetiLog.numberOfCalls+", time: "+(endTestingTime-startTestingTime)+"ms , number of failures: "+YetiLog.numberOfErrors+"**/");	
-		if (!Yeti.pl.isRawLog()&&!Yeti.pl.isNoLogs()) {
+	//	if (!Yeti.pl.isRawLog()&&!Yeti.pl.isNoLogs()) {
 			isProcessed = true;
 
 			// we first process logs
@@ -899,7 +899,7 @@ public class Yeti {
 			// logging purposes: (slightly wrong because of printing)
 			long endProcessingTime = new Date().getTime();
 			aggregationProcessing = "/** Processing time: "+(endProcessingTime-endTestingTime)+"ms **/";
-		}
+			// }
 
 		// we create the report
 		report = new YetiReport(modulesString, YetiLog.numberOfCalls , endTestingTime-startTestingTime, YetiLog.numberOfErrors);

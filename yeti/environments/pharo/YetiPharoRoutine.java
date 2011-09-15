@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **/
 
+import yeti.YetiCallContext;
 import yeti.YetiCard;
 import yeti.YetiIdentifier;
 import yeti.YetiLog;
@@ -97,9 +98,11 @@ public class YetiPharoRoutine extends YetiRoutine {
 			}
 			
 			new YetiVariable( id, YetiType.allTypes.get(res.resultType), null);
-		} else // if it is an exception
-			YetiLog.printYetiThrowable(new Exception(res.exceptionTrace), this);
-		
+		} else {
+			// if it is an exception
+			Exception e = new Exception(res.exceptionTrace);
+			YetiLog.printYetiThrowable(e, new YetiCallContext(this,arg,e,"/** BUG FOUND: **/\n/** "+res.exceptionTrace+" **/"));
+		}
 		return log;
 	}
 

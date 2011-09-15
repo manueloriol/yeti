@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import yeti.YetiCallContext;
 import yeti.YetiCard;
 import yeti.YetiLog;
 import yeti.YetiModule;
@@ -115,11 +116,13 @@ public class YetiCLRoutine extends YetiRoutine {
 		
 		if(test.isAlive()){  // thread still alive when time out
 			test.stop();
-			YetiLog.printYetiThrowable(new Exception("testing time out"), this);
+			Exception e0 = new Exception("testing time out");
+			YetiLog.printYetiThrowable(e0, new YetiCallContext(this,arg,e0,"/** BUG FOUND: **/\n/** "+e0.getStackTrace()+" **/"));
 		}else{				
 			int result = test.getTestResult();  // get the exit value of the command line process
-			if (result!=0) {                    // process exit abnormally
-				YetiLog.printYetiThrowable(new Exception("returned value: "+result), this);
+			if (result!=0) {  	               // process exit abnormally
+				Exception e0 = new Exception("returned value: "+result);
+				YetiLog.printYetiThrowable(e0, new YetiCallContext(this,arg,e0,"/** BUG FOUND: **/\n/** "+e0.getStackTrace()+" **/"));
 			} else {
 				YetiLog.printYetiLog(cmd, this);
 			}

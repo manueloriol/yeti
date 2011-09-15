@@ -285,7 +285,7 @@ public abstract class YetiLogProcessor {
 	 * 
 	 * @parameter t the throwable log to print.
 	 */
-	public void printThrowableRawLogs(Throwable t) {
+	public void printThrowableRawLogs(Throwable t, YetiCallContext context) {
 		System.err.println("YETI EXCEPTION - START ");
 		if (t!=null) 
 			t.printStackTrace(System.err);
@@ -301,8 +301,8 @@ public abstract class YetiLogProcessor {
 	 * @parameter t the throwable log to print.
 	 * @param isFailure if it is actually a real failure.
 	 */
-	public void printThrowableRawLogs(Throwable t, boolean isFailure) {
-		if (isFailure) printThrowableRawLogs(t);
+	public void printThrowableRawLogs(Throwable t, YetiCallContext context, boolean isFailure) {
+		if (isFailure) printThrowableRawLogs(t, context);
 	}
 
 	/**
@@ -318,7 +318,7 @@ public abstract class YetiLogProcessor {
 	 * 
 	 * @parameter t the throwable log not to print.
 	 */
-	public void printThrowableNoLogs(Throwable t) {
+	public void printThrowableNoLogs(Throwable t, YetiCallContext context) {
 
 	}
 
@@ -328,8 +328,8 @@ public abstract class YetiLogProcessor {
 	 * @parameter t the throwable log not to print.
 	 * @param isFailure if it is actually a real failure.
 	 */
-	public void printThrowableNoLogs(Throwable t, boolean isFailure) {
-		if (isFailure) this.printThrowableNoLogs(t);
+	public void printThrowableNoLogs(Throwable t, YetiCallContext context, boolean isFailure) {
+		if (isFailure) this.printThrowableNoLogs(t, context);
 	}
 
 
@@ -338,7 +338,7 @@ public abstract class YetiLogProcessor {
 	 * 
 	 * @parameter t the throwable log to print.
 	 */
-	public void printThrowableLogs(Throwable t) {
+	public void printThrowableLogs(Throwable t, YetiCallContext context) {
 
 	}
 
@@ -348,8 +348,8 @@ public abstract class YetiLogProcessor {
 	 * @parameter t the throwable log to print.
 	 * @param isFailure if it is actually a real failure.
 	 */
-	public void printThrowableLogs(Throwable t, boolean isFailure) {
-		if (isFailure) this.printThrowableLogs(t);
+	public void printThrowableLogs(Throwable t, YetiCallContext context, boolean isFailure) {
+		if (isFailure) this.printThrowableLogs(t, context);
 	}
 
 	/**
@@ -567,6 +567,20 @@ public abstract class YetiLogProcessor {
 		return result;
 	}
 	
+	/**
+	 * A utility function for the stack trace.
+	 * 
+	 * @param stackTrace the stackTrace 
+	 * @return a combined String
+	 */
+	public String getTraceFromThrowable(Throwable t) {
+		String result = "\n";
+		StackTraceElement []stackTrace=t.getStackTrace();
+		for (StackTraceElement e: stackTrace) {
+			result+=e.toString()+"\n   ";
+		}
+		return result.substring(0,result.length());
+	}
 	
 
 }

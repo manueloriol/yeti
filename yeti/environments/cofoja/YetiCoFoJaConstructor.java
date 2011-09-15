@@ -79,4 +79,14 @@ public class YetiCoFoJaConstructor extends YetiCoFoJaRoutine {
 	public String toString() {
 		return javaConstructor.toString();
 	}
+	
+	/**
+	 * Creates a method call from the routine and the arguments
+	 * 
+	 * @param arguments the arguments of the call
+	 * @return the text of the test case
+	 */
+	public String toStringWithArguments(YetiCard[] arguments) {
+		return javaConstructor.toStringWithArguments(arguments);
+	}
 }

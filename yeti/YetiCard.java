@@ -1,12 +1,18 @@
 package yeti;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+import yeti.environments.java.YetiJavaMethod;
+
 /**
- 
+
  YETI - York Extensible Testing Infrastructure
- 
+
  Copyright (c) 2009-2010, Manuel Oriol <manuel.oriol@gmail.com> - University of York
  All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
  1. Redistributions of source code must retain the above copyright
@@ -20,7 +26,7 @@ package yeti;
  4. Neither the name of the University of York nor the
  names of its contributors may be used to endorse or promote products
  derived from this software without specific prior written permission.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER ''AS IS'' AND ANY
  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -31,7 +37,7 @@ package yeti;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
  **/ 
 
 /**
@@ -40,22 +46,22 @@ package yeti;
  * @date  Jun 22, 2009
  */
 public class YetiCard {
-	
+
 	/**
 	 * The identity of the card.
 	 */
-	protected YetiIdentifier identity;
-	
+	protected YetiIdentifier identity=null;
+
 	/**
 	 * The type of the card.
 	 */
 	protected YetiType type;
-	
+
 	/**
 	 * The value of the card.
 	 */
-	protected Object value;
-	
+	protected Object value=null;
+
 	/**
 	 * Getter for the identity.
 	 * @return  the identity of the card.
@@ -63,7 +69,7 @@ public class YetiCard {
 	public YetiIdentifier getIdentity(){
 		return identity;
 	}
-	
+
 	/**
 	 * Getter for the type.
 	 * @return  the type of this card.
@@ -72,7 +78,7 @@ public class YetiCard {
 		return type;
 	}
 
-	
+
 	/**
 	 * Getter for the value of this card.
 	 * @return  the value of the card.
@@ -80,7 +86,7 @@ public class YetiCard {
 	public Object getValue(){
 		return value;
 	}
-	
+
 	/**
 	 * Creation procedure for the class.
 	 * 
@@ -92,7 +98,19 @@ public class YetiCard {
 		identity=id;
 		type=t;
 		this.value=value;
-		
+
+	}
+
+	/**
+	 * Creation procedure for the class using only a type.
+	 * This is intended to represent null values for that type.
+	 * 
+	 * @param id the identity to use for the class.
+	 * @param t the type of this card.
+	 * @param value the value of this card.
+	 */
+	public YetiCard(YetiType t){
+		type=t;
 	}
 	
 	/* 
@@ -128,5 +146,60 @@ public class YetiCard {
 	public void setValue(Object value) {
 		this.value = value;
 	}
-	
+
+	/**
+	 * A method that returns the variable part of the card
+	 * 
+	 * @return the String representation of the variable part of the card
+	 */
+	public String toStringVariable() {
+		if (value==null) return "("+this.getType().toString()+")null";
+		try {
+			String loggedValue = YetiJavaMethod.getJavaCodeRepresentation(value);
+			if (loggedValue!=null) {
+				return "("+this.getType().toString()+")"+loggedValue;
+			}
+		} catch(Throwable t) {}
+		return "("+this.getType().toString()+")"+this.getIdentity().toString();
+	}
+
+	/**
+	 * A method that returns the prefix part of the card
+	 * 
+	 * @return the String representation of the prefix part of the card
+	 */
+	public String toStringPrefix() {
+		if (value==null) return "";
+		try {
+			String loggedValue = YetiJavaMethod.getJavaCodeRepresentation(value);
+			if (loggedValue!=null) {
+				return "";
+			}
+		} catch(Throwable t) {}
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this.value);
+			byte []serializedForm = baos.toByteArray();
+			baos.reset();
+			String serializedValue= "{(byte)"+serializedForm[0];
+			for (int i=1;i<serializedForm.length;i++) {
+				serializedValue=serializedValue+",(byte)"+serializedForm[i];
+			}
+			serializedValue=serializedValue+"};";
+			String serializedValueName = this.getIdentity().toString()+"_bytes";
+			String serializedVariable = "byte []"+serializedValueName+"="+serializedValue;
+			
+			String result=serializedVariable +"\n"+this.getType().toString()+" "+this.getIdentity().toString()+"=("+this.getType().toString()+")(new ObjectInputStream(new ByteArrayInputStream(";
+			result=result+serializedValueName+")).readObject());";
+			return result;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+		return "";
+	}
+
 }

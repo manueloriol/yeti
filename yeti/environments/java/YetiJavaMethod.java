@@ -226,6 +226,7 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			// if we should replace it by a null value, we do it
 			if ((YetiVariable.PROBABILITY_TO_USE_NULL_VALUE>Math.random())&&!(((YetiJavaSpecificType)arg[i].getType()).isSimpleType())) {
 				initargs[i-offset]=null;
+				arg[i]=new YetiCard(arg[i].getType());
 				log=log+"("+arg[i].getType()+")null";
 			} else {
 				initargs[i-offset]=arg[i].getValue();
@@ -281,6 +282,18 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 	public static String generateLogForValues(String log1, Object o) {
 		String log;
 		// we escape the values
+		log = getJavaCodeRepresentation(o);
+		return log1+log+";";
+	}
+
+	/**
+	 * Generate a String representation for inclusion in Java code of a given value.
+	 * 
+	 * @param o the value
+	 * @return the String representation of none if none is available
+	 */
+	public static String getJavaCodeRepresentation(Object o) {
+		String log = null;
 		if (o instanceof Character){
 			String value;
 			// in case we have space characters
@@ -331,73 +344,129 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			}
 
 			}
-			log1=log1+"'"+value+"'"+";";
+			log="'"+value+"'";
 		} else {
 			// just in case we have a NaN value we are able to make it again...
 			// we also add the correct modifier to indicate Longs, floats, and double
 			if (o instanceof Float) {
 				if (((Float)o).isNaN()) {
-					log1 = log1+"Float.NaN;";
+					log = "Float.NaN";
 				} else {
 					if (((Float)o).isInfinite()&&Float.valueOf(((Float)o))>0.0){
-						log1 = log1+"Float.POSITIVE_INFINITY;";						
+						log = "Float.POSITIVE_INFINITY";						
 					} else {
 						if (((Float)o).isInfinite()&&Float.valueOf(((Float)o))<0.0){
-							log1 = log1+"Float.POSITIVE_INFINITY;";						
+							log = "Float.POSITIVE_INFINITY";						
 						} else {
-							log1 = log1+o.toString()+"f;";
+							log = o.toString()+"f";
 						}
 					}
 				}
 			} else
 				if (o instanceof Double) {
 					if (((Double)o).isNaN()) {
-						log1 = log1+"Double.NaN;";
+						log = "Double.NaN";
 					} else {
 						if (((Double)o).isInfinite()&&Double.valueOf(((Double)o))>0.0){
-							log1 = log1+"Double.POSITIVE_INFINITY;";						
+							log = "Double.POSITIVE_INFINITY";						
 						} else {
 							if (((Double)o).isInfinite()&&Double.valueOf(((Double)o))<0.0){
-								log1 = log1+"Double.POSITIVE_INFINITY;";						
+								log = "Double.POSITIVE_INFINITY";						
 							} else {
-								log1 = log1+o.toString()+"d;";
+								log = o.toString()+"d";
 							} 
 						}
 					}
+				} else
+					if (o instanceof Long) {
+						log = o.toString()+"L";
 					} else
-						if (o instanceof Long) {
-							log1 = log1+o.toString()+"L;";
-						} else
-							log1=log1+o.toString()+";";
-				}
-			log = log1;
-			return log;
+						if ((o instanceof Integer)||(o instanceof Byte)||(o instanceof Short)||(o instanceof Boolean)) {
+							log= o.toString();
+						}
 		}
-
-
-
-
-		/**
-		 * Getter for the implementation of the method.
-		 * @return  the implementation of the method.
-		 */
-		public Method getMethod() {
-			return method;
-		}
-
-		/**
-		 * Setter for the implementation of the method.
-		 * @param m  the method to set.
-		 */
-		public void setMethod(Method m) {
-			this.method = m;
-		}
-
-		/**
-		 * Resets the Java methods.
-		 */
-		public static void reset() {
-			initMethodsNotToAdd();
-		}
-
+		return log;
 	}
+
+
+
+
+	/**
+	 * Getter for the implementation of the method.
+	 * @return  the implementation of the method.
+	 */
+	public Method getMethod() {
+		return method;
+	}
+
+	/**
+	 * Setter for the implementation of the method.
+	 * @param m  the method to set.
+	 */
+	public void setMethod(Method m) {
+		this.method = m;
+	}
+
+	/**
+	 * Resets the Java methods.
+	 */
+	public static void reset() {
+		initMethodsNotToAdd();
+	}
+
+	/**
+	 * Creates a method call from the routine and the arguments
+	 * 
+	 * @param arguments the arguments of the call
+	 * @return the text of the test case
+	 */
+	public String toStringWithArguments(YetiCard[] arguments) {
+		String longRoutineName = this.getName().getValue();
+		String routineName = longRoutineName.substring(0,longRoutineName.lastIndexOf("_"));
+		String prefix="";
+		if (arguments.length>0) {
+			prefix = arguments[0].toStringPrefix();
+		}
+		String testCaseBody="";
+		if (this.isStatic) {
+			testCaseBody = prefix+((prefix.length()==0)?"":"\n")+this.getOriginatingModule().getModuleName().toString()+"."+routineName+"(";
+			if (arguments.length>0) {
+				testCaseBody =testCaseBody+arguments[0].toStringVariable();
+				for (int i=1;i<arguments.length;i++) {
+					if (!testCaseBody.contains(arguments[i].toStringVariable()+"=")) {
+						prefix = arguments[i].toStringPrefix();
+					} else
+						prefix = "";
+					testCaseBody=prefix+((prefix.length()==0)?"":"\n")+testCaseBody+","+arguments[i].toStringVariable();
+				}
+			}
+			testCaseBody=testCaseBody+");\n";
+		} else {
+			String target = arguments[0].toStringVariable();
+			target = target.substring(target.indexOf(")")+1);
+			testCaseBody = prefix+((prefix.length()==0)?"":"\n")+target+"."+routineName+"(";
+			if (arguments.length>1) {
+				String slimVariable = arguments[1].toStringVariable();
+				slimVariable = slimVariable.substring(slimVariable.indexOf(")")+1);
+				if (!testCaseBody.contains(slimVariable+"=")) {
+					prefix = arguments[1].toStringPrefix();
+				} else
+					prefix = "";
+				testCaseBody = prefix+((prefix.length()==0)?"":"\n")+testCaseBody+arguments[1].toStringVariable();
+				for (int i=2;i<arguments.length;i++) {
+					slimVariable = arguments[i].toStringVariable();
+					slimVariable = slimVariable.substring(slimVariable.indexOf(")")+1);
+					if (!testCaseBody.contains(slimVariable+"=")) {
+						prefix = arguments[i].toStringPrefix();
+					} else
+						prefix = "";
+					testCaseBody=prefix+((prefix.length()==0)?"":"\n")+testCaseBody+","+arguments[i].toStringVariable();
+				}
+
+			}
+			testCaseBody=testCaseBody+");\n";
+
+		}
+		return testCaseBody;
+	}
+}
