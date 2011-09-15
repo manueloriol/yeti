@@ -184,7 +184,7 @@ public class Yeti {
 	 * -cofoja, -CoFoJa : for calling it on Java programs annotated with CoFoJa. Note that if you do not want to pre-process the classes statically, you should call Yeti using the option -javaagent:cofoja.jar (or any other path to a CoFoJa jar).<br>
 	 * -kermeta, -Kermeta : for calling it on Kermeta code.<br>
 	 * -dotnet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts.<br>
-	 * -time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).<br>
+	 * -time=Xs, -time=Xmn, -time=Xmin : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).<br>
 	 * -nTests=X : for calling Yeti to attempt X method calls.<br>
 	 * -testModules=M1:M2:...:Mn : for testing one or several modules.  Sub-packages of a system can also be specified with asteriks e.g. yeti.test.* will include all the classes in yeti.test + all the classes belonging to the sub-packages of yeti.test .<br>
 	 * Note: Kermeta requires a different format for testModules: -testModules=M1,M2,...,Mn<br>
@@ -354,12 +354,16 @@ public class Yeti {
 					timeOutSec=60*(Integer.parseInt(s0.substring(6, size-2)));
 					continue;	
 				}				
+				if (s0.substring(size-3).equals("min")) {
+					timeOutSec=60*(Integer.parseInt(s0.substring(6, size-3)));
+					continue;	
+				}				
 			}
 
 			// if testing for time value
 			if (s0.startsWith("-msCalltimeout=")) {
 				int size = s0.length();
-				// if the time value is in seconds
+				// the time value is in milliseconds
 				callsTimeOut=(Integer.parseInt(s0.substring(15, size)));
 				if (callsTimeOut<=0) {
 					Yeti.printHelp();
@@ -446,8 +450,8 @@ public class Yeti {
 
 			// we can use the randomPlus strategy
 			if (s0.equals("-random")) {
-				isRandomPlus = false;
 				isRandom = true;
+				isRandomPlus = false;
 				continue;	
 			}
 			// we can use the randomPlus strategy
@@ -1073,7 +1077,7 @@ public class Yeti {
 		System.out.println("\t-cofoja, -CoFoJa : for calling it on Java programs annotated with CoFoJa.  Note that if you do not want to pre-process the classes statically, you should call Yeti using the option -javaagent:cofoja.jar (or any other path to a CoFoJa jar)."); //@YetiCoFoJaBinding
 		System.out.println("\t-dotnet, -DOTNET : for calling it on .NET assemblies developed with Code-Contracts."); //@YetiDotNETBinding
 		System.out.println("\t-kermeta, -Kermeta : for calling it on Kermeta code."); //@YetiKermetaBinding
-		System.out.println("\t-time=Xs, -time=Xmn : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).");
+		System.out.println("\t-time=Xs, -time=Xmn, -time=Xmin : for calling Yeti for a given amount of time (X can be minutes or seconds, e.g. 2mn or 3s ).");
 		System.out.println("\t-nTests=X : for calling Yeti to attempt X method calls.");
 		System.out.println("\t-testModules=M1:M2:...:Mn : for testing one or several modules. Sub-packages of a system can also be specified with asteriks e.g. yeti.test.* will include all the classes in yeti.test + all the classes belonging to the sub-packages of yeti.test .");
 		System.out.println("\t\tNote: Kermeta requires a different format for testModules: -testModules=M1,M2,...,Mn"); //@YetiKermetaBinding
