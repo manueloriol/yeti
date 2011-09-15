@@ -112,7 +112,7 @@ public class YetiCard {
 	public YetiCard(YetiType t){
 		type=t;
 	}
-	
+
 	/* 
 	 * (non-Javadoc)
 	 * Override of the <code>toString()</code> method.
@@ -179,17 +179,23 @@ public class YetiCard {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(this.value);
-			byte []serializedForm = baos.toByteArray();
-			baos.reset();
-			String serializedValue= "{(byte)"+serializedForm[0];
-			for (int i=1;i<serializedForm.length;i++) {
-				serializedValue=serializedValue+",(byte)"+serializedForm[i];
+			String serializedValue= "";
+			try {
+				oos.writeObject(this.value);
+				byte []serializedForm = baos.toByteArray();
+				baos.reset();
+				serializedValue= "{(byte)"+serializedForm[0];
+				for (int i=1;i<serializedForm.length;i++) {
+					serializedValue=serializedValue+",(byte)"+serializedForm[i];
+				}
+				serializedValue=serializedValue+"};";
+
+			} catch (java.io.NotSerializableException e) {
+				serializedValue="{};// class is not serializable, toString() returns: "+this.value.toString();
 			}
-			serializedValue=serializedValue+"};";
 			String serializedValueName = this.getIdentity().toString()+"_bytes";
 			String serializedVariable = "byte []"+serializedValueName+"="+serializedValue;
-			
+
 			String result=serializedVariable +"\n"+this.getType().toString()+" "+this.getIdentity().toString()+"=("+this.getType().toString()+")(new ObjectInputStream(new ByteArrayInputStream(";
 			result=result+serializedValueName+")).readObject());";
 			return result;
