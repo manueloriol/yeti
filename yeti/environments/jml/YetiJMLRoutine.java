@@ -32,7 +32,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-**/
+ **/
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -63,7 +63,7 @@ import yeti.environments.java.YetiJavaRoutine;
  *
  */
 public abstract class YetiJMLRoutine extends YetiJavaRoutine {
-	
+
 	/**
 	 * Create a JML Routine
 	 * 
@@ -75,17 +75,17 @@ public abstract class YetiJMLRoutine extends YetiJavaRoutine {
 	public YetiJMLRoutine(YetiName name, YetiType[] openSlots, YetiType returnType, YetiModule originatingModule) {
 		super(name, openSlots, returnType, originatingModule);
 	}
-	
+
 	@Override
 	public Object makeCall(YetiCard[] arg) {
 		String log = null;
-		
+
 		// invoke the constructor with the arguments
 		// if there is an exception then
 		// depending on its type 
 		// decide the outcome of the test
 		try {
-			
+
 			try {
 				this.incnTimesCalled();
 				makeEffectiveCall(arg);
@@ -104,13 +104,13 @@ public abstract class YetiJMLRoutine extends YetiJavaRoutine {
 			// should never happen
 			// e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			
+
 			boolean isBug = true;
 			// if we are here, we found a bug.
 			// we first print the log
 			//TODO log can be null here if thread is killed
 			YetiLog.printYetiLog(log+");", this);
-			
+
 			// then print the exception
 			if ((e.getCause() instanceof RuntimeException && !isAcceptable(e.getCause())) || e.getCause() instanceof Error  ) {
 				if (e.getCause() instanceof ThreadDeath) {
@@ -139,7 +139,7 @@ public abstract class YetiJMLRoutine extends YetiJavaRoutine {
 				YetiLog.printYetiLog("/**NORMAL EXCEPTION:"+ e.getCause().getMessage() +" **/", this);
 				this.incnTimesCalledSuccessfully();
 			}
-			
+
 			if (isBug) {
 				YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/** BUG FOUND: "+e.getCause().getMessage()+"**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"));
 			}
@@ -147,8 +147,10 @@ public abstract class YetiJMLRoutine extends YetiJavaRoutine {
 			// if we are here there was a serious error
 			// we print it
 			YetiLog.printYetiLog(log+");", this);
-			YetiLog.printYetiLog("BUG FOUND: ERROR" + e.getCause().getMessage() + " **/", this);
-			YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/** BUG FOUND: "+e.getCause().getMessage()+"**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"));
+			if (e.getCause()!=null) {
+				YetiLog.printYetiLog("BUG FOUND: ERROR" + e.getCause().getMessage() + " **/", this);
+				YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/** BUG FOUND: "+e.getCause().getMessage()+"**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"));
+			}
 			this.incnTimesCalledUnsuccessfully();
 		}
 		catch (Throwable e){

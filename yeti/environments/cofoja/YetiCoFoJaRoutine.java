@@ -166,9 +166,10 @@ public abstract class YetiCoFoJaRoutine extends YetiJavaRoutine {
 			// if we are here there was a serious error
 			// we print it
 			YetiLog.printYetiLog("try {"+log+");} catch(Throwable t){}", this);
-			if (e.getCause()!= null)
+			if (e.getCause()!= null) {
 				YetiLog.printYetiLog("/**BUG FOUND: ERROR" + e.getCause().getMessage() + " **/", this);
-			YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/** BUG FOUND: ERROR"+e.getCause().getMessage()+"**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"));
+				YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/** BUG FOUND: ERROR"+e.getCause().getMessage()+"**/\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"));
+			}
 			this.incnTimesCalledUnsuccessfully();
 			return null;
 		}
