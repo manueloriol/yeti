@@ -151,9 +151,11 @@ public class YetiJavaConstructor extends YetiJavaRoutine {
 		String longRoutineName = this.getName().getValue();
 		String routineName = longRoutineName.substring(0,longRoutineName.lastIndexOf("_"));
 		String prefix = "";
+		// we first set up the prefix with some arguments
 		if (arguments.length>0) {
 			prefix = arguments[0].toStringPrefix();
 		}
+		// we thena dd the arguments
 		String testCaseBody= prefix+((prefix.length()==0)?"":"\n")+"new "+routineName+"(";
 		if (arguments.length>0) {
 			testCaseBody = testCaseBody+arguments[0].toStringVariable();

@@ -153,6 +153,7 @@ public class YetiCard {
 	 * @return the String representation of the variable part of the card
 	 */
 	public String toStringVariable() {
+		// here we generate the variable name
 		if (value==null) return "("+this.getType().toString()+")null";
 		try {
 			String loggedValue = YetiJavaMethod.getJavaCodeRepresentation(value);
@@ -170,13 +171,13 @@ public class YetiCard {
 	 */
 	public String toStringPrefix() {
 		if (value==null) return "";
+		String loggedValue = YetiJavaMethod.getJavaCodeRepresentation(value);
+		// if there is no direct literal representation
+		if (loggedValue!=null) {
+			return "";
+		}
 		try {
-			String loggedValue = YetiJavaMethod.getJavaCodeRepresentation(value);
-			if (loggedValue!=null) {
-				return "";
-			}
-		} catch(Throwable t) {}
-		try {
+			// otherwise we try to serialize it and build one
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 			String serializedValue= "";
@@ -191,11 +192,14 @@ public class YetiCard {
 				serializedValue=serializedValue+"};";
 
 			} catch (java.io.NotSerializableException e) {
+				// If we cannot build one we simply generate an empty byte array and return the toString value
 				serializedValue="{};// class is not serializable, toString() returns: "+this.value.toString();
 			}
+			// we store this into a temporary variable ending with _bytes
 			String serializedValueName = this.getIdentity().toString()+"_bytes";
 			String serializedVariable = "byte []"+serializedValueName+"="+serializedValue;
-
+			
+			// we build the code to deserialize it
 			String result=serializedVariable +"\n"+this.getType().toString()+" "+this.getIdentity().toString()+"=("+this.getType().toString()+")(new ObjectInputStream(new ByteArrayInputStream(";
 			result=result+serializedValueName+")).readObject());";
 			return result;

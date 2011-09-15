@@ -424,12 +424,17 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 		String longRoutineName = this.getName().getValue();
 		String routineName = longRoutineName.substring(0,longRoutineName.lastIndexOf("_"));
 		String prefix="";
+		// we check the number of arguments
 		if (arguments.length>0) {
 			prefix = arguments[0].toStringPrefix();
 		}
 		String testCaseBody="";
+		// if the method is static
 		if (this.isStatic) {
+			// we first build the call
 			testCaseBody = prefix+((prefix.length()==0)?"":"\n")+this.getOriginatingModule().getModuleName().toString()+"."+routineName+"(";
+			// then we add the arguments. 
+			// Note that we separate the prefix (with variables definitions) from the actual call.
 			if (arguments.length>0) {
 				testCaseBody =testCaseBody+arguments[0].toStringVariable();
 				for (int i=1;i<arguments.length;i++) {
@@ -442,16 +447,20 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 			}
 			testCaseBody=testCaseBody+");\n";
 		} else {
+			// if the method is non static, we build the call as well
 			String target = arguments[0].toStringVariable();
+			// we generate the target by removing the type cast.
 			target = target.substring(target.indexOf(")")+1);
 			testCaseBody = prefix+((prefix.length()==0)?"":"\n")+target+"."+routineName+"(";
 			if (arguments.length>1) {
+				// because we remove the type case in the case of the target, we then test for that.
 				String slimVariable = arguments[1].toStringVariable();
 				slimVariable = slimVariable.substring(slimVariable.indexOf(")")+1);
 				if (!testCaseBody.contains(slimVariable+"=")) {
 					prefix = arguments[1].toStringPrefix();
 				} else
 					prefix = "";
+				// we add all arguments
 				testCaseBody = prefix+((prefix.length()==0)?"":"\n")+testCaseBody+arguments[1].toStringVariable();
 				for (int i=2;i<arguments.length;i++) {
 					slimVariable = arguments[i].toStringVariable();
