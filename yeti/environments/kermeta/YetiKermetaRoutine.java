@@ -205,7 +205,7 @@ public class YetiKermetaRoutine extends YetiRoutine {
 		// This is a real Kermeta exception that was thrown because of a real error
 		catch (KermetaRaisedException e) {
 			YetiLog.printYetiLog("/**BUG FOUND: RUNTIME EXCEPTION** /", this);
-			YetiLog.printYetiThrowable(e.getCause(), new YetiCallContext(this,arg,e,"/**BUG FOUND: RUNTIME EXCEPTION** /\n/** "+YetiLog.proc.getTraceFromThrowable(e.getCause())+"**/"),true);
+			YetiLog.printYetiThrowable(e, new YetiCallContext(this,arg,e,"/**BUG FOUND: RUNTIME EXCEPTION** /\n/** "+YetiLog.proc.getTraceFromThrowable(e)+"**/"),true);
 
 			this.incnTimesCalledUnsuccessfully();
 		}
