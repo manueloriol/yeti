@@ -58,8 +58,8 @@ public class YetiKermetaLogProcessor extends YetiLogProcessor {
 
 	@Override
 	public Vector<String> processLogs() {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Handle test case generation for kermeta binding
+		return new Vector<String>();
 	}
 
 	
