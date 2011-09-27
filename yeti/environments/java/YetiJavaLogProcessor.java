@@ -468,7 +468,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		testCases.add(generatedTestCase);
 		YetiLog.printDebugLog("Generated test case: \n"+generatedTestCase, this);
 	}
-	
+
 	/**
 	 * Printer for throwables in no logs
 	 * 
@@ -560,7 +560,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		int k = 0;
 		String exceptionTrace = null;
 		while (k<linesOfTest.length){
-			
+
 			// if we arrive to the reflexive call, we cut
 			if (linesOfTest[k].contains("sun.reflect.")) {
 				break;
@@ -670,11 +670,18 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	public ArrayList<String> readTracesFromFile(String fileName) {
 		ArrayList<String> result = new ArrayList<String>();
 		YetiLog.printDebugLog("Filename is "+fileName, this);
-		
+
 		// if we have a class file, we will execute methods instead
 		if (fileName.endsWith(".class")) {
-			String className = fileName.substring(fileName.lastIndexOf(System.getProperty("file.separator"))+1,fileName.lastIndexOf("."));
+			String className = null;
+			if (fileName.contains(System.getProperty("file.separator"))) {
+				className = fileName.substring(fileName.lastIndexOf(System.getProperty("file.separator"))+1,fileName.lastIndexOf("."));
+			} else {
+				className = fileName.substring(0,fileName.lastIndexOf("."));
+
+			}
 			try {
+				YetiLog.printDebugLog("Loading: "+className, this);
 				// we first load the class
 				@SuppressWarnings("rawtypes")
 				Class c = ClassLoader.getSystemClassLoader().loadClass(className);
@@ -684,6 +691,8 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 						// we create a target for the call
 						Object o = m.getDeclaringClass().getConstructor().newInstance();
 						YetiLog.printDebugLog("Target of test call is: "+o, this);
+						YetiLog.printDebugLog("Calling: \n"+m.getName(), this);
+
 						try {
 							// we invoke the method with no arguments
 							m.invoke(o);
@@ -693,8 +702,10 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 							Throwable t0 = t.getCause();
 							String s = this.getTraceFromThrowable(t0);
 							s=s.substring(0,s.lastIndexOf("\n"));
-							result.add(s);
-							YetiLog.printDebugLog("Added trace: \n"+s, this);
+							if (Yeti.testModule.isThrowableInModule(s)&&s.indexOf('\t')>=0) {
+								result.add(s);
+								YetiLog.printDebugLog("Added trace: \n"+s, this);
+							}
 						}
 					}
 				}

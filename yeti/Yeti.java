@@ -207,7 +207,7 @@ public class Yeti {
 	 * -instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.<br>
 	 * -tracesOutputFile=X : the file where to output traces on disk<br>
 	 * -tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').<br>
-	 *  Note that if a file whose name finishes by ".class" then the file is loaded and traces are taken from the failures it produces on methods annotated using yeti.test.YetiTrace<br>
+	 *  Note that if a file whose name finishes by ".class" then the file is loaded and traces are taken from the failures it produces on methods annotated using yeti.annotations.YetiTrace<br>
 	 *  For an example of such file check the class yeti.test.TGenString which can be loaded on the command-line using -tracesInputFiles=yeti.test.TGenString.class <br>
 	 * -printNumberOfCallsPerMethod : prints the number of calls per method.<br>
 	 * -branchCoverage : shows the branch coverage if available (in Java, this implies instrumenting the bytecode)."); <br>
@@ -677,8 +677,6 @@ public class Yeti {
 			pl=new YetiJavaProperties(initializer, testManager, logProcessor);
 		}
 
-		// we read traces if there are some to read and we initialize the list of Errors with it.
-		logProcessor.readTraces(traceInputFiles);
 
 
 		//if it is raw logs, then set it		
@@ -840,6 +838,9 @@ public class Yeti {
 		// we let everybody use the tested module
 		Yeti.testModule = mod;
 
+		// we read traces if there are some to read and we initialize the list of Errors with it.
+		logProcessor.readTraces(traceInputFiles);
+
 		// creating the engine object
 		engine= new YetiEngine(strategy,testManager);
 
@@ -854,6 +855,7 @@ public class Yeti {
 		} else {
 			YetiLog.proc=pl.getLogProcessor();
 		}
+
 
 		// logging purposes:
 		long startTestingTime = new Date().getTime();
@@ -1101,7 +1103,7 @@ public class Yeti {
 		System.out.println("\t-instancesCap=X : sets the cap on the number of instances for any given type. Defaults is 1000.");
 		System.out.println("\t-tracesOutputFile=X : the file where to output traces on disk.");
 		System.out.println("\t-tracesInputFiles=X : the files where to input traces from disk (file names separated by ':').");
-		System.out.println("\t\tNote that if a file whose name finishes by \".class\" then the file is loaded and traces are taken from the failures it produces on methods annotated using yeti.test.YetiTrace");
+		System.out.println("\t\tNote that if a file whose name finishes by \".class\" then the file is loaded and traces are taken from the failures it produces on methods annotated using yeti.annotations.YetiTrace");
 		System.out.println("\t\tFor an example of such file check the class yeti.test.TGenString which can be loaded on the command-line using -tracesInputFiles=yeti.test.TGenString.class");
 
 		System.out.println("\t-printNumberOfCallsPerMethod : prints the number of calls per method.");

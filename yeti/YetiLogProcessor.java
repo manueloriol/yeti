@@ -185,6 +185,7 @@ public abstract class YetiLogProcessor {
 	public void addToListOfErrors(String trace) {
 		String trimmedTrace = trace.substring(trace.indexOf('\t'));
 		listOfErrors.put(trimmedTrace, 0);
+		numberOfErrors++;
 	}
 	
 	
@@ -357,7 +358,8 @@ public abstract class YetiLogProcessor {
 	 * @return  the number of non errors;
 	 */
 	public int getNumberOfNonErrors() {
-		return this.numberOfNonErrors;
+		if (this.listOfNonErrors==null) return 0;
+		return this.listOfNonErrors.size();
 	}
 	/**
 	 * Getter for the number of unique faults.
