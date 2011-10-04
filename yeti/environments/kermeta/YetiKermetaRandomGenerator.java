@@ -2,9 +2,9 @@ package yeti.environments.kermeta;
 
 /**
 
-YETI - York Extensible Testing Infrastructure
+KYETI - Kermeta binding for YETI.
 
-Copyright (c) 2009-2010, Manuel Oriol <manuel.oriol@gmail.com> - University of York
+Copyright 2011 (c) IRISA / INRIA / Université de Rennes 1 (Triskell team) / INSA de Rennes
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
