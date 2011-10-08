@@ -171,6 +171,12 @@ public class YetiCard {
 	 */
 	public String toStringPrefix() {
 		if (value==null) return "";
+		String valueAsAString = null;
+		try {
+			valueAsAString = value.toString();
+		} catch (Throwable t){
+			valueAsAString = "** error while computing toString() representation**";
+		}
 		String loggedValue = YetiJavaMethod.getJavaCodeRepresentation(value);
 		// if there is no direct literal representation
 		if (loggedValue!=null) {
@@ -189,11 +195,11 @@ public class YetiCard {
 				for (int i=1;i<serializedForm.length;i++) {
 					serializedValue=serializedValue+",(byte)"+serializedForm[i];
 				}
-				serializedValue=serializedValue+"};";
+				serializedValue=serializedValue+"};// class is not serializable, toString() returns: "+valueAsAString;
 
 			} catch (java.io.NotSerializableException e) {
 				// If we cannot build one we simply generate an empty byte array and return the toString value
-				serializedValue="{};// class is not serializable, toString() returns: "+this.value.toString();
+				serializedValue="{};// class is not serializable, toString() returns: "+valueAsAString;
 			}
 			// we store this into a temporary variable ending with _bytes
 			String serializedValueName = this.getIdentity().toString()+"_bytes";

@@ -82,7 +82,11 @@ public class YetiVariable extends YetiCard{
 		super (id, type, value);
 		nVariables++;
 		allId.put(id.value, this);
-		YetiLog.printDebugLog("Creating variable "+id.value+" with value "+value, this);
+		try {
+			YetiLog.printDebugLog("Creating variable "+id.value+" with value "+value, this);
+		} catch (Throwable t){
+			YetiLog.printDebugLog("Creating variable "+id.value+" with non-serializable value ", this);			
+		}
 		YetiLog.printDebugLog("type: "+type, this);
 		// if the type was not created before we create it on the fly
 		if (type==null){

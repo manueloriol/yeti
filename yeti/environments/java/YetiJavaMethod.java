@@ -241,10 +241,13 @@ public class YetiJavaMethod extends YetiJavaRoutine {
 
 		// we  make the call
 		if (target!=null)
-			YetiLog.printDebugLog("trying to call "+method.getName()+" on a "+target.getClass().getName()+", target ="+target, this);
+			try {
+				YetiLog.printDebugLog("trying to call "+method.getName()+" on a "+target.getClass().getName()+", target ="+target, this);
+			} catch (Throwable t) {
+				YetiLog.printDebugLog("trying to call "+method.getName()+" on a "+target.getClass().getName()+", target not serializable", this);
+			}
 		else 
 			YetiLog.printDebugLog("trying to call statically "+method.getName()+" of "+method.getDeclaringClass().getName(), this);				
-
 		Object o=null;
 		try {
 			o = method.invoke(target,initargs);
