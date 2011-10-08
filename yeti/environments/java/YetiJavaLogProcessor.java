@@ -639,8 +639,8 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 
 		String directoryName = null;
 		// if we store the file into a different location, we remove the directory name
-		if(testFileName.contains(System.getProperty("file.separator"))){
-			int indexOfLastSlash = testFileName.lastIndexOf(System.getProperty("file.separator"));
+		if(testFileName.contains("/")){
+			int indexOfLastSlash = testFileName.lastIndexOf("/");
 			directoryName=testFileName.substring(0,indexOfLastSlash+1);
 			testFileName = testFileName.substring(indexOfLastSlash+1);
 		}
@@ -660,7 +660,7 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 
 		// if it is supposed to go to a directory, we add it too
 		if (directoryName!=null){
-			fullName=directoryName+"/"+fullName;
+			fullName=directoryName+System.getProperty("file.separator")+fullName;
 		}
 
 		return fullName;
