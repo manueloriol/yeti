@@ -597,8 +597,8 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 		}
 
 		// if we store the file into a different location, we remove the directory name
-		if(testFileName.contains(System.getProperty("file.separator"))){
-			testFileName=testFileName.substring(testFileName.lastIndexOf(System.getProperty("file.separator"))+1);
+		if(testFileName.contains("/")){
+			testFileName=testFileName.substring(testFileName.lastIndexOf("/")+1);
 		}
 
 		YetiLog.printDebugLog("Will store in "+testFileName, this);
