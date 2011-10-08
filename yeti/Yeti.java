@@ -702,8 +702,11 @@ public class Yeti {
 		} catch (YetiInitializationException e) {
 			//should never happen
 			e.printStackTrace();
+		} catch (NullPointerException e){
+			System.out.println("Please pick a language: -java -cofoja -kermeta -dotNet -cl...");
+			
 		}
-
+		
 		// calls the secondary initializer
 		if (secondaryInitializer!=null) {
 			try {
