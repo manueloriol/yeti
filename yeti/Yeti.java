@@ -923,11 +923,11 @@ public class Yeti {
 			// }
 
 		// we create the report
-		report = new YetiReport(modulesString, YetiLog.numberOfCalls , endTestingTime-startTestingTime, YetiLog.numberOfErrors);
+		report = new YetiReport(modulesString, YetiLog.numberOfCalls , endTestingTime-startTestingTime, Yeti.pl.getLogProcessor().getNumberOfUniqueFaults());
 
 		if (!isProcessed) {
 
-			YetiLogProcessor lp = (YetiLogProcessor)Yeti.pl.getLogProcessor();
+			YetiLogProcessor lp = Yeti.pl.getLogProcessor();
 			System.out.println("/** Unique relevant bugs: "+lp.getNumberOfUniqueFaults()+" **/");
 			report.setnErrors(lp.getNumberOfUniqueFaults());
 
