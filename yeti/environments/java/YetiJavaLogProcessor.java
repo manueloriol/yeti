@@ -82,7 +82,9 @@ public class YetiJavaLogProcessor extends YetiLogProcessor {
 	public void appendToCurrentLog(String newLog) {
 		// substantific gains (2-3x) in execution time can be done by NOT adding the timestamp
 		// super.appendToCurrentLog(newLog);
-		super.appendToCurrentLog(newLog+" // time:"+(new Date()).getTime());
+		// TODO: add an option to add time stamping back through an option
+		// super.appendToCurrentLog(newLog+" // time:"+(new Date()).getTime());
+		super.appendToCurrentLog(newLog);
 	}
 
 	/* 
