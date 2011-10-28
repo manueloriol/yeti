@@ -165,7 +165,7 @@ public class YetiRandomStrategy extends YetiStrategy{
 	@Override
 	public YetiRoutine getNextRoutine(YetiModule module) {
 		YetiRoutine r= module.getRoutineAtRandom();
-		YetiLog.printDebugLog("Testing routine "+r+" module "+module.getModuleName(), this);
+		YetiLog.printDebugLog("Testing routine "+r+" from module "+module.getModuleName(), this);
 		return r;
 	}
 
