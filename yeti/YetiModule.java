@@ -127,7 +127,7 @@ public class YetiModule implements YetiCoverageIndicator {
 	 */
 	public YetiRoutine getRoutineAtRandom(){
 		double d=Math.random();
-		int i=(int) Math.floor(1 + d*(routinesInModule.size()));
+		int i=(int) Math.floor(d*(routinesInModule.size()));
 
 		return (YetiRoutine)(routinesInModule.values().toArray()[i]);
 	}
