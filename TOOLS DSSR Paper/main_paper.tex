@@ -1,0 +1,114 @@
+
+
+
+\documentclass[10pt, conference, compsocconf]{IEEEtran}
+
+\usepackage{multirow}
+\usepackage{subfigure}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{rotating}
+%\usepackage{times}
+%\usepackage[centertags]{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{amssymb}
+%\usepackage{amsthm}
+%\usepackage{glossary}
+%\usepackage{epsfig}
+%\usepackage{algorithm}
+%\usepackage{algorithmic}
+
+
+
+
+
+
+% *** GRAPHICS RELATED PACKAGES ***
+%
+\ifCLASSINFOpdf
+  % \usepackage[pdftex]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../pdf/}{../jpeg/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+\else
+  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+  % will default to the driver specified in the system graphics.cfg if no
+  % driver is specified.
+  % \usepackage[dvips]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../eps/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.eps}
+\fi
+
+% correct bad hyphenation here
+\hyphenation{Dirt Spot Sweeping Random Strategy}
+
+
+\begin{document}
+%
+% paper title
+% can use linebreaks \\ within to get better formatting as desired
+\title{Dirt Spot Sweeping Random Strategy}
+
+
+% author names and affiliations
+% use a multiple column layout for up to two different
+% affiliations
+
+\author{\IEEEauthorblockN{Mian Asbat Ahmad}
+\IEEEauthorblockA{Department of Computer Science\\
+The University of York\\
+York, United Kingdom\\
+ma@cs.york.ac.uk}
+\and
+\IEEEauthorblockN{Manuel Oriol}
+\IEEEauthorblockA{Department of Computer Science\\
+The University of York\\
+York, United Kingdom\\
+manuel@cs.york.ac.uk}
+}
+
+
+% make the title area
+\maketitle
+
+
+\begin{abstract}
+
+In this article, an enhanced and improved form of automated random testing, called Dirt Spot Sweeping Random (DSSR) strategy, is introduced. DSSR is a new strategy that not only combines ordinary random strategy and random plus strategy to achieve their combined benefits but additionally sweeps the dirt spots in the program code for faults. It is based on two intuitions, first is that test values in boundaries of equivalence partition are interesting, using these test values in isolation can detect new faults in the system, which produce high impact on test results while second is that faults reside in block and strip pattern inside the program code therefore when a fault is found, using neighbouring values of the fault finding value can reveal more faults quickly which consequently increases the test performance. DSSR strategy is implemented in an open source automated random testing tool called York Extensible Testing Infrastructure (YETI). Using this tool several experiments were performed on two groups of classes. First group contained error seeded programs written specifically for performance evaluation of DSSR while the second group was more generalized containing classes from Java Development Toolkit (JDK). Experimental results of both groups showed that DSSR perform up to 30\% better than pure random testing.
+
+\end{abstract}
+
+\begin{IEEEkeywords}
+
+random testing; automated testing; YETI; DSSR; test strategy;
+
+\end{IEEEkeywords}
+
+
+\IEEEpeerreviewmaketitle
+
+\input{Introduction/Intro}
+\input{DSSR_Strategy/DSSR_Strategy}
+\input{Experimental_setup_and_Analysis/Experimental_setup_and_Analysis}
+\input{Evaluation_of_DSSR_strategy/Evaluation_of_DSSR_strategy}
+\input{Results/Results}
+\input{Unique_faults_found_by_DSSR_strategy/Unique_faults_found_by_DSSR_strategy}
+\input{Discussion/Discussion}
+\input{Conclusion/Conclusion}
+\input{Future_Work/Future_Work}
+\input{Acknowledgment/Acknowledgment}
+
+
+\bibliographystyle{ieeetr}
+\bibliography{biblio} 
+
+
+% that's all folks
+\end{document}
+
+

@@ -1,0 +1,19 @@
+\section{Discussion}
+
+\textbf{Performance of DSSR strategy and Random strategy in terms of finding faults:} 
+Analysis of results revealed better performance of DSSR strategy than pure random strategy. \\
+
+\textbf{Time taken by DSSR strategy and Random strategy to execute tests:}
+To execute equal number of test cases, DSSR strategy took slightly more execution time than pure random test strategy. It is not unusual and we were expecting similar behaviour because pure random algorithm selects random input of the required type with minimum calculation and therefore its process is very quick. On the other hand DSSR strategy performs additional computation when it adds fault finding value and its neighbouring values to the list of interesting values and selects the correct type test values from the list when required. The desired process of adding values to the list and selecting the required values from the list consumes extra time which is the main reason that DSSR strategy takes a little extra time.\\
+
+\textbf{Effect of test duration in terms of time and number of tests on test results:} 
+We found that test duration increases either because of  increase in time or number of test cases which results in improving the performance of DSSR strategy. It is because when test duration or number of tests increases, the list of interesting values also increases and in turn DSSR strategy get enough relevant values in the list of interesting values and can easily pick one from the list instead of selecting it randomly.\\
+
+\textbf{Effect of number of faults on results:} 
+We also found that DSSR strategy performs better when the number of faults are more in the code. The reason is that when a fault is found in the code, DSSR strategy adds the neighbouring values of the fault finding value to the list of interesting values. Doing this increases the list of interesting values and the strategy is provided with more relevant test data resulting in higher chance of finding faults.\\
+
+\textbf{Can Pure Random Testing perform better than DSSR strategy:}
+The experimental results indicated that ocassionally pure random testing performs better than DSSR strategy if the SUT contain point pattern of failures rather than block and strip pattern. It is due to the fact that in such cases faults don't lay in the neighbourhood of found fault and adding neighbouring values of the founded fault dont make any impact on performance therefore the extra computational time becomes a liability.\\
+
+\textbf{DSSR strategy Dependance on Random Testing:}
+During the experiments we found that if the fault finding value is not in the list of interesting values then the test is dependant on random testing. In that case DSSR strategy has to wait for random testing to find the first fault and only then DSSR strategy will add its neighbouring values to the list of interesting values.

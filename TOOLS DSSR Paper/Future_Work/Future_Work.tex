@@ -1,0 +1,20 @@
+\section{Future Work}
+
+From the research we came to know that random testing is not very good in generating a specific test value as in the following example.  \\
+
+\{ \\*   
+
+\hspace{07 mm}if(value == 34.4445) \\*
+
+\hspace{07 mm}\{ 10/0 \} \\* 
+
+\} \\*
+
+
+We also know that if the fault finding value is not in the list than DSSR has to wait for random testing to generate the fault finding value and only after that DSSR will add that value and its surrounding values to the list of interesting values. To decrease the dependancy of DSSR strategy on random and random plus strategy, further work is in progress to add constant literals from the SUT to the list of interesting values in a dynamic fashion. These literals can be obtained either from .java or .class files of the tested class. We are also working to add  neighbouring values of the literals to the list of interesting values. \\
+
+Thus if we have the above example then the value 34.4445 and its surrounding values will be added to the list of interesting values before the test starts and DSSR strategy will no more be dependent on random testing to find the first fault.\\
+
+It will also be interesting to evaluate the DSSR strategy in terms of coverage because the newly added values are most suitable for test cases and therefore can increase branch coverage. \\
+
+Fianally, a significant part of our efforts is devoted to the evaluation of DSSR strategy by testing systems of different nature. We are planning to test up to 1000 classes from more than 100 open source Java projects of Qualitas Corpus, an independent database of open source Java project \cite{Tempero2010}. \\

@@ -1,0 +1,46 @@
+
+\section{Experimental setup and Analysis}
+
+To evaluate the performance of DSSR strategy we performed several experiments. A total of 15 classes were rigorously tested where 5 of the classes were written specifically to evaluate the DSSR strategy while 10 classes were selected randomly from java.lang and java.util packages of Java Development Kit (JDK). Since the performance of random strategy cannot be evaluated from a few tests because of its random behavior therefore each class was tested 10 times by pure random and DSSR strategy. The GUI of YETI show multiple real time graphs including one for unique failures. There is also a handy option in YETI front end where user can right click any of the graph and save the data about it in a text file. The same option was utilized to store the unique failures found in each experiment for further analysis. Another feature called "Interesting value injection probability" gives control on the selection of test data either from the list of interesting values or randomly from the available pool. YETI also allow user to set a specific number of calls for which values should be selected from the list of interesting values. For all our experiments the interesting value injection probability was set to 0.1, which means that 10\% of the test values will be selected from the list of interesting values while remaining 90\% of the values will be selected randomly.\\
+
+For DSSR strategy the probability to select values from the list of interesting values and null values were kept constant for all the experiments. Experiments were divided into two groups. In the first group of experiments our own written error seeded classes were tested while in the second group random classes from java.util and java.lang packages were selected. Each class of both the groups were tested 10 times by both DSSR and random strategy. The total number of experiments were 10 x 10 x 15 = 1500. The number of tests for each class in group 1 were kept 10,000 so the total tests are 10,000 x 10 x 10 x 5 = 5,000,000.  For group 2 the number of tests were decreased to 500 so that the total tests conducted in group 2 were 500 x 10 x 10 x 10 = 500,000 tests. The use of error seeded programs made it possible to assess the two strategies objectively by measuring the total number of faults found and the test execution duration by each strategy. The automated oracle used for all experiments was the defined exception of the language because of the absence of the contracts and assertions in the code under test.\\
+
+Commands for executing the experiments using pure random and DSSR strategies are as follows. Since pure random is the default strategy for testing in YETI therefore there is no need to mention that strategy in the command.\\*
+
+\begin{itemize}
+
+\item java yeti.Yeti -java -testModules=java.lang.String -nTests=10000 -nologs -gui\\*
+
+\item java yeti.Yeti -java -testModules=java.lang.String -nTests=10000 -nologs -gui -DSSR\\*
+
+\end{itemize}
+
+Various options used in the above commands have the following meanings:\\*
+\textbf{yeti.Yeti} represents the package name (yeti) and the main class (YETI).\\*
+\textbf{-java} is used to show that the program under test is written in Java language.\\*
+\textbf{-testModules} points to the system under test, which is String in this case.\\*
+\textbf{-nTests} is used to execute specified number of test calls in that session, which is 10,000 and 500 for both of the strategies.\\*
+\textbf{-nologs} is used so that logs are not printed on the screen during test execution. This option is enabled to decrease extra load on the processor.\\*
+\textbf{-gui} is used to show the real time test results in Graphical User Interface on display.\\*
+\textbf{-DSSR} is used to select the Dirt Spot Sweeping Random strategy for the current test session.\\*
+
+All tests were performed using 64-bit Microsoft Windows 7 Enterprise Service Pack 1 running on Intel(R) Core(TM)2 Duo CPU E8400 @ 3.00GHz with 4.00 GB RAM. Furthermore, Java(SE) Runtime Environment [Version 6.1.7601] was used.\\
+
+Each test is explained with the help of a table and figure. Table \ref{table:five}, \ref{table:tena} and \ref{table:tenb} present the results of the tests performed using random and DSSR strategy while figure \ref{fig:Result1} and \ref{fig:Result2} depict the summary of all the tests.
+
+
+
+\subsection{Performance criteria used in the experiments}
+Various measures including F-measure, P-measure and E-measure have been used by researchers to find the effectiveness of the random test strategy. E-measure (Expected number of failures detected) and P-measure (Probability of detecting atleast one failure) received criticism from researchers \cite{Chen2008} and are not considered effective techniqes for measuring efficiency of test strategy. F-measure (Number of test cases used to find the first fault) used by researchers  \cite{Chen1996}, \cite{Chen2004} is quite well known and initially we used it in our experiments to calculate the efficiency. After a few experiments we came to know that this was not the right choice because in some experiments the first strategy found first fault quickly than the second strategy but after the complete test session the first strategy found lower number of total faults than the second strategy. In our view it is not fair to prefer a strategy only because it found the first fault better without giving due consideration to the total number of faults. Moreover, for random testing F-measure is quite unpredictable because its value can be easily increased by adding more narrow conditional statements in the SUT. For example in the following program it is difficult for random testing to generate the exact number (3.3338) quickly and therefore the F-measure will be high.\\
+
+\{ \\*   
+
+\hspace{07 mm}if ( (value $>$  3.3337) \&\& (value $<$ 3.3339) )\\*
+
+\hspace{07 mm}\{ 10/0 \} \\* 
+
+\} \\*
+
+Therefore in all our experiments performance of the strategy was measured in terms of finding maximum number of faults in a particular number of test calls  \cite{Ciupa2007}, \cite{Pacheco2007a}, \cite{Ciupa2008b} which in our case was set to 10,000 and 500 calls per class. The number of test calls was kept constant for both pure random and DSSR strategy in all the experiments. This measurement was found effective because it clearly measured the performance of the strategy when all the other factors were kept constant.\\
+
+

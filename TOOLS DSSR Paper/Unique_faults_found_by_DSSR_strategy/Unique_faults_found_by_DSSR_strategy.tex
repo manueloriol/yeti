@@ -1,0 +1,60 @@
+%\pagenumbering{arabic}
+%\setcounter{page}{1}
+
+\section{Unique faults found by DSSR strategy}
+Table \ref{table:DSS_Faults} include names of all the faults that DSSR strategy found in respective classes. Duplicate faults were removed for simplicity.
+
+\begin{table}[ht]
+\caption{Unique faults found by DSS in respective class} % title of Table
+\centering % used for centering table
+\begin{tabular}{| l | l |} % centered columns (4 columns)
+\hline\hline %inserts double horizontal lines
+Class Name & Unique Fault Name \\ [0.5ex] % inserts table
+%heading
+\hline % inserts single horizontal line
+\multirow{3}{*}{java.lang.ProcessBuilder} & NullPointerException\\ % inserting body of the table
+& YetiSecurityException\\ % inserting body of the table
+& ArrayIndexOutOfBoundsException\\ % inserting body of the table
+\hline
+\multirow{2}{*}{java.lang.ClassLoader} & NoClassDefFoundError\\ % inserting body of the table
+& IndexOutOfBoundsException\\ % inserting body of the table
+\hline
+\multirow{3}{*}{java.lang.Character} & StringIndexOutOfBoundsException\\ % inserting body of the table
+& ArrayIndexOutOfBoundsException\\ % inserting body of the table
+& IllegalArgumentException\\ % inserting body of the table
+\hline
+\multirow{7}{*}{java.util.Scanner} & IllegalArgumentException\\ % inserting body of the table
+& NoSuchElementException\\ % inserting body of the table
+& PatternSyntaxException\\ % inserting body of the table
+& IllegalStateException\\ % inserting body of the table
+& StringIndexOutOfBoundsException\\ % inserting body of the table
+& InputMismatchException\\ % inserting body of the table
+& UnsupportedOperationException\\ % inserting body of the table
+\hline
+\multirow{2}{*}{java.util.Properties} & NullPointerException\\ % inserting body of the table
+& ClassCastException\\ % inserting body of the table
+\hline
+\multirow{2}{*}{java.util.Calendar} & ArrayIndexOutOfBoundsException\\ % inserting body of the table
+& IllegalArgumentException\\ % inserting body of the table
+\hline
+java.lang.Double & NullPointerException\\ % inserting body of the table
+\hline
+\multirow{3}{*}{java.lang.Thread} & IllegalArgumentException\\ % inserting body of the table
+& IllegalThreadStateException\\ % inserting body of the table
+& NoSuchMethodError\\ % inserting body of the table
+\hline
+\multirow{4}{*}{java.lang.String}& PatternSyntaxException\\ % inserting body of the table
+& IndexOutOfBoundsException\\ % inserting body of the table
+& StringIndexOutOfBoundsException\\% inserting body of the table % [1ex] adds vertical space
+\hline
+\multirow{5}{*}{java.lang.Collections}& ClassCasteException\\ % inserting body of the table
+& IndexOutOfBoundsException\\ % inserting body of the table
+& UnsupportedOperationException\\
+& IllegalArgumentException\\
+& OutOfMemoryError\\ [1ex]% inserting body of the table % [1ex] adds vertical space
+\hline
+\hline %inserts single line
+\end{tabular}
+\label{table:DSS_Faults} % is used to refer this table in the text
+\end{table}
+
