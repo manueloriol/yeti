@@ -1,6 +1,5 @@
 
 
-
 \documentclass[10pt, conference, compsocconf]{IEEEtran}
 
 \usepackage{multirow}
@@ -79,7 +78,11 @@ manuel@cs.york.ac.uk}
 
 \begin{abstract}
 
-In this article, an enhanced and improved form of automated random testing, called Dirt Spot Sweeping Random (DSSR) strategy, is introduced. DSSR is a new strategy that not only combines ordinary random strategy and random plus strategy to achieve their combined benefits but additionally sweeps the dirt spots in the program code for faults. It is based on two intuitions, first is that test values in boundaries of equivalence partition are interesting, using these test values in isolation can detect new faults in the system, which produce high impact on test results while second is that faults reside in block and strip pattern inside the program code therefore when a fault is found, using neighbouring values of the fault finding value can reveal more faults quickly which consequently increases the test performance. DSSR strategy is implemented in an open source automated random testing tool called York Extensible Testing Infrastructure (YETI). Using this tool several experiments were performed on two groups of classes. First group contained error seeded programs written specifically for performance evaluation of DSSR while the second group was more generalized containing classes from Java Development Toolkit (JDK). Experimental results of both groups showed that DSSR perform up to 30\% better than pure random testing.
+All  the  strategies  used in the automated software testing tools for finding faults in the given Software Under Test (SUT) aim  to  detect  maximum  number  of  faults  in  minimum  amount of time. This can be achieved if test strategy selects more faults targeted test cases from the input domain for the given SUT, however, it is not that easy to produce such targeted test cases because each system has its own requirements and functionality. \\   
+
+In this article an enhanced and improved form of automated random testing, called Dirt Spot Sweeping Random (DSSR) strategy, is introduced. DSSR strategy  is  a  new  strategy  that  not  only  combines  ordinary  random  strategy  and  random  plus strategy  to  achieve their combined benefits but additionally sweeps the dirt spots (Faulty patterns) in the program code for faults. It is based on two intuitions, first is that test values in boundaries of equivalence partition  are  interesting,  using  these  test  values  in  isolation  can  detect  new  faults  in  the  system, which produce high impact on test results while second is that faults reside in block and strip pattern inside the input domain of the program therefore when a fault is found, using neighbouring values of the fault finding value  can  reveal  more  faults  quickly  which  consequently  increases  the  test performance. \\
+
+DSSR  strategy  is  implemented  in  an  automated  random  testing  tool  called  York Extensible Testing Infrastructure (YETI). Using this tool several experiments were performed on two groups  of  classes.  First  group  was  seeded  with  errors  of  block/strip  nature  while  the  second  group was  more  generalized  containing  classes  from  the  database  of  various  Java  systems  maintained  in Qualitas Corpus. Performance was measured in terms of number of faults found in specific number of  test  cases by each strategy.  Experimental  results  of  group  1  showed  that  DSSR  strategy  is  up  to  30\%  better  than random  and  random  plus  because  it  effectively  sweeps  the  blocks/strips.  In  the  second  group random  plus  was  better  followed  by DSSR  and  then pure  random  strategy. It  is  because  that  there were no block/strip patterns in the second group code.
 
 \end{abstract}
 
