@@ -1,15 +1,21 @@
 
 \section{Experimental setup and Analysis}
 
-To evaluate the performance of DSSR strategy we performed several experiments. In the experiments two groups of classes were rigorously tested. Group 1 containing 5 classes of error seeded programs, these errors were seeded in the form of block and strip patterns, whereas Group 2 contain 50 classes randomly selected from 30 open source projects managed in Qualitas Corpus \ref{}. Since the performance of random strategy cannot be evaluated from a few tests because of its random behavior therefore each class was tested atleast 30 times each by pure random, random plus and DSSR strategy. This is achieved by creating a batch executable script with the handy feature of YETI called compact report that logs each test report to a file for later evaluation. Another feature called "Interesting value injection probability" gives control on the selection of test data either from the list of interesting values or randomly from the available pool. YETI also allow user to set a specific number of calls for which values should be selected from the list of interesting values. For all our experiments the interesting value injection probability was set to 0.5, which means that 50\% of the test values will be selected from the list of interesting values while remaining 50\% of the values will be selected randomly.\\
+To evaluate the performance of DSSR strategy we performed several experiments. In these experiments two groups of classes were rigorously tested. Group 1 containing 5 classes of error seeded programs, these errors were seeded in the form of block and strip patterns, whereas Group 2 contain 50 classes randomly selected from 30 open source projects managed in Qualitas Corpus \cite{Tempero2010a}. \\
 
-For DSSR strategy the probability to select values from the list of interesting values and null values were kept constant for all the experiments. Experiments were divided into two groups. In the first group of experiments our own written error seeded classes were tested while in the second group classes from the Qualitas Corpus were tested. Each class of both the groups were tested 30 times by each DSSR, random and random plus strategy. The total number of experiments were 30 x 10 x 15 = 1500. The number of tests for each class in group 1 were kept 10,000 so the total tests are 10,000 x 10 x 10 x 5 = 5,000,000.  For group 2 the number of tests were decreased to 500 so that the total tests conducted in group 2 were 500 x 10 x 10 x 10 = 500,000 tests. The use of error seeded programs made it possible to assess the two strategies objectively by measuring the total number of faults found and the test execution duration by each strategy. The automated oracle used for all experiments was the defined exception of the language because of the absence of the contracts and assertions in the code under test.\\
+Qualitas corpus is a curated collection of open source java projects built with the aim to help testers in empirical research. These projects are collected in an organized form containing both the source and binary form. The reason for including source code is that most of the binaries dont include infrastructure code like code for demonstrating aspects of the system, testing, installation and building or management tasks \cite{Tempero2010a}. In its latest version 20101126, it contain 106 open source java projects. It is available in two distributions. The release version “r” and the evolution version “e”. The release version is compact size which contains only the recent version of the projects while the evolution version is more detailed which consists of more than 10 versions of each project. Since we were interested only in evaluating the performance of DSSR with respect to Random testing therefore release version containing most recent version of the projects suits our requirements. We selected 50 projects at random and further selected 100 classes out of these projects. Each class was tested 10 times by both random and DSSR strategy. Classes were tested 10 times because the test strategy is random and there is slight variation between two tests because of random inputs.\\
 
-Commands for executing the experiments using pure random and DSSR strategies are as follows. Since pure random is the default strategy for testing in YETI therefore there is no need to mention that strategy in the command.\\*
+Since the performance of random strategy cannot be evaluated from a few tests because of its random behavior therefore each class was tested atleast 30 times each by pure random, random plus and DSSR strategy. This is achieved by creating a batch executable script with the handy feature of YETI called compact report that logs each test report to a file for later evaluation. Another feature called "Interesting value injection probability" gives control on the selection of test data either from the list of interesting values or randomly from the available pool. YETI also allow user to set a specific number of calls for which values should be selected from the list of interesting values. For all our experiments the interesting value injection probability was set to 0.5, which means that 50\% of the test values will be selected from the list of interesting values while remaining 50\% of the values will be selected randomly.\\
+
+For DSSR and random plus strategy the probability to select values from the list of interesting values and null values were kept constant for all the experiments. Experiments were divided into two groups. In the first group of experiments our own written error seeded classes were tested while in the second group classes from the Qualitas Corpus were tested. Each class of both the groups weretested 30 times by each strategy and results were collected in a file. The total number of experiments were 30 x 5 x 3 = 450 in Group A and 30 x 50 x 3 = 4500 in Group B. The number of tests for both groups were kept 10,000 so the total tests for Group A are 10,000 x 30 x 5 x 3 = 4500000 and the total tests in Group B are 10,000 x 30 x 50 x 3 = 45000000.  The use of error seeded programs made it possible to assess the two strategies objectively by measuring the total number of faults found and the test execution duration by each strategy. The automated oracle used for all experiments was the defined exception of the language because of the absence of the contracts and assertions in the code under test.\\
+
+Commands for executing the experiments using pure random random plus and DSSR strategies are as follows. Since random plus is the default strategy for testing in YETI therefore it is optional to specify random plus.\\*
 
 \begin{itemize}
 
-\item java yeti.Yeti -java -testModules=java.lang.String -nTests=10000 -nologs -gui\\*
+\item java yeti.Yeti -java -testModules=java.lang.String -nTests=10000 -nologs -gui -random\\*
+
+\item java yeti.Yeti -java -testModules=java.lang.String -nTests=10000 -nologs -gui -randomPlus\\*
 
 \item java yeti.Yeti -java -testModules=java.lang.String -nTests=10000 -nologs -gui -DSSR\\*
 
@@ -22,11 +28,13 @@ Various options used in the above commands have the following meanings:\\*
 \textbf{-nTests} is used to execute specified number of test calls in that session, which is 10,000 and 500 for both of the strategies.\\*
 \textbf{-nologs} is used so that logs are not printed on the screen during test execution. This option is enabled to decrease extra load on the processor.\\*
 \textbf{-gui} is used to show the real time test results in Graphical User Interface on display.\\*
+\textbf{-random} is used to select the pure random strategy for the current test session.\\*
+\textbf{-randomPlus} is used to select the random plus strategy for the current test session.\\*
 \textbf{-DSSR} is used to select the Dirt Spot Sweeping Random strategy for the current test session.\\*
 
 All tests were performed using 64-bit Microsoft Windows 7 Enterprise Service Pack 1 running on Intel(R) Core(TM)2 Duo CPU E8400 @ 3.00GHz with 4.00 GB RAM. Furthermore, Java(SE) Runtime Environment [Version 6.1.7601] was used.\\
 
-Each test is explained with the help of a table and figure. Table \ref{table:five}, \ref{table:tena} and \ref{table:tenb} present the results of the tests performed using random and DSSR strategy while figure \ref{fig:Result1} and \ref{fig:Result2} depict the summary of all the tests.
+Each test is explained with the help of a table and figure. Table \ref{table:five}, \ref{table:tena} and \ref{table:tenb} present the results of the tests performed using random, random plus and DSSR strategy while figure \ref{fig:Result1} and \ref{fig:Result2} depict the summary of all the tests.
 
 
 
@@ -37,10 +45,11 @@ Various measures including F-measure, P-measure and E-measure have been used by 
 
 \hspace{07 mm}if ( (value $>$  3.3337) \&\& (value $<$ 3.3339) )\\*
 
+// The following statment will cause division by zero exception.
 \hspace{07 mm}\{ 10/0 \} \\* 
 
 \} \\*
 
-Therefore in all our experiments performance of the strategy was measured in terms of finding maximum number of faults in a particular number of test calls  \cite{Ciupa2007}, \cite{Pacheco2007a}, \cite{Ciupa2008b} which in our case was set to 10,000 and 500 calls per class. The number of test calls was kept constant for both pure random and DSSR strategy in all the experiments. This measurement was found effective because it clearly measured the performance of the strategy when all the other factors were kept constant.\\
+Therefore in all our experiments performance of the strategy was measured in terms of finding maximum number of faults in a particular number of test calls  \cite{Ciupa2007}, \cite{Pacheco2007a}, \cite{Ciupa2008b} which in our case was set to 10,000 calls per class. The number of test calls was kept constant for both pure random and DSSR strategy in all the experiments. This measurement was found effective because it clearly measured the performance of the strategy when all the other factors were kept constant.\\
 
 

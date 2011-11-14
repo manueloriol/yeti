@@ -131,6 +131,12 @@ A.~Leitner, A.~Pretschner, S.~Mori, B.~Meyer, and M.~Oriol, ``On the
 \bibitem{Oriol2011}
 M.~Oriol, ``York extensible testing infrastructure,'' 2011.
 
+\bibitem{Tempero2010a}
+E.~Tempero, C.~Anslow, J.~Dietrich, T.~Han, J.~Li, M.~Lumpe, H.~Melton, and
+  J.~Noble, ``Qualitas corpus: A curated collection of java code for empirical
+  studies,'' in {\em 2010 Asia Pacific Software Engineering Conference
+  (APSEC2010)}, Dec. 2010.
+
 \bibitem{Chen1996}
 T.~Chen and Y.~Yu, ``On the expected number of failures detected by subdomain
   testing and random testing,'' {\em Software Engineering, IEEE Transactions
