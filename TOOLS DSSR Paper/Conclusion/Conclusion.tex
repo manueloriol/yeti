@@ -1,12 +1,12 @@
 \section{Conclusion}
 
-The main goal of the present study was to develop a new random strategy which could find more faults in lower number of test cases and shorter execution time. The experimental findings revealed that DSSR strategy was up to 30\% more effective in finding faults as compared to random test strategy. The DSSR strategy not only gave more consistent results but it proved more effective in terms of detecting faults as compared to random testing. \\
+The main goal of the present study was to develop a new random strategy which could find more faults in lower number of test cases and shorter execution time. The experimental findings revealed that DSSR strategy was up to 30\% more effective in finding faults as compared to random test strategy. The DSSR strategy not only gave more consistent results but it proved more effective in terms of detecting faults as compared to random testing. However in comparison to random plus strategy both perform equally well in 95% of the experiments but in 5% random plus perform better and faster then DSSR strategy which is due to the fact that programs contain errors in the form of point patterns and adding fault neighbouring values only increases processing without improving results. \\
 
-Improvement in performance of DSSR strategy was achieved by taking advantage of Random Plus and fault neighbouring values. Random plus incorporated not only border values but it also added values having higher chances of finding faults in the SUT to the list of interesting values.\\
+Improvement in performance of DSSR strategy over random strategy was achieved by taking advantage of Random Plus and fault neighbouring values. Random plus incorporated not only border values but it also added values having higher chances of finding faults in the SUT to the list of interesting values.\\
 
 The DSSR strategy is highly effective in case of systems containing block and strip pattern of failure across the input domain.\\
 
-Due to the additional steps of scanning the list of interesting values for better test values and addition of fault finding test value and its neighbour values, the DSSR strategy takes upto 5\% more time to execute equal number of test cases than pure random testing. \\
+Due to the additional steps of scanning the list of interesting values for better test values and addition of fault finding test value and its neighbour values, the DSSR strategy takes upto 5\% more time to execute equal number of test cases than pure random testing and 3% more than random plus. \\
 
 In the current version of DSSR strategy, it might depend on random or random plus strategy for finding the first fault if the fault test value was not in the list of interesting values. Once the first fault is found only then DSSR strategy could make an impact on the performance of test strategy.\\
 
