@@ -43,7 +43,6 @@ package yeti;
  */
 @SuppressWarnings("serial")
 public class NoCreationRoutineInType extends Exception {
-
 	
 	/**
 	 * Constructor that takes the type name.
