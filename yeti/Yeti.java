@@ -79,6 +79,7 @@ import yeti.monitoring.YetiGUI;
 import yeti.stats.YetiDataSet;
 import yeti.stats.YetiMichaelisMentenEquation;
 import yeti.strategies.YetiDSSRStrategy;
+import yeti.strategies.YetiDSSRStrategy2;
 import yeti.strategies.YetiRandomPlusDecreasing;
 import yeti.strategies.YetiRandomPlusPeriodicProbabilitiesStrategy;
 import yeti.strategies.YetiRandomPlusStrategy;
@@ -95,6 +96,7 @@ import yeti.strategies.GA.YetiStrategyPersistenceManager;
  * @author Manuel Oriol (manuel@cs.york.ac.uk)
  * @date Jun 22, 2009
  */
+@SuppressWarnings("unused")
 public class Yeti {
 
 	/**
@@ -304,6 +306,7 @@ public class Yeti {
 		boolean isRandomPlusPeriodic = false;
 		boolean isRandomPlusDecreasing = false;
 		boolean isDSSR = false;
+		boolean isDSSR2 = false;
 		boolean isEvolutionary = false;
 		boolean isRunningFromChromosome = false;
 		String chromosomePath = null;
@@ -355,7 +358,7 @@ public class Yeti {
 				isCoFoJa = true; // @YetiCoFoJaBinding
 				continue; // @YetiCoFoJaBinding
 			} // @YetiCoFoJaBinding
-			// if .NET //@YetiDotNETBinding
+				// if .NET //@YetiDotNETBinding
 			if (s0.toLowerCase().equals("-dotnet")) { // @YetiDotNETBinding
 				isDotNet = true; // @YetiDotNETBinding
 				continue; // @YetiDotNETBinding
@@ -531,6 +534,12 @@ public class Yeti {
 			// we can use the Dirt Spot Sweeping strategy
 			if (s0.equals("-DSSR")) {
 				isDSSR = true;
+				continue;
+			}
+
+			// we can use the Dirt Spot Sweeping strategy
+			if (s0.equals("-DSSR2")) {
+				isDSSR2 = true;
 				continue;
 			}
 
@@ -817,6 +826,9 @@ public class Yeti {
 		}
 		if (isDSSR) {
 			strategy = new YetiDSSRStrategy(testManager);
+		}
+		if (isDSSR2) {
+			strategy = new YetiDSSRStrategy2(testManager);
 		}
 
 		if (isRunningFromChromosome) { // @YetiGeneticAlgorithmsStrategy
