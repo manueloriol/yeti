@@ -91,7 +91,7 @@ public class YetiDSSRStrategy2 extends YetiRandomStrategy {
 		// we generate a panel to contain both the label and the slider
 		JPanel p = new JPanel();
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-		JLabel txt = new JLabel("% DSS interesting values: YDS2011 ");
+		JLabel txt = new JLabel("% DSS interesting values: YDS2030 ");
 		p.add(txt);
 		txt.setAlignmentX(0);
 
@@ -149,12 +149,12 @@ public class YetiDSSRStrategy2 extends YetiRandomStrategy {
 	}
 
 	long oldFaults1 = 0;
-
 	YetiCard[] oldyt = null;
-
 	private YetiRoutine oldroutine;
-
 	public static long uid = 0;
+	String called = "";
+	public String args = "";
+	
 
 	public YetiCard[] getAllCards(YetiRoutine routine)
 			throws ImpossibleToMakeConstructorException {
@@ -164,133 +164,146 @@ public class YetiDSSRStrategy2 extends YetiRandomStrategy {
 		YetiLog.printDebugLog("nErrors " + currentErrors, this);
 
 		if (currentErrors > oldFaults1) {
+			
 			YetiLog.printDebugLog("found bug in the strategy", this);
 			oldFaults1 = currentErrors;
-			String args = "";
-			
-			for (int loop = 0; loop <=10; loop++){
 			
 			for (int j = 0; j < oldyt.length; j++) {
 				YetiCard yc = oldyt[j];
 
 				if (yc.getType().getName().equals("int")) {
-					System.out.println(yc.getType().getName());
-					if (yc.getType().getName().equals("int")) {
-						int intFaultValue = ((Integer) (yc.getValue()))
-								.intValue();
-
-						System.out.println("intFaultValue = " + intFaultValue);
-						// This statement will add the fault value first
-						String programBegin = "public class C"
-								+ uid++
-								+ " {\n  public static boolean startedByFailing = false;\n"
-								+ " public static int []boundaries = new int[100];\n"
-								+ " public static int nBoundaries = 1;\n"
-								+ " public static void main(String []argv){\n"
-								+ "  boolean isCurrentlyFailing = false;\n"
-								+ "  int k=0;\n"
-								+ "  boundaries[k++] = Integer.MIN_VALUE;\n"
-								+ " try{\n" + "int i=Integer.MIN_VALUE;\n";
-						String programMiddle = ";} catch (Throwable t){\n"
-								+ "  startedByFailing = true;\n"
-								+ "  isCurrentlyFailing = true;\n"
-								+ " }\n"
-								+ "  for (int i=Integer.MIN_VALUE+1;i<Integer.MAX_VALUE;i++){\n   try{\n";
-						String call = "";
-						// HACK: MAKE SURE IT WORKS WITH OTHER PROGRAMMING
-						// LANGUAGES
-						YetiJavaRoutine jroutine = (YetiJavaRoutine) oldroutine;
-						if (jroutine instanceof YetiJavaConstructor) {
-							YetiJavaConstructor c = (YetiJavaConstructor) jroutine;
-							call = "new "
-									+ c.getOriginatingModule().getModuleName()
-									+ "(" + args + "i";
-							for (int k = j + 1; k < oldyt.length; k++) {
-								call = call + ","
-										+ oldyt[k].getValue().toString();
-							}
-							call = call + ")";
-						} else {
-							if (jroutine instanceof YetiJavaMethod) {
-								YetiJavaMethod m = (YetiJavaMethod) jroutine;
-								if (m.isStatic) {
-									call = ""
-											+ m.getOriginatingModule()
-													.getModuleName() + "."
-											+ m.getMethod().getName() + "("
-											+ args + "i";
-									for (int k = j + 1; k < oldyt.length; k++) {
-										call = call
-												+ ","
-												+ oldyt[k].getValue()
-														.toString();
-									}
-									call = call + ")";
-								} else {
-									call = "variable" + "."
-											+ m.getMethod().getName() + "("
-											+ args + "i";
-									for (int k = j + 1; k < oldyt.length; k++) {
-										call = call
-												+ ","
-												+ oldyt[k].getValue()
-														.toString();
-									}
-									call = call + ")";
-								}
-							}
-						}
-						String programEnd = "if (isCurrentlyFailing){"
-								+ "    isCurrentlyFailing=false;"
-								+ "boundaries[k++] = i;}\n"
-								+ "   } catch(Throwable t){\n"
-								+ "     if (!isCurrentlyFailing){\n"
-								+ "     boundaries[k++] = i;\n"
-								+ "     isCurrentlyFailing=true;\n"
-								+ "    }\n   }\n  }"
-								+ " nBoundaries=k;\n"
-								+ " printRange();"
-								+ "\n }\n\n"
-								+ "public static void printRange(){\n"
-								+ " boolean isFailing = startedByFailing;\n"
-								+ " System.out.println(\""
-								+ call
-								+ "\");\n"
-								+ " for (int j=0;j<nBoundaries;j++){"
-								+ "  System.out.print(\"[ \"+boundaries[j]+\": \");"
-								+ "  if (isFailing) System.out.print(\"Fail ->\");"
-								+ "  else System.out.print(\"Pass ->\");"
-								+ "  isFailing=!isFailing;\n" + "  }" + "\n }"
-								+ "\n}";
-						String generatedProgram = programBegin + call
-								+ programMiddle + "   " + call + ";"
-								+ programEnd;
-						try {
-							PrintStream fos = new PrintStream("C" + (uid - 1)
-									+ ".java");
-							fos.println(generatedProgram);
-						
-
-						} catch (FileNotFoundException e) {
-						
-							e.printStackTrace();
-						}
-
 					
+						String programBegin = programBeginPart();
+						String programMiddle = programMiddlePart();
+						called = callPart();
+						String programEnd = programEndPart();
+						
+						String generatedProgram = programBegin + called + programMiddle + "   " + called + ";" + programEnd;
+						
+						generateProgram(generatedProgram);
+						
 						args = args + yc.getValue() + ",";
 					}
-				}
 
 				}
 
-
-			}
+			
 		}
 
 		oldyt = super.getAllCards(routine);
+		oldroutine = routine;
 		return oldyt;
 	}
+	
+	public String programBeginPart(){
+		String temp = "public class C"
+				+ uid++
+				+ " {\n  public static boolean startedByFailing = false;\n"
+				+ " public static int []boundaries = new int[100];\n"
+				+ " public static int nBoundaries = 1;\n"
+				+ " public static void main(String []argv){\n"
+				+ "  boolean isCurrentlyFailing = false;\n"
+				+ "  int k=0;\n"
+				+ "  boundaries[k++] = Integer.MIN_VALUE;\n"
+				+ " try{\n" + "int i=Integer.MIN_VALUE;\n";
+		return temp;
+	}
+	
+	public String programMiddlePart(){
+		String temp1 = ";} catch (Throwable t){\n"
+				+ "  startedByFailing = true;\n"
+				+ "  isCurrentlyFailing = true;\n"
+				+ " }\n"
+				+ "  for (int i=Integer.MIN_VALUE+1;i<Integer.MAX_VALUE;i++){\n   try{\n";
+		return temp1;
+	}
+	
+	public String callPart(){
+		String call = "";
+		int j = 0;
+		YetiJavaRoutine jroutine = (YetiJavaRoutine) oldroutine;
+		if (jroutine instanceof YetiJavaConstructor) {
+			YetiJavaConstructor c = (YetiJavaConstructor) jroutine;
+			call = "new "
+					+ c.getOriginatingModule().getModuleName()
+					+ "(" + args + "i";
+			for (int k = j + 1; k < oldyt.length; k++) {
+				call = call + ","
+						+ oldyt[k].getValue().toString();
+			}
+			call = call + ")";
+		} else {
+			if (jroutine instanceof YetiJavaMethod) {
+				YetiJavaMethod m = (YetiJavaMethod) jroutine;
+				if (m.isStatic) {
+					call = ""
+							+ m.getOriginatingModule()
+									.getModuleName() + "."
+							+ m.getMethod().getName() + "("
+							+ args + "i";
+					for (int k = j + 1; k < oldyt.length; k++) {
+						call = call
+								+ ","
+								+ oldyt[k].getValue()
+										.toString();
+					}
+					call = call + ")";
+				} else {
+					call = "variable" + "."
+							+ m.getMethod().getName() + "("
+							+ args + "i";
+					for (int k = j + 1; k < oldyt.length; k++) {
+						call = call
+								+ ","
+								+ oldyt[k].getValue()
+										.toString();
+					}
+					call = call + ")";
+				}
+			}
+		}
+		return call;
+	}
+	
+	public String programEndPart(){
+		String temp3 = "if (isCurrentlyFailing){"
+				+ "    isCurrentlyFailing=false;"
+				+ "boundaries[k++] = i;}\n"
+				+ "   } catch(Throwable t){\n"
+				+ "     if (!isCurrentlyFailing){\n"
+				+ "     boundaries[k++] = i;\n"
+				+ "     isCurrentlyFailing=true;\n"
+				+ "    }\n   }\n  }"
+				+ " nBoundaries=k;\n"
+				+ " printRange();"
+				+ "\n }\n\n"
+				+ "public static void printRange(){\n"
+				+ " boolean isFailing = startedByFailing;\n"
+				+ " System.out.println(\""
+				+ called
+				+ "\");\n"
+				+ " for (int j=0;j<nBoundaries;j++){"
+				+ "  System.out.print(\"[ \"+boundaries[j]+\": \");"
+				+ "  if (isFailing) System.out.print(\"Fail ->\");"
+				+ "  else System.out.print(\"Pass ->\");"
+				+ "  isFailing=!isFailing;\n" + "  }" + "\n }"
+				+ "\n}";
+		return temp3;
+		}
+	
+	public void generateProgram(String program){
+		try {
+			PrintStream fos = new PrintStream("C" + (uid - 1)
+					+ ".java");
+			fos.println(program);
 
+
+		} catch (FileNotFoundException e) {
+				e.printStackTrace();
+		}
+	}
+	
+	
 	@Override
 	public String getName() {
 		return "Dirt Spot Sweeping Strategy Two";
