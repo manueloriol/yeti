@@ -69,6 +69,8 @@ public class YetiLauncher extends JFrame {
 	String path = ".";
 	private JTextField textField;	
 	private JTextField textField_1;
+	private JTextField textField_2;
+	private JTextField textField_3;
 	
 	
 	/**
@@ -229,7 +231,7 @@ public class YetiLauncher extends JFrame {
 				time2ComboBox = new JComboBox();
 				time2ComboBox.setToolTipText("Select test duration in Minutes or seconds");
 
-				time2ComboBox.setModel(new DefaultComboBoxModel(new String[] {"Minutes", "Seconds"}));
+				time2ComboBox.setModel(new DefaultComboBoxModel(new String[] {"Seconds", "Minutes"}));
 				time2ComboBox.setBounds(214, 146, 108, 27);
 				contentPane.add(time2ComboBox);
 				
@@ -372,6 +374,7 @@ public class YetiLauncher extends JFrame {
 //						JOptionPane.showMessageDialog(null, strategy, " strategy is ",JOptionPane.PLAIN_MESSAGE);
 //						JOptionPane.showMessageDialog(null, fileName, "fileName is", JOptionPane.PLAIN_MESSAGE);
 //						JOptionPane.showMessageDialog(null, testFilePath, "testFilePath is", JOptionPane.PLAIN_MESSAGE);
+//						JOptionPane.showMessageDialog(null, path, "path variable value is", JOptionPane.PLAIN_MESSAGE);
 						
 						list.add(language);
 						list.add(strategy);
@@ -469,6 +472,46 @@ public class YetiLauncher extends JFrame {
 				contentPane.add(textField_1);
 				textField_1.setColumns(10);
 				
+				
+				
+				
+				//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Code to Execute C0, C1, .... files %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				JButton btnNewButton_2 = new JButton("Execute Files");
+				btnNewButton_2.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						
+						int count = 0;
+						for (int i = 0; i < filesToCompileArray.length; i++){
+							Process pro1;
+							try {
+//								String temp1 = "javac " + path + filesToCompileArray[i];
+//								JOptionPane.showMessageDialog(null, temp1);
+//								pro1 = Runtime.getRuntime().exec(temp1);
+								pro1 = Runtime.getRuntime().exec("java " + path + filesToCompileArray[i]);
+								count = count + 1;
+							} catch (IOException e1) {
+								
+								e1.printStackTrace();
+							}
+						    
+						}
+						
+						textField_3.setText(count + " files executed");
+					}
+				});
+				btnNewButton_2.setBounds(58, 453, 207, 29);
+				contentPane.add(btnNewButton_2);
+				
+				textField_3 = new JTextField();
+				textField_3.setBounds(273, 452, 227, 28);
+				contentPane.add(textField_3);
+				textField_3.setColumns(10);
+				
+				
+				//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% End  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				
+				
+				
 				JLabel lblNewLabel = new JLabel("Description of each field (Temporary)");
 				lblNewLabel.setBounds(571, 94, 403, 16);
 				contentPane.add(lblNewLabel);
@@ -514,6 +557,10 @@ public class YetiLauncher extends JFrame {
 				JLabel label_1 = new JLabel("Select Language of the program under test");
 				label_1.setBounds(571, 66, 403, 16);
 				contentPane.add(label_1);
+				
+				
+				
+				
 			
 	}
 }

@@ -154,7 +154,7 @@ public class YetiDSSRStrategy2 extends YetiRandomStrategy {
 	public static long uid = 0;
 	String called = "";
 	public String args = "";
-	public int intIncrement = -50;
+	public int intIncrement = -25;
 	
 
 	public YetiCard[] getAllCards(YetiRoutine routine)
@@ -174,7 +174,7 @@ public class YetiDSSRStrategy2 extends YetiRandomStrategy {
 
 				if (yc.getType().getName().equals("int")) {
 					
-					for (int loop = 0; loop < 100; loop ++){
+					for (int loop = 0; loop < 50; loop ++){
 						String programBegin = programBeginPart();
 						String programMiddle = programMiddlePart();
 						called = callPart();
