@@ -91,7 +91,7 @@ public class YetiDSSRStrategy2 extends YetiRandomStrategy {
 		// we generate a panel to contain both the label and the slider
 		JPanel p = new JPanel();
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-		JLabel txt = new JLabel("% DSS interesting values: YDS2030 ");
+		JLabel txt = new JLabel("% DSS interesting values: YDS2040 ");
 		p.add(txt);
 		txt.setAlignmentX(0);
 
@@ -154,6 +154,7 @@ public class YetiDSSRStrategy2 extends YetiRandomStrategy {
 	public static long uid = 0;
 	String called = "";
 	public String args = "";
+	public int intIncrement = -50;
 	
 
 	public YetiCard[] getAllCards(YetiRoutine routine)
@@ -173,6 +174,7 @@ public class YetiDSSRStrategy2 extends YetiRandomStrategy {
 
 				if (yc.getType().getName().equals("int")) {
 					
+					for (int loop = 0; loop < 100; loop ++){
 						String programBegin = programBeginPart();
 						String programMiddle = programMiddlePart();
 						called = callPart();
@@ -181,8 +183,10 @@ public class YetiDSSRStrategy2 extends YetiRandomStrategy {
 						String generatedProgram = programBegin + called + programMiddle + "   " + called + ";" + programEnd;
 						
 						generateProgram(generatedProgram);
-						
+					
+					}
 						args = args + yc.getValue() + ",";
+					
 					}
 
 				}
@@ -221,6 +225,7 @@ public class YetiDSSRStrategy2 extends YetiRandomStrategy {
 	public String callPart(){
 		String call = "";
 		int j = 0;
+	
 		YetiJavaRoutine jroutine = (YetiJavaRoutine) oldroutine;
 		if (jroutine instanceof YetiJavaConstructor) {
 			YetiJavaConstructor c = (YetiJavaConstructor) jroutine;
@@ -240,12 +245,14 @@ public class YetiDSSRStrategy2 extends YetiRandomStrategy {
 							+ m.getOriginatingModule()
 									.getModuleName() + "."
 							+ m.getMethod().getName() + "("
+							
 							+ args + "i";
 					for (int k = j + 1; k < oldyt.length; k++) {
-						call = call
-								+ ","
-								+ oldyt[k].getValue()
-										.toString();
+						
+						call = call + ",";
+								int temp = (Integer) oldyt[k].getValue() + intIncrement;
+								call = call + temp;
+							
 					}
 					call = call + ")";
 				} else {
@@ -262,6 +269,7 @@ public class YetiDSSRStrategy2 extends YetiRandomStrategy {
 				}
 			}
 		}
+		intIncrement++;
 		return call;
 	}
 	
